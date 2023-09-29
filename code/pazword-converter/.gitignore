@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 
 # exclude .vscode folder
 .vscode/ 
+
+# exclude pazword files
+*.pz

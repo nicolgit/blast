@@ -1,3 +1,5 @@
 # ignore .blast files
 *.blast
 
+# ignore drawio backup files
+*.bkp

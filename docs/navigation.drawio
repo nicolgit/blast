@@ -1,0 +1,37 @@
+<mxfile host="Electron" modified="2023-10-02T16:07:09.060Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.0 Chrome/114.0.5735.289 Electron/25.8.3 Safari/537.36" etag="WiMevZdDLeCmljX8rSqg" version="22.0.0" type="device">
+  <diagram name="Page-1" id="XstVe38ohfi7oglFwXu2">
+    <mxGraphModel dx="1818" dy="1390" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pLoeV-HU2ztmSa5ulrNU-1" value="SplashView" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;arcSize=9;" parent="1" vertex="1">
+          <mxGeometry x="-31" y="128" width="120" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="pLoeV-HU2ztmSa5ulrNU-2" value="EulaView" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="-31" y="-222" width="120" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="pLoeV-HU2ztmSa5ulrNU-3" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeColor=#333333;strokeWidth=2;" parent="1" source="pLoeV-HU2ztmSa5ulrNU-1" target="pLoeV-HU2ztmSa5ulrNU-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="28" y="129" as="sourcePoint" />
+            <mxPoint x="78" y="79" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pLoeV-HU2ztmSa5ulrNU-4" value="ChooseStorage&lt;br&gt;View" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;arcSize=9;" parent="1" vertex="1">
+          <mxGeometry x="216" y="128" width="120" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="pLoeV-HU2ztmSa5ulrNU-5" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeColor=#333333;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="pLoeV-HU2ztmSa5ulrNU-1" target="pLoeV-HU2ztmSa5ulrNU-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="39" y="138" as="sourcePoint" />
+            <mxPoint x="190" y="267" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="A6USaRjn1JaS2gt5tJ_A-1" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#0080F0;shadow=0;dashed=0;shape=mxgraph.ios7.icons.cloud;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="258.22" y="287" width="40.78" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="A6USaRjn1JaS2gt5tJ_A-2" value="" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.concepts.folder;fillColor=#CCCBCB;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="258.22" y="157" width="35.56" height="32" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

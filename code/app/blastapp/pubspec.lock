@@ -67,6 +67,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  kt_dart:
+    dependency: "direct main"
+    description:
+      name: kt_dart
+      sha256: "59d7ae2841ad2c176bbb5fa7596eb29ec75a418b119b446d17c954fb8d8dd4c8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   lints:
     dependency: transitive
     description:

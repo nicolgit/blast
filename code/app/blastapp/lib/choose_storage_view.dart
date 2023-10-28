@@ -1,4 +1,4 @@
-import 'package:blastapp/splash_view.dart';
+import 'package:blastapp/choose_file_view.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_dart/kt.dart';
 
@@ -38,10 +38,13 @@ class ChooseStorageView extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              throw NotImplementedException('Fake Cloud not implemented');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ChooseFileView()),
+              );
             },
             child: const Text(
-                'Fake Cloud(TM) - for testing purposes only, do not use!'),
+                'Fake Cloud - for testing purposes only'),
           ),
         ],
       )),

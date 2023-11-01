@@ -1,10 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Theme {
+enum BlaseAppTheme {
   auto,
   light,
   dark,
 }
+
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -29,14 +30,14 @@ class SettingService {
     await prefs.setBool('eulaAccepted', value);
   }
 
-  Future<Theme> get theme async {
+  Future<BlaseAppTheme> get appTheme async {
     var prefs = await _prefs;
-    return Theme.values[prefs.getInt('theme') ?? Theme.auto.index];
+    return BlaseAppTheme.values[prefs.getInt('appTheme') ?? BlaseAppTheme.auto.index];
   }
 
-  Future<void> setTheme(Theme value) async {
+  Future<void> setAppTheme(BlaseAppTheme value) async {
     var prefs = await _prefs;
-    await prefs.setInt('theme', value.index);
+    await prefs.setInt('appTheme', value.index);
   }
   
 }

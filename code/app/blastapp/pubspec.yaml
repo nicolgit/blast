@@ -2,6 +2,7 @@ name: blastapp
 description: your password safe and sound
 publish_to: 'none'
 version: 0.1.0
+homepage: https://github.com/nicolgit/blast
 
 environment:
   sdk: '>=3.1.3 <4.0.0'
@@ -10,8 +11,8 @@ dependencies:
   kt_dart: ^1.1.0
   flutter:
     sdk: flutter
-  viewmodelpackage:
-    path: ./../viewmodelpackage
+  blastviewmodel:
+    path: ./../blastviewmodel
   provider: ^6.0.5
 
 dev_dependencies:

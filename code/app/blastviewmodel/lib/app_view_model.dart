@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:modelpackage/settings_service.dart';
+import 'package:blastmodel/settings_service.dart';
 
 class AppViewModel {
 

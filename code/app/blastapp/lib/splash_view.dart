@@ -1,7 +1,7 @@
 import 'package:blastapp/choose_storage_view.dart';
 import 'package:blastapp/eula_view.dart';
 import 'package:flutter/material.dart';
-import 'package:viewmodelpackage/splash_view_model.dart';
+import 'package:blastviewmodel/splash_view_model.dart';
 import 'package:provider/provider.dart';
 
 /// REFERENCE MVVM ARCHITECTURE https://www.filledstacks.com/post/flutter-architecture-my-provider-implementation-guide/

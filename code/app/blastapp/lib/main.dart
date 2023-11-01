@@ -1,6 +1,6 @@
 import 'package:blastapp/splash_view.dart';
 import 'package:flutter/material.dart';
-import 'package:viewmodelpackage/app_view_model.dart';
+import 'package:blastviewmodel/app_view_model.dart';
 
 void main() async {
 

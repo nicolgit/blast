@@ -1,10 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:blastmodel/settings_service.dart';
 
-class SplashViewModel extends ChangeNotifier{
+class SplashViewModelXXX extends ChangeNotifier{
+  BuildContext context;
+
+  SplashViewModelXXX(this.context);
 
   Future<bool> eulaAccepted() async {
     return SettingService().eulaAccepted;
+  }
+
+  showEula() async {
+
   }
 }

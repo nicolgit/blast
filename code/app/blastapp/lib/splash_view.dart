@@ -38,23 +38,6 @@ class SplashView extends StatelessWidget {
                   child: const Text('show EULA'),
                 ),
 
-          /*
-          FutureBuilder<bool> ( 
-            future: vm.eulaAccepted(),
-            builder: (context, boolEulaAccepted) {
-              return Visibility(
-                visible: !(boolEulaAccepted.data ?? false),
-                child: TextButton(
-                  onPressed: () {
-                    vm.showEula();
-                  },
-                  child: const Text('show EULA'),
-                )
-              );
-            }
-          ),
-          */
-
           FutureBuilder<bool>(
             future: vm.eulaAccepted(), 
             builder: (context, boolEulaAccepted) {

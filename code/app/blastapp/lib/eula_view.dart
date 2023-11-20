@@ -3,10 +3,16 @@ import 'package:blastapp/ViewModel/eula_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 @RoutePage()
-class EulaView extends StatelessWidget {
+class EulaView extends StatefulWidget {
   const EulaView({super.key});
 
+  @override
+  State<StatefulWidget> createState() => _EulaViewState();
+}
+
+class _EulaViewState extends State<EulaView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -17,7 +23,7 @@ class EulaView extends StatelessWidget {
     );
   }
 
-  Widget _buildScaffold(BuildContext context, EulaViewModel vm) {
+   Widget _buildScaffold(BuildContext context, EulaViewModel vm) {
     return Scaffold(
       body: Center(
           child: Column(
@@ -38,6 +44,11 @@ class EulaView extends StatelessWidget {
             },
             child: const Text('I do not want to accept and use this app'),
           ),
+          TextButton(
+            onPressed: () => vm.testViewModel(),
+            child: const Text('test button'),
+          ),
+          Text(vm.testText())
         ],
       )),
     );

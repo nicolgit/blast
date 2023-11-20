@@ -4,12 +4,15 @@ import 'package:blastapp/choose_storage_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// REFERENCE MVVM ARCHITECTURE https://www.filledstacks.com/post/flutter-architecture-my-provider-implementation-guide/
-
 @RoutePage()
-class SplashView extends StatelessWidget {
+class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
+  @override
+  State<SplashView> createState() => _SplashViewState();
+}
+
+class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -33,7 +36,7 @@ class SplashView extends StatelessWidget {
           
           TextButton(
                   onPressed: () {
-                    vm.showEula().then((value) => print('EULA accepted')); 
+                    vm.showEula().then((value) => vm.refresh()); 
                   },
                   child: const Text('show EULA'),
                 ),
@@ -56,8 +59,19 @@ class SplashView extends StatelessWidget {
               );
             }
           ),
+
+          FutureBuilder<bool>(
+            future: vm.eulaNotAccepted(), 
+            builder: (context, boolEulaNotAccepted) {
+              return Visibility(
+                visible: boolEulaNotAccepted.data ?? false,
+                child: const Text("you must accept the EULA to use this app"),
+              );
+            }
+          ),
         ],
       )),
     );
   }
+
 }

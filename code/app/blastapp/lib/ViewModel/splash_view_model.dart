@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/ViewModel/base.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
-class SplashViewModel extends BaseViewModel{
+class SplashViewModel extends ChangeNotifier{
   BuildContext context;
 
   SplashViewModel(this.context);
@@ -15,12 +14,15 @@ class SplashViewModel extends BaseViewModel{
     return SettingService().eulaAccepted;
   }
 
+  Future<bool> eulaNotAccepted() async {
+    return ! await SettingService().eulaAccepted;
+  } 
+
   showEula() async {
     return context.router.push(const EulaRoute());
   }
-  
-  @override
-  FutureOr<void> init() {
 
+  void refresh() {
+    notifyListeners();
   }
 }

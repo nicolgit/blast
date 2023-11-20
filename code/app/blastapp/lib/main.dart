@@ -1,5 +1,6 @@
 import 'package:blastapp/ViewModel/app_view_model.dart';
 import 'package:blastapp/ViewModel/eula_view_model.dart';
+import 'package:blastapp/ViewModel/splash_view_model.dart';
 import 'package:blastapp/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => SplashViewModel(context)),
         ChangeNotifierProvider(create: (context) => EulaViewModel(context)),
       ],
       child: MaterialApp(

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/eula_view.dart';
-import 'package:blastapp/splash_view.dart';
+import 'package:blastapp/View/eula_view.dart';
+import 'package:blastapp/View/splash_view.dart';
 part 'blast_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'View,Route')

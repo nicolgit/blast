@@ -1,3 +1,7 @@
+import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/Cloud/fake_cloud.dart';
+import 'package:blastmodel/Cloud/filesystem_cloud.dart';
+import 'package:blastmodel/Cloud/onedrive_cloud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -10,6 +14,7 @@ enum BlaseAppTheme {
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   List<RecentFile> recentFiles = [];
+  List<Cloud> cloudStorages = [];
 
   static final SettingService _instance = SettingService._internal();
 
@@ -62,6 +67,19 @@ class SettingService {
     var prefs = await _prefs;
     var jsonRecent = jsonEncode(value);
     await prefs.setString('recentFiles', jsonRecent);
+  }
+
+
+  Future<List<Cloud>> getCloudStoragelist() {
+    if (cloudStorages.isNotEmpty) {
+      return Future.value(cloudStorages);
+    } else {
+      cloudStorages.add(FakeCloud());
+      cloudStorages.add(FileSystemCloud());
+      cloudStorages.add(OneDriveCloud());
+
+      return Future.value(cloudStorages);
+    }
   }
 }
 

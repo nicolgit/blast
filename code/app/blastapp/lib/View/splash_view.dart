@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_view_model.dart';
-import 'package:blastapp/choose_storage_view.dart';
+import 'package:blastapp/View/choose_storage_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,33 +28,33 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       body: Center(
           child: Column(
-        children: [
-          const Text('Hello World!'),
-          const Text(' '),
-          const Text('I am the splash screen!'),
-          TextButton(
-            onPressed: () {
-              vm.showEula().then((value) => vm.refresh());
-            },
-            child: const Text('show EULA'),
-          ),
-          FutureBuilder<bool>(
-              future: vm.eulaAccepted(),
-              builder: (context, boolEulaAccepted) {
-                return Visibility(
-                  visible: boolEulaAccepted.data ?? false,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ChooseStorageView()),
-                      );
-                    },
-                    child: const Text('select a new file'),
-                  ),
-                );
-              }),
+          children: [
+            const Text('Hello World!'),
+            const Text(' '),
+            const Text('I am the splash screen!'),
+            TextButton(
+              onPressed: () {
+                vm.showEula().then((value) => vm.refresh());
+              },
+              child: const Text('show EULA'),
+            ),
+            FutureBuilder<bool>(
+                future: vm.eulaAccepted(),
+                builder: (context, boolEulaAccepted) {
+                  return Visibility(
+                    visible: boolEulaAccepted.data ?? false,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChooseStorageView()),
+                        );
+                      },
+                      child: const Text('create or select another file'),
+                    ),
+                  );
+                }),
           FutureBuilder<bool>(
               future: vm.eulaAccepted(),
               builder: (context, boolEulaAccepted) {
@@ -67,7 +67,7 @@ class _SplashViewState extends State<SplashView> {
                   ),
                 );
               }),
-          FutureBuilder<bool>(
+        FutureBuilder<bool>(
               future: vm.eulaNotAccepted(),
               builder: (context, boolEulaNotAccepted) {
                 return Visibility(
@@ -85,8 +85,8 @@ class _SplashViewState extends State<SplashView> {
       itemCount: 100,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: const Icon(Icons.article),
-          title: Text('item$index.blast'),
+          leading: const Icon(Icons.lock),
+          title: Text('file$index.blast on OneDrive not implemented yet'),
           onTap: () {
             AlertDialog(
                 title: Text("hello"),

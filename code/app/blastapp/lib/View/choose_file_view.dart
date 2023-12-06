@@ -1,7 +1,13 @@
+import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
 class ChooseFileView extends StatelessWidget {
-  const ChooseFileView({super.key});
+  final Cloud cloud;
+
+  ChooseFileView({super.key, required this.cloud}) {
+    CurrentFileService().setCloud(cloud);
+  }
 
   @override
   Widget build(BuildContext context) {

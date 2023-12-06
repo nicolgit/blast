@@ -1,7 +1,9 @@
-import 'package:blastmodel/settings_service.dart';
+import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/blastfile.dart';
 
 class CurrentFileService {
   static final CurrentFileService _instance = CurrentFileService._internal();
+  Cloud? cloud = null;
 
   factory CurrentFileService() {
     return _instance;
@@ -12,4 +14,9 @@ class CurrentFileService {
   }
 
   BlastFile? currentFile;
+
+  void setCloud(Cloud cloud) {
+    this.cloud = cloud;
+    //TODO reset all other values because we are changing cloud
+  }
 }

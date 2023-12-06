@@ -2,6 +2,7 @@ import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/fake_cloud.dart';
 import 'package:blastmodel/Cloud/filesystem_cloud.dart';
 import 'package:blastmodel/Cloud/onedrive_cloud.dart';
+import 'package:blastmodel/blastfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -80,26 +81,4 @@ class SettingService {
       return Future.value(cloudStorages);
     }
   }
-}
-
-class BlastFile {
-  final String cloudName;
-  final String fileName;
-  final String filePath;
-
-  BlastFile(
-      {required this.cloudName,
-      required this.fileName,
-      required this.filePath});
-
-  BlastFile.fromJson(Map<String, dynamic> json)
-      : cloudName = json['cloudName'],
-        fileName = json['fileName'],
-        filePath = json['filePath'];
-
-  Map<String, dynamic> toJson() => {
-        'cloudName': cloudName,
-        'fileName': fileName,
-        'filePath': filePath,
-      };
 }

@@ -18,12 +18,16 @@ class SplashViewModel extends ChangeNotifier {
     return !await SettingService().eulaAccepted;
   }
 
-  Future<List<RecentFile>> recentFiles() async {
+  Future<List<BlastFile>> recentFiles() async {
     return SettingService().getRecentFiles();
   }
 
   showEula() async {
     return context.router.push(const EulaRoute());
+  }
+
+  chooseStorage() async {
+    return context.router.push(const ChooseStorageRoute());
   }
 
   void refresh() {

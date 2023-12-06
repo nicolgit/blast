@@ -15,6 +15,12 @@ abstract class _$BlastRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    ChooseStorageRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ChooseStorageView(),
+      );
+    },
     EulaRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -28,6 +34,20 @@ abstract class _$BlastRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [ChooseStorageView]
+class ChooseStorageRoute extends PageRouteInfo<void> {
+  const ChooseStorageRoute({List<PageRouteInfo>? children})
+      : super(
+          ChooseStorageRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ChooseStorageRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

@@ -3,7 +3,6 @@ import 'package:blastapp/ViewModel/choose_storage_view_model.dart';
 import 'package:blastapp/choose_file_view.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:flutter/material.dart';
-import 'package:kt_dart/kt.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -20,7 +19,8 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     return ChangeNotifierProvider(
       create: (context) => ChooseStorageViewModel(context),
       child: Consumer<ChooseStorageViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -28,11 +28,12 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
   Widget _buildScaffold(BuildContext context, ChooseStorageViewModel vm) {
     return Scaffold(
       body: Center(
-          child: Column(children: [
+        child: Column(
+          children: [
             FutureBuilder<List<Cloud>>(
               future: vm.supportedClouds(),
               builder: (context, cloudList) {
-                return _buildCloudList(cloudList.data ?? []);
+                return _buildCloudList(cloudList.data ?? [], vm);
               },
             ),
           ],
@@ -41,7 +42,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     );
   }
 
-  Column _buildCloudList(List<Cloud> cloudList) {
+  Column _buildCloudList(List<Cloud> cloudList, ChooseStorageViewModel vm) {
     var myList = Column(
       children: [
         for (Cloud cloud in cloudList)
@@ -49,67 +50,14 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ChooseFileView()),
+                  MaterialPageRoute(
+                      builder: (context) => const ChooseFileView()),
                 );
               },
-              child: Text(cloud.name)
-            ),
+              child: Text(cloud.name)),
       ],
     );
 
     return myList;
-  }
-
-}
-
-class ChooseStorageViewX extends StatelessWidget {
-  const ChooseStorageViewX({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-            children: [
-              const Text('welcome! where do you want to store your data?'),
-              
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('local file system!'),
-              ),
-              TextButton(
-                onPressed: () {
-                  throw NotImplementedException("OneDrive not implemented");
-                },
-                child: const Text('OneDrive'),
-              ),
-              TextButton(
-                onPressed: () {
-                  throw NotImplementedException("Google Drive not implemented");
-                },
-                child: const Text('Google Drive'),
-              ),
-              TextButton(
-                onPressed: () {
-                  throw NotImplementedException("Apple iCloud not implemented");
-                },
-                child: const Text('Apple iCloud'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ChooseFileView()),
-                  );
-                },
-                child: const Text(
-                    'Fake Cloud - for testing purposes only'),
-              ),
-            ],
-        ),
-      ),
-    );
   }
 }

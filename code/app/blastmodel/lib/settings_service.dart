@@ -13,7 +13,7 @@ enum BlaseAppTheme {
 
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  List<RecentFile> recentFiles = [];
+  List<BlastFile> recentFiles = [];
   List<Cloud> cloudStorages = [];
 
   static final SettingService _instance = SettingService._internal();
@@ -48,7 +48,7 @@ class SettingService {
     await prefs.setInt('appTheme', value.index);
   }
 
-  Future<List<RecentFile>> getRecentFiles() async {
+  Future<List<BlastFile>> getRecentFiles() async {
     if (recentFiles.isNotEmpty) {
       return recentFiles;
     } else {
@@ -61,14 +61,13 @@ class SettingService {
     }
   }
 
-  Future<void> setRecentFiles(List<RecentFile> value) async {
+  Future<void> setRecentFiles(List<BlastFile> value) async {
     recentFiles = value;
 
     var prefs = await _prefs;
     var jsonRecent = jsonEncode(value);
     await prefs.setString('recentFiles', jsonRecent);
   }
-
 
   Future<List<Cloud>> getCloudStoragelist() {
     if (cloudStorages.isNotEmpty) {
@@ -83,17 +82,17 @@ class SettingService {
   }
 }
 
-class RecentFile {
+class BlastFile {
   final String cloudName;
   final String fileName;
   final String filePath;
 
-  RecentFile(
+  BlastFile(
       {required this.cloudName,
       required this.fileName,
       required this.filePath});
 
-  RecentFile.fromJson(Map<String, dynamic> json)
+  BlastFile.fromJson(Map<String, dynamic> json)
       : cloudName = json['cloudName'],
         fileName = json['fileName'],
         filePath = json['filePath'];

@@ -49,11 +49,6 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
           TextButton(
               onPressed: () {
                 vm.goToChooseFile(cloud);
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChooseFileView(cloud: cloud)),
-                );*/
               },
               child: Text(cloud.name)),
       ],

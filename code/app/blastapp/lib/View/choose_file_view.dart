@@ -8,9 +8,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ChooseFileView extends StatefulWidget {
-  final Cloud cloud;
-
-  const ChooseFileView({super.key, required this.cloud});
+  const ChooseFileView({super.key});
 
   @override
   State<StatefulWidget> createState() => _ChooseFileViewState();

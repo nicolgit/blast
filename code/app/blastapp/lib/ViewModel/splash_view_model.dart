@@ -27,7 +27,7 @@ class SplashViewModel extends ChangeNotifier {
     return context.router.push(const EulaRoute());
   }
 
-  chooseStorage() async {
+  goToChooseStorage() async {
     return context.router.push(const ChooseStorageRoute());
   }
 

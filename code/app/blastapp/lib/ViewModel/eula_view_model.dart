@@ -3,12 +3,10 @@ import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 // https://dev.to/aseemwangoo/using-mvvm-in-flutter-2022-11bg
-class EulaViewModel extends ChangeNotifier{
+class EulaViewModel extends ChangeNotifier {
   BuildContext context;
 
-  EulaViewModel(this.context){
-    _testText = 'test text';
-  }
+  EulaViewModel(this.context);
 
   acceptEula() async {
     SettingService().setEulaAccepted(true);
@@ -20,16 +18,5 @@ class EulaViewModel extends ChangeNotifier{
     SettingService().setEulaAccepted(false);
     notifyListeners();
     context.router.pop(true);
-  }
-
-  testViewModel() async {
-    _testText = DateTime.now().toString();
-    notifyListeners();
-  }
-
-  late String _testText;
-
-  String testText() {
-    return _testText;
   }
 }

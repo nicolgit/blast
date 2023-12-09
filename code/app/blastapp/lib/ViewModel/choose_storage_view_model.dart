@@ -16,6 +16,6 @@ class ChooseStorageViewModel extends ChangeNotifier {
 
   goToChooseFile(Cloud cloud) async {
     CurrentFileService().setCloud(cloud);
-    return context.router.push(ChooseFileRoute(cloud: cloud));
+    return context.router.push(const ChooseFileRoute());
   }
 }

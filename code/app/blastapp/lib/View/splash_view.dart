@@ -45,12 +45,12 @@ class _SplashViewState extends State<SplashView> {
                   visible: boolEulaAccepted.data ?? false,
                   child: TextButton(
                     onPressed: () {
-                      //vm.chooseStorage(); NOT WORKING!!!
-                      Navigator.push(
+                      vm.goToChooseStorage();
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const ChooseStorageView()),
-                      );
+                      );*/
                     },
                     child: const Text('create or select another file'),
                   ),
@@ -73,7 +73,8 @@ class _SplashViewState extends State<SplashView> {
               builder: (context, boolEulaNotAccepted) {
                 return Visibility(
                   visible: boolEulaNotAccepted.data ?? false,
-                  child: const Text("you must accept the EULA to use this app"),
+                  child: const Text("you must accept the EULA to use this app",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 );
               }),
         ],
@@ -86,25 +87,43 @@ class _SplashViewState extends State<SplashView> {
       itemCount: 100,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: const Icon(Icons.lock),
+          leading: const Icon(Icons.article),
           title: Text('file$index.blast on OneDrive not implemented yet'),
-          onTap: () {
-            AlertDialog(
-                title: Text("hello"),
-                content: Text("world"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('close'),
-                  ),
-                ]);
+          onTap: () async {
+            await _showMyDialog();
           },
         );
       },
     );
 
     return myList;
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('List of recent opened blast files'),
+                Text('not implemented yet'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("ok, I'll wait"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

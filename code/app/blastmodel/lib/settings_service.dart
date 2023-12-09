@@ -81,4 +81,8 @@ class SettingService {
       return Future.value(cloudStorages);
     }
   }
+
+  Future<Cloud> getCloudStorageByName(String name) async {
+    return cloudStorages.firstWhere((element) => element.name == name);
+  }
 }

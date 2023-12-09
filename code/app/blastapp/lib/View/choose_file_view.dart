@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,8 @@ class ChooseFileView extends StatefulWidget {
 }
 
 class _ChooseFileViewState extends State<ChooseFileView> {
+  _ChooseFileViewState();
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -40,35 +43,39 @@ class _ChooseFileViewState extends State<ChooseFileView> {
             child: const Text('new file'),
           ),
           const Text('or to open an existing one'),
-          Expanded(
-            child: Container(
-              child: _buildfileList(),
-            ),
-          ),
+          FutureBuilder<List<CloudObject>>(
+              future: vm.getFiles(),
+              builder: (context, listFiles) {
+                return Expanded(
+                  child: Container(
+                    child: _buildfileList(listFiles.data ?? [], vm),
+                  ),
+                );
+              }),
         ],
       ),
     ));
   }
 
-  ListView _buildfileList() {
+  ListView _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
     var myList = ListView.builder(
-      itemCount: 100,
+      itemCount: listFiles.length,
       itemBuilder: (context, index) {
+        String name = listFiles[index].name;
+        String path = listFiles[index].path;
+
         return ListTile(
-          leading: const Icon(Icons.article),
-          title: Text('fileItem$index.blast'),
+          leading:
+              Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
+          title: Row(
+            children: [
+              Text(path),
+              const SizedBox(width: 12),
+              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
           onTap: () {
-            AlertDialog(
-                title: Text("hello"),
-                content: Text("World"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('close'),
-                  ),
-                ]);
+            vm.selectItem(listFiles[index]);
           },
         );
       },

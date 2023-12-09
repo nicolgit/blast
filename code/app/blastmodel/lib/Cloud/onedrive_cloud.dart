@@ -1,14 +1,13 @@
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/Cloud/cloud_object.dart';
 
 class OneDriveCloud extends Cloud {
   @override
   String get name => 'OneDrive';
 
   @override
-  set test(String value) {}
-  
-  @override
-  void testMethod() {
-    // TODO: implement testMethod
+  Future<List<CloudObject>> getFiles(String path) {
+    // TODO: implement getFiles
+    throw UnimplementedError();
   }
 }

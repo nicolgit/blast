@@ -48,11 +48,12 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
         for (Cloud cloud in cloudList)
           TextButton(
               onPressed: () {
-                Navigator.push(
+                vm.goToChooseFileEula(cloud);
+                /*Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChooseFileView(cloud: cloud)),
-                );
+                );*/
               },
               child: Text(cloud.name)),
       ],

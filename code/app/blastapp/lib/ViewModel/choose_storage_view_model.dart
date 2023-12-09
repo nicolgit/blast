@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
-
-class ChooseStorageViewModel extends ChangeNotifier{
+class ChooseStorageViewModel extends ChangeNotifier {
   BuildContext context;
 
   ChooseStorageViewModel(this.context);
@@ -12,4 +13,7 @@ class ChooseStorageViewModel extends ChangeNotifier{
     return SettingService().getCloudStoragelist();
   }
 
+  goToChooseFileEula(Cloud cloud) async {
+    return context.router.push(ChooseFileRoute(cloud: cloud));
+  }
 }

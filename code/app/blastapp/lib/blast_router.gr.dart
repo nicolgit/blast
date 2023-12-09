@@ -15,6 +15,16 @@ abstract class _$BlastRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    ChooseFileRoute.name: (routeData) {
+      final args = routeData.argsAs<ChooseFileRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ChooseFileView(
+          key: args.key,
+          cloud: args.cloud,
+        ),
+      );
+    },
     ChooseStorageRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -34,6 +44,44 @@ abstract class _$BlastRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [ChooseFileView]
+class ChooseFileRoute extends PageRouteInfo<ChooseFileRouteArgs> {
+  ChooseFileRoute({
+    Key? key,
+    required Cloud cloud,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChooseFileRoute.name,
+          args: ChooseFileRouteArgs(
+            key: key,
+            cloud: cloud,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ChooseFileRoute';
+
+  static const PageInfo<ChooseFileRouteArgs> page =
+      PageInfo<ChooseFileRouteArgs>(name);
+}
+
+class ChooseFileRouteArgs {
+  const ChooseFileRouteArgs({
+    this.key,
+    required this.cloud,
+  });
+
+  final Key? key;
+
+  final Cloud cloud;
+
+  @override
+  String toString() {
+    return 'ChooseFileRouteArgs{key: $key, cloud: $cloud}';
+  }
 }
 
 /// generated route for

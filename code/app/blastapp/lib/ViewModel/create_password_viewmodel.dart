@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 class CreatePasswordViewModel extends ChangeNotifier {
@@ -32,14 +33,20 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return '';
   }
 
-  bool isPasswordValid() {
-    return passwordError.isEmpty &&
-        passwordConfirmError.isEmpty &&
-        password == passwordConfirm;
+  Future<bool> isPasswordValid() async {
+    return passwordError.isNotEmpty && passwordConfirmError.isNotEmpty;
+  }
+
+  Future<bool> passwordsMatch() async {
+    return password == passwordConfirm;
+  }
+
+  Future<bool> isPasswordValidAndMatch() async {
+    return await isPasswordValid() && await passwordsMatch();
   }
 
   acceptPassword() async {
-    //notifyListeners();
-    //context.router.pop();
+    notifyListeners();
+    context.router.pop();
   }
 }

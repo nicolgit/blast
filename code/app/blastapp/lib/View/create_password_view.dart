@@ -60,9 +60,19 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
                 hintText: 'Enter your password'),
           ),
           Text(vm.passwordConfirmError),
-          const TextButton(
-            onPressed: null, //vm.acceptPassword(),
-            child: Text('confirm password'),
+          FutureBuilder<bool>(
+            future: vm.passwordsMatch(),
+            builder: (context, passwordsMatch) => Text(
+                passwordsMatch.data ?? true ? "" : "passwords don't match"),
+          ),
+          FutureBuilder<bool>(
+            future: vm.isPasswordValidAndMatch(),
+            builder: (context, isPasswordValidAndMatch) => TextButton(
+              onPressed: (isPasswordValidAndMatch.data ?? false)
+                  ? vm.acceptPassword()
+                  : null,
+              child: const Text('confirm password'),
+            ),
           ),
         ],
       )),

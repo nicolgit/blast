@@ -1,10 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/View/choose_file_view.dart';
 import 'package:blastapp/View/choose_storage_view.dart';
+import 'package:blastapp/View/create_password_view.dart';
 import 'package:blastapp/View/eula_view.dart';
 import 'package:blastapp/View/splash_view.dart';
-import 'package:blastmodel/Cloud/cloud.dart';
-import 'package:flutter/material.dart';
 part 'blast_router.gr.dart';
 
 // https://pub.dev/packages/auto_route
@@ -18,6 +17,7 @@ class BlastRouter extends _$BlastRouter {
         AutoRoute(page: SplashRoute.page, initial: true),
         AutoRoute(page: EulaRoute.page),
         AutoRoute(page: ChooseStorageRoute.page),
-        AutoRoute(page: ChooseFileRoute.page)
+        AutoRoute(page: ChooseFileRoute.page),
+        AutoRoute(page: CreatePasswordRoute.page),
       ];
 }

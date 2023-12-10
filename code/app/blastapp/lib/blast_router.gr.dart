@@ -27,6 +27,12 @@ abstract class _$BlastRouter extends RootStackRouter {
         child: const ChooseStorageView(),
       );
     },
+    CreatePasswordRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CreatePasswordView(),
+      );
+    },
     EulaRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -66,6 +72,20 @@ class ChooseStorageRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ChooseStorageRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CreatePasswordView]
+class CreatePasswordRoute extends PageRouteInfo<void> {
+  const CreatePasswordRoute({List<PageRouteInfo>? children})
+      : super(
+          CreatePasswordRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CreatePasswordRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

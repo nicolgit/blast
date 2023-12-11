@@ -19,7 +19,9 @@ class ChooseFileViewModel extends ChangeNotifier {
     if (object.isDirectory) {
       currentPath = object.url;
       notifyListeners();
-    } else {}
+    } else {
+      context.router.push(const TypePasswordRoute());
+    }
   }
 
   newFileCommand() async {

@@ -45,6 +45,12 @@ abstract class _$BlastRouter extends RootStackRouter {
         child: const SplashView(),
       );
     },
+    TypePasswordRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const TypePasswordView(),
+      );
+    },
   };
 }
 
@@ -114,6 +120,20 @@ class SplashRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SplashRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [TypePasswordView]
+class TypePasswordRoute extends PageRouteInfo<void> {
+  const TypePasswordRoute({List<PageRouteInfo>? children})
+      : super(
+          TypePasswordRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'TypePasswordRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

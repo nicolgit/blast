@@ -24,17 +24,20 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   String validatePassword(String value) {
+    notifyListeners();
+
     if (value.isEmpty) {
       return 'Please enter a password';
     }
     if (value.length < 8) {
       return 'Password must be at least 8 characters';
     }
+
     return '';
   }
 
   Future<bool> isPasswordValid() async {
-    return passwordError.isNotEmpty && passwordConfirmError.isNotEmpty;
+    return passwordError.isEmpty && passwordConfirmError.isEmpty;
   }
 
   Future<bool> passwordsMatch() async {
@@ -45,7 +48,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return await isPasswordValid() && await passwordsMatch();
   }
 
-  acceptPassword() async {
+  acceptPassword() {
     notifyListeners();
     context.router.pop();
   }

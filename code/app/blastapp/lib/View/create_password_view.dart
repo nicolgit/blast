@@ -68,8 +68,8 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
           FutureBuilder<bool>(
             future: vm.isPasswordValidAndMatch(),
             builder: (context, isPasswordValidAndMatch) => TextButton(
-              onPressed: (isPasswordValidAndMatch.data ?? false)
-                  ? vm.acceptPassword()
+              onPressed: isPasswordValidAndMatch.data ?? false
+                  ? () => vm.acceptPassword()
                   : null,
               child: const Text('confirm password'),
             ),

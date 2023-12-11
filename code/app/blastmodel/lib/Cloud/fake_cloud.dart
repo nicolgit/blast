@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
@@ -36,4 +38,20 @@ class FakeCloud extends Cloud {
 
     return Future.value(files);
   }
+
+  @override
+  Uint8List getFile(String path) {
+    String input = 'Hello, World!';
+    
+    Uint8List byteArray = Uint8List.fromList(utf8.encode(input))
+
+    return byteArray;
+  }
+
+  String buildRandomBlastDocument()
+  {
+    // TODO
+    throw UnimplementedError();
+  }
+  
 }

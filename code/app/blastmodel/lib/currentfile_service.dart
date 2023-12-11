@@ -1,11 +1,15 @@
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
 
 class CurrentFileService {
   static final CurrentFileService _instance = CurrentFileService._internal();
 
   Cloud? cloud;
-  BlastFile? currentFile;
+  BlastFile? currentFileInfo;
+  List<int>? currentFileEncrypted;
+  String? currentFileJsonString;
+  BlastDocument? currentFileDocument;
 
   factory CurrentFileService() {
     return _instance;
@@ -13,7 +17,17 @@ class CurrentFileService {
 
   CurrentFileService._internal() {
     // init things inside this
+    reset();
   }
+
+  void reset() {
+    cloud = null;
+    currentFileInfo = null;
+    currentFileEncrypted = null;
+    currentFileJsonString = null;
+    currentFileDocument = null;
+  }
+
 
   void setCloud(Cloud cloud) {
     this.cloud = cloud;

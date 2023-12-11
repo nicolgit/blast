@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.2
+  uuid: ^3.0.4
 
 dev_dependencies:
   flutter_test:

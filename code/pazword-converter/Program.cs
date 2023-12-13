@@ -8,16 +8,17 @@ class PazwordConverterApp
 {
     static void Main(string[] args)
     {
-        if (args.Length != 2)
+        if (args.Length != 2 && args.Length != 3)
         {
             Console.WriteLine("This command line utility converts Pazword's file to thenew blast format");
             Console.WriteLine("Usage: pazword-converter <input file> <output file>");
-            Console.WriteLine("Example: pazword-converter input.pz output.blast");
+            Console.WriteLine("Example: pazword-converter input.pz output.blast [--no-password]");
             return;
         }   
 
         var inputFile = args[0];
         var outputFile = args[1];
+        bool noPassword = args.Length == 3 && args[2] == "--no-password";
 
         if (! File.Exists(inputFile))
             {
@@ -62,7 +63,10 @@ class PazwordConverterApp
 
         blastFile.PutBlastDocument(document);
 
-        System.IO.File.WriteAllBytes(outputFile, blastFile.FileEncrypted);
+        if(noPassword)
+            System.IO.File.WriteAllText(outputFile, blastFile.FileReadable);
+        else
+            System.IO.File.WriteAllBytes(outputFile, blastFile.FileEncrypted);
         
         Console.WriteLine("Completed successfully.");
     }

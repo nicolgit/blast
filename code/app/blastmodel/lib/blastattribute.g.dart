@@ -22,8 +22,8 @@ Map<String, dynamic> _$BlastAttributeToJson(BlastAttribute instance) =>
     };
 
 const _$BlastAttributeTypeEnumMap = {
-  BlastAttributeType.typeString: 'typeString',
-  BlastAttributeType.typePassword: 'typePassword',
-  BlastAttributeType.typeURL: 'typeURL',
-  BlastAttributeType.typeHeader: 'typeHeader',
+  BlastAttributeType.typeString: 1,
+  BlastAttributeType.typePassword: 2,
+  BlastAttributeType.typeURL: 3,
+  BlastAttributeType.typeHeader: 4,
 };

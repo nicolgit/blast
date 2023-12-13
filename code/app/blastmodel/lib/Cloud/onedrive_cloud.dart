@@ -14,7 +14,7 @@ class OneDriveCloud extends Cloud {
   }
 
   @override
-  Uint8List getFile(String path) {
+  Future<Uint8List> getFile(String path) {
     // TODO: implement getFile
     throw UnimplementedError();
   }

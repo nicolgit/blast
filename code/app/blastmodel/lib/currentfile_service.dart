@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
@@ -7,7 +9,7 @@ class CurrentFileService {
 
   Cloud? cloud;
   BlastFile? currentFileInfo;
-  List<int>? currentFileEncrypted;
+  Uint8List? currentFileEncrypted;
   String? currentFileJsonString;
   BlastDocument? currentFileDocument;
 
@@ -27,7 +29,6 @@ class CurrentFileService {
     currentFileJsonString = null;
     currentFileDocument = null;
   }
-
 
   void setCloud(Cloud cloud) {
     this.cloud = cloud;

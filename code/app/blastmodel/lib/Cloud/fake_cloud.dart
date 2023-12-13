@@ -10,8 +10,8 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 
 class FakeCloud extends Cloud {
-
-  final _source = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+  final _source =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
   late List<String> _words;
 
   FakeCloud() {
@@ -52,46 +52,46 @@ class FakeCloud extends Cloud {
   }
 
   @override
-  Uint8List getFile(String path) {
+  Future<Uint8List> getFile(String path) async {
     BlastDocument document = buildRandomBlastDocument();
 
-    String input = "this is a test";
+    String jsonString = document.toString();
 
-    Uint8List byteArray = Uint8List.fromList(utf8.encode(input));
+    Uint8List byteArray = Uint8List.fromList(utf8.encode(jsonString));
 
     return byteArray;
   }
 
-  BlastDocument buildRandomBlastDocument()
-  {
+  BlastDocument buildRandomBlastDocument() {
     Random random = Random();
 
     BlastDocument document = BlastDocument();
-    
+
     int totalCards = random.nextInt(50);
 
-    for (int i=0; i<totalCards; i++)
-    {
+    for (int i = 0; i < totalCards; i++) {
       BlastCard card = BlastCard();
- 
+
       card.title = _randomStringGenerator(random.nextInt(5));
       card.notes = _randomStringGenerator(random.nextInt(20));
       card.isFavorite = random.nextInt(10) == 0;
-      card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
-      card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      card.lastUpdateDateTime =
+          DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      card.lastOpenedDateTime =
+          DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.usedCounter = random.nextInt(100);
       card.tags = _randomTagsGenerator();
 
       int totalCards = random.nextInt(100);
-      for (int i=0; i<totalCards; i++)
-      {
+      for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
         attribute.name = _randomStringGenerator(random.nextInt(4));
         attribute.value = _randomStringGenerator(random.nextInt(10));
-        attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
+        attribute.type = BlastAttributeType
+            .values[random.nextInt(BlastAttributeType.values.length)];
 
         card.rows.add(attribute);
-      } 
+      }
 
       document.cards.add(card);
     }
@@ -99,31 +99,26 @@ class FakeCloud extends Cloud {
     return document;
   }
 
-
-  String _randomStringGenerator(int length)
-  {
+  String _randomStringGenerator(int length) {
     Random random = Random();
 
     String result = "";
 
-    for (int i=0; i<length; i++)
-    {
+    for (int i = 0; i < length; i++) {
       result += _words[random.nextInt(_words.length)];
       result += " ";
     }
 
     return result;
-  } 
+  }
 
-  List<String> _randomTagsGenerator()
-  {
+  List<String> _randomTagsGenerator() {
     Random random = Random();
 
     List<String> result = [];
 
     int length = random.nextInt(3);
-    for (int i=0; i<length; i++)
-    {
+    for (int i = 0; i < length; i++) {
       result.add(_words[random.nextInt(_words.length)]);
     }
 

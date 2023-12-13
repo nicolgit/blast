@@ -5,5 +5,5 @@ abstract class Cloud {
   String get name;
 
   Future<List<CloudObject>> getFiles(String path);
-  Uint8List getFile (String path);
+  Future<Uint8List> getFile(String path);
 }

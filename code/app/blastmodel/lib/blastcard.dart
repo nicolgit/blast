@@ -1,25 +1,24 @@
-import 'dart:collection';
 import 'dart:core';
-import 'dart:math';
-
 import 'package:blastmodel/blastattribute.dart';
-import 'package:blastmodel/blastattributetype.dart';
 import 'package:uuid/uuid.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'blastcard.g.dart';
+
+@JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastCard {
-
   BlastCard();
 
   String id = const Uuid().v4();
   String title = "";
   String notes = "";
   bool isFavorite = false;
-  late DateTime lastUpdateDateTime =DateTime.now();
-  late DateTime lastOpenedDateTime =DateTime.now();
+  late DateTime lastUpdateDateTime = DateTime.now();
+  late DateTime lastOpenedDateTime = DateTime.now();
   int usedCounter = 0;
-  List<String> tags =List.empty(growable: true);
-  List<BlastAttribute> rows =List.empty(growable: true);
-
+  List<String> tags = List.empty(growable: true);
+  List<BlastAttribute> rows = List.empty(growable: true);
+  /*
   @override
   String toString() {
     StringBuffer sb = StringBuffer();
@@ -56,6 +55,12 @@ class BlastCard {
 
     return sb.toString();
   }
+  */
+
+  factory BlastCard.fromJson(Map<String, dynamic> json) =>
+      _$BlastCardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BlastCardToJson(this);
 
   /*
   AdvancedSearchResult advancedSearch(String text) {
@@ -96,7 +101,7 @@ class BlastCard {
         ? AdvancedSearchResult.InBody
         : AdvancedSearchResult.NotFound;
   }
-  */  
+  */
 
   /*
   import 'dart:io';
@@ -113,5 +118,4 @@ class BlastCard {
     return normalizedText;
   }
   */
-
 }

@@ -14,6 +14,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   checkPassword() {
     // TODO: Check password
+
     context.router.pop();
   }
 

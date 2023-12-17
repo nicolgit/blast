@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -20,13 +21,13 @@ class FakeCloud extends Cloud {
   }
 
   @override
-  String get name => 'Fake Cloud(tm) - for testing purposes only';
+  String get name => 'Fake Cloud - for testing purposes only';
 
   @override
   Future<List<CloudObject>> getFiles(String path) {
     Random random = Random();
     List<CloudObject> files = [];
-    int totalFiles = random.nextInt(20);
+    int totalFiles = random.nextInt(20) + 1;
     for (int i = 0; i < totalFiles; i++) {
       String name = "";
       int fileNameLength = random.nextInt(20) + 3;
@@ -56,9 +57,13 @@ class FakeCloud extends Cloud {
   Future<Uint8List> getFile(String path) async {
     BlastDocument document = buildRandomBlastDocument();
 
-    String jsonString = document.toString();
+    String jsonDocument = document.toString();
 
-    Uint8List byteArray = Uint8List.fromList(utf8.encode(jsonString));
+    var encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
+
+  X
+  
+    Uint8List byteArray = Uint8List.fromList(utf8.encode(jsonDocument));
 
     return byteArray;
   }

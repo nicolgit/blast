@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/ViewModel/create_password_viewmodel.dart';
 import 'package:blastapp/ViewModel/type_password_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

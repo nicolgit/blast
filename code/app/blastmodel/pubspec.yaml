@@ -12,6 +12,7 @@ dependencies:
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
   uuid: ^4.2.2
+  pointycastle: ^3.3.4
 
 dev_dependencies:
   flutter_test:

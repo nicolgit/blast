@@ -8,6 +8,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/currentfile_service.dart';
 
 class FakeCloud extends Cloud {
   final _source =

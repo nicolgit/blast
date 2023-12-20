@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 
 import 'package:blastmodel/Cloud/cloud.dart';
@@ -43,22 +44,6 @@ class CurrentFileService {
     //TODO reset all other values because we are changing cloud
   }
 
-  /*
-  // ENCRYPT/DECRYPT helpers
-  final PaddedBlockCipher _cipher = PaddedBlockCipher("AES/CBC/PKCS7");
-  Uint8List _encryptString(String stringToEncrypt, Uint8List iv) {
-    Uint8List utf = Uint8List.fromList(utf8.encode(stringToEncrypt));
-    _cipher.init(true, ParametersWithIV(KeyParameter(utf), iv));
-    return _cipher.process(utf);
-  }
-
-  String _decryptBytes(Uint8List bytesToDecrypt, Uint8List iv) {
-    _cipher.init(false, ParametersWithIV(KeyParameter(bytesToDecrypt), iv));
-    Uint8List decrypted = _cipher.process(bytesToDecrypt);
-    return utf8.decode(decrypted);
-  }
-  */
-
   Uint8List encodeFile(String jsonDocument, String password) {
     // Generate salt
     final random = Random.secure();
@@ -89,6 +74,7 @@ class CurrentFileService {
     var buffer = BytesBuilder();
 
     // Write file type identifier
+    buffer.addByte(versionCurrent.length);
     buffer.add(utf8.encode(versionCurrent));
 
     // Write the crypt_iv in the file
@@ -102,5 +88,26 @@ class CurrentFileService {
     buffer.add(destinationEncryptedBytes);
 
     return buffer.toBytes();
+  }
+
+  String decodeFile(Uint8List binary, String password) {
+    ??
+    int offset = 0;
+    var fileVersion = _readString(binary, offset);
+    offset += fileVersion.length + 1;
+
+    switch (fileVersion) {
+      case version01:
+        //return _decodeFile01(binary, offset, password);
+        throw Exception("Unknown file version");
+      default:
+        throw Exception("Unknown file version");
+    }
+  }
+
+  String _readString(Uint8List data, int offset) {
+    int lenght = data. .readByte(offset);
+
+    return utf8.decode(data.sublist(offset, offset + lenght));
   }
 }

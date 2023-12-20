@@ -61,8 +61,8 @@ class FakeCloud extends Cloud {
 
     var encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
 
-  X
-  
+    var decodedFile = CurrentFileService().decodeFile(encodedFile, "password");
+
     Uint8List byteArray = Uint8List.fromList(utf8.encode(jsonDocument));
 
     return byteArray;

@@ -1,4 +1,4 @@
-![blast!](images\icon-v01.png)
+![blast!](images/icon-v01.png)
 # Blast👮👮‍♀️
 your passwords safe and sound.
 

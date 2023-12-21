@@ -21,14 +21,13 @@ class ChooseFileViewModel extends ChangeNotifier {
       currentPath = object.url;
       notifyListeners();
     } else {
-      currentFileService.currentFileInfo = BlastFile(
-          cloudName: currentFileService.cloud!.name,
-          fileName: object.name,
-          filePath: object.path);
+      currentFileService.currentFileInfo =
+          BlastFile(cloudName: currentFileService.cloud!.name, fileName: object.name, filePath: object.path);
 
-      currentFileService.currentFileEncrypted = await currentFileService.cloud!
-          .getFile(currentFileService.currentFileInfo!.filePath);
+      currentFileService.currentFileEncrypted =
+          await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.filePath);
 
+      if (!context.mounted) return;
       context.router.push(const TypePasswordRoute());
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -44,8 +45,7 @@ class FakeCloud extends Cloud {
           name: name,
           path: path,
           size: random.nextInt(1000000),
-          lastModified:
-              DateTime.now().subtract(Duration(days: random.nextInt(365))),
+          lastModified: DateTime.now().subtract(Duration(days: random.nextInt(365))),
           url: '$path/$name',
           isDirectory: isDirectory));
     }
@@ -56,16 +56,13 @@ class FakeCloud extends Cloud {
   @override
   Future<Uint8List> getFile(String path) async {
     BlastDocument document = buildRandomBlastDocument();
-
     String jsonDocument = document.toString();
 
     var encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
+    //var decodedFile = CurrentFileService().decodeFile(encodedFile, "password");
+    //var decodedFile2 = CurrentFileService().decodeFile(encodedFile, "pass");
 
-    var decodedFile = CurrentFileService().decodeFile(encodedFile, "password");
-
-    Uint8List byteArray = Uint8List.fromList(utf8.encode(jsonDocument));
-
-    return byteArray;
+    return encodedFile;
   }
 
   BlastDocument buildRandomBlastDocument() {
@@ -81,10 +78,8 @@ class FakeCloud extends Cloud {
       card.title = _randomStringGenerator(random.nextInt(5));
       card.notes = _randomStringGenerator(random.nextInt(20));
       card.isFavorite = random.nextInt(10) == 0;
-      card.lastUpdateDateTime =
-          DateTime.now().subtract(Duration(days: random.nextInt(365)));
-      card.lastOpenedDateTime =
-          DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.usedCounter = random.nextInt(100);
       card.tags = _randomTagsGenerator();
 
@@ -93,8 +88,7 @@ class FakeCloud extends Cloud {
         BlastAttribute attribute = BlastAttribute();
         attribute.name = _randomStringGenerator(random.nextInt(4));
         attribute.value = _randomStringGenerator(random.nextInt(10));
-        attribute.type = BlastAttributeType
-            .values[random.nextInt(BlastAttributeType.values.length)];
+        attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
 
         card.rows.add(attribute);
       }

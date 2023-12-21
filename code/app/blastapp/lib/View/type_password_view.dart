@@ -19,8 +19,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     return ChangeNotifierProvider(
       create: (context) => TypePasswordViewModel(context),
       child: Consumer<TypePasswordViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -43,16 +42,13 @@ class _TypePasswordViewState extends State<TypePasswordView> {
             controller: passwordController,
             onChanged: (value) => vm.setPassword(value),
             decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-                hintText: 'Enter your password'),
+                border: OutlineInputBorder(), labelText: 'Password', hintText: 'Enter your password'),
           ),
+          Text(vm.errorMessage),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) => TextButton(
-              onPressed: isPasswordValid.data ?? false
-                  ? () => vm.checkPassword()
-                  : null,
+              onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
               child: const Text('open'),
             ),
           ),

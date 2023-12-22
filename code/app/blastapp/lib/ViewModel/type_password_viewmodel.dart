@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/exceptions.dart';
@@ -26,6 +27,8 @@ class TypePasswordViewModel extends ChangeNotifier {
           BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
       errorMessage = '';
       notifyListeners();
+
+      context.router.push(const CardsBrowserRoute());
       return;
     } on BlastWrongPasswordException {
       errorMessage = 'wrong password - please check again';

@@ -55,8 +55,7 @@ class CurrentFileService {
     // Generate Key
     int iterations = 1000;
     var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
-    pbkdf2.init(Pbkdf2Parameters(
-        salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
+    pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
     Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));
 
     // Generate IV
@@ -69,8 +68,7 @@ class CurrentFileService {
 
     final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
     final ivParams = ParametersWithIV(KeyParameter(key), iv);
-    cipher.init(
-        true, PaddedBlockCipherParameters(ivParams, null)); // true = encrypt
+    cipher.init(true, PaddedBlockCipherParameters(ivParams, null)); // true = encrypt
 
     // Create a memory buffer
     var buffer = BytesBuilder();
@@ -102,8 +100,7 @@ class CurrentFileService {
         var salt = binary.sublist(offset, offset + 8);
         offset += 8;
 
-        var iterations =
-            _readIntegerFromUint8List(binary.sublist(offset, offset + 4));
+        var iterations = _readIntegerFromUint8List(binary.sublist(offset, offset + 4));
         offset += 4;
 
         var iv = binary.sublist(offset, offset + 16);
@@ -111,18 +108,24 @@ class CurrentFileService {
 
         // Generate Key
         var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
-        pbkdf2.init(Pbkdf2Parameters(
-            salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
+        pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
         Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));
 
         // Create AES cipher
         final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
         final ivParams = ParametersWithIV(KeyParameter(key), iv);
-        cipher.init(false,
-            PaddedBlockCipherParameters(ivParams, null)); // false = encrypt
+        cipher.init(false, PaddedBlockCipherParameters(ivParams, null)); // false = encrypt
 
         var loremEncrypted = binary.sublist(offset);
-        var output = cipher.process(loremEncrypted);
+        Uint8List output = Uint8List(0);
+
+        try {
+          output = cipher.process(loremEncrypted);
+        } catch (e) {
+          // Wrong password: > Invalid argument(s): Invalid or corrupted pad block
+          throw BlastWrongPasswordException();
+        }
+
         String loremDecrypted = utf8.decode(output);
 
         if (!loremDecrypted.startsWith(loremText)) {
@@ -136,16 +139,13 @@ class CurrentFileService {
   }
 
   void _addIntegerToBytesBuilder(BytesBuilder buffer, int value) {
-    var byteData =
-        ByteData(4); // Create byte data with space for a 32-bit integer
+    var byteData = ByteData(4); // Create byte data with space for a 32-bit integer
     byteData.setInt32(0, value); // Set the integer
-    buffer
-        .add(byteData.buffer.asUint8List()); // Add the byte data to the buffer
+    buffer.add(byteData.buffer.asUint8List()); // Add the byte data to the buffer
   }
 
   int _readIntegerFromUint8List(Uint8List data) {
     var byteData = ByteData.view(data.buffer);
-    return byteData
-        .getInt32(0); // Read a 32-bit integer from the start of the data
+    return byteData.getInt32(0); // Read a 32-bit integer from the start of the data
   }
 }

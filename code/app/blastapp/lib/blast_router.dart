@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/View/cards_browser_view.dart';
 import 'package:blastapp/View/choose_file_view.dart';
 import 'package:blastapp/View/choose_storage_view.dart';
 import 'package:blastapp/View/create_password_view.dart';
@@ -21,5 +22,6 @@ class BlastRouter extends _$BlastRouter {
         AutoRoute(page: ChooseFileRoute.page),
         AutoRoute(page: CreatePasswordRoute.page),
         AutoRoute(page: TypePasswordRoute.page),
+        AutoRoute(page: CardsBrowserRoute.page),
       ];
 }

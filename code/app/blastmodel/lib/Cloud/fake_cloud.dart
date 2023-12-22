@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:html';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -58,10 +55,7 @@ class FakeCloud extends Cloud {
     BlastDocument document = buildRandomBlastDocument();
     String jsonDocument = document.toString();
 
-    var encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
-    //var decodedFile = CurrentFileService().decodeFile(encodedFile, "password");
-    //var decodedFile2 = CurrentFileService().decodeFile(encodedFile, "pass");
-
+    final encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
     return encodedFile;
   }
 
@@ -75,13 +69,13 @@ class FakeCloud extends Cloud {
     for (int i = 0; i < totalCards; i++) {
       BlastCard card = BlastCard();
 
-      card.title = _randomStringGenerator(random.nextInt(5));
-      card.notes = _randomStringGenerator(random.nextInt(20));
+      card.title = _randomStringGenerator(random.nextInt(5) + 1);
+      card.notes = _randomStringGenerator(random.nextInt(20) + 1);
       card.isFavorite = random.nextInt(10) == 0;
       card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.usedCounter = random.nextInt(100);
-      card.tags = _randomTagsGenerator();
+      card.tags = _randomTagsGenerator(random.nextInt(5));
 
       int totalCards = random.nextInt(100);
       for (int i = 0; i < totalCards; i++) {
@@ -112,12 +106,12 @@ class FakeCloud extends Cloud {
     return result;
   }
 
-  List<String> _randomTagsGenerator() {
+  List<String> _randomTagsGenerator(int tagsCount) {
     Random random = Random();
 
     List<String> result = [];
 
-    int length = random.nextInt(3);
+    int length = tagsCount;
     for (int i = 0; i < length; i++) {
       result.add(_words[random.nextInt(_words.length)]);
     }

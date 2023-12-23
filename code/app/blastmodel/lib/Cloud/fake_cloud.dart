@@ -71,13 +71,13 @@ class FakeCloud extends Cloud {
 
       card.title = _randomStringGenerator(random.nextInt(5) + 1);
       card.notes = _randomStringGenerator(random.nextInt(20) + 1);
-      card.isFavorite = random.nextInt(10) == 0;
+      card.isFavorite = random.nextInt(5) == 0;
       card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.usedCounter = random.nextInt(100);
       card.tags = _randomTagsGenerator(random.nextInt(5));
 
-      int totalCards = random.nextInt(100);
+      int totalCards = random.nextInt(100); 
       for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
         attribute.name = _randomStringGenerator(random.nextInt(4));

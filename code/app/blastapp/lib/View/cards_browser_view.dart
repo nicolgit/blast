@@ -51,12 +51,26 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       itemCount: cardsList.length,
       itemBuilder: (context, index) {
         String name = cardsList[index].title;
+        bool isFavorite = cardsList[index].isFavorite;
 
         return ListTile(
           leading: const Icon(Icons.file_copy_outlined),
-          title: Row(
+          title: Column(
             children: [
-              Text(name),
+              Row(
+                children: [
+                  Text(name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(
+                    isFavorite ? Icons.star : Icons.star_border,
+                  ),
+                  Text('used ${cardsList[index].usedCounter} times'),
+                ],
+              ),
+              
             ],
           ),
           onTap: () {

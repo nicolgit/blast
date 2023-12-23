@@ -84,7 +84,7 @@ class CurrentFileService {
 
     // Write the lorem ipsum text
     var sourceBytes = utf8.encode(loremText + jsonDocument);
-    var destinationEncryptedBytes = cipher.process(sourceBytes);
+    var destinationEncryptedBytes = cipher.process(Uint8List.fromList(sourceBytes));
     buffer.add(destinationEncryptedBytes);
 
     return buffer.toBytes();

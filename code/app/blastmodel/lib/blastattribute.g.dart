@@ -12,7 +12,9 @@ BlastAttribute _$BlastAttributeFromJson(Map<String, dynamic> json) =>
           BlastAttributeType.typeString,
     )
       ..name = json['Name'] as String
-      ..value = json['Value'] as String;
+      ..value = json['Value'] as String
+      ..type = $enumDecodeNullable(_$BlastAttributeTypeEnumMap, json['Type']) ??
+          BlastAttributeType.typeString;
 
 Map<String, dynamic> _$BlastAttributeToJson(BlastAttribute instance) =>
     <String, dynamic>{

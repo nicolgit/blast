@@ -5,7 +5,9 @@ class MainView extends StatelessWidget {
   
   // make sure you don't initiate your router                
   // inside of the build function.                
-  final _appRouter = BlastRouter();            
+  final _appRouter = BlastRouter();
+
+  MainView({super.key});            
             
   @override            
   Widget build(BuildContext context){            

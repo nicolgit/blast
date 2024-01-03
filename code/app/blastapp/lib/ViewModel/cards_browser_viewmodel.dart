@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastcard.dart';
-import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
 class CardsBrowserViewModel extends ChangeNotifier {
-  BuildContext context;
-  CurrentFileService currentFileService = CurrentFileService();
+  final BuildContext context;
+  final CurrentFileService currentFileService = CurrentFileService();
 
   CardsBrowserViewModel(this.context);
 
@@ -14,5 +14,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return currentFileService.currentFileDocument!.cards;
   }
 
-  void selectCard(BlastCard cardsList) {}
+  void selectCard(BlastCard selectedCard) {
+    context.router.push( CardRoute( card: selectedCard ));
+  }
 }

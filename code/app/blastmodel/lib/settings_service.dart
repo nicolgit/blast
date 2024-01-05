@@ -3,6 +3,8 @@ import 'package:blastmodel/Cloud/fake_cloud.dart';
 import 'package:blastmodel/Cloud/filesystem_cloud.dart';
 import 'package:blastmodel/Cloud/onedrive_cloud.dart';
 import 'package:blastmodel/blastfile.dart';
+import 'package:blastmodel/blastfilelist.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -14,7 +16,7 @@ enum BlaseAppTheme {
 
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  List<BlastFile> recentFiles = [];
+  BlastFileList recentFiles = BlastFileList();
   List<Cloud> cloudStorages = [];
 
   static final SettingService _instance = SettingService._internal();
@@ -40,8 +42,7 @@ class SettingService {
 
   Future<BlaseAppTheme> get appTheme async {
     var prefs = await _prefs;
-    return BlaseAppTheme
-        .values[prefs.getInt('appTheme') ?? BlaseAppTheme.auto.index];
+    return BlaseAppTheme.values[prefs.getInt('appTheme') ?? BlaseAppTheme.auto.index];
   }
 
   Future<void> setAppTheme(BlaseAppTheme value) async {
@@ -50,24 +51,29 @@ class SettingService {
   }
 
   Future<List<BlastFile>> getRecentFiles() async {
-    if (recentFiles.isNotEmpty) {
-      return recentFiles;
+    if (recentFiles.list.isNotEmpty) {
+      return recentFiles.list;
     } else {
       var prefs = await _prefs;
       var jsonRecent = prefs.getString('recentFiles') ?? '[]';
 
-      recentFiles = jsonDecode(jsonRecent);
+      try {
+        recentFiles = BlastFileList.fromJson(jsonDecode(jsonRecent));
+      } catch (e) {
+        if (kDebugMode) {
+          print(e);
+        }
+        recentFiles = BlastFileList();
+      }
 
-      return recentFiles;
+      return recentFiles.list;
     }
   }
 
   Future<void> setRecentFiles(List<BlastFile> value) async {
-    recentFiles = value;
+    recentFiles.list = value;
 
-    var prefs = await _prefs;
-    var jsonRecent = jsonEncode(value);
-    await prefs.setString('recentFiles', jsonRecent);
+    _saveRecentFiles();
   }
 
   Future<List<Cloud>> getCloudStoragelist() {
@@ -84,5 +90,17 @@ class SettingService {
 
   Future<Cloud> getCloudStorageByName(String name) async {
     return cloudStorages.firstWhere((element) => element.name == name);
+  }
+
+  void addRecentFile(BlastFile currentFile) async {
+    recentFiles.list.add(currentFile);
+
+    _saveRecentFiles();
+  }
+
+  void _saveRecentFiles() async {
+    var prefs = await _prefs;
+    var jsonRecent = recentFiles.toString();
+    await prefs.setString('recentFiles', jsonRecent);
   }
 }

@@ -5,6 +5,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/exceptions.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 class TypePasswordViewModel extends ChangeNotifier {
@@ -25,6 +26,12 @@ class TypePasswordViewModel extends ChangeNotifier {
           CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password);
       CurrentFileService().currentFileDocument =
           BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+
+      final file = CurrentFileService().currentFileInfo;
+      if (file != null) {
+        SettingService().addRecentFile(file);
+      }
+
       errorMessage = '';
       notifyListeners();
 

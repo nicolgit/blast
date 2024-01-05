@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastfile.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,13 @@ class SplashViewModel extends ChangeNotifier {
 
   goToChooseStorage() async {
     return context.router.push(const ChooseStorageRoute());
+  }
+
+  goToRecentFile(BlastFile file) async {
+    CurrentFileService().reset();
+    CurrentFileService().currentFileInfo = file;
+
+    return context.router.push(const TypePasswordRoute());
   }
 
   void refresh() {

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_view_model.dart';
+import 'package:blastmodel/blastfile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +18,7 @@ class _SplashViewState extends State<SplashView> {
     return ChangeNotifierProvider(
       create: (context) => SplashViewModel(context),
       child: Consumer<SplashViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -45,11 +45,6 @@ class _SplashViewState extends State<SplashView> {
                   child: TextButton(
                     onPressed: () {
                       vm.goToChooseStorage();
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ChooseStorageView()),
-                      );*/
                     },
                     child: const Text('create or select another file'),
                   ),
@@ -59,13 +54,16 @@ class _SplashViewState extends State<SplashView> {
               future: vm.eulaAccepted(),
               builder: (context, boolEulaAccepted) {
                 return Visibility(
-                  visible: boolEulaAccepted.data ?? false,
-                  child: Expanded(
-                    child: Container(
-                      child: _buildfileList(),
-                    ),
-                  ),
-                );
+                    visible: boolEulaAccepted.data ?? false,
+                    child: FutureBuilder<List<BlastFile>>(
+                        future: vm.recentFiles(),
+                        builder: (context, listFiles) {
+                          return Expanded(
+                            child: Container(
+                              child: _buildRecentFilesList(listFiles.data ?? []),
+                            ),
+                          );
+                        }));
               }),
           FutureBuilder<bool>(
               future: vm.eulaNotAccepted(),
@@ -81,13 +79,13 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 
-  ListView _buildfileList() {
+  ListView _buildRecentFilesList(List<BlastFile> files) {
     var myList = ListView.builder(
-      itemCount: 100,
-      itemBuilder: (context, index) {
+      itemCount: files.length,
+      itemBuilder: (context, file) {
         return ListTile(
           leading: const Icon(Icons.article),
-          title: Text('file$index.blast on OneDrive not implemented yet'),
+          title: Text('${files[file].cloudName.toString()} - ${files[file].fileName}'),
           onTap: () async {
             await _showMyDialog();
           },

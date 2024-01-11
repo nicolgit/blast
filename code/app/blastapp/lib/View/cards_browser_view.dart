@@ -32,10 +32,11 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       child: Column(
         children: [
           AppBar(
+            automaticallyImplyLeading: false,
             title: Text(vm.currentFileService.currentFileInfo!.fileName),
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.close),
                 tooltip: 'close',
                 onPressed: () {
                   // set up the buttons

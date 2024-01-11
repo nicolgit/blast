@@ -31,6 +31,48 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         body: Center(
       child: Column(
         children: [
+          AppBar(
+            title: Text(vm.currentFileService.currentFileInfo!.fileName),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                tooltip: 'close',
+                onPressed: () {
+                  // set up the buttons
+                  Widget cancelButton = TextButton(
+                    child: const Text("Cancel"),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                    },
+                  );
+                  Widget continueButton = TextButton(
+                    child: const Text("Ok"),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                      vm.closeCommand();
+                    },
+                  );
+
+                  AlertDialog alert = AlertDialog(
+                    title: const Text("File changed"),
+                    content: const Text("Are you sure you want to close it and loose all your updates?"),
+                    actions: [
+                      cancelButton,
+                      continueButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                  //vm.closeCommand();
+                },
+              ),
+            ],
+          ),
           const Text('your cards.'),
           FutureBuilder<List<BlastCard>>(
               future: vm.getCards(),
@@ -70,7 +112,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   Text('used ${cardsList[index].usedCounter} times'),
                 ],
               ),
-              
             ],
           ),
           onTap: () {

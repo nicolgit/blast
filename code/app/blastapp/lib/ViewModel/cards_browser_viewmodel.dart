@@ -15,6 +15,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   void selectCard(BlastCard selectedCard) {
-    context.router.push( CardRoute( card: selectedCard ));
+    context.router.push(CardRoute(card: selectedCard));
+  }
+
+  void closeCommand() {
+    context.router.replaceAll([const SplashRoute()]);
   }
 }

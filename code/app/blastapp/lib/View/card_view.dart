@@ -1,4 +1,3 @@
-
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
@@ -11,7 +10,7 @@ import 'package:provider/provider.dart';
 class CardView extends StatefulWidget {
   const CardView({super.key, required this.card});
   final BlastCard card;
-  
+
   @override
   State<StatefulWidget> createState() => _CardViewState();
 }
@@ -36,6 +35,18 @@ class _CardViewState extends State<CardView> {
         body: Center(
       child: Column(
         children: [
+          AppBar(
+            title: Text(vm.currentCard.title),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                tooltip: 'Edit',
+                onPressed: () {
+                  vm.closeCommand();
+                },
+              ),
+            ],
+          ),
           const Text('title'),
           const Text('notes'),
           FutureBuilder<List<BlastAttribute>>(
@@ -58,7 +69,7 @@ class _CardViewState extends State<CardView> {
       itemBuilder: (context, index) {
         String name = cardsList[index].name;
         String value = cardsList[index].value;
-        BlastAttributeType type = BlastAttributeType.typeHeader;// cardsList[index].type;
+        BlastAttributeType type = BlastAttributeType.typeHeader; // cardsList[index].type;
 
         return ListTile(
           leading: const Icon(Icons.file_copy_outlined),

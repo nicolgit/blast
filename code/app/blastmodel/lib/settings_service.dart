@@ -93,8 +93,10 @@ class SettingService {
   }
 
   void addRecentFile(BlastFile currentFile) async {
-    recentFiles.list.add(currentFile);
-
+    recentFiles.list.insert(0, currentFile);
+    if (recentFiles.list.length > 5) {
+      recentFiles.list.removeLast();
+    }
     _saveRecentFiles();
   }
 

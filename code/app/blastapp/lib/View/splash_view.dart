@@ -85,7 +85,13 @@ class _SplashViewState extends State<SplashView> {
       itemBuilder: (context, file) {
         return ListTile(
           leading: const Icon(Icons.article),
-          title: Text('${files[file].cloudName.toString()} - ${files[file].fileName}'),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${files[file].cloudName.toString()} - ${files[file].fileName}'),
+              Text('URI:${files[file].filePath}'),
+            ],
+          ),
           onTap: () async {
             await _showMyDialog();
           },

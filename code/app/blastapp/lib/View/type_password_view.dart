@@ -36,6 +36,9 @@ class _TypePasswordViewState extends State<TypePasswordView> {
       body: Center(
           child: Column(
         children: [
+                    AppBar(
+            title: const Text("open file"),
+          ),
           const Text('type the master password to open your blast file'),
           TextField(
             obscureText: true,

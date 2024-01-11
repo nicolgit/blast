@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 class CreatePasswordViewModel extends ChangeNotifier {
@@ -9,6 +13,8 @@ class CreatePasswordViewModel extends ChangeNotifier {
 
   CreatePasswordViewModel(this.context);
 
+  String filename = '';
+  String filenameError = '';
   String password = '';
   String passwordConfirm = '';
   String passwordError = '';
@@ -20,9 +26,16 @@ class CreatePasswordViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFilename(String value) {
+    filename = value;
+    filenameError = validateFilename(value);
+    notifyListeners();
+  }
+
   void setConfirmPassword(String value) {
     passwordConfirm = value;
     passwordConfirmError = validatePassword(value);
+    filenameError = validateFilename(value);
     notifyListeners();
   }
 
@@ -39,6 +52,16 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return '';
   }
 
+  String validateFilename(String value) {
+    notifyListeners();
+
+    if (value.isEmpty) {
+      return 'Please enter a filename';
+    }
+
+    return '';
+  }
+
   Future<bool> isPasswordValid() async {
     return passwordError.isEmpty && passwordConfirmError.isEmpty;
   }
@@ -47,14 +70,27 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return password == passwordConfirm;
   }
 
-  Future<bool> isPasswordValidAndMatch() async {
-    return await isPasswordValid() && await passwordsMatch();
+  Future<bool> isFilenameValid() async {
+    return filenameError.isEmpty;
+  }
+
+  Future<bool> isFormReadyToConfirm() async {
+    return await isPasswordValid() && 
+      await passwordsMatch() &&
+      await isFilenameValid();
   }
 
   acceptPassword() {
+    final file = BlastFile(cloudName: CurrentFileService().cloud!.name, fileName: "$filename.blast", filePath: "");
+
+    CurrentFileService().currentFileInfo = file;
     CurrentFileService().password = password;
     CurrentFileService().currentFileDocument = BlastDocument();
 
+    CurrentFileService().currentFileJsonString = null;
+    CurrentFileService().currentFileEncrypted = null;
+    SettingService().addRecentFile(file);
+    
     notifyListeners();
     context.router.push(const CardsBrowserRoute());
   }

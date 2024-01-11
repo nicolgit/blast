@@ -7,8 +7,8 @@ part 'blastfile.g.dart';
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastFile {
   final String cloudName;
-  final String fileName;
-  final String filePath;
+  String fileName;
+  String filePath;
 
   BlastFile({required this.cloudName, required this.fileName, required this.filePath});
 

@@ -31,6 +31,9 @@ class _ChooseFileViewState extends State<ChooseFileView> {
         body: Center(
       child: Column(
         children: [
+          AppBar(
+            title: const Text("Choose a file"),
+          ),
           const Text('choose to create a file'),
           TextButton(
             onPressed: () {

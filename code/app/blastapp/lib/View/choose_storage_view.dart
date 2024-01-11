@@ -29,6 +29,9 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
       body: Center(
         child: Column(
           children: [
+            AppBar(
+            title: const Text("Choose Storage"),
+          ),
             FutureBuilder<List<Cloud>>(
               future: vm.supportedClouds(),
               builder: (context, cloudList) {

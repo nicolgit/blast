@@ -13,6 +13,7 @@ class CreatePasswordView extends StatefulWidget {
 
 class _CreatePasswordViewState extends State<CreatePasswordView> {
   final passwordController = TextEditingController();
+  final filenameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   @override
@@ -31,6 +32,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
     // Clean up the controller when the widget is disposed.
     passwordController.dispose();
     confirmPasswordController.dispose();
+    filenameController.dispose();
     super.dispose();
   }
 
@@ -39,15 +41,28 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
       body: Center(
           child: Column(
         children: [
-          const Text('Create a password'),
+          AppBar(
+            title: const Text("Create a new file"),
+          ),
+          const Text("choone a file name for your blast file"),
+          TextField(
+            onChanged: (value) => vm.setFilename(value),
+            controller: filenameController,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Filename',
+                hintText: 'Choose a name for your file'),
+          ),
+          Text(vm.filenameError),
+          const Text('choose a master password to protect your blast file'),
           TextField(
             obscureText: true,
             onChanged: (value) => vm.setPassword(value),
             controller: passwordController,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Password',
-                hintText: 'Enter your password'),
+                labelText: 'master password',
+                hintText: 'Choose a password for your file'),
           ),
           Text(vm.passwordError),
           TextField(
@@ -57,7 +72,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Confirm Password',
-                hintText: 'Enter your password'),
+                hintText: 'confirm password for your file'),
           ),
           Text(vm.passwordConfirmError),
           FutureBuilder<bool>(
@@ -66,9 +81,9 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
                 passwordsMatch.data ?? true ? "" : "passwords don't match"),
           ),
           FutureBuilder<bool>(
-            future: vm.isPasswordValidAndMatch(),
-            builder: (context, isPasswordValidAndMatch) => TextButton(
-              onPressed: isPasswordValidAndMatch.data ?? false
+            future: vm.isFormReadyToConfirm(),
+            builder: (context, isFormReadyToConfirm) => TextButton(
+              onPressed: isFormReadyToConfirm.data ?? true
                   ? () => vm.acceptPassword()
                   : null,
               child: const Text('confirm password'),

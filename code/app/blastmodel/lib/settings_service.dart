@@ -1,5 +1,5 @@
 import 'package:blastmodel/Cloud/cloud.dart';
-import 'package:blastmodel/Cloud/fake_cloud.dart';
+import 'package:blastmodel/Cloud/lorem_cloud.dart';
 import 'package:blastmodel/Cloud/filesystem_cloud.dart';
 import 'package:blastmodel/Cloud/onedrive_cloud.dart';
 import 'package:blastmodel/blastfile.dart';
@@ -80,7 +80,7 @@ class SettingService {
     if (cloudStorages.isNotEmpty) {
       return Future.value(cloudStorages);
     } else {
-      cloudStorages.add(FakeCloud());
+      cloudStorages.add(LoremCloud());
       cloudStorages.add(FileSystemCloud());
       cloudStorages.add(OneDriveCloud());
 

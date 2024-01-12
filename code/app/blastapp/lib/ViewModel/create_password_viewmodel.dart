@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -75,9 +73,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   Future<bool> isFormReadyToConfirm() async {
-    return await isPasswordValid() && 
-      await passwordsMatch() &&
-      await isFilenameValid();
+    return await isPasswordValid() && await passwordsMatch() && await isFilenameValid();
   }
 
   acceptPassword() {
@@ -90,7 +86,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
     CurrentFileService().currentFileJsonString = null;
     CurrentFileService().currentFileEncrypted = null;
     SettingService().addRecentFile(file);
-    
+
     notifyListeners();
     context.router.push(const CardsBrowserRoute());
   }

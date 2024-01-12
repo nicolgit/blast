@@ -11,7 +11,7 @@ import 'package:blastmodel/currentfile_service.dart';
 
 class LoremCloud extends Cloud {
   final _source =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum";
   late List<String> _words;
 
   LoremCloud() {
@@ -20,6 +20,8 @@ class LoremCloud extends Cloud {
 
   @override
   String get name => 'Lorem ipsut test Cloud';
+  @override
+  String get rootpath => 'http://loremcloud.com/';
 
   @override
   Future<List<CloudObject>> getFiles(String path) {
@@ -29,12 +31,8 @@ class LoremCloud extends Cloud {
     for (int i = 0; i < totalFiles; i++) {
       String name = _randomStringGenerator(random.nextInt(4) + 1);
       name = name.replaceAll(" ", "-");
-      name = "$name-";
 
-      int fileNameLength = random.nextInt(5) + 1;
-      for (int j = 0; j < fileNameLength; j++) {
-        name += String.fromCharCode(random.nextInt(26) + 65);
-      }
+      name += random.nextInt(1000).toString();
 
       bool isDirectory = random.nextInt(5) == 0;
       if (!isDirectory) {
@@ -46,7 +44,7 @@ class LoremCloud extends Cloud {
           path: path,
           size: random.nextInt(1000000),
           lastModified: DateTime.now().subtract(Duration(days: random.nextInt(365))),
-          url: '$path/$name',
+          url: '$path$name',
           isDirectory: isDirectory));
     }
 

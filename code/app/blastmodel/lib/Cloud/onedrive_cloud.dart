@@ -6,6 +6,9 @@ import 'package:blastmodel/Cloud/cloud_object.dart';
 class OneDriveCloud extends Cloud {
   @override
   String get name => 'OneDrive';
+  @override
+  // TODO: implement getFiles
+  String get rootpath => 'http://onedrive.com/';
 
   @override
   Future<List<CloudObject>> getFiles(String path) {

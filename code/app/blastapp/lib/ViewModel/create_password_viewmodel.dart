@@ -77,7 +77,10 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   acceptPassword() {
-    final file = BlastFile(cloudName: CurrentFileService().cloud!.name, fileName: "$filename.blast", filePath: "");
+    final file = BlastFile(
+        cloudName: CurrentFileService().cloud!.name,
+        fileName: "$filename.blast",
+        filePath: CurrentFileService().cloud!.rootpath);
 
     CurrentFileService().currentFileInfo = file;
     CurrentFileService().password = password;

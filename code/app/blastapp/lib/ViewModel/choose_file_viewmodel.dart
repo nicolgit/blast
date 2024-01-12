@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class ChooseFileViewModel extends ChangeNotifier {
   BuildContext context;
   CurrentFileService currentFileService = CurrentFileService();
-  String currentPath = "";
+  String currentPath = CurrentFileService().cloud!.rootpath;
 
   ChooseFileViewModel(this.context);
 

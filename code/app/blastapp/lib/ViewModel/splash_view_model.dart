@@ -34,8 +34,13 @@ class SplashViewModel extends ChangeNotifier {
 
   goToRecentFile(BlastFile file) async {
     CurrentFileService().reset();
+    CurrentFileService().cloud = await SettingService().getCloudStorageByName(file.cloudName);
     CurrentFileService().currentFileInfo = file;
 
+    CurrentFileService().currentFileEncrypted =
+        await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.filePath);
+
+    if (!context.mounted) return;
     return context.router.push(const TypePasswordRoute());
   }
 

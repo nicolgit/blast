@@ -29,7 +29,6 @@ class _SplashViewState extends State<SplashView> {
           child: Column(
         children: [
           const Text('Hello World!'),
-          const Text(' '),
           const Text('I am the splash screen!'),
           TextButton(
             onPressed: () {
@@ -44,7 +43,7 @@ class _SplashViewState extends State<SplashView> {
                   visible: boolEulaAccepted.data ?? false,
                   child: TextButton(
                     onPressed: () {
-                      vm.goToChooseStorage();
+                      vm.goToChooseStorage().then((value) => vm.refresh());
                     },
                     child: const Text('create or select another file'),
                   ),
@@ -60,7 +59,7 @@ class _SplashViewState extends State<SplashView> {
                         builder: (context, listFiles) {
                           return Expanded(
                             child: Container(
-                              child: _buildRecentFilesList(listFiles.data ?? []),
+                              child: _buildRecentFilesList(listFiles.data ?? [], vm),
                             ),
                           );
                         }));
@@ -79,7 +78,7 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 
-  ListView _buildRecentFilesList(List<BlastFile> files) {
+  ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
     var myList = ListView.builder(
       itemCount: files.length,
       itemBuilder: (context, file) {
@@ -89,11 +88,16 @@ class _SplashViewState extends State<SplashView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${files[file].cloudName.toString()} - ${files[file].fileName}'),
-              Text('URI:${files[file].filePath}'),
+              Row(
+                children: [
+                  const Text("URI: "),
+                  Text(files[file].filePath, style: const TextStyle(fontWeight: FontWeight.bold))
+                ],
+              ),
             ],
           ),
           onTap: () async {
-            await _showMyDialog();
+            vm.goToRecentFile(files[file]).then((value) => vm.refresh());
           },
         );
       },

@@ -48,7 +48,9 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           const Text('title'),
+          Text(vm.currentCard.title),
           const Text('notes'),
+          Text(vm.currentCard.notes),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
               builder: (context, cardsList) {
@@ -69,19 +71,16 @@ class _CardViewState extends State<CardView> {
       itemBuilder: (context, index) {
         String name = cardsList[index].name;
         String value = cardsList[index].value;
-        BlastAttributeType type = BlastAttributeType.typeHeader; // cardsList[index].type;
+        String type = cardsList[index].type.toString();
 
         return ListTile(
           leading: const Icon(Icons.file_copy_outlined),
           title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(name),
-                  Text(value),
-                  Text(type.toString()),
-                ],
-              ),
+              Text(name),
+              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(type),
             ],
           ),
         );

@@ -27,6 +27,11 @@ class SettingService {
 
   SettingService._internal() {
     // init things inside this
+
+    // init cloud storages list
+    cloudStorages.add(LoremCloud());
+    cloudStorages.add(FileSystemCloud());
+    cloudStorages.add(OneDriveCloud());
   }
 
   // Add your methods and properties here
@@ -77,15 +82,7 @@ class SettingService {
   }
 
   Future<List<Cloud>> getCloudStoragelist() {
-    if (cloudStorages.isNotEmpty) {
-      return Future.value(cloudStorages);
-    } else {
-      cloudStorages.add(LoremCloud());
-      cloudStorages.add(FileSystemCloud());
-      cloudStorages.add(OneDriveCloud());
-
-      return Future.value(cloudStorages);
-    }
+    return Future.value(cloudStorages);
   }
 
   Future<Cloud> getCloudStorageByName(String name) async {
@@ -93,7 +90,15 @@ class SettingService {
   }
 
   void addRecentFile(BlastFile currentFile) async {
+    for (var i = 0; i < recentFiles.list.length; i++) {
+      if (recentFiles.list[i].isEqualto(currentFile)) {
+        recentFiles.list.removeAt(i);
+        break;
+      }
+    }
+
     recentFiles.list.insert(0, currentFile);
+
     if (recentFiles.list.length > 5) {
       recentFiles.list.removeLast();
     }

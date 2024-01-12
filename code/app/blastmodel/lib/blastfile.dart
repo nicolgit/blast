@@ -17,6 +17,10 @@ class BlastFile {
     return jsonEncode(toJson());
   }
 
+  bool isEqualto(BlastFile other) {
+    return cloudName == other.cloudName && fileName == other.fileName && filePath == other.filePath;
+  }
+
   factory BlastFile.fromJson(Map<String, dynamic> json) => _$BlastFileFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlastFileToJson(this);

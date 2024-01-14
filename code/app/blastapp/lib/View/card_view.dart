@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
-import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,9 +47,10 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           const Text('title'),
-          Text(vm.currentCard.title),
+          Text(vm.currentCard.title, style: const TextStyle(fontWeight: FontWeight.bold)),
           const Text('notes'),
-          Text(vm.currentCard.notes),
+          Text(vm.currentCard.notes, style: const TextStyle(fontWeight: FontWeight.bold)),
+          _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
               builder: (context, cardsList) {
@@ -88,5 +88,14 @@ class _CardViewState extends State<CardView> {
     );
 
     return myList;
+  }
+
+  Row _rowOfTags(List<String> tags) {
+    return Row(
+      children: [
+        const Text('TAGS: '),
+        for (var tag in tags) Text("[$tag] "),
+      ],
+    );
   }
 }

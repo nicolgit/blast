@@ -111,6 +111,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     isFavorite ? Icons.star : Icons.star_border,
                   ),
                   Text('used ${cardsList[index].usedCounter} times'),
+                  _buildTagsRow(cardsList[index].tags),
                 ],
               ),
             ],
@@ -123,5 +124,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
 
     return myList;
+  }
+
+  Row _buildTagsRow(List<String> tags) {
+    return Row(
+      children: [
+        for (var tag in tags)
+          Container(
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.red,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+              padding: const EdgeInsets.all(1),
+              child: Text(tag)),
+      ],
+    );
   }
 }

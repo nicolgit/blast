@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
-import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
 class CardViewModel extends ChangeNotifier {

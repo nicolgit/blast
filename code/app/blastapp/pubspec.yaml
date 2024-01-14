@@ -15,6 +15,7 @@ dependencies:
     path: ./../blastmodel
   provider: ^6.0.5
   auto_route: ^7.8.4
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:

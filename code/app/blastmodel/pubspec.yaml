@@ -13,6 +13,7 @@ dependencies:
   shared_preferences: ^2.2.2
   uuid: ^4.2.2
   pointycastle: ^3.3.4
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:

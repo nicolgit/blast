@@ -21,4 +21,10 @@ class OneDriveCloud extends Cloud {
     // TODO: implement getFile
     throw UnimplementedError();
   }
+
+  @override
+  String goToParentDirectory(String currentPath) {
+    // TODO: implement goToParentDirectory
+    throw UnimplementedError();
+  }
 }

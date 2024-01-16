@@ -35,4 +35,9 @@ class ChooseFileViewModel extends ChangeNotifier {
   newFileCommand() async {
     return context.router.push(const CreatePasswordRoute());
   }
+
+  upDirectoryCommand() {
+    currentPath = currentFileService.cloud!.goToParentDirectory(currentPath);
+    notifyListeners();
+  }
 }

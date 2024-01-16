@@ -20,8 +20,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     return ChangeNotifierProvider(
       create: (context) => ChooseFileViewModel(context),
       child: Consumer<ChooseFileViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -42,6 +41,11 @@ class _ChooseFileViewState extends State<ChooseFileView> {
             child: const Text('new file'),
           ),
           const Text('or to open an existing one'),
+          TextButton(
+              child: const Text('back'),
+              onPressed: () {
+                vm.upDirectoryCommand();
+              }),
           FutureBuilder<List<CloudObject>>(
               future: vm.getFiles(),
               builder: (context, listFiles) {
@@ -64,8 +68,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
         String path = listFiles[index].path;
 
         return ListTile(
-          leading:
-              Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
+          leading: Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
           title: Row(
             children: [
               Text(path),

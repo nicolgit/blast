@@ -37,6 +37,8 @@ class LoremCloud extends Cloud {
       bool isDirectory = random.nextInt(5) == 0;
       if (!isDirectory) {
         name += ".blast";
+      } else {
+        name += "/";
       }
 
       files.add(CloudObject(
@@ -58,6 +60,28 @@ class LoremCloud extends Cloud {
 
     final encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
     return encodedFile;
+  }
+
+  @override
+  String goToParentDirectory(String currentPath) {
+    // remove string after last /
+
+    if (currentPath.endsWith("/")) {
+      currentPath = currentPath.substring(0, currentPath.length - 1);
+    }
+
+    int index = currentPath.lastIndexOf("/");
+    if (index > 0) {
+      var newPath = currentPath.substring(0, index + 1);
+
+      if (newPath.length < rootpath.length) {
+        return rootpath;
+      } else {
+        return newPath;
+      }
+    } else {
+      return currentPath;
+    }
   }
 
   BlastDocument buildRandomBlastDocument() {

@@ -32,6 +32,12 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
+  String goToParentDirectory(String currentPath) {
+    // TODO: implement goToParentDirectory
+    throw UnimplementedError();
+  }
+
+  @override
   // TODO: implement rootpath
-  String get rootpath => "c:\\";
+  String get rootpath => throw UnimplementedError();
 }

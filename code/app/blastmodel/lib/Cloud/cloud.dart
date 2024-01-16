@@ -7,4 +7,5 @@ abstract class Cloud {
 
   Future<List<CloudObject>> getFiles(String path);
   Future<Uint8List> getFile(String path);
+  String goToParentDirectory(String currentPath);
 }

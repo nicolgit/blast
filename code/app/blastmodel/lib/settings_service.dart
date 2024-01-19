@@ -86,7 +86,7 @@ class SettingService {
   }
 
   Future<Cloud> getCloudStorageByName(String name) async {
-    return cloudStorages.firstWhere((element) => element.name == name);
+    return cloudStorages.firstWhere((element) => element.ID == name);
   }
 
   void addRecentFile(BlastFile currentFile) async {

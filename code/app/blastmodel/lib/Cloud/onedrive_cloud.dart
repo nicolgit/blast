@@ -5,10 +5,12 @@ import 'package:blastmodel/Cloud/cloud_object.dart';
 
 class OneDriveCloud extends Cloud {
   @override
+  String get ID => "ONEDRIVE";
+  @override
   String get name => 'OneDrive';
   @override
   // TODO: implement getFiles
-  String get rootpath => 'http://onedrive.com/';
+  Future<String> get rootpath => Future.value('http://onedrive.com/');
 
   @override
   Future<List<CloudObject>> getFiles(String path) {
@@ -23,7 +25,7 @@ class OneDriveCloud extends Cloud {
   }
 
   @override
-  String goToParentDirectory(String currentPath) {
+  Future<String> goToParentDirectory(String currentPath) {
     // TODO: implement goToParentDirectory
     throw UnimplementedError();
   }

@@ -87,7 +87,7 @@ class _SplashViewState extends State<SplashView> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${files[file].cloudName.toString()} - ${files[file].fileName}'),
+              Text('${files[file].cloudId} - ${files[file].fileName}'),
               Row(
                 children: [
                   const Text("URI: "),
@@ -104,33 +104,5 @@ class _SplashViewState extends State<SplashView> {
     );
 
     return myList;
-  }
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('List of recent opened blast files'),
-                Text('not implemented yet'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("ok, I'll wait"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

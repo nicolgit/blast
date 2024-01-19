@@ -76,11 +76,11 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return await isPasswordValid() && await passwordsMatch() && await isFilenameValid();
   }
 
-  acceptPassword() {
+  acceptPassword() async {
     final file = BlastFile(
-        cloudName: CurrentFileService().cloud!.name,
+        cloudId: CurrentFileService().cloud!.ID,
         fileName: "$filename.blast",
-        filePath: CurrentFileService().cloud!.rootpath);
+        filePath: await CurrentFileService().cloud!.rootpath);
 
     CurrentFileService().currentFileInfo = file;
     CurrentFileService().password = password;

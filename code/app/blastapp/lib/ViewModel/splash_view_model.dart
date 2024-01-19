@@ -34,7 +34,7 @@ class SplashViewModel extends ChangeNotifier {
 
   goToRecentFile(BlastFile file) async {
     CurrentFileService().reset();
-    CurrentFileService().cloud = await SettingService().getCloudStorageByName(file.cloudName);
+    CurrentFileService().cloud = await SettingService().getCloudStorageByName(file.cloudId);
     CurrentFileService().currentFileInfo = file;
 
     CurrentFileService().currentFileEncrypted =

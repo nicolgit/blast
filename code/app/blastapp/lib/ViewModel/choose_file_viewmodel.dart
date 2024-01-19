@@ -8,21 +8,21 @@ import 'package:flutter/material.dart';
 class ChooseFileViewModel extends ChangeNotifier {
   BuildContext context;
   CurrentFileService currentFileService = CurrentFileService();
-  String currentPath = CurrentFileService().cloud!.rootpath;
+  Future<String> currentPath = CurrentFileService().cloud!.rootpath;
 
   ChooseFileViewModel(this.context);
 
   Future<List<CloudObject>>? getFiles() async {
-    return currentFileService.cloud!.getFiles(currentPath);
+    return currentFileService.cloud!.getFiles(await currentPath);
   }
 
   void selectItem(CloudObject object) async {
     if (object.isDirectory) {
-      currentPath = object.url;
+      currentPath = Future.value(object.url);
       notifyListeners();
     } else {
       currentFileService.currentFileInfo =
-          BlastFile(cloudName: currentFileService.cloud!.name, fileName: object.name, filePath: object.path);
+          BlastFile(cloudId: currentFileService.cloud!.ID, fileName: object.name, filePath: object.path);
 
       currentFileService.currentFileEncrypted =
           await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.filePath);
@@ -36,8 +36,8 @@ class ChooseFileViewModel extends ChangeNotifier {
     return context.router.push(const CreatePasswordRoute());
   }
 
-  upDirectoryCommand() {
-    currentPath = currentFileService.cloud!.goToParentDirectory(currentPath);
+  upDirectoryCommand() async {
+    currentPath = Future.value(currentFileService.cloud!.goToParentDirectory(await currentPath));
     notifyListeners();
   }
 }

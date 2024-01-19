@@ -7,13 +7,13 @@ part of 'blastfile.dart';
 // **************************************************************************
 
 BlastFile _$BlastFileFromJson(Map<String, dynamic> json) => BlastFile(
-      cloudName: json['CloudName'] as String,
+      cloudId: json['CloudId'] as String,
       fileName: json['FileName'] as String,
       filePath: json['FilePath'] as String,
     );
 
 Map<String, dynamic> _$BlastFileToJson(BlastFile instance) => <String, dynamic>{
-      'CloudName': instance.cloudName,
+      'CloudId': instance.cloudId,
       'FileName': instance.fileName,
       'FilePath': instance.filePath,
     };

@@ -19,9 +19,11 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  String get name => 'Lorem ipsut test Cloud';
+  String get ID => "LOREM";
   @override
-  String get rootpath => 'http://loremcloud.com/';
+  String get name => 'Lorem Cloud';
+  @override
+  Future<String> get rootpath => Future.value('http://loremcloud.com/');
 
   @override
   Future<List<CloudObject>> getFiles(String path) {
@@ -63,7 +65,7 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  String goToParentDirectory(String currentPath) {
+  Future<String> goToParentDirectory(String currentPath) async {
     // remove string after last /
 
     if (currentPath.endsWith("/")) {
@@ -74,7 +76,8 @@ class LoremCloud extends Cloud {
     if (index > 0) {
       var newPath = currentPath.substring(0, index + 1);
 
-      if (newPath.length < rootpath.length) {
+      String path = await rootpath;
+      if (newPath.length < path.length) {
         return rootpath;
       } else {
         return newPath;

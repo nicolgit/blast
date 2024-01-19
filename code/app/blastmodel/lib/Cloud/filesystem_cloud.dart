@@ -7,20 +7,26 @@ import 'package:path_provider/path_provider.dart';
 
 class FileSystemCloud extends Cloud {
   @override
+  String get ID => "LOCAL";
+  @override
   String get name => 'local file system';
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
-    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    //Directory appDocumentsDir = await getApplicationDocumentsDirectory();
 
     List<CloudObject> files = [];
-    files.add(CloudObject(
-        name: 'test',
-        path: appDocumentsDir.path,
-        size: 0,
-        url: appDocumentsDir.path,
-        lastModified: DateTime.now(),
-        isDirectory: true));
+
+    var localFiles = Directory(path).listSync();
+    for (var f in localFiles) {
+      files.add(CloudObject(
+          name: f.path.split("\\").last,
+          path: f.parent.path,
+          size: f.statSync().size,
+          url: f.path,
+          lastModified: DateTime.now(),
+          isDirectory: f.statSync().type == FileSystemEntityType.directory));
+    }
 
     return files;
   }
@@ -32,12 +38,27 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  String goToParentDirectory(String currentPath) {
-    // TODO: implement goToParentDirectory
-    throw UnimplementedError();
+  Future<String> goToParentDirectory(String currentPath) async {
+    // remove string after last \
+    if (currentPath.endsWith("\\")) {
+      currentPath = currentPath.substring(0, currentPath.length - 1);
+    }
+
+    int index = currentPath.lastIndexOf("\\");
+    if (index > 0) {
+      var newPath = currentPath.substring(0, index + 1);
+
+      String path = await rootpath;
+      if (newPath.length < path.length) {
+        return rootpath;
+      } else {
+        return newPath;
+      }
+    } else {
+      return currentPath;
+    }
   }
 
   @override
-  // TODO: implement rootpath
-  String get rootpath => throw UnimplementedError();
+  Future<String> get rootpath async => (await getApplicationDocumentsDirectory()).path;
 }

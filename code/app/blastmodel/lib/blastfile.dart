@@ -6,11 +6,11 @@ part 'blastfile.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastFile {
-  final String cloudName;
+  final String cloudId;
   String fileName;
   String filePath;
 
-  BlastFile({required this.cloudName, required this.fileName, required this.filePath});
+  BlastFile({required this.cloudId, required this.fileName, required this.filePath});
 
   @override
   String toString() {
@@ -18,7 +18,7 @@ class BlastFile {
   }
 
   bool isEqualto(BlastFile other) {
-    return cloudName == other.cloudName && fileName == other.fileName && filePath == other.filePath;
+    return cloudId == other.cloudId && fileName == other.fileName && filePath == other.filePath;
   }
 
   factory BlastFile.fromJson(Map<String, dynamic> json) => _$BlastFileFromJson(json);

@@ -71,9 +71,13 @@ class _ChooseFileViewState extends State<ChooseFileView> {
           leading: Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
           title: Row(
             children: [
-              Text(path),
-              const SizedBox(width: 12),
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(path),
+                ],
+              ),
             ],
           ),
           onTap: () {

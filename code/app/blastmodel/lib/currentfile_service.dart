@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:blastmodel/exceptions.dart';
 import 'package:pointycastle/export.dart';
 
@@ -140,12 +141,16 @@ class CurrentFileService {
 
   void _addIntegerToBytesBuilder(BytesBuilder buffer, int value) {
     var byteData = ByteData(4); // Create byte data with space for a 32-bit integer
-    byteData.setInt32(0, value); // Set the integer
+
+    byteData.setInt32(0, value, Endian.little); // Set the integer
     buffer.add(byteData.buffer.asUint8List()); // Add the byte data to the buffer
   }
 
   int _readIntegerFromUint8List(Uint8List data) {
     var byteData = ByteData.view(data.buffer);
-    return byteData.getInt32(0); // Read a 32-bit integer from the start of the data
+
+    int value = byteData.getInt32(0, Endian.little);
+
+    return value; // Read a 32-bit integer from the start of the data
   }
 }

@@ -132,7 +132,12 @@ namespace Blast.Model.DataFile
             outputWriter.Write(iterations);
             outputWriter.Write(algorithm.IV);
 
-            var encryptedString = encryptString(algorithm, LOREM_TEXT);
+            String textToEncrypt = LOREM_TEXT + FileReadable;
+            var encryptedString = encryptString(algorithm, textToEncrypt);
+            outputWriter.Write(encryptedString);
+            
+            /*
+            var encryptedString = encryptString(algorithm, LOREM_TEXT) ;
 
             outputWriter.Write(encryptedString.Length);
             outputWriter.Write(encryptedString);
@@ -152,6 +157,7 @@ namespace Blast.Model.DataFile
                     outputWriter.Write(encryptedString);
                 }
             }
+            */
 
             outputWriter.Close();
             this.FileEncrypted = outputStream.ToArray();

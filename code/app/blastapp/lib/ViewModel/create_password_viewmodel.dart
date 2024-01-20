@@ -80,7 +80,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
     final file = BlastFile(
         cloudId: CurrentFileService().cloud!.ID,
         fileName: "$filename.blast",
-        filePath: await CurrentFileService().cloud!.rootpath);
+        fileUrl: "${await CurrentFileService().cloud!.rootpath}$filename.blast");
 
     CurrentFileService().currentFileInfo = file;
     CurrentFileService().password = password;

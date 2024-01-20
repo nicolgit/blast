@@ -13,8 +13,6 @@ class FileSystemCloud extends Cloud {
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
-    //Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-
     List<CloudObject> files = [];
 
     var localFiles = Directory(path).listSync();
@@ -32,9 +30,9 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  Future<Uint8List> getFile(String path) {
-    // TODO: implement getFile
-    throw UnimplementedError();
+  Future<Uint8List> getFile(String path) async {
+    final file = File(path);
+    return await file.readAsBytes();
   }
 
   @override

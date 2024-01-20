@@ -91,7 +91,7 @@ class _SplashViewState extends State<SplashView> {
               Row(
                 children: [
                   const Text("URI: "),
-                  Text(files[file].filePath, style: const TextStyle(fontWeight: FontWeight.bold))
+                  Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold))
                 ],
               ),
             ],

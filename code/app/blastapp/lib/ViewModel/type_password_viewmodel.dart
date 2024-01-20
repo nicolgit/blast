@@ -41,6 +41,14 @@ class TypePasswordViewModel extends ChangeNotifier {
       errorMessage = 'wrong password - please check again';
       notifyListeners();
       return;
+    } on BlastUnknownFileVersionException {
+      errorMessage = 'unknown file version - unable to open your file';
+      notifyListeners();
+      return;
+    } on FormatException {
+      errorMessage = 'unknown file format - unable to open your file';
+      notifyListeners();
+      return;
     } catch (e) {
       errorMessage = 'sorry - unable to open your file';
       notifyListeners();

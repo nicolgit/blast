@@ -8,9 +8,9 @@ part 'blastfile.g.dart';
 class BlastFile {
   final String cloudId;
   String fileName;
-  String filePath;
+  String fileUrl;
 
-  BlastFile({required this.cloudId, required this.fileName, required this.filePath});
+  BlastFile({required this.cloudId, required this.fileName, required this.fileUrl});
 
   @override
   String toString() {
@@ -18,7 +18,7 @@ class BlastFile {
   }
 
   bool isEqualto(BlastFile other) {
-    return cloudId == other.cloudId && fileName == other.fileName && filePath == other.filePath;
+    return cloudId == other.cloudId && fileName == other.fileName && fileUrl == other.fileUrl;
   }
 
   factory BlastFile.fromJson(Map<String, dynamic> json) => _$BlastFileFromJson(json);

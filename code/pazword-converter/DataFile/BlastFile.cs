@@ -107,19 +107,48 @@ namespace Blast.Model.DataFile
 
             // Create a random salt.
             var salt = new byte[8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(salt);
-            }
+            //using (var rng = RandomNumberGenerator.Create())
+            //{
+            //    rng.GetBytes(salt);
+            //}
+
+            salt[0] = 0x00;
+            salt[1] = 0x01;
+            salt[2] = 0x02;
+            salt[3] = 0x03;
+            salt[4] = 0x04;
+            salt[5] = 0x05;
+            salt[6] = 0x06;
+            salt[7] = 0x07;
+
+            byte[] IV = new byte[16];
+            IV[0] = 0x00;
+            IV[1] = 0x01;
+            IV[2] = 0x02;
+            IV[3] = 0x03;
+            IV[4] = 0x04;
+            IV[5] = 0x05;
+            IV[6] = 0x06;
+            IV[7] = 0x07;
+            IV[8] = 0x08;
+            IV[9] = 0x09;
+            IV[10] = 0x0A;
+            IV[11] = 0x0B;
+            IV[12] = 0x0C;
+            IV[13] = 0x0D;
+            IV[14] = 0x0E;
+            IV[15] = 0x0F;
 
             // Generate Key and IV
             int iterations = 1000;
             var k1 = new Rfc2898DeriveBytes(this.Password, salt, iterations, HashAlgorithmName.SHA256);
             
             var algorithm = Aes.Create();
-            algorithm.Key = k1.GetBytes(16);
-            algorithm.GenerateIV();
+            algorithm.Key = k1.GetBytes(32); // 32 * 8 = 256 bit key > AES256
+            //algorithm.GenerateIV();
+            algorithm.IV = IV;
             algorithm.Mode = CipherMode.CBC;
+            algorithm.Padding = PaddingMode.PKCS7;
 
             System.IO.MemoryStream outputStream = new System.IO.MemoryStream();
             System.IO.BinaryWriter outputWriter = new System.IO.BinaryWriter(outputStream, System.Text.Encoding.UTF8);
@@ -132,7 +161,8 @@ namespace Blast.Model.DataFile
             outputWriter.Write(iterations);
             outputWriter.Write(algorithm.IV);
 
-            String textToEncrypt = LOREM_TEXT + FileReadable;
+            //String textToEncrypt = LOREM_TEXT + FileReadable;
+            String textToEncrypt = FileReadable;
             var encryptedString = encryptString(algorithm, textToEncrypt);
             outputWriter.Write(encryptedString);
             

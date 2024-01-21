@@ -50,7 +50,7 @@ class TypePasswordViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     } catch (e) {
-      errorMessage = 'sorry - unable to open your file';
+      errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
       notifyListeners();
       return;
     }

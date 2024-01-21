@@ -37,7 +37,17 @@ class PazwordConverterApp
             
 
             Console.WriteLine("Enter password:");
-            var password = Console.ReadLine();
+            //var password = Console.ReadLine();
+            var password = string.Empty;
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                    break;
+                password += key.KeyChar;
+                Console.Write("*");
+            }
+
             if (password == null) 
                 {
                     Console.WriteLine("Password cannot be null");

@@ -8,8 +8,8 @@ part of 'blastcard.dart';
 
 BlastCard _$BlastCardFromJson(Map<String, dynamic> json) => BlastCard()
   ..id = json['Id'] as String
-  ..title = json['Title'] as String
-  ..notes = json['Notes'] as String
+  ..title = json['Title'] as String?
+  ..notes = json['Notes'] as String?
   ..isFavorite = json['IsFavorite'] as bool
   ..lastUpdateDateTime = DateTime.parse(json['LastUpdateDateTime'] as String)
   ..lastOpenedDateTime = DateTime.parse(json['LastOpenedDateTime'] as String)

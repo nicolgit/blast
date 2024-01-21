@@ -35,7 +35,7 @@ class _CardViewState extends State<CardView> {
       child: Column(
         children: [
           AppBar(
-            title: Text(vm.currentCard.title),
+            title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
@@ -47,9 +47,11 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           const Text('title'),
-          Text(vm.currentCard.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           const Text('notes'),
-          Text(vm.currentCard.notes, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(vm.currentCard.notes != null ? vm.currentCard.notes! : "",
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),

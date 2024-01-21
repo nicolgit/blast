@@ -7,12 +7,10 @@ part of 'blastattribute.dart';
 // **************************************************************************
 
 BlastAttribute _$BlastAttributeFromJson(Map<String, dynamic> json) =>
-    BlastAttribute(
-      type: $enumDecodeNullable(_$BlastAttributeTypeEnumMap, json['Type']) ??
-          BlastAttributeType.typeString,
-    )
+    BlastAttribute()
       ..name = json['Name'] as String
-      ..value = json['Value'] as String;
+      ..value = json['Value'] as String
+      ..type = $enumDecode(_$BlastAttributeTypeEnumMap, json['Type']);
 
 Map<String, dynamic> _$BlastAttributeToJson(BlastAttribute instance) =>
     <String, dynamic>{

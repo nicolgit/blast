@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:json_annotation/json_annotation.dart';
 

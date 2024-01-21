@@ -10,8 +10,13 @@ class BlastCard {
   BlastCard();
 
   String id = const Uuid().v4();
-  String title = "";
-  String notes = "";
+
+  @JsonKey(includeIfNull: true)
+  String? title = "";
+
+  @JsonKey(includeIfNull: true)
+  String? notes = "";
+
   bool isFavorite = false;
   late DateTime lastUpdateDateTime = DateTime.now();
   late DateTime lastOpenedDateTime = DateTime.now();
@@ -57,8 +62,7 @@ class BlastCard {
   }
   */
 
-  factory BlastCard.fromJson(Map<String, dynamic> json) =>
-      _$BlastCardFromJson(json);
+  factory BlastCard.fromJson(Map<String, dynamic> json) => _$BlastCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlastCardToJson(this);
 

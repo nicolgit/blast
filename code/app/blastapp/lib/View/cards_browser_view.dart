@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastmodel/blastcard.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +92,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     var myList = ListView.builder(
       itemCount: cardsList.length,
       itemBuilder: (context, index) {
-        String name = cardsList[index].title;
+        String name = cardsList[index].title != null ? cardsList[index].title! : '';
         bool isFavorite = cardsList[index].isFavorite;
 
         return ListTile(

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,19 +74,85 @@ class _CardViewState extends State<CardView> {
       itemBuilder: (context, index) {
         String name = cardsList[index].name;
         String value = cardsList[index].value;
-        String type = cardsList[index].type.toString();
+        final type = cardsList[index].type;
 
-        return ListTile(
-          leading: const Icon(Icons.file_copy_outlined),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(type),
-            ],
-          ),
-        );
+        switch (type) {
+          case BlastAttributeType.typeHeader:
+            return ListTile(
+              leading: const Icon(Icons.file_copy_outlined),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            );
+          case BlastAttributeType.typePassword:
+            return ListTile(
+              leading: const Icon(Icons.file_copy_outlined),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name),
+                  const Text("***********", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(children: [
+                    TextButton(
+                        onPressed: () {
+                          vm.copyToClipboard(value);
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("secret copied to clipboard!"),
+                          ));
+                        },
+                        child: const Text("copy to clipboard")),
+                    TextButton(
+                        onPressed: () {
+                          vm.copyToClipboard(value);
+                        },
+                        child: const Text("show/hide not working yet")),
+                  ]),
+                ],
+              ),
+            );
+          case BlastAttributeType.typeURL:
+            return ListTile(
+              leading: const Icon(Icons.web_asset),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name),
+                  Text(value,
+                      style: const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                  Row(children: [
+                    TextButton(
+                        onPressed: () {
+                          vm.copyToClipboard(value);
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("secret copied to clipboard!"),
+                          ));
+                        },
+                        child: const Text("copy to clipboard")),
+                    TextButton(
+                        onPressed: () {
+                          vm.copyToClipboard(value);
+                        },
+                        child: const Text("open in browser - not working yet")),
+                  ]),
+                ],
+              ),
+            );
+          case BlastAttributeType.typeString:
+          default:
+            return ListTile(
+              leading: const Icon(Icons.file_copy_outlined),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name),
+                  Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            );
+        }
       },
     );
 

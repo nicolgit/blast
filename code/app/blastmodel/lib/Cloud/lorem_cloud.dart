@@ -19,7 +19,7 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  String get ID => "LOREM";
+  String get id => "LOREM";
   @override
   String get name => 'Lorem Cloud';
   @override

@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 class FileSystemCloud extends Cloud {
   @override
-  String get ID => "LOCAL";
+  String get id => "LOCAL";
   @override
   String get name => 'local file system';
 

@@ -135,7 +135,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   border: Border.all(
                     color: Colors.red,
                   ),
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+                  borderRadius: const BorderRadius.all(Radius.circular(6))),
               padding: const EdgeInsets.all(1),
               child: Text(tag)),
       ],

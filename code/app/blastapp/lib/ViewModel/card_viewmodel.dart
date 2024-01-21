@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -15,5 +16,9 @@ class CardViewModel extends ChangeNotifier {
 
   void closeCommand() {
     context.router.pop();
+  }
+
+  void copyToClipboard(String value) async {
+    await Clipboard.setData(ClipboardData(text: value));
   }
 }

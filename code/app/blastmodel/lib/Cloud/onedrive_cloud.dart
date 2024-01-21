@@ -5,7 +5,7 @@ import 'package:blastmodel/Cloud/cloud_object.dart';
 
 class OneDriveCloud extends Cloud {
   @override
-  String get ID => "ONEDRIVE";
+  String get id => "ONEDRIVE";
   @override
   String get name => 'OneDrive';
   @override

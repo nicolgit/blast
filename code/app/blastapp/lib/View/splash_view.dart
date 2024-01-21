@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_view_model.dart';
+import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,11 @@ class _SplashViewState extends State<SplashView> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${files[file].cloudId} - ${files[file].fileName}'),
+              FutureBuilder<Cloud>(
+                  future: vm.getCloudStorageById(files[file].cloudId),
+                  builder: (context, cloud) {
+                    return Text('${cloud.data?.name} - ${files[file].fileName}');
+                  }),
               Row(
                 children: [
                   const Text("URI: "),

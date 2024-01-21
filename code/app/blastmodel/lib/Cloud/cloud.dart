@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 
 abstract class Cloud {
-  String get ID;
+  String get id;
   String get name;
   Future<String> get rootpath;
 

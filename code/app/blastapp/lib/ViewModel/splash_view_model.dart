@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
@@ -24,6 +25,10 @@ class SplashViewModel extends ChangeNotifier {
     return SettingService().getRecentFiles();
   }
 
+  Future<Cloud> getCloudStorageById(String id) async {
+    return await SettingService().getCloudStorageById(id);
+  }
+
   showEula() async {
     return context.router.push(const EulaRoute());
   }
@@ -34,7 +39,7 @@ class SplashViewModel extends ChangeNotifier {
 
   goToRecentFile(BlastFile file) async {
     CurrentFileService().reset();
-    CurrentFileService().cloud = await SettingService().getCloudStorageByName(file.cloudId);
+    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
     CurrentFileService().currentFileInfo = file;
 
     CurrentFileService().currentFileEncrypted =

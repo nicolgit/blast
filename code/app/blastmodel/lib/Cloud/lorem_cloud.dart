@@ -146,4 +146,9 @@ class LoremCloud extends Cloud {
 
     return result;
   }
+
+  @override
+  Future<bool> setFile(String path, Uint8List bytes) {
+    return Future.value(true);
+  }
 }

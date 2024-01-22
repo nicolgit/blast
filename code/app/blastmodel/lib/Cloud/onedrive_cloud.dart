@@ -29,4 +29,10 @@ class OneDriveCloud extends Cloud {
     // TODO: implement goToParentDirectory
     throw UnimplementedError();
   }
+
+  @override
+  Future<bool> setFile(String path, Uint8List bytes) {
+    // TODO: implement setFile
+    throw UnimplementedError();
+  }
 }

@@ -12,6 +12,9 @@ class FileSystemCloud extends Cloud {
   String get name => 'local file system';
 
   @override
+  Future<String> get rootpath async => "${(await getApplicationDocumentsDirectory()).path}\\";
+
+  @override
   Future<List<CloudObject>> getFiles(String path) async {
     List<CloudObject> files = [];
 
@@ -36,6 +39,14 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
+  Future<bool> setFile(String path, Uint8List bytes) async {
+    final file = File(path);
+    await file.writeAsBytes(bytes);
+
+    return Future.value(true);
+  }
+
+  @override
   Future<String> goToParentDirectory(String currentPath) async {
     // remove string after last \
     if (currentPath.endsWith("\\")) {
@@ -56,7 +67,4 @@ class FileSystemCloud extends Cloud {
       return currentPath;
     }
   }
-
-  @override
-  Future<String> get rootpath async => (await getApplicationDocumentsDirectory()).path;
 }

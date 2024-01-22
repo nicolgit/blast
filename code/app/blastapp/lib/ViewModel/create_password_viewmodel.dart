@@ -77,6 +77,10 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   acceptPassword() async {
+    if (filename.endsWith(".blast")) {
+      filename = filename.substring(0, filename.length - 6);
+    }
+
     final file = BlastFile(
         cloudId: CurrentFileService().cloud!.id,
         fileName: "$filename.blast",
@@ -86,8 +90,13 @@ class CreatePasswordViewModel extends ChangeNotifier {
     CurrentFileService().password = password;
     CurrentFileService().currentFileDocument = BlastDocument();
 
-    CurrentFileService().currentFileJsonString = null;
-    CurrentFileService().currentFileEncrypted = null;
+    //CurrentFileService().cloud!.setFile(file.fileUrl, )
+
+    CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
+    CurrentFileService().currentFileEncrypted =
+        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!, password);
+    CurrentFileService().cloud!.setFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+
     SettingService().addRecentFile(file);
 
     notifyListeners();

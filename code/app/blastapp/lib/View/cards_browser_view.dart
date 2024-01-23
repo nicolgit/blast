@@ -73,6 +73,17 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
             ],
           ),
+          Ink(
+            decoration: const ShapeDecoration(
+              color: Colors.lightBlue,
+              shape: CircleBorder(),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.search),
+              color: Colors.white,
+              onPressed: () {},
+            ),
+          ),
           const Text('your cards.'),
           FutureBuilder<List<BlastCard>>(
               future: vm.getCards(),

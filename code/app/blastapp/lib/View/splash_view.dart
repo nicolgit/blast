@@ -89,10 +89,15 @@ class _SplashViewState extends State<SplashView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder<Cloud>(
-                  future: vm.getCloudStorageById(files[file].cloudId),
-                  builder: (context, cloud) {
-                    return Text('${cloud.data?.name} - ${files[file].fileName}');
-                  }),
+                future: vm.getCloudStorageById(files[file].cloudId),
+                builder: (context, cloud) {
+                  return Row(children: [
+                    Text(cloud.data?.name ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const Text(" -"),
+                    Text(files[file].fileName),
+                  ]);
+                },
+              ),
               Row(
                 children: [
                   const Text("URI: "),

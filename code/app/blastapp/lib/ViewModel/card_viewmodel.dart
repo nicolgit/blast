@@ -3,6 +3,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -32,5 +33,21 @@ class CardViewModel extends ChangeNotifier {
 
   bool isPasswordRowVisible(int row) {
     return showPasswordRow[row];
+  }
+
+  Future openUrl(String urlString) async {
+    if (urlString.substring(0, 5).toLowerCase() != 'http://' &&
+        urlString.substring(0, 6).toLowerCase() != 'https://' &&
+        urlString.substring(0, 7).toLowerCase() != 'mailto:') {
+      urlString = 'https://$urlString';
+    }
+
+    final url = Uri.parse(urlString);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

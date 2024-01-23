@@ -48,11 +48,14 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           const Text('title'),
-          Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          const Text('notes'),
-          Text(vm.currentCard.notes != null ? vm.currentCard.notes! : "",
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Icon(vm.currentCard.isFavorite ? Icons.star : Icons.star_border)
+            ],
+          ),
           _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
@@ -79,7 +82,6 @@ class _CardViewState extends State<CardView> {
         switch (type) {
           case BlastAttributeType.typeHeader:
             return ListTile(
-              leading: const Icon(Icons.file_copy_outlined),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -89,54 +91,62 @@ class _CardViewState extends State<CardView> {
             );
           case BlastAttributeType.typePassword:
             return ListTile(
-              leading: const Icon(Icons.file_copy_outlined),
-              title: Column(
+              leading: const Icon(Icons.lock),
+              title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name),
+                  const Text(": "),
                   Text(vm.isPasswordRowVisible(index) ? value : "***********",
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
                   Row(children: [
-                    TextButton(
-                        onPressed: () {
-                          vm.copyToClipboard(value);
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text("secret copied to clipboard!"),
-                          ));
-                        },
-                        child: const Text("copy to clipboard")),
-                    TextButton(
-                        onPressed: () {
-                          vm.toggleShowPassword(index);
-                        },
-                        child: const Text("show/hide")),
+                    IconButton(
+                      onPressed: () {
+                        vm.copyToClipboard(value);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("secret copied to clipboard!"),
+                        ));
+                      },
+                      icon: const Icon(Icons.copy),
+                      tooltip: 'copy to clipboard',
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        vm.toggleShowPassword(index);
+                      },
+                      icon: const Icon(Icons.visibility_off),
+                      tooltip: 'show/hide',
+                    ),
                   ]),
                 ],
               ),
             );
           case BlastAttributeType.typeURL:
             return ListTile(
-              leading: const Icon(Icons.web_asset),
-              title: Column(
+              leading: const Icon(Icons.link),
+              title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name),
-                  Text(value,
-                      style: const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                  const Text(": "),
+                  TextButton(
+                    onPressed: () {
+                      vm.openUrl(value);
+                    },
+                    child: Text(value,
+                        style: const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                  ),
                   Row(children: [
-                    TextButton(
-                        onPressed: () {
-                          vm.copyToClipboard(value);
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text("secret copied to clipboard!"),
-                          ));
-                        },
-                        child: const Text("copy to clipboard")),
-                    TextButton(
-                        onPressed: () {
-                          vm.copyToClipboard(value);
-                        },
-                        child: const Text("open in browser - not working yet")),
+                    IconButton(
+                      onPressed: () {
+                        vm.copyToClipboard(value);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("copied to clipboard!"),
+                        ));
+                      },
+                      icon: const Icon(Icons.copy),
+                      tooltip: 'copy to clipboard',
+                    ),
                   ]),
                 ],
               ),
@@ -144,12 +154,23 @@ class _CardViewState extends State<CardView> {
           case BlastAttributeType.typeString:
           default:
             return ListTile(
-              leading: const Icon(Icons.file_copy_outlined),
-              title: Column(
+              leading: const Icon(Icons.description),
+              title: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name),
+                  const Text(": "),
                   Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  IconButton(
+                    onPressed: () {
+                      vm.copyToClipboard(value);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("copied to clipboard!"),
+                      ));
+                    },
+                    icon: const Icon(Icons.copy),
+                    tooltip: 'copy to clipboard',
+                  ),
                 ],
               ),
             );
@@ -162,9 +183,18 @@ class _CardViewState extends State<CardView> {
 
   Row _rowOfTags(List<String> tags) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('TAGS: '),
-        for (var tag in tags) Text("[$tag] "),
+        for (var tag in tags) // Text("[$tag] "),
+          Container(
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.red,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(6))),
+              padding: const EdgeInsets.all(1),
+              child: Text(tag)),
       ],
     );
   }

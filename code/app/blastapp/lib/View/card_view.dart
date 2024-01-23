@@ -94,7 +94,8 @@ class _CardViewState extends State<CardView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name),
-                  const Text("***********", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(vm.isPasswordRowVisible(index) ? value : "***********",
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                   Row(children: [
                     TextButton(
                         onPressed: () {
@@ -106,9 +107,9 @@ class _CardViewState extends State<CardView> {
                         child: const Text("copy to clipboard")),
                     TextButton(
                         onPressed: () {
-                          vm.copyToClipboard(value);
+                          vm.toggleShowPassword(index);
                         },
-                        child: const Text("show/hide not working yet")),
+                        child: const Text("show/hide")),
                   ]),
                 ],
               ),

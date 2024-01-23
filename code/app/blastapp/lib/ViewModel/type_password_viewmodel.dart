@@ -13,6 +13,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   TypePasswordViewModel(this.context);
 
+  String get fileName => CurrentFileService().currentFileInfo!.fileName;
   String password = '';
   String errorMessage = '';
 

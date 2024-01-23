@@ -7,8 +7,11 @@ import 'package:flutter/services.dart';
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
   final BlastCard currentCard;
+  List<bool> showPasswordRow = [];
 
-  CardViewModel(this.context, this.currentCard);
+  CardViewModel(this.context, this.currentCard) {
+    showPasswordRow = List.filled(currentCard.rows.length, false);
+  }
 
   Future<List<BlastAttribute>> getRows() async {
     return currentCard.rows;
@@ -20,5 +23,14 @@ class CardViewModel extends ChangeNotifier {
 
   void copyToClipboard(String value) async {
     await Clipboard.setData(ClipboardData(text: value));
+  }
+
+  void toggleShowPassword(int row) {
+    showPasswordRow[row] = !showPasswordRow[row];
+    notifyListeners();
+  }
+
+  bool isPasswordRowVisible(int row) {
+    return showPasswordRow[row];
   }
 }

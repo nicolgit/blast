@@ -12,7 +12,7 @@ class FileSystemCloud extends Cloud {
   String get name => 'local file system';
 
   @override
-  Future<String> get rootpath async => "${(await getApplicationDocumentsDirectory()).path}\\";
+  Future<String> get rootpath async => "${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}";
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
@@ -21,7 +21,7 @@ class FileSystemCloud extends Cloud {
     var localFiles = Directory(path).listSync();
     for (var f in localFiles) {
       files.add(CloudObject(
-          name: f.path.split("\\").last,
+          name: f.path.split(Platform.pathSeparator).last,
           path: f.parent.path,
           size: f.statSync().size,
           url: f.path,
@@ -49,11 +49,11 @@ class FileSystemCloud extends Cloud {
   @override
   Future<String> goToParentDirectory(String currentPath) async {
     // remove string after last \
-    if (currentPath.endsWith("\\")) {
+    if (currentPath.endsWith(Platform.pathSeparator)) {
       currentPath = currentPath.substring(0, currentPath.length - 1);
     }
 
-    int index = currentPath.lastIndexOf("\\");
+    int index = currentPath.lastIndexOf(Platform.pathSeparator);
     if (index > 0) {
       var newPath = currentPath.substring(0, index + 1);
 

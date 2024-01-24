@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
@@ -80,8 +82,9 @@ class _ChooseFileViewState extends State<ChooseFileView> {
               ),
             ],
           ),
-          onTap: () {
-            vm.selectItem(listFiles[index]);
+          onTap: () async {
+            await vm.selectItem(listFiles[index]).catchError((e) => ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text("unable to open selected file, Error: ${e.toString()}"))));
           },
         );
       },

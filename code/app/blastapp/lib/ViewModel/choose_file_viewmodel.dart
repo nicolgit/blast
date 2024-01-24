@@ -16,7 +16,7 @@ class ChooseFileViewModel extends ChangeNotifier {
     return currentFileService.cloud!.getFiles(await currentPath);
   }
 
-  void selectItem(CloudObject object) async {
+  Future selectItem(CloudObject object) async {
     if (object.isDirectory) {
       currentPath = Future.value(object.url);
       notifyListeners();

@@ -107,7 +107,10 @@ class _SplashViewState extends State<SplashView> {
             ],
           ),
           onTap: () async {
-            vm.goToRecentFile(files[file]).then((value) => vm.refresh());
+            await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("Unable to open selected file, error: $error")));
+            });
           },
         );
       },

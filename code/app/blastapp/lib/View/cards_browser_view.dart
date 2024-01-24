@@ -25,78 +25,87 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
+  int _selectedIndex = 1;
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: "Search",
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello2")
+          ],
+          currentIndex: _selectedIndex, //New
+          onTap: _onItemTapped,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         body: Center(
-      child: Column(
-        children: [
-          AppBar(
-            automaticallyImplyLeading: false,
-            title: Text(vm.currentFileService.currentFileInfo!.fileName),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'close',
-                onPressed: () {
-                  // set up the buttons
-                  Widget cancelButton = TextButton(
-                    child: const Text("Cancel"),
+          child: Column(
+            children: [
+              AppBar(
+                automaticallyImplyLeading: false,
+                title: Text(vm.currentFileService.currentFileInfo!.fileName),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: 'close',
                     onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                    },
-                  );
-                  Widget continueButton = TextButton(
-                    child: const Text("Ok"),
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                      vm.closeCommand();
-                    },
-                  );
+                      // set up the buttons
+                      Widget cancelButton = TextButton(
+                        child: const Text("Cancel"),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                        },
+                      );
+                      Widget continueButton = TextButton(
+                        child: const Text("Ok"),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                          vm.closeCommand();
+                        },
+                      );
 
-                  AlertDialog alert = AlertDialog(
-                    title: const Text("File changed"),
-                    content: const Text("Are you sure you want to close it and loose all your updates?"),
-                    actions: [
-                      cancelButton,
-                      continueButton,
-                    ],
-                  );
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return alert;
+                      AlertDialog alert = AlertDialog(
+                        title: const Text("File changed"),
+                        content: const Text("Are you sure you want to close it and loose all your updates?"),
+                        actions: [
+                          cancelButton,
+                          continueButton,
+                        ],
+                      );
+                      // show the dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      );
+                      //vm.closeCommand();
                     },
-                  );
-                  //vm.closeCommand();
-                },
+                  ),
+                ],
               ),
+              const Text('your cards.'),
+              FutureBuilder<List<BlastCard>>(
+                  future: vm.getCards(),
+                  builder: (context, cardsList) {
+                    return Expanded(
+                      child: Container(
+                        child: _buildFileList(cardsList.data ?? [], vm),
+                      ),
+                    );
+                  }),
             ],
           ),
-          Ink(
-            decoration: const ShapeDecoration(
-              color: Colors.lightBlue,
-              shape: CircleBorder(),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.search),
-              color: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-          const Text('your cards.'),
-          FutureBuilder<List<BlastCard>>(
-              future: vm.getCards(),
-              builder: (context, cardsList) {
-                return Expanded(
-                  child: Container(
-                    child: _buildFileList(cardsList.data ?? [], vm),
-                  ),
-                );
-              }),
-        ],
-      ),
-    ));
+        ));
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   ListView _buildFileList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {

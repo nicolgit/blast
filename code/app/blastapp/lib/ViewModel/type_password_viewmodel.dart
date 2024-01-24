@@ -47,7 +47,7 @@ class TypePasswordViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     } on FormatException {
-      errorMessage = 'unknown file format - unable to open your file';
+      errorMessage = 'file format exception - unable to open your file';
       notifyListeners();
       return;
     } catch (e) {

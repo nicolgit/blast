@@ -12,6 +12,8 @@ class CardsBrowserView extends StatefulWidget {
   State<StatefulWidget> createState() => _CardBrowserViewState();
 }
 
+enum Calendar { day, week, month, year }
+
 class _CardBrowserViewState extends State<CardsBrowserView> {
   _CardBrowserViewState();
 
@@ -38,7 +40,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello2")
           ],
           currentIndex: _selectedIndex, //New
-          onTap: _onItemTapped,
+          onTap: (i) => _onItemTapped(i, context),
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         body: Center(
@@ -102,9 +104,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ));
   }
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index, BuildContext context) {
     setState(() {
       _selectedIndex = index;
+
+      if (index == 1) {
+        _showModalBottomSheet(context);
+      }
     });
   }
 
@@ -159,6 +165,44 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               padding: const EdgeInsets.all(1),
               child: Text(tag)),
       ],
+    );
+  }
+
+  Calendar calendarView = Calendar.day;
+  void _showModalBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Search',
+              ),
+            ),
+            SegmentedButton<Calendar>(
+              segments: const <ButtonSegment<Calendar>>[
+                ButtonSegment<Calendar>(value: Calendar.day, label: Text('Day'), icon: Icon(Icons.calendar_view_day)),
+                ButtonSegment<Calendar>(
+                    value: Calendar.week, label: Text('Week'), icon: Icon(Icons.calendar_view_week)),
+                ButtonSegment<Calendar>(
+                    value: Calendar.month, label: Text('Month'), icon: Icon(Icons.calendar_view_month)),
+                ButtonSegment<Calendar>(value: Calendar.year, label: Text('Year'), icon: Icon(Icons.calendar_today)),
+              ],
+              selected: <Calendar>{calendarView},
+              onSelectionChanged: (Set<Calendar> newSelection) {
+                setState(() {
+                  // By default there is only a single segment that can be
+                  // selected at one time, so its value is always the first
+                  // item in the selected set.
+                  calendarView = newSelection.first;
+                });
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

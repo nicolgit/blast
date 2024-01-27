@@ -5,6 +5,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'blastcard.g.dart';
 
+enum SearchResult { notFound, inTitle, inBody, inSecrets }
+enum SearchOperator { and, or }
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastCard {
   BlastCard();
@@ -23,6 +25,13 @@ class BlastCard {
   int usedCounter = 0;
   List<String> tags = List.empty(growable: true);
   List<BlastAttribute> rows = List.empty(growable: true);
+
+  SearchResult seachInto (String text, SearchOperator searchOperator )
+  {
+    a
+    return SearchResult.notFound;
+  }
+
   /*
   @override
   String toString() {

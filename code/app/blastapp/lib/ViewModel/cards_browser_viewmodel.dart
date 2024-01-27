@@ -6,7 +6,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
-enum SortType { none, title, star, mostUsed, recentUsed}
+enum SortType { none, star, mostUsed, recentUsed}
 
 class CardsBrowserViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -19,7 +19,6 @@ class CardsBrowserViewModel extends ChangeNotifier {
   Future<List<BlastCard>>? getCards() async {
     switch (sortType) {
       case SortType.none:
-      case SortType.title:
         //return currentFileService.currentFileDocument!.cards;
       //case SortType.title:
         return currentFileService.currentFileDocument!.cards.where((element) => element.title != null && element.title!.contains(searchText)).toList();

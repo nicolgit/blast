@@ -12,8 +12,6 @@ class CardsBrowserView extends StatefulWidget {
   State<StatefulWidget> createState() => _CardBrowserViewState();
 }
 
-enum Calendar { day, week, month, year }
-
 class _CardBrowserViewState extends State<CardsBrowserView> {
   _CardBrowserViewState();
 
@@ -40,7 +38,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello2")
           ],
           currentIndex: _selectedIndex, //New
-          onTap: (i) => _onItemTapped(i, context),
+          onTap: (i) => _onItemTapped(i, context, vm),
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         body: Center(
@@ -104,12 +102,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ));
   }
 
-  void _onItemTapped(int index, BuildContext context) {
+  void _onItemTapped(int index, BuildContext context, CardsBrowserViewModel vm) {
     setState(() {
       _selectedIndex = index;
 
       if (index == 1) {
-        _showModalBottomSheet(context);
+        _showModalBottomSheet(context, vm);
       }
     });
   }
@@ -168,40 +166,55 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
-  Calendar calendarView = Calendar.day;
-  void _showModalBottomSheet(BuildContext context) {
+  void _showModalBottomSheet(BuildContext context, CardsBrowserViewModel vm) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Wrap(
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState ) {
+          return Wrap(
           children: [
-            const TextField(
-              decoration: InputDecoration(
+             TextFormField(
+              initialValue: vm.searchText,
+              onChanged: (value) {
+                vm.searchText = value;
+                vm.refreshCardListCommand();
+                },
+              autofocus: true,
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Search',
               ),
             ),
-            SegmentedButton<Calendar>(
-              segments: const <ButtonSegment<Calendar>>[
-                ButtonSegment<Calendar>(value: Calendar.day, label: Text('Day'), icon: Icon(Icons.calendar_view_day)),
-                ButtonSegment<Calendar>(
-                    value: Calendar.week, label: Text('Week'), icon: Icon(Icons.calendar_view_week)),
-                ButtonSegment<Calendar>(
-                    value: Calendar.month, label: Text('Month'), icon: Icon(Icons.calendar_view_month)),
-                ButtonSegment<Calendar>(value: Calendar.year, label: Text('Year'), icon: Icon(Icons.calendar_today)),
+            SegmentedButton<SortType>(
+              segments: const <ButtonSegment<SortType>>[
+                ButtonSegment<SortType>(value: SortType.none, label: Text('non'), icon: Icon(Icons.abc)),
+                ButtonSegment<SortType>(
+                    value: SortType.star, label: Text('starred'), icon: Icon(Icons.star)),
+                ButtonSegment<SortType>(
+                    value: SortType.mostUsed, label: Text('most used'), icon: Icon(Icons.upload)),
+                ButtonSegment<SortType>(value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
               ],
-              selected: <Calendar>{calendarView},
-              onSelectionChanged: (Set<Calendar> newSelection) {
-                setState(() {
+              selected: <SortType>{vm.sortType},
+              onSelectionChanged: (Set<SortType> newSelection) {
+                vm.sortCardsCommand(newSelection.first);
+
+                setModalState(() {
                   // By default there is only a single segment that can be
                   // selected at one time, so its value is always the first
                   // item in the selected set.
-                  calendarView = newSelection.first;
+                  vm.sortType = newSelection.first;
+                  vm.refreshCardListCommand();
                 });
               },
             )
           ],
         );
+        });
+    
+
+
+
+        
       },
     );
   }

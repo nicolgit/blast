@@ -41,9 +41,13 @@ class _TypePasswordViewState extends State<TypePasswordView> {
           ),
           const Text('type the master password to open your blast file'),
           TextField(
+            autofocus: true,
             obscureText: true,
             controller: passwordController,
             onChanged: (value) => vm.setPassword(value),
+            onSubmitted: (value) => {
+              vm.checkPassword()
+            },
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Password', hintText: 'Enter your password'),
           ),

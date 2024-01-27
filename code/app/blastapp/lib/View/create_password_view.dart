@@ -46,6 +46,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
           ),
           const Text("choone a file name for your blast file"),
           TextField(
+            autofocus: true,
             onChanged: (value) => vm.setFilename(value),
             controller: filenameController,
             decoration: const InputDecoration(

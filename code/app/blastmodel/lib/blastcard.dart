@@ -1,12 +1,15 @@
 import 'dart:core';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'blastcard.g.dart';
 
-enum SearchResult { notFound, inTitle, inBody, inSecrets }
+enum SearchResult { notFound, foundInTitle, foundInBody }
 enum SearchOperator { and, or }
+
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastCard {
   BlastCard();
@@ -26,109 +29,115 @@ class BlastCard {
   List<String> tags = List.empty(growable: true);
   List<BlastAttribute> rows = List.empty(growable: true);
 
-  SearchResult seachInto (String text, SearchOperator searchOperator )
+  SearchResult seach (List<String> words, SearchOperator searchOperator )
   {
-    a
-    return SearchResult.notFound;
-  }
+    // text must be lowercase AND without diacritics to work properly
 
-  /*
-  @override
-  String toString() {
-    StringBuffer sb = StringBuffer();
+    if (_searchForWordsInString (words, title, searchOperator)) {
+        return SearchResult.foundInTitle;
+      }
 
-    sb.write(title);
-    sb.write(" ");
-    sb.write(notes);
+    String corpus = "";
 
-    for (var tag in tags) {
-      sb.write(tag);
-      sb.write(" ");
+    if (title != null) {
+      corpus += "$title ";
+    }
+
+    for (var tag in tags)
+    {
+      corpus += "$tag ";
+    }
+
+    if (notes != null) {
+      corpus += "$notes ";
     }
 
     for (var row in rows) {
-      switch (row.type) {
+      switch (row.type)
+      {
         case BlastAttributeType.typePassword:
-          // do not search by password value
-          break;
-        case BlastAttributeType.typeHeader:
-          sb.write(row.name);
-          break;
-        case BlastAttributeType.typeURL:
-          sb.write(row.value);
+          
           break;
         case BlastAttributeType.typeString:
-          sb.write("${row.name} ${row.value}");
+        case BlastAttributeType.typeURL:
+          corpus += "${row.value} "; 
           break;
-        default:
-          sb.write("${row.name} ${row.value}");
+        case BlastAttributeType.typeHeader:
+          corpus += "${row.name} ";
           break;
       }
-      sb.write(" ");
     }
 
-    return sb.toString();
+    if (_searchForWordsInString(words, corpus, searchOperator)) {
+      return SearchResult.foundInBody;
+    }
+
+    return SearchResult.notFound;
+
+    for (var tag in tags)
+    {
+      if (_searchForWordsInString(words, tag, searchOperator)) {
+        return SearchResult.foundInBody;
+      }
+    }
+
+    if (_searchForWordsInString(words, notes, searchOperator)) {
+      return SearchResult.foundInBody;
+    }
+
+    for (var row in rows) {
+      switch (row.type)
+      {
+        case BlastAttributeType.typePassword:
+          break;
+        case BlastAttributeType.typeString:
+        case BlastAttributeType.typeURL:
+          if (_searchForWordsInString(words, row.value, searchOperator)) {
+            return SearchResult.foundInBody;
+          }  
+          break;
+        case BlastAttributeType.typeHeader:
+          if (_searchForWordsInString(words, row.name, searchOperator)) {
+            return SearchResult.foundInBody;
+          } 
+          break;
+      }
+    }
+
+    return SearchResult.notFound;
   }
-  */
+
+  bool _searchForWordsInString(List<String> words, String? text, SearchOperator searchOperator) {
+    if (text == null) {
+      return false;
+    }
+
+    text = text.toLowerCase();
+    text = removeDiacritics(text);
+
+    if (searchOperator == SearchOperator.and) {
+      for (var word in words) {
+        if (word.isNotEmpty) {
+          if (!text.contains(word)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } else {
+      for (var word in words) {
+        if (word.isNotEmpty) {
+          if (text.contains(word)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+  }
 
   factory BlastCard.fromJson(Map<String, dynamic> json) => _$BlastCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlastCardToJson(this);
 
-  /*
-  AdvancedSearchResult advancedSearch(String text) {
-    var words = text.split(" ");
-    var result = AdvancedSearchResult.NotFound;
-
-    for (var word in words) {
-      if (word.length > 0) {
-        var tempResult = containsWord(word);
-
-        if (tempResult == AdvancedSearchResult.NotFound) {
-          return AdvancedSearchResult.NotFound;
-        }
-
-        if (tempResult == AdvancedSearchResult.InTitle ||
-            result == AdvancedSearchResult.InTitle) {
-          result = AdvancedSearchResult.InTitle;
-        } else {
-          result = AdvancedSearchResult.InBody;
-        }
-      }
-    }
-
-    return result;
-  }
-
-  AdvancedSearchResult containsWord(String s) {
-    s = removeDiacritics(s);
-
-    if (Title != null) {
-      if (removeDiacritics(Title).contains(s, 0)) {
-        return AdvancedSearchResult.InTitle;
-      }
-    }
-
-    var me = removeDiacritics(toString());
-    return me.contains(s, 0)
-        ? AdvancedSearchResult.InBody
-        : AdvancedSearchResult.NotFound;
-  }
-  */
-
-  /*
-  import 'dart:io';
-  import 'package:diacritic/diacritic.dart';
-
-  void main() {
-    String input = 'Café au Lait';
-    String result = _removeDiacritics(input);
-    print(result); // Output: Cafe au Lait
-  }
-
-  String _removeDiacritics(String text) {
-    String normalizedText = removeDiacritics(text);
-    return normalizedText;
-  }
-  */
 }

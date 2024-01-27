@@ -73,38 +73,6 @@ class BlastCard {
     }
 
     return SearchResult.notFound;
-
-    for (var tag in tags)
-    {
-      if (_searchForWordsInString(words, tag, searchOperator)) {
-        return SearchResult.foundInBody;
-      }
-    }
-
-    if (_searchForWordsInString(words, notes, searchOperator)) {
-      return SearchResult.foundInBody;
-    }
-
-    for (var row in rows) {
-      switch (row.type)
-      {
-        case BlastAttributeType.typePassword:
-          break;
-        case BlastAttributeType.typeString:
-        case BlastAttributeType.typeURL:
-          if (_searchForWordsInString(words, row.value, searchOperator)) {
-            return SearchResult.foundInBody;
-          }  
-          break;
-        case BlastAttributeType.typeHeader:
-          if (_searchForWordsInString(words, row.name, searchOperator)) {
-            return SearchResult.foundInBody;
-          } 
-          break;
-      }
-    }
-
-    return SearchResult.notFound;
   }
 
   bool _searchForWordsInString(List<String> words, String? text, SearchOperator searchOperator) {

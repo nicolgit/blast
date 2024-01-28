@@ -4,6 +4,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:humanizer/humanizer.dart';
 
 @RoutePage()
 class CardsBrowserView extends StatefulWidget {
@@ -134,7 +135,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   Icon(
                     isFavorite ? Icons.star : Icons.star_border,
                   ),
-                  Text('used ${cardsList[index].usedCounter} times'),
+                  Text(
+                      'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime} ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
                   _buildTagsRow(cardsList[index].tags),
                 ],
               ),

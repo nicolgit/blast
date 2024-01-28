@@ -61,17 +61,16 @@ class BlastDocument {
               .toList();
         }
       case SortType.mostUsed:
-        var mostUserList = cards;
+        var mostUsedList = cards;
 
         if (!SkipWhereClause) {
-          mostUserList = cards
+          mostUsedList = cards
               .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
               .toList();
         }
 
-        mostUserList.sort((a, b) => a.usedCounter.compareTo(b.usedCounter));
-
-        return mostUserList;
+        mostUsedList.sort((b, a) => a.usedCounter.compareTo(b.usedCounter));
+        return mostUsedList;
       case SortType.recentUsed:
         var recentUsedList = cards;
 
@@ -81,7 +80,7 @@ class BlastDocument {
               .toList();
         }
 
-        recentUsedList.sort((b, a) => a.lastOpenedDateTime.compareTo(b.lastOpenedDateTime));
+        recentUsedList.sort((a, b) => a.lastOpenedDateTime.compareTo(b.lastOpenedDateTime));
         return recentUsedList;
     }
   }

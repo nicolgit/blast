@@ -4,7 +4,10 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:humanizer/humanizer.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart'; //for date format
+import 'package:intl/date_symbol_data_local.dart'; //for date locale
 
 @RoutePage()
 class CardView extends StatefulWidget {
@@ -56,6 +59,8 @@ class _CardViewState extends State<CardView> {
               Icon(vm.currentCard.isFavorite ? Icons.star : Icons.star_border)
             ],
           ),
+          Text(
+              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time used ${DateFormat.yMMMEd().format(vm.currentCard.lastOpenedDateTime)}, about ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} "),
           _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
@@ -82,6 +87,7 @@ class _CardViewState extends State<CardView> {
         switch (type) {
           case BlastAttributeType.typeHeader:
             return ListTile(
+              dense: false,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -93,7 +99,7 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               leading: const Icon(Icons.lock),
               title: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(name),
                   const Text(": "),
@@ -125,7 +131,7 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               leading: const Icon(Icons.link),
               title: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(name),
                   const Text(": "),
@@ -156,7 +162,7 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               leading: const Icon(Icons.description),
               title: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(name),
                   const Text(": "),

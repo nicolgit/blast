@@ -171,77 +171,73 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState ) {
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
           return Wrap(
             runSpacing: 12,
             spacing: 12,
-          children: [
-             TextFormField(
-              initialValue: vm.searchText,
-              onChanged: (value) {
-                vm.searchText = value;
-                vm.refreshCardListCommand();
+            children: [
+              TextFormField(
+                initialValue: vm.searchText,
+                onChanged: (value) {
+                  vm.searchText = value;
+                  vm.refreshCardListCommand();
                 },
-              autofocus: true,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Search',
+                autofocus: true,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Search',
+                ),
               ),
-            ),
-            SegmentedButton<SearchOperator>(
-              segments: const <ButtonSegment<SearchOperator>>[
-                ButtonSegment<SearchOperator>(value: SearchOperator.and, label: Text('and'), icon: Icon((Icons.radio_button_unchecked))),
-                ButtonSegment<SearchOperator>(
-                    value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
-              ],
-              selected: <SearchOperator>{vm.searchOperator},
-              onSelectionChanged: (Set<SearchOperator> newSelection) {
-                setModalState(() {
-                  vm.searchOperator = newSelection.first;
-                  vm.refreshCardListCommand();
-                });
-              },
-            ),
-            SegmentedButton<bool>(
-              segments: const <ButtonSegment<bool>[
-                TODO title only not working
-                ButtonSegment<bool>(value: true, label: Text('title only'), icon: Icon((Icons.abc))),
-
-              ],
-              selected: <bool>{vm.searchInTitleOnly},
-              onSelectionChanged: (Set<bool> newSelection) {
-                setModalState(() {
-                  vm.searchInTitleOnly = newSelection.first;
-                  vm.refreshCardListCommand();
-                });
-              },
-              multiSelectionEnabled: true,
-            ),
-            SegmentedButton<SortType>(
-              segments: const <ButtonSegment<SortType>>[
-                ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
-                ButtonSegment<SortType>(
-                    value: SortType.star, label: Text('starred'), icon: Icon(Icons.star)),
-                ButtonSegment<SortType>(
-                    value: SortType.mostUsed, label: Text('most used'), icon: Icon(Icons.upload)),
-                ButtonSegment<SortType>(value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
-              ],
-              selected: <SortType>{vm.sortType},
-              onSelectionChanged: (Set<SortType> newSelection) {
-                setModalState(() {
-                  vm.sortType = newSelection.first;
-                  vm.refreshCardListCommand();
-                });
-              },
-            )
-          ],
-        );
+              SegmentedButton<SearchOperator>(
+                segments: const <ButtonSegment<SearchOperator>>[
+                  ButtonSegment<SearchOperator>(
+                      value: SearchOperator.and, label: Text('and'), icon: Icon((Icons.radio_button_unchecked))),
+                  ButtonSegment<SearchOperator>(
+                      value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
+                ],
+                selected: <SearchOperator>{vm.searchOperator},
+                onSelectionChanged: (Set<SearchOperator> newSelection) {
+                  setModalState(() {
+                    vm.searchOperator = newSelection.first;
+                    vm.refreshCardListCommand();
+                  });
+                },
+              ),
+              SegmentedButton<SearchWhere>(
+                segments: const <ButtonSegment<SearchWhere>>[
+                  ButtonSegment<SearchWhere>(
+                      value: SearchWhere.title, label: Text('title only'), icon: Icon((Icons.abc))),
+                  ButtonSegment<SearchWhere>(
+                      value: SearchWhere.everywhere, label: Text('everywhere'), icon: Icon((Icons.abc))),
+                ],
+                selected: <SearchWhere>{vm.searchWhere},
+                onSelectionChanged: (Set<SearchWhere> newSelection) {
+                  setModalState(() {
+                    vm.searchWhere = newSelection.first;
+                    vm.refreshCardListCommand();
+                  });
+                },
+              ),
+              SegmentedButton<SortType>(
+                segments: const <ButtonSegment<SortType>>[
+                  ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
+                  ButtonSegment<SortType>(value: SortType.star, label: Text('starred'), icon: Icon(Icons.star)),
+                  ButtonSegment<SortType>(value: SortType.mostUsed, label: Text('most used'), icon: Icon(Icons.upload)),
+                  ButtonSegment<SortType>(
+                      value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
+                ],
+                selected: <SortType>{vm.sortType},
+                onSelectionChanged: (Set<SortType> newSelection) {
+                  setModalState(() {
+                    vm.sortType = newSelection.first;
+                    vm.refreshCardListCommand();
+                  });
+                },
+              )
+            ],
+          );
         });
-    
-
-
-
-        
       },
     );
   }

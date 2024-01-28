@@ -9,16 +9,16 @@ class CardsBrowserViewModel extends ChangeNotifier {
   final BuildContext context;
   final CurrentFileService currentFileService = CurrentFileService();
   List<BlastCard> cardsView = [];
+
   SortType sortType = SortType.none;
   String searchText = "";
   SearchOperator searchOperator = SearchOperator.and;
-
-  bool searchInTitleOnly = false;
+  SearchWhere searchWhere = SearchWhere.everywhere;
 
   CardsBrowserViewModel(this.context);
-  
+
   Future<List<BlastCard>>? getCards() async {
-    return currentFileService.currentFileDocument!.search(searchText, searchOperator, sortType);
+    return currentFileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
   }
 
   void selectCard(BlastCard selectedCard) {
@@ -32,5 +32,4 @@ class CardsBrowserViewModel extends ChangeNotifier {
   void refreshCardListCommand() {
     notifyListeners();
   }
-
 }

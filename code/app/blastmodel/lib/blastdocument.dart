@@ -7,9 +7,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'blastdocument.g.dart';
 
-enum SortType { none, star, mostUsed, recentUsed}
+enum SortType { none, star, mostUsed, recentUsed }
+
 enum SearchResult { notFound, foundInTitle, foundInBody }
+
 enum SearchOperator { and, or }
+
+enum SearchWhere { title, everywhere }
 
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastDocument {
@@ -25,39 +29,64 @@ class BlastDocument {
     return jsonEncode(_toJson());
   }
 
-  List<BlastCard> search(String searchText, SearchOperator searchOperator, SortType sortType) {
+  List<BlastCard> search(String searchText, SearchOperator searchOperator, SortType sortType, SearchWhere searchWhere) {
     final List<String> words = removeDiacritics(searchText).toLowerCase().split(" ");
-    
+
+    bool SkipWhereClause = false;
     // check for words empty list
     if (words.isEmpty) {
-      return cards;
+      SkipWhereClause = true;
     }
-    if(words.where((element) => element.isNotEmpty).isEmpty) {
-      return cards;
+    if (words.where((element) => element.isNotEmpty).isEmpty) {
+      SkipWhereClause = true;
     }
 
     switch (sortType) {
       case SortType.none:
-        return cards.where((element) => element.seach(words, searchOperator) != SearchResult.notFound).toList();
+        if (SkipWhereClause) {
+          return cards;
+        } else {
+          return cards
+              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
+              .toList();
+        }
       case SortType.star:
         final List<BlastCard> starredCards = cards.where((element) => element.isFavorite).toList();
 
-        return starredCards.where((element) => element.seach(words, searchOperator) != SearchResult.notFound).toList();
+        if (SkipWhereClause) {
+          return starredCards;
+        } else {
+          return starredCards
+              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
+              .toList();
+        }
       case SortType.mostUsed:
-        final List<BlastCard> filteredList = cards.where((element) => element.seach(words, searchOperator) != SearchResult.notFound).toList();
-        filteredList.sort((a, b) => a.usedCounter.compareTo(b.usedCounter));
+        var mostUserList = cards;
 
-        return filteredList; 
+        if (!SkipWhereClause) {
+          mostUserList = cards
+              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
+              .toList();
+        }
+
+        mostUserList.sort((a, b) => a.usedCounter.compareTo(b.usedCounter));
+
+        return mostUserList;
       case SortType.recentUsed:
-        final List<BlastCard> filteredList = cards.where((element) => element.seach(words, searchOperator) != SearchResult.notFound).toList();
-        filteredList.sort((b, a) => a.lastOpenedDateTime.compareTo(b.lastOpenedDateTime));
+        var recentUsedList = cards;
 
-        return filteredList;
+        if (!SkipWhereClause) {
+          recentUsedList = cards
+              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
+              .toList();
+        }
+
+        recentUsedList.sort((b, a) => a.lastOpenedDateTime.compareTo(b.lastOpenedDateTime));
+        return recentUsedList;
     }
   }
 
-  factory BlastDocument.fromJson(Map<String, dynamic> json) =>
-      _$BlastDocumentFromJson(json);
+  factory BlastDocument.fromJson(Map<String, dynamic> json) => _$BlastDocumentFromJson(json);
 
   Map<String, dynamic> _toJson() => _$BlastDocumentToJson(this);
 }

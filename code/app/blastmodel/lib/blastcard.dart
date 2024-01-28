@@ -27,13 +27,12 @@ class BlastCard {
   List<String> tags = List.empty(growable: true);
   List<BlastAttribute> rows = List.empty(growable: true);
 
-  SearchResult seach (List<String> words, SearchOperator searchOperator )
-  {
+  SearchResult seach(List<String> words, SearchOperator searchOperator, SearchWhere searchWhere) {
     // text must be lowercase AND without diacritics to work properly
 
-    if (_searchForWordsInString (words, title, searchOperator)) {
-        return SearchResult.foundInTitle;
-      }
+    if (_searchForWordsInString(words, title, searchOperator)) {
+      return SearchResult.foundInTitle;
+    }
 
     String corpus = "";
 
@@ -41,33 +40,32 @@ class BlastCard {
       corpus += "$title ";
     }
 
-    for (var tag in tags)
-    {
-      corpus += "$tag ";
-    }
+    if (searchWhere == SearchWhere.everywhere) {
+      for (var tag in tags) {
+        corpus += "$tag ";
+      }
 
-    if (notes != null) {
-      corpus += "$notes ";
-    }
+      if (notes != null) {
+        corpus += "$notes ";
+      }
 
-    for (var row in rows) {
-      switch (row.type)
-      {
-        case BlastAttributeType.typePassword:
-          
-          break;
-        case BlastAttributeType.typeString:
-        case BlastAttributeType.typeURL:
-          corpus += "${row.value} "; 
-          break;
-        case BlastAttributeType.typeHeader:
-          corpus += "${row.name} ";
-          break;
+      for (var row in rows) {
+        switch (row.type) {
+          case BlastAttributeType.typePassword:
+            break;
+          case BlastAttributeType.typeString:
+          case BlastAttributeType.typeURL:
+            corpus += "${row.value} ";
+            break;
+          case BlastAttributeType.typeHeader:
+            corpus += "${row.name} ";
+            break;
+        }
       }
     }
 
     if (_searchForWordsInString(words, corpus, searchOperator)) {
-      return SearchResult.foundInBody;
+      return searchWhere == SearchWhere.title ? SearchResult.foundInTitle : SearchResult.foundInBody;
     }
 
     return SearchResult.notFound;
@@ -105,5 +103,4 @@ class BlastCard {
   factory BlastCard.fromJson(Map<String, dynamic> json) => _$BlastCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlastCardToJson(this);
-
 }

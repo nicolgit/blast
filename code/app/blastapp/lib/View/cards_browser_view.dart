@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastmodel/blastcard.dart';
+import 'package:blastmodel/blastdocument.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -172,6 +173,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       builder: (context) {
         return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState ) {
           return Wrap(
+            runSpacing: 12,
+            spacing: 12,
           children: [
              TextFormField(
               initialValue: vm.searchText,
@@ -185,9 +188,38 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 labelText: 'Search',
               ),
             ),
+            SegmentedButton<SearchOperator>(
+              segments: const <ButtonSegment<SearchOperator>>[
+                ButtonSegment<SearchOperator>(value: SearchOperator.and, label: Text('and'), icon: Icon((Icons.radio_button_unchecked))),
+                ButtonSegment<SearchOperator>(
+                    value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
+              ],
+              selected: <SearchOperator>{vm.searchOperator},
+              onSelectionChanged: (Set<SearchOperator> newSelection) {
+                setModalState(() {
+                  vm.searchOperator = newSelection.first;
+                  vm.refreshCardListCommand();
+                });
+              },
+            ),
+            SegmentedButton<bool>(
+              segments: const <ButtonSegment<bool>[
+                TODO title only not working
+                ButtonSegment<bool>(value: true, label: Text('title only'), icon: Icon((Icons.abc))),
+
+              ],
+              selected: <bool>{vm.searchInTitleOnly},
+              onSelectionChanged: (Set<bool> newSelection) {
+                setModalState(() {
+                  vm.searchInTitleOnly = newSelection.first;
+                  vm.refreshCardListCommand();
+                });
+              },
+              multiSelectionEnabled: true,
+            ),
             SegmentedButton<SortType>(
               segments: const <ButtonSegment<SortType>>[
-                ButtonSegment<SortType>(value: SortType.none, label: Text('non'), icon: Icon(Icons.abc)),
+                ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
                 ButtonSegment<SortType>(
                     value: SortType.star, label: Text('starred'), icon: Icon(Icons.star)),
                 ButtonSegment<SortType>(
@@ -196,12 +228,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ],
               selected: <SortType>{vm.sortType},
               onSelectionChanged: (Set<SortType> newSelection) {
-                vm.sortCardsCommand(newSelection.first);
-
                 setModalState(() {
-                  // By default there is only a single segment that can be
-                  // selected at one time, so its value is always the first
-                  // item in the selected set.
                   vm.sortType = newSelection.first;
                   vm.refreshCardListCommand();
                 });

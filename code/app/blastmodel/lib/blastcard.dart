@@ -1,14 +1,12 @@
 import 'dart:core';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
+import 'package:blastmodel/blastdocument.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'blastcard.g.dart';
-
-enum SearchResult { notFound, foundInTitle, foundInBody }
-enum SearchOperator { and, or }
 
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastCard {

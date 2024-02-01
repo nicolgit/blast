@@ -30,7 +30,7 @@ class _SplashViewState extends State<SplashView> {
           child: Column(
         children: [
           const Text('Hello World!'),
-          const Image(image: AssetImage('icon-v01.png'), width: 100, height: 100),
+          //const Image(image: AssetImage('assets/icon-v01.png')),
           const Text('I am the splash screen!'),
           TextButton(
             onPressed: () {

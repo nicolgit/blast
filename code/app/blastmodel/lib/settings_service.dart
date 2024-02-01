@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/lorem_cloud.dart';
 import 'package:blastmodel/Cloud/filesystem_cloud.dart';
@@ -30,7 +32,11 @@ class SettingService {
 
     // init cloud storages list
     cloudStorages.add(LoremCloud());
-    cloudStorages.add(FileSystemCloud());
+
+    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      cloudStorages.add(FileSystemCloud());  
+    }
+
     cloudStorages.add(OneDriveCloud());
   }
 

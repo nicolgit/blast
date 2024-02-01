@@ -21,9 +21,6 @@ dependencies:
   humanizer: ^2.2.0
   flutter_launcher_icons: ^0.13.1
 
-assets:
-  - assets/icon-v01.png
-
 flutter_launcher_icons:
  image_path: "assets/app-icon.png"
  android: true
@@ -49,3 +46,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icon-v01.png

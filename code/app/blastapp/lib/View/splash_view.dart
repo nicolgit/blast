@@ -29,9 +29,8 @@ class _SplashViewState extends State<SplashView> {
       body: Center(
           child: Column(
         children: [
-          const Text('Hello World!'),
-          //const Image(image: AssetImage('assets/icon-v01.png')),
-          const Text('I am the splash screen!'),
+          const Image(image: AssetImage('assets/icon-v01.png')),
+          const Text("your passwords, safe and sound."),
           TextButton(
             onPressed: () {
               vm.showEula().then((value) => vm.refresh());

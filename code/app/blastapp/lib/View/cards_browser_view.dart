@@ -136,7 +136,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     isFavorite ? Icons.star : Icons.star_border,
                   ),
                   Text(
-                      'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime} ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
+                      'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
                   _buildTagsRow(cardsList[index].tags),
                 ],
               ),

@@ -6,8 +6,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart'; //for date format
-import 'package:intl/date_symbol_data_local.dart'; //for date locale
+import 'package:intl/intl.dart'; //for date formate locale
 
 @RoutePage()
 class CardView extends StatefulWidget {

@@ -19,6 +19,23 @@ dependencies:
   url_launcher: ^6.2.4
   diacritic: ^0.1.5
   humanizer: ^2.2.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+ image_path: "assets/app-icon.png"
+ android: true
+ ios: true
+ web:
+    generate: true
+    image_path: "assets/app-icon.png"
+ windows:
+    generate: true
+    image_path: "assets/app-icon.png"
+    icon_size: 128 # min:48, max:256, default: 48
+ macos:
+    generate: true
+    image_path: "assets/app-icon.png"
+
 
 dev_dependencies:
   flutter_test:

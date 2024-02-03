@@ -52,7 +52,12 @@ class CardViewModel extends ChangeNotifier {
     }
   }
 
-  void editCommand() {
-    context.router.push(CardEditRoute(card: currentCard));
+  Future editCommand() async {
+    await context.router.push(CardEditRoute(card: currentCard));
+    return Future.value();
+  }
+
+  void refresh() {
+    notifyListeners();
   }
 }

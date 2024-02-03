@@ -37,18 +37,80 @@ class _CardEditViewState extends State<CardEditView> {
             title: Text('Edit Card ${vm.currentCard.id}'),
             actions: [
               IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'Quit',
+                icon: const Icon(Icons.save),
+                tooltip: 'Save',
                 onPressed: () {
                   //vm.closeCommand();
                 },
               ),
             ],
           ),
-          const Text('Edit Card'),
+          TextFormField(
+            initialValue: vm.currentCard.title,
+            onChanged: (value) {
+              vm.currentCard.title = value;
+            },
+            autofocus: true,
+            //controller: filenameController,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Card title',
+                hintText: 'Choose a title for the card'),
+            ),
+          Expanded(child: Container(
+            child: _buildFieldList(vm),
+            ),
+          ),
         ], 
       ),
       )
     );
   }
+
+  ListView _buildFieldList(CardEditViewModel vm) {
+    var myList = ListView.builder(
+      itemCount: vm.currentCard.rows.length, //cardsList.length,
+      itemBuilder: (context, index) {
+        //String name = cardsList[index].name;
+        //String value = cardsList[index].value;
+        //final type = cardsList[index].type;
+        return ListTile(
+          title: Row(
+            children: <Widget>[
+              new Expanded ( 
+        flex:1,
+        child : Column(
+        children: <Widget>[TextFormField(
+            initialValue: vm.currentCard.rows[index].name,
+            autofocus: true,
+            //controller: filenameController,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Attribute name',
+                hintText: 'Choose the attribute name'),
+            )],
+      ),),
+      new Expanded( 
+        flex : 3,
+        child: Column(
+        children: <Widget>[
+          TextFormField(
+            initialValue: vm.currentCard.rows[index].value,
+            autofocus: true,
+            //controller: filenameController,
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Attribute value',
+                hintText: 'Choose the attribute name'),
+            )
+          ],
+      ),)             
+            ],
+          ), 
+          );
+      });
+    
+    return myList;
+  }
+
 }

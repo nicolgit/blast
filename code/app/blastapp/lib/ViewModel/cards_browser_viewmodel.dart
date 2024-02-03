@@ -21,8 +21,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return currentFileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
   }
 
-  void selectCard(BlastCard selectedCard) {
-    context.router.push(CardRoute(card: selectedCard));
+  Future selectCard(BlastCard selectedCard) async {
+    await context.router.push(CardRoute(card: selectedCard));
   }
 
   void closeCommand() {

@@ -142,8 +142,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
             ],
           ),
-          onTap: () {
-            vm.selectCard(cardsList[index]);
+          onTap: () async {
+            vm.selectCard(cardsList[index]).then((value) {
+              vm.refreshCardListCommand();
+            });
           },
         );
       },

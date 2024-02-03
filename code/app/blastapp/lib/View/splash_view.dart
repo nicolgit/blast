@@ -98,14 +98,14 @@ class _SplashViewState extends State<SplashView> {
                   ]);
                 },
               ),
-              Row(
+            ],
+          ),
+          subtitle: Row(
                 children: [
                   const Text("URI: "),
                   Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold))
                 ],
               ),
-            ],
-          ),
           onTap: () async {
             await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
               ScaffoldMessenger.of(context)

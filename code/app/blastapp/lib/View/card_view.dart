@@ -44,7 +44,10 @@ class _CardViewState extends State<CardView> {
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edit',
                 onPressed: () {
-                  vm.editCommand();
+                  vm.editCommand().then((value) {
+                    vm.refresh();
+                  })
+                  ;
                 },
               ),
               IconButton(
@@ -93,7 +96,6 @@ class _CardViewState extends State<CardView> {
         switch (type) {
           case BlastAttributeType.typeHeader:
             return ListTile(
-              dense: false,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

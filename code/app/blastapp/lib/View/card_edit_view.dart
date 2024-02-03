@@ -34,7 +34,7 @@ class _CardEditViewState extends State<CardEditView> {
       child: Column(
         children: [
           AppBar(
-            title: const Text('Edit Card'),
+            title: Text('Edit Card ${vm.currentCard.id}'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),

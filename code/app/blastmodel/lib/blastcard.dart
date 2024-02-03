@@ -71,6 +71,18 @@ class BlastCard {
     return SearchResult.notFound;
   }
 
+  void copyFrom(BlastCard card) {
+    id = card.id;
+    title = card.title;
+    notes = card.notes;
+    isFavorite = card.isFavorite;
+    lastUpdateDateTime = card.lastUpdateDateTime;
+    lastOpenedDateTime = card.lastOpenedDateTime;
+    usedCounter = card.usedCounter;
+    tags = List.from(card.tags);
+    rows = List.from(card.rows);
+  }
+
   bool _searchForWordsInString(List<String> words, String? text, SearchOperator searchOperator) {
     if (text == null) {
       return false;

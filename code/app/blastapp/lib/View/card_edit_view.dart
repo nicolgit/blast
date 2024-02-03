@@ -40,7 +40,7 @@ class _CardEditViewState extends State<CardEditView> {
                 icon: const Icon(Icons.save),
                 tooltip: 'Save',
                 onPressed: () {
-                  //vm.closeCommand();
+                  vm.saveCommand();
                 },
               ),
             ],
@@ -51,7 +51,6 @@ class _CardEditViewState extends State<CardEditView> {
               vm.currentCard.title = value;
             },
             autofocus: true,
-            //controller: filenameController,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Card title',
@@ -71,9 +70,6 @@ class _CardEditViewState extends State<CardEditView> {
     var myList = ListView.builder(
       itemCount: vm.currentCard.rows.length, //cardsList.length,
       itemBuilder: (context, index) {
-        //String name = cardsList[index].name;
-        //String value = cardsList[index].value;
-        //final type = cardsList[index].type;
         return ListTile(
           title: Row(
             children: <Widget>[
@@ -82,6 +78,7 @@ class _CardEditViewState extends State<CardEditView> {
         child : Column(
         children: <Widget>[TextFormField(
             initialValue: vm.currentCard.rows[index].name,
+            onChanged: (value) => vm.currentCard.rows[index].name = value,
             autofocus: true,
             //controller: filenameController,
             decoration: const InputDecoration(
@@ -96,8 +93,8 @@ class _CardEditViewState extends State<CardEditView> {
         children: <Widget>[
           TextFormField(
             initialValue: vm.currentCard.rows[index].value,
+            onChanged: (value) => vm.currentCard.rows[index].value = value,
             autofocus: true,
-            //controller: filenameController,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Attribute value',

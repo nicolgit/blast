@@ -122,13 +122,25 @@ class _CardViewState extends State<CardView> {
                       icon: const Icon(Icons.copy),
                       tooltip: 'copy to clipboard',
                     ),
-                    IconButton(
+                    Visibility(
+                      visible: !vm.isPasswordRowVisible(index),
+                      child: IconButton(
                       onPressed: () {
                         vm.toggleShowPassword(index);
                       },
                       icon: const Icon(Icons.visibility_off),
-                      tooltip: 'show/hide',
-                    ),
+                      tooltip: 'hide',
+                    ), ),
+                    Visibility(
+                      visible: vm.isPasswordRowVisible(index),
+                      child: IconButton(
+                      onPressed: () {
+                        vm.toggleShowPassword(index);
+                      },
+                      icon: const Icon(Icons.visibility),
+                      tooltip: 'hide',
+                    ), ),
+                    
                   ]),
                 ],
               ),

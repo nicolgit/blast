@@ -13,6 +13,13 @@ class TypePasswordView extends StatefulWidget {
 
 class _TypePasswordViewState extends State<TypePasswordView> {
   final passwordController = TextEditingController();
+  late FocusNode passwordFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    passwordFocusNode = FocusNode();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +35,8 @@ class _TypePasswordViewState extends State<TypePasswordView> {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     passwordController.dispose();
+    passwordFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -42,16 +51,18 @@ class _TypePasswordViewState extends State<TypePasswordView> {
           const Text('type the master password to open your blast file'),
           TextField(
             autofocus: true,
+            focusNode: passwordFocusNode,
             obscureText: true,
             controller: passwordController,
             onChanged: (value) => vm.setPassword(value),
             onSubmitted: (value) => {
-              vm.checkPassword()
+              if (!vm.checkPassword())
+                passwordFocusNode.requestFocus(),
             },
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Password', hintText: 'Enter your password'),
           ),
-          Text(vm.errorMessage),
+          Text(vm.errorMessage, style: const TextStyle(color: Colors.red) ),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) => TextButton(

@@ -89,12 +89,10 @@ class CreatePasswordViewModel extends ChangeNotifier {
     CurrentFileService().currentFileInfo = file;
     CurrentFileService().password = password;
     CurrentFileService().currentFileDocument = BlastDocument();
-
-    //CurrentFileService().cloud!.setFile(file.fileUrl, )
-
     CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
     CurrentFileService().currentFileEncrypted =
         CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!, password);
+    
     CurrentFileService().cloud!.setFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
 
     SettingService().addRecentFile(file);

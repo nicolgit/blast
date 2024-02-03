@@ -44,7 +44,14 @@ class _CardViewState extends State<CardView> {
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edit',
                 onPressed: () {
-                  //vm.closeCommand();
+                  vm.editCommand();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: 'Quit',
+                onPressed: () {
+                  vm.closeCommand();
                 },
               ),
             ],

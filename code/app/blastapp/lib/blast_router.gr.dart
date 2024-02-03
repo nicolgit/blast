@@ -15,6 +15,16 @@ abstract class _$BlastRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    CardEditRoute.name: (routeData) {
+      final args = routeData.argsAs<CardEditRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CardEditView(
+          key: args.key,
+          card: args.card,
+        ),
+      );
+    },
     CardRoute.name: (routeData) {
       final args = routeData.argsAs<CardRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -68,6 +78,44 @@ abstract class _$BlastRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [CardEditView]
+class CardEditRoute extends PageRouteInfo<CardEditRouteArgs> {
+  CardEditRoute({
+    Key? key,
+    required BlastCard card,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CardEditRoute.name,
+          args: CardEditRouteArgs(
+            key: key,
+            card: card,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CardEditRoute';
+
+  static const PageInfo<CardEditRouteArgs> page =
+      PageInfo<CardEditRouteArgs>(name);
+}
+
+class CardEditRouteArgs {
+  const CardEditRouteArgs({
+    this.key,
+    required this.card,
+  });
+
+  final Key? key;
+
+  final BlastCard card;
+
+  @override
+  String toString() {
+    return 'CardEditRouteArgs{key: $key, card: $card}';
+  }
 }
 
 /// generated route for

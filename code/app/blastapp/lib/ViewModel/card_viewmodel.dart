@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
@@ -49,5 +50,9 @@ class CardViewModel extends ChangeNotifier {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  void editCommand() {
+    context.router.push(CardEditRoute(card: currentCard));
   }
 }

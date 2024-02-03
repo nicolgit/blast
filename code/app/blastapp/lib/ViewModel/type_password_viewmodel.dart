@@ -21,7 +21,7 @@ class TypePasswordViewModel extends ChangeNotifier {
     return password.isNotEmpty;
   }
 
-  checkPassword() {
+  bool checkPassword() {
     try {
       CurrentFileService().currentFileJsonString =
           CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password);
@@ -37,23 +37,23 @@ class TypePasswordViewModel extends ChangeNotifier {
       notifyListeners();
 
       context.router.push(const CardsBrowserRoute());
-      return;
+      return true;
     } on BlastWrongPasswordException {
       errorMessage = 'wrong password - please check again';
       notifyListeners();
-      return;
+      return false;
     } on BlastUnknownFileVersionException {
       errorMessage = 'unknown file version - unable to open your file';
       notifyListeners();
-      return;
+      return false;
     } on FormatException {
       errorMessage = 'file format exception - unable to open your file';
       notifyListeners();
-      return;
+      return false;
     } catch (e) {
       errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
       notifyListeners();
-      return;
+      return false;
     }
   }
 

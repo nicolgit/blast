@@ -34,6 +34,10 @@ class _CardEditViewState extends State<CardEditView> {
       child: Column(
         children: [
           AppBar(
+            automaticallyImplyLeading: false,
+            leading: BackButton( 
+              onPressed: () => _showChangedDialog(context, vm),
+            ),
             title: Text('Edit Card ${vm.currentCard.id}'),
             actions: [
               IconButton(
@@ -48,13 +52,20 @@ class _CardEditViewState extends State<CardEditView> {
           TextFormField(
             initialValue: vm.currentCard.title,
             onChanged: (value) {
-              vm.currentCard.title = value;
+              vm.updateTitle(value);
             },
             autofocus: true,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Card title',
                 hintText: 'Choose a title for the card'),
+            ),
+            TextButton(
+              onPressed: () async {
+                  vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                },
+              child: const Text('notes'),
             ),
           Expanded(child: Container(
             child: _buildFieldList(vm),
@@ -73,12 +84,13 @@ class _CardEditViewState extends State<CardEditView> {
         return ListTile(
           title: Row(
             children: <Widget>[
-              new Expanded ( 
+              Expanded ( 
         flex:1,
         child : Column(
         children: <Widget>[TextFormField(
             initialValue: vm.currentCard.rows[index].name,
-            onChanged: (value) => vm.currentCard.rows[index].name = value,
+            textInputAction: TextInputAction.next,
+            onChanged: (newValue) => vm.updateAttributeName(index, newValue),
             autofocus: true,
             //controller: filenameController,
             decoration: const InputDecoration(
@@ -87,14 +99,14 @@ class _CardEditViewState extends State<CardEditView> {
                 hintText: 'Choose the attribute name'),
             )],
       ),),
-      new Expanded( 
+      Expanded( 
         flex : 3,
         child: Column(
         children: <Widget>[
           TextFormField(
             initialValue: vm.currentCard.rows[index].value,
-            onChanged: (value) => vm.currentCard.rows[index].value = value,
-            autofocus: true,
+            textInputAction: TextInputAction.next,
+            onChanged: (newValue) => vm.updateAttributeValue(index, newValue),
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Attribute value',
@@ -110,4 +122,86 @@ class _CardEditViewState extends State<CardEditView> {
     return myList;
   }
 
+  Future<String> _displayTextInputDialog(BuildContext context, String valueText) async {
+    final oldValue = valueText;
+    
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('notes'),
+            content: TextField(
+              controller: TextEditingController()..text = valueText,
+              keyboardType: TextInputType.multiline,
+              minLines: 4,
+              maxLines: null,
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              decoration:
+                  const InputDecoration(hintText: "Text Field in Dialog"),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: const Text('cancel'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                    valueText = oldValue;
+                  });
+                },
+              ),
+              MaterialButton(
+                color: Colors.green,
+                textColor: Colors.white,
+                child: const Text('ok'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            ],
+          );
+        });
+
+        return valueText;
+  }
+
+  Future _showChangedDialog(BuildContext context, CardEditViewModel vm) async {
+    if (!vm.isChanged) {
+      vm.cancelCommand();
+      return;
+    }
+
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Unsaved changes'),
+          content: const Text('Do you want to save your changes?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () => {
+                vm.cancelCommand(),
+                Navigator.pop(context),
+              }
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () => {
+                vm.saveCommand(),
+                Navigator.pop(context),
+              }
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

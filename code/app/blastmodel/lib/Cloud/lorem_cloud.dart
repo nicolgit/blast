@@ -131,7 +131,7 @@ class LoremCloud extends Cloud {
       result += " ";
     }
 
-    return result;
+    return result.trim();
   }
 
   List<String> _randomTagsGenerator(int tagsCount) {

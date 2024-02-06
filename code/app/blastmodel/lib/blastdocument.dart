@@ -85,6 +85,21 @@ class BlastDocument {
     }
   }
 
+  List<String> getTags() {
+    final List<String> tags = <String>[];
+
+    for (final BlastCard card in cards) {
+      for (final String tag in card.tags) {
+        if (!tags.contains(tag)) {
+          tags.add(tag);
+        }
+      }
+    }
+
+    tags.sort();
+    return tags;
+  }
+  
   factory BlastDocument.fromJson(Map<String, dynamic> json) => _$BlastDocumentFromJson(json);
 
   Map<String, dynamic> _toJson() => _$BlastDocumentToJson(this);

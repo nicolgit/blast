@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastcard.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
 class CardEditViewModel extends ChangeNotifier {
@@ -7,7 +8,8 @@ class CardEditViewModel extends ChangeNotifier {
   bool isChanged = false;
   BlastCard sourceCard;
   BlastCard currentCard = BlastCard();
-  
+  List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
+
   CardEditViewModel(this.context, this.sourceCard) {
     currentCard.copyFrom(sourceCard);
   }
@@ -42,5 +44,10 @@ class CardEditViewModel extends ChangeNotifier {
   updateAttributeName(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].name = newValue;
+  }
+
+  void updateTags(List<String> values) {
+    isChanged = true;
+    currentCard.tags = values.map((tag) => tag.toString()).toList();
   }
 }

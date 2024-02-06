@@ -2,6 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -61,6 +64,7 @@ class _CardEditViewState extends State<CardEditView> {
                 labelText: 'Card title',
                 hintText: 'Choose a title for the card'),
             ),
+            _buildTagsSelector(vm),
             TextButton(
               onPressed: () async {
                   vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
@@ -201,6 +205,20 @@ class _CardEditViewState extends State<CardEditView> {
             ),
           ],
         );
+      },
+    );
+  }
+  
+  _buildTagsSelector(CardEditViewModel vm) {
+    return MultiSelectDialogField(
+      initialValue: vm.currentCard.tags,
+      buttonText: const Text("choose more tags"),
+      buttonIcon: const Icon(Icons.tag),
+      title: const Text("tags"),
+      items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
+      listType: MultiSelectListType.CHIP,
+      onConfirm: (values) {
+        vm.updateTags(values);
       },
     );
   }

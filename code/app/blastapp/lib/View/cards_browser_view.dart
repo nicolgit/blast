@@ -174,34 +174,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   Row _buildTagsRow(List<String> tags) {
-    List<MultiSelectItem<String>> mscdTags = tags.map((tag) => MultiSelectItem<String>(tag, tag)).toList();
+    List<MultiSelectItem<String>> mscdTags = tags.map((tag) {
+      final val = MultiSelectItem<String>(tag, tag);
+      val.selected = false;
+      return val;
+    }).toList();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         MultiSelectChipDisplay(
-          items: mscdTags,
-          /*onTap: (value) {
-            setState(() {
-              _selectedAnimals.remove(value);
-            });
-          }*/
-        )
-      ],
-    );
-
-    return Row(
-      children: [
-        for (var tag in tags)
-          Container(
-              margin: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.red,
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(6))),
-              padding: const EdgeInsets.all(1),
-              child: Text(tag)),
+            items: mscdTags,
+            onTap: (value) {
+              setState(() {
+                //value.selected = !value.selected;
+              });
+            })
       ],
     );
   }

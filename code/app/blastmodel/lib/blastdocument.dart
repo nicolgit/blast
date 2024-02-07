@@ -32,18 +32,18 @@ class BlastDocument {
   List<BlastCard> search(String searchText, SearchOperator searchOperator, SortType sortType, SearchWhere searchWhere) {
     final List<String> words = removeDiacritics(searchText).toLowerCase().split(" ");
 
-    bool SkipWhereClause = false;
+    bool skipWhereClause = false;
     // check for words empty list
     if (words.isEmpty) {
-      SkipWhereClause = true;
+      skipWhereClause = true;
     }
     if (words.where((element) => element.isNotEmpty).isEmpty) {
-      SkipWhereClause = true;
+      skipWhereClause = true;
     }
 
     switch (sortType) {
       case SortType.none:
-        if (SkipWhereClause) {
+        if (skipWhereClause) {
           return cards;
         } else {
           return cards
@@ -53,7 +53,7 @@ class BlastDocument {
       case SortType.star:
         final List<BlastCard> starredCards = cards.where((element) => element.isFavorite).toList();
 
-        if (SkipWhereClause) {
+        if (skipWhereClause) {
           return starredCards;
         } else {
           return starredCards
@@ -63,7 +63,7 @@ class BlastDocument {
       case SortType.mostUsed:
         var mostUsedList = cards;
 
-        if (!SkipWhereClause) {
+        if (!skipWhereClause) {
           mostUsedList = cards
               .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
               .toList();
@@ -74,7 +74,7 @@ class BlastDocument {
       case SortType.recentUsed:
         var recentUsedList = cards;
 
-        if (!SkipWhereClause) {
+        if (!skipWhereClause) {
           recentUsedList = cards
               .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
               .toList();
@@ -85,8 +85,15 @@ class BlastDocument {
     }
   }
 
+  List<String> getDefaultTags() {
+    // TODO - make this list configurable
+    final List<String> tags = <String>["personal", "work", "family", "money", "health", "hobby"];
+
+    return tags;
+  }
+
   List<String> getTags() {
-    final List<String> tags = <String>[];
+    final List<String> tags = getDefaultTags();
 
     for (final BlastCard card in cards) {
       for (final String tag in card.tags) {
@@ -99,7 +106,7 @@ class BlastDocument {
     tags.sort();
     return tags;
   }
-  
+
   factory BlastDocument.fromJson(Map<String, dynamic> json) => _$BlastDocumentFromJson(json);
 
   Map<String, dynamic> _toJson() => _$BlastDocumentToJson(this);

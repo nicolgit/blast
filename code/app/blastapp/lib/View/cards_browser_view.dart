@@ -3,6 +3,8 @@ import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
 import 'package:humanizer/humanizer.dart';
 
@@ -154,7 +156,40 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     return myList;
   }
 
+  Row _buildTagsRowOld(List<String> tags) {
+    return Row(
+      children: [
+        for (var tag in tags)
+          Container(
+              margin: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.red,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(6))),
+              padding: const EdgeInsets.all(1),
+              child: Text(tag)),
+      ],
+    );
+  }
+
   Row _buildTagsRow(List<String> tags) {
+    List<MultiSelectItem<String>> mscdTags = tags.map((tag) => MultiSelectItem<String>(tag, tag)).toList();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        MultiSelectChipDisplay(
+          items: mscdTags,
+          /*onTap: (value) {
+            setState(() {
+              _selectedAnimals.remove(value);
+            });
+          }*/
+        )
+      ],
+    );
+
     return Row(
       children: [
         for (var tag in tags)

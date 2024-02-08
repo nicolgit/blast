@@ -60,33 +60,46 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       Widget cancelButton = TextButton(
                         child: const Text("Cancel"),
                         onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
                         },
                       );
-                      Widget continueButton = TextButton(
-                        child: const Text("Ok"),
+                      Widget noButton = TextButton(
+                        child: const Text("No"),
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                           vm.closeCommand();
                         },
                       );
-
-                      AlertDialog alert = AlertDialog(
-                        title: const Text("File changed"),
-                        content: const Text("Are you sure you want to close it and loose all your updates?"),
-                        actions: [
-                          cancelButton,
-                          continueButton,
-                        ],
-                      );
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
+                      Widget okButton = TextButton(
+                        child: const Text("Ok"),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                          vm.saveCommand();
+                          vm.closeCommand();
                         },
                       );
-                      //vm.closeCommand();
+
+                      if (vm.isFileChanged()) {
+                        AlertDialog alert = AlertDialog(
+                          title: const Text("File changed"),
+                          content: const Text("Are you sure you want to close it and loose all your updates?"),
+                          actions: [
+                            cancelButton,
+                            noButton,
+                            okButton,
+                          ],
+                        );
+                        // show the dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
+                      } else {
+                        // close the file
+                        vm.closeCommand();
+                      }
                     },
                   ),
                 ],

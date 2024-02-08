@@ -21,7 +21,7 @@ class CurrentFileService {
   Uint8List? currentFileEncrypted;
   String? currentFileJsonString;
   BlastDocument? currentFileDocument;
-  String? password;
+  String password = "";
 
   factory CurrentFileService() {
     return _instance;
@@ -53,7 +53,7 @@ class CurrentFileService {
     }
 
     // Generate Key
-    int iterations = 1000;
+    int iterations = 10000;
     var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
     pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
     Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));

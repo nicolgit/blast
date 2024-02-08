@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -9,6 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
   final BlastCard currentCard;
+  bool _isChanged = false; please check
+
   List<bool> showPasswordRow = [];
 
   CardViewModel(this.context, this.currentCard) {
@@ -20,15 +23,20 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void closeCommand() {
+
     context.router.pop();
   }
 
   void copyToClipboard(String value) async {
     await Clipboard.setData(ClipboardData(text: value));
+
+    CurrentFileService().currentFileDocument!.cards[cardRow].usedCounter++;
+    CurrentFileService().currentFileDocument!.isChanged = true;
   }
 
-  void toggleShowPassword(int row) {
-    showPasswordRow[row] = !showPasswordRow[row];
+  void toggleShowPassword(int cardRow) {
+    showPasswordRow[cardRow] = !showPasswordRow[cardRow];
+    CurrentFileService().currentFileDocument!.isChanged = true;
     notifyListeners();
   }
 

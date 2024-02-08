@@ -32,4 +32,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
   void refreshCardListCommand() {
     notifyListeners();
   }
+
+  void saveCommand() {
+    currentFileService.encodeFile(currentFileService.currentFileDocument.toString(), currentFileService.password);
+  }
+
+  bool isFileChanged() => currentFileService.currentFileDocument!.isChanged;
 }

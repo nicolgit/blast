@@ -19,6 +19,9 @@ enum SearchWhere { title, everywhere }
 class BlastDocument {
   BlastDocument();
 
+  @JsonKey(includeToJson: false)
+  bool isChanged = false;
+
   String id = const Uuid().v4();
   int version = 1;
 

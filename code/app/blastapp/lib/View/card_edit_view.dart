@@ -190,6 +190,13 @@ class _CardEditViewState extends State<CardEditView> {
           content: const Text('Do you want to save your changes?'),
           actions: <Widget>[
             TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => {
+                
+                Navigator.pop(context),
+              }
+            ),
+            TextButton(
               child: const Text('No'),
               onPressed: () => {
                 vm.cancelCommand(),

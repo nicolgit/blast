@@ -21,6 +21,7 @@ class CardEditViewModel extends ChangeNotifier {
   void saveCommand() {
     sourceCard.copyFrom(currentCard);
     sourceCard.lastUpdateDateTime = DateTime.now();
+    CurrentFileService().currentFileDocument!.isChanged = true;
     
     context.router.pop();
   }
@@ -31,8 +32,10 @@ class CardEditViewModel extends ChangeNotifier {
   }
 
   void updateNotes(String value) {
+    if (value != currentCard.notes) {
     isChanged = true;
     currentCard.notes = value;
+  }
   }
 
   updateAttributeValue(int index, String newValue) {

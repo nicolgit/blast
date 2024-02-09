@@ -118,7 +118,7 @@ class _CardViewState extends State<CardView> {
                   Row(children: [
                     IconButton(
                       onPressed: () {
-                        vm.copyToClipboard(index, value);
+                        vm.copyToClipboard(value);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("secret copied to clipboard!"),
                         ));
@@ -168,7 +168,7 @@ class _CardViewState extends State<CardView> {
                   Row(children: [
                     IconButton(
                       onPressed: () {
-                        vm.copyToClipboard(index, value);
+                        vm.copyToClipboard(value);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("copied to clipboard!"),
                         ));
@@ -192,7 +192,7 @@ class _CardViewState extends State<CardView> {
                   Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
                   IconButton(
                     onPressed: () {
-                      vm.copyToClipboard(index, value);
+                      vm.copyToClipboard(value);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("copied to clipboard!"),
                       ));

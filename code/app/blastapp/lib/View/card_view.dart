@@ -5,7 +5,6 @@ import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';

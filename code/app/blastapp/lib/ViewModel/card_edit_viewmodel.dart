@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
@@ -52,5 +53,18 @@ class CardEditViewModel extends ChangeNotifier {
   void updateTags(List<String> values) {
     isChanged = true;
     currentCard.tags = values.map((tag) => tag.toString()).toList();
+  }
+
+  deleteAttribute(int index) {
+    isChanged = true;
+    currentCard.rows.removeAt(index);
+
+    still not working
+    
+    notifyListeners();   
+  }
+
+  Future<List<BlastAttribute>> getRows() async {
+    return Future.value(List.from( currentCard.rows));
   }
 }

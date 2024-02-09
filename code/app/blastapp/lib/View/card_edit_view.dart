@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
+import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
@@ -71,19 +72,24 @@ class _CardEditViewState extends State<CardEditView> {
                 },
               child: const Text('notes'),
             ),
-          Expanded(child: Container(
-            child: _buildFieldList(vm),
-            ),
-          ),
+          FutureBuilder<List<BlastAttribute>>(
+            future: vm.getRows(),
+            builder: (context, snapshot) {
+              return Expanded(child: Container(
+                child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+                ),
+              );
+            },
+          ),          
         ], 
       ),
       )
     );
   }
 
-  ListView _buildFieldList(CardEditViewModel vm) {
+  ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ListView.builder(
-      itemCount: vm.currentCard.rows.length, //cardsList.length,
+      itemCount: rows.length, //cardsList.length,
       itemBuilder: (context, index) {
         return ListTile(
           title: Row(
@@ -92,11 +98,10 @@ class _CardEditViewState extends State<CardEditView> {
         flex:1,
         child : Column(
         children: <Widget>[TextFormField(
-            initialValue: vm.currentCard.rows[index].name,
+            initialValue: rows[index].name,
             textInputAction: TextInputAction.next,
             onChanged: (newValue) => vm.updateAttributeName(index, newValue),
             autofocus: true,
-            //controller: filenameController,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Attribute name',
@@ -108,7 +113,7 @@ class _CardEditViewState extends State<CardEditView> {
         child: Column(
         children: <Widget>[
           TextFormField(
-            initialValue: vm.currentCard.rows[index].value,
+            initialValue: rows[index].value,
             textInputAction: TextInputAction.next,
             onChanged: (newValue) => vm.updateAttributeValue(index, newValue),
             decoration: const InputDecoration(
@@ -117,7 +122,9 @@ class _CardEditViewState extends State<CardEditView> {
                 hintText: 'Choose the attribute name'),
             )
           ],
-      ),)             
+        ),
+      ),
+      IconButton(onPressed: () => vm.deleteAttribute(index), icon: const Icon(Icons.delete), tooltip: "delete",),            
             ],
           ), 
           );

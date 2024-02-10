@@ -18,8 +18,8 @@ class CardEditView extends StatefulWidget {
 }
 
 class _CardEditViewState extends State<CardEditView> {
-  List<TextEditingController> _namesControllers = List.empty(growable: true);
-  List<TextEditingController> _valuesControllers = List.empty(growable: true);
+  final List<TextEditingController> _namesControllers = List.empty(growable: true);
+  final List<TextEditingController> _valuesControllers = List.empty(growable: true);
 
   final BlastCard card = BlastCard();
 

@@ -18,6 +18,9 @@ class CardEditView extends StatefulWidget {
 }
 
 class _CardEditViewState extends State<CardEditView> {
+  List<TextEditingController> _namesControllers = List.empty(growable: true);
+  List<TextEditingController> _valuesControllers = List.empty(growable: true);
+
   final BlastCard card = BlastCard();
 
   @override
@@ -25,11 +28,41 @@ class _CardEditViewState extends State<CardEditView> {
     final card = widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
-      create: (context) => CardEditViewModel(context, card),
+      create: (context)  
+        {
+          final vm = CardEditViewModel(context, card);
+
+          for (var i = 0; i < card.rows.length; i++) {
+            var nameController = TextEditingController(text: card.rows[i].name);
+            nameController.addListener(() { 
+              vm.updateAttributeName(i, nameController.text);
+            });
+            _namesControllers.add(nameController);
+
+            var valueController = TextEditingController(text: card.rows[i].value);
+            valueController.addListener(() { 
+              vm.updateAttributeValue(i, valueController.text);
+            });
+            _valuesControllers.add(TextEditingController(text: card.rows[i].value));
+          }
+          
+          return vm;
+        },
       child: Consumer<CardEditViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _namesControllers) {
+      controller.dispose();
+    }
+    for (var controller in _valuesControllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
@@ -94,28 +127,28 @@ class _CardEditViewState extends State<CardEditView> {
         return ListTile(
           title: Row(
             children: <Widget>[
+              Text(index.toString()),
               Expanded ( 
         flex:1,
         child : Column(
-        children: <Widget>[TextFormField(
-            initialValue: rows[index].name,
+        children: <Widget>[TextField(
             textInputAction: TextInputAction.next,
-            onChanged: (newValue) => vm.updateAttributeName(index, newValue),
+            controller: _namesControllers[index],
             autofocus: true,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Attribute name',
                 hintText: 'Choose the attribute name'),
             )],
-      ),),
+        ),
+      ),
       Expanded( 
         flex : 3,
         child: Column(
         children: <Widget>[
-          TextFormField(
-            initialValue: rows[index].value,
+          TextField(
             textInputAction: TextInputAction.next,
-            onChanged: (newValue) => vm.updateAttributeValue(index, newValue),
+            controller: _valuesControllers[index],
             decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Attribute value',
@@ -124,7 +157,13 @@ class _CardEditViewState extends State<CardEditView> {
           ],
         ),
       ),
-      IconButton(onPressed: () => vm.deleteAttribute(index), icon: const Icon(Icons.delete), tooltip: "delete",),            
+      IconButton(onPressed: () { 
+            vm.deleteAttribute(index);
+
+            _namesControllers.add(_namesControllers.removeAt(index));
+            _valuesControllers.add(_valuesControllers.removeAt(index));
+
+          }, icon: const Icon(Icons.delete), tooltip: "delete",),            
             ],
           ), 
           );

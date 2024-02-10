@@ -58,8 +58,6 @@ class CardEditViewModel extends ChangeNotifier {
   deleteAttribute(int index) {
     isChanged = true;
     currentCard.rows.removeAt(index);
-
-    still not working
     
     notifyListeners();   
   }

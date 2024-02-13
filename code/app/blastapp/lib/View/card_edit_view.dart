@@ -43,7 +43,7 @@ class _CardEditViewState extends State<CardEditView> {
             valueController.addListener(() { 
               vm.updateAttributeValue(i, valueController.text);
             });
-            _valuesControllers.add(TextEditingController(text: card.rows[i].value));
+            _valuesControllers.add(valueController);
           }
           
           return vm;

@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
@@ -89,8 +89,43 @@ class _CardEditViewState extends State<CardEditView> {
 
   ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ListView.builder(
-        itemCount: rows.length, //cardsList.length,
+        itemCount: rows.length+1, //cardsList.length,
         itemBuilder: (context, index) {
+          if (index == rows.length) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeString);
+                },
+                icon: const Icon(Icons.description),
+                label: const Text("Add row"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeHeader);
+                },
+                icon: const Icon(Icons.text_increase),
+                label: const Text("Add header"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typePassword);
+                },
+                icon: const Icon(Icons.lock),
+                label: const Text("Add secret"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeURL);
+                },
+                icon: const Icon(Icons.link),
+                label: const Text("Add URL"),
+              ),
+            ]);
+          }
+          
           return ListTile(
             title: Row(
               children: <Widget>[
@@ -141,6 +176,8 @@ class _CardEditViewState extends State<CardEditView> {
             ),
           );
         });
+
+    
 
     return myList;
   }

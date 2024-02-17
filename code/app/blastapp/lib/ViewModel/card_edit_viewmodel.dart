@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
@@ -63,5 +64,13 @@ class CardEditViewModel extends ChangeNotifier {
 
   Future<List<BlastAttribute>> getRows() async {
     return Future.value(List.from(currentCard.rows));
+  }
+
+  void addAttribute(BlastAttributeType typeString) {
+    isChanged = true;
+    currentCard.rows.add(BlastAttribute()
+      ..type = typeString);
+      
+    notifyListeners();
   }
 }

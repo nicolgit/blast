@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
@@ -18,35 +19,19 @@ class CardEditView extends StatefulWidget {
 }
 
 class _CardEditViewState extends State<CardEditView> {
-  final List<TextEditingController> _namesControllers = List.empty(growable: true);
-  final List<TextEditingController> _valuesControllers = List.empty(growable: true);
-
+  
   @override
   Widget build(BuildContext context) {
-    final card = widget.card; // this is the card passed in from the CardsBrowserView
+    final card = widget.card; // this is the card passed in, from the CardsBrowserView
 
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = CardEditViewModel(context, card);
-
-        _initTextControllers(vm);
-        return vm;
+        return CardEditViewModel(context, card);
       },
       child: Consumer<CardEditViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _namesControllers) {
-      controller.dispose();
-    }
-    for (var controller in _valuesControllers) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
@@ -116,8 +101,9 @@ class _CardEditViewState extends State<CardEditView> {
                     children: <Widget>[
                       TextField(
                         textInputAction: TextInputAction.next,
-                        controller:
-                            index < _namesControllers.length ? _namesControllers[index] : TextEditingController(),
+                        controller: TextEditingController()
+                          ..text = rows[index].name,
+                        onChanged: (value) => vm.updateAttributeName(index, value),
                         autofocus: true,
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -133,8 +119,9 @@ class _CardEditViewState extends State<CardEditView> {
                     children: <Widget>[
                       TextField(
                         textInputAction: TextInputAction.next,
-                        controller:
-                            index < _valuesControllers.length ? _valuesControllers[index] : TextEditingController(),
+                        controller: TextEditingController()
+                          ..text = rows[index].value,
+                        onChanged: (value) => vm.updateAttributeValue(index, value),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Attribute value',
@@ -146,10 +133,6 @@ class _CardEditViewState extends State<CardEditView> {
                 IconButton(
                   onPressed: () {
                     vm.deleteAttribute(index);
-
-                    _updateTextControllers(vm, index);
-
-                    vm.refresh();
                   },
                   icon: const Icon(Icons.delete),
                   tooltip: "delete",
@@ -259,47 +242,5 @@ class _CardEditViewState extends State<CardEditView> {
         vm.updateTags(values);
       },
     );
-  }
-
-  // initialize the text controllers for the card's attributes
-  void _initTextControllers(CardEditViewModel vm) {
-    final card = vm.currentCard;
-
-    for (var i = 0; i < card.rows.length; i++) {
-      var nameController = TextEditingController(text: card.rows[i].name);
-      nameController.addListener(() {
-        vm.updateAttributeName(i, nameController.text);
-      });
-      _namesControllers.add(nameController);
-
-      var valueController = TextEditingController(text: card.rows[i].value);
-      valueController.addListener(() {
-        vm.updateAttributeValue(i, valueController.text);
-      });
-      _valuesControllers.add(TextEditingController(text: card.rows[i].value));
-    }
-  }
-
-  // remove the index row and update controllers accordingly
-  void _updateTextControllers(CardEditViewModel vm, int index) {
-    _namesControllers[index].removeListener(() {});
-    _namesControllers[index].dispose();
-    _namesControllers.removeAt(index);
-
-    _valuesControllers[index].removeListener(() {});
-    _valuesControllers[index].dispose();
-    _valuesControllers.removeAt(index);
-
-    for (var i = 0; i < _namesControllers.length; i++) {
-      _namesControllers[i].removeListener(() {});
-      _namesControllers[i].addListener(() {
-        vm.updateAttributeName(i, _namesControllers[i].text);
-      });
-
-      _valuesControllers[i].removeListener(() {});
-      _valuesControllers[i].addListener(() {
-        vm.updateAttributeValue(i, _valuesControllers[i].text);
-      });
-    }
   }
 }

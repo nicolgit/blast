@@ -7,23 +7,23 @@ import 'package:flutter/material.dart';
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
   bool isChanged = false;
-  BlastCard sourceCard;
+  final BlastCard _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
 
-  CardEditViewModel(this.context, this.sourceCard) {
-    currentCard.copyFrom(sourceCard);
+  CardEditViewModel(this.context, this._sourceCard) {
+    currentCard.copyFrom(_sourceCard);
   }
 
   void cancelCommand() {
     context.router.pop();
   }
-  
+
   void saveCommand() {
-    sourceCard.copyFrom(currentCard);
-    sourceCard.lastUpdateDateTime = DateTime.now();
+    _sourceCard.copyFrom(currentCard);
+    _sourceCard.lastUpdateDateTime = DateTime.now();
     CurrentFileService().currentFileDocument!.isChanged = true;
-    
+
     context.router.pop();
   }
 
@@ -34,15 +34,14 @@ class CardEditViewModel extends ChangeNotifier {
 
   void updateNotes(String value) {
     if (value != currentCard.notes) {
-    isChanged = true;
-    currentCard.notes = value;
-  }
+      isChanged = true;
+      currentCard.notes = value;
+    }
   }
 
   updateAttributeValue(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].value = newValue;
-    
   }
 
   updateAttributeName(int index, String newValue) {
@@ -58,11 +57,13 @@ class CardEditViewModel extends ChangeNotifier {
   deleteAttribute(int index) {
     isChanged = true;
     currentCard.rows.removeAt(index);
-    
-    notifyListeners();   
+  }
+
+  refresh() {
+    notifyListeners();
   }
 
   Future<List<BlastAttribute>> getRows() async {
-    return Future.value(List.from( currentCard.rows));
+    return Future.value(List.from(currentCard.rows));
   }
 }

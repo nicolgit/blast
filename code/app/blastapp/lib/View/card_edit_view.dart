@@ -21,33 +21,17 @@ class _CardEditViewState extends State<CardEditView> {
   final List<TextEditingController> _namesControllers = List.empty(growable: true);
   final List<TextEditingController> _valuesControllers = List.empty(growable: true);
 
-  final BlastCard card = BlastCard();
-
   @override
   Widget build(BuildContext context) {
     final card = widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
-      create: (context)  
-        {
-          final vm = CardEditViewModel(context, card);
+      create: (context) {
+        final vm = CardEditViewModel(context, card);
 
-          for (var i = 0; i < card.rows.length; i++) {
-            var nameController = TextEditingController(text: card.rows[i].name);
-            nameController.addListener(() { 
-              vm.updateAttributeName(i, nameController.text);
-            });
-            _namesControllers.add(nameController);
-
-            var valueController = TextEditingController(text: card.rows[i].value);
-            valueController.addListener(() { 
-              vm.updateAttributeValue(i, valueController.text);
-            });
-            _valuesControllers.add(TextEditingController(text: card.rows[i].value));
-          }
-          
-          return vm;
-        },
+        _initTextControllers(vm);
+        return vm;
+      },
       child: Consumer<CardEditViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
@@ -72,7 +56,7 @@ class _CardEditViewState extends State<CardEditView> {
         children: [
           AppBar(
             automaticallyImplyLeading: false,
-            leading: BackButton( 
+            leading: BackButton(
               onPressed: () => _showChangedDialog(context, vm),
             ),
             title: Text('Edit Card ${vm.currentCard.id}'),
@@ -94,87 +78,93 @@ class _CardEditViewState extends State<CardEditView> {
             autofocus: true,
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Card title',
-                hintText: 'Choose a title for the card'),
-            ),
-            _buildTagsSelector(vm),
-            TextButton(
-              onPressed: () async {
-                  vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
-                },
-              child: const Text('notes'),
-            ),
+                border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
+          ),
+          _buildTagsSelector(vm),
+          TextButton(
+            onPressed: () async {
+              vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+            },
+            child: const Text('notes'),
+          ),
           FutureBuilder<List<BlastAttribute>>(
             future: vm.getRows(),
             builder: (context, snapshot) {
-              return Expanded(child: Container(
-                child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+              return Expanded(
+                child: Container(
+                  child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
                 ),
               );
             },
-          ),          
-        ], 
+          ),
+        ],
       ),
-      )
-    );
+    ));
   }
 
   ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ListView.builder(
-      itemCount: rows.length, //cardsList.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Row(
-            children: <Widget>[
-              Text(index.toString()),
-              Expanded ( 
-        flex:1,
-        child : Column(
-        children: <Widget>[TextField(
-            textInputAction: TextInputAction.next,
-            controller: _namesControllers[index],
-            autofocus: true,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Attribute name',
-                hintText: 'Choose the attribute name'),
-            )],
-        ),
-      ),
-      Expanded( 
-        flex : 3,
-        child: Column(
-        children: <Widget>[
-          TextField(
-            textInputAction: TextInputAction.next,
-            controller: _valuesControllers[index],
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Attribute value',
-                hintText: 'Choose the attribute name'),
-            )
-          ],
-        ),
-      ),
-      IconButton(onPressed: () { 
-            vm.deleteAttribute(index);
+        itemCount: rows.length, //cardsList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Row(
+              children: <Widget>[
+                Text("$index"),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: <Widget>[
+                      TextField(
+                        textInputAction: TextInputAction.next,
+                        controller:
+                            index < _namesControllers.length ? _namesControllers[index] : TextEditingController(),
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Attribute name',
+                            hintText: 'Choose the attribute name'),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    children: <Widget>[
+                      TextField(
+                        textInputAction: TextInputAction.next,
+                        controller:
+                            index < _valuesControllers.length ? _valuesControllers[index] : TextEditingController(),
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Attribute value',
+                            hintText: 'Choose the attribute name'),
+                      )
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    vm.deleteAttribute(index);
 
-            _namesControllers.add(_namesControllers.removeAt(index));
-            _valuesControllers.add(_valuesControllers.removeAt(index));
+                    _updateTextControllers(vm, index);
 
-          }, icon: const Icon(Icons.delete), tooltip: "delete",),            
-            ],
-          ), 
+                    vm.refresh();
+                  },
+                  icon: const Icon(Icons.delete),
+                  tooltip: "delete",
+                ),
+              ],
+            ),
           );
-      });
-    
+        });
+
     return myList;
   }
 
   Future<String> _displayTextInputDialog(BuildContext context, String valueText) async {
     final oldValue = valueText;
-    
+
     await showDialog(
         context: context,
         builder: (context) {
@@ -190,8 +180,7 @@ class _CardEditViewState extends State<CardEditView> {
                   valueText = value;
                 });
               },
-              decoration:
-                  const InputDecoration(hintText: "Text Field in Dialog"),
+              decoration: const InputDecoration(hintText: "Text Field in Dialog"),
             ),
             actions: <Widget>[
               MaterialButton(
@@ -219,7 +208,7 @@ class _CardEditViewState extends State<CardEditView> {
           );
         });
 
-        return valueText;
+    return valueText;
   }
 
   Future _showChangedDialog(BuildContext context, CardEditViewModel vm) async {
@@ -236,32 +225,28 @@ class _CardEditViewState extends State<CardEditView> {
           content: const Text('Do you want to save your changes?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => {
-                
-                Navigator.pop(context),
-              }
-            ),
+                child: const Text('Cancel'),
+                onPressed: () => {
+                      Navigator.pop(context),
+                    }),
             TextButton(
-              child: const Text('No'),
-              onPressed: () => {
-                vm.cancelCommand(),
-                Navigator.pop(context),
-              }
-            ),
+                child: const Text('No'),
+                onPressed: () => {
+                      vm.cancelCommand(),
+                      Navigator.pop(context),
+                    }),
             TextButton(
-              child: const Text('Yes'),
-              onPressed: () => {
-                vm.saveCommand(),
-                Navigator.pop(context),
-              }
-            ),
+                child: const Text('Yes'),
+                onPressed: () => {
+                      vm.saveCommand(),
+                      Navigator.pop(context),
+                    }),
           ],
         );
       },
     );
   }
-  
+
   _buildTagsSelector(CardEditViewModel vm) {
     return MultiSelectDialogField(
       initialValue: vm.currentCard.tags,
@@ -274,5 +259,47 @@ class _CardEditViewState extends State<CardEditView> {
         vm.updateTags(values);
       },
     );
+  }
+
+  // initialize the text controllers for the card's attributes
+  void _initTextControllers(CardEditViewModel vm) {
+    final card = vm.currentCard;
+
+    for (var i = 0; i < card.rows.length; i++) {
+      var nameController = TextEditingController(text: card.rows[i].name);
+      nameController.addListener(() {
+        vm.updateAttributeName(i, nameController.text);
+      });
+      _namesControllers.add(nameController);
+
+      var valueController = TextEditingController(text: card.rows[i].value);
+      valueController.addListener(() {
+        vm.updateAttributeValue(i, valueController.text);
+      });
+      _valuesControllers.add(TextEditingController(text: card.rows[i].value));
+    }
+  }
+
+  // remove the index row and update controllers accordingly
+  void _updateTextControllers(CardEditViewModel vm, int index) {
+    _namesControllers[index].removeListener(() {});
+    _namesControllers[index].dispose();
+    _namesControllers.removeAt(index);
+
+    _valuesControllers[index].removeListener(() {});
+    _valuesControllers[index].dispose();
+    _valuesControllers.removeAt(index);
+
+    for (var i = 0; i < _namesControllers.length; i++) {
+      _namesControllers[i].removeListener(() {});
+      _namesControllers[i].addListener(() {
+        vm.updateAttributeName(i, _namesControllers[i].text);
+      });
+
+      _valuesControllers[i].removeListener(() {});
+      _valuesControllers[i].addListener(() {
+        vm.updateAttributeValue(i, _valuesControllers[i].text);
+      });
+    }
   }
 }

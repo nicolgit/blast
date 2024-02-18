@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class CardsBrowserViewModel extends ChangeNotifier {
   final BuildContext context;
-  final CurrentFileService currentFileService = CurrentFileService();
+  final CurrentFileService fileService = CurrentFileService();
   List<BlastCard> cardsView = [];
 
   SortType sortType = SortType.none;
@@ -18,7 +18,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
   CardsBrowserViewModel(this.context);
 
   Future<List<BlastCard>>? getCards() async {
-    return currentFileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
+    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
   }
 
   Future selectCard(BlastCard selectedCard) async {
@@ -34,17 +34,20 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   void saveCommand() {
-    currentFileService.encodeFile(currentFileService.currentFileDocument.toString(), currentFileService.password);
+    fileService.currentFileJsonString = fileService.currentFileDocument.toString();
+    fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!, fileService.password);
+    fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
   }
 
-  bool isFileChanged() => currentFileService.currentFileDocument!.isChanged;
+  bool isFileChanged() => fileService.currentFileDocument!.isChanged;
 
   Future addCard() async {
     await context.router.push(CardEditRoute());
   }
 
   deleteCard(BlastCard card) {
-    currentFileService.currentFileDocument!.cards.remove(card);
+    fileService.currentFileDocument!.cards.remove(card);
+    fileService.currentFileDocument!.isChanged = true;
     notifyListeners();
   }
 }

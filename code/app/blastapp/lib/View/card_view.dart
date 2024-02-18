@@ -60,13 +60,16 @@ class _CardViewState extends State<CardView> {
               ),
             ],
           ),
-          const Text('title'),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
                   style: const TextStyle(fontWeight: FontWeight.bold)),
-              Icon(vm.currentCard.isFavorite ? Icons.star : Icons.star_border)
+              IconButton(
+                  icon: vm.currentCard.isFavorite ? const Icon(Icons.star) : const Icon(Icons.star_border),
+                  onPressed: () {
+                    vm.toggleFavorite();
+                  })
             ],
           ),
           Text(

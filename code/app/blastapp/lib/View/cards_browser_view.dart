@@ -50,8 +50,18 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             children: [
               AppBar(
                 automaticallyImplyLeading: false,
-                title: Text(vm.currentFileService.currentFileInfo!.fileName),
+                title: Text(vm.fileService.currentFileInfo!.fileName),
                 actions: [
+                  IconButton(
+                    icon: const Icon(Icons.save),
+                    tooltip: 'save',
+                    onPressed: () {
+                      vm.saveCommand();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("file saved successfully!"),
+                      ));
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.close),
                     tooltip: 'close',
@@ -64,14 +74,15 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         },
                       );
                       Widget noButton = TextButton(
-                        child: const Text("No"),
+                        child: const Text("No, just exit",
+                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                           vm.closeCommand();
                         },
                       );
                       Widget okButton = TextButton(
-                        child: const Text("Ok"),
+                        child: const Text("Yes save it"),
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                           vm.saveCommand();
@@ -82,7 +93,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       if (vm.isFileChanged()) {
                         AlertDialog alert = AlertDialog(
                           title: const Text("File changed"),
-                          content: const Text("Are you sure you want to close it and loose all your updates?"),
+                          content: const Text("Do you want to save it before closing?"),
                           actions: [
                             cancelButton,
                             noButton,
@@ -213,7 +224,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete ${card.title}'),
+          title: Row(
+            children: [
+              const Text('Delete '),
+              Text('${card.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
           content: const Text('Are you sure you want to delete this card and all its content?'),
           actions: <Widget>[
             TextButton(
@@ -222,7 +238,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       Navigator.pop(context),
                     }),
             TextButton(
-                child: const Text('Yes'),
+                child: const Text('Yes please!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                 onPressed: () => {
                       vm.deleteCard(card),
                       Navigator.pop(context),

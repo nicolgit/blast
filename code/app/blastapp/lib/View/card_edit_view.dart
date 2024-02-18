@@ -37,6 +37,7 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
+  final _formKey = GlobalKey<FormState>();
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
     return Scaffold(
         body: Center(
@@ -53,20 +54,26 @@ class _CardEditViewState extends State<CardEditView> {
                 icon: const Icon(Icons.save),
                 tooltip: 'Save',
                 onPressed: () {
-                  vm.saveCommand();
+                  if (_formKey.currentState!.validate()) {
+                    vm.saveCommand();
+                  }
                 },
               ),
             ],
           ),
-          TextFormField(
-            initialValue: vm.currentCard.title,
-            onChanged: (value) {
-              vm.updateTitle(value);
-            },
-            autofocus: _focusOn == FocusOn.title,
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
+          Form(
+            key: _formKey,
+            child: TextFormField(
+              initialValue: vm.currentCard.title,
+              onChanged: (value) {
+                vm.updateTitle(value);
+              },
+              validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+              autofocus: _focusOn == FocusOn.title,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
+            ),
           ),
           _buildTagsSelector(vm),
           TextButton(

@@ -22,19 +22,20 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void closeCommand() {
-
     context.router.pop();
   }
 
   void copyToClipboard(String value) async {
     await Clipboard.setData(ClipboardData(text: value));
+    currentCard.usedCounter++;
     _blastDocumentChanged();
+    notifyListeners();
   }
 
   void toggleShowPassword(int cardRow) {
     showPasswordRow[cardRow] = !showPasswordRow[cardRow];
+    currentCard.usedCounter++;
     _blastDocumentChanged();
-
     notifyListeners();
   }
 
@@ -52,8 +53,10 @@ class CardViewModel extends ChangeNotifier {
     final url = Uri.parse(urlString);
 
     if (await canLaunchUrl(url)) {
+      currentCard.usedCounter++;
       _blastDocumentChanged();
-      
+      notifyListeners();
+
       await launchUrl(url);
     } else {
       throw 'Could not launch $url';
@@ -71,8 +74,12 @@ class CardViewModel extends ChangeNotifier {
 
   void _blastDocumentChanged() {
     currentCard.lastUpdateDateTime = DateTime.now();
-    currentCard.usedCounter++;
-      
     CurrentFileService().currentFileDocument?.isChanged = true;
+  }
+
+  void toggleFavorite() {
+    currentCard.isFavorite = !currentCard.isFavorite;
+    _blastDocumentChanged();
+    notifyListeners();
   }
 }

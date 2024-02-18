@@ -93,7 +93,7 @@ class _SplashViewState extends State<SplashView> {
                 builder: (context, cloud) {
                   return Row(children: [
                     Text(cloud.data?.name ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const Text(" -"),
+                    const Text(" - "),
                     Text(files[file].fileName),
                   ]);
                 },
@@ -101,11 +101,11 @@ class _SplashViewState extends State<SplashView> {
             ],
           ),
           subtitle: Row(
-                children: [
-                  const Text("URI: "),
-                  Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold))
-                ],
-              ),
+            children: [
+              const Text("URI: "),
+              Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold))
+            ],
+          ),
           onTap: () async {
             await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
               ScaffoldMessenger.of(context)

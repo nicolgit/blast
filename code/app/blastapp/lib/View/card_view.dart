@@ -110,99 +110,83 @@ class _CardViewState extends State<CardView> {
           case BlastAttributeType.typePassword:
             return ListTile(
               leading: const Icon(Icons.lock),
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+              subtitle: Text(name),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(name),
-                  const Text(": "),
-                  Text(vm.isPasswordRowVisible(index) ? value : "***********",
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                  Row(children: [
-                    IconButton(
+                  Visibility(
+                    visible: !vm.isPasswordRowVisible(index),
+                    child: IconButton(
                       onPressed: () {
-                        vm.copyToClipboard(value);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("secret copied to clipboard!"),
-                        ));
+                        vm.toggleShowPassword(index);
                       },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'copy to clipboard',
+                      icon: const Icon(Icons.visibility_off),
+                      tooltip: 'hide',
                     ),
-                    Visibility(
-                      visible: !vm.isPasswordRowVisible(index),
-                      child: IconButton(
-                        onPressed: () {
-                          vm.toggleShowPassword(index);
-                        },
-                        icon: const Icon(Icons.visibility_off),
-                        tooltip: 'hide',
-                      ),
-                    ),
-                    Visibility(
-                      visible: vm.isPasswordRowVisible(index),
-                      child: IconButton(
-                        onPressed: () {
-                          vm.toggleShowPassword(index);
-                        },
-                        icon: const Icon(Icons.visibility),
-                        tooltip: 'hide',
-                      ),
-                    ),
-                  ]),
-                ],
-              ),
-            );
-          case BlastAttributeType.typeURL:
-            return ListTile(
-              leading: const Icon(Icons.link),
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(name),
-                  const Text(": "),
-                  TextButton(
-                    onPressed: () {
-                      vm.openUrl(value);
-                    },
-                    child: Text(value,
-                        style: const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
                   ),
-                  Row(children: [
-                    IconButton(
+                  Visibility(
+                    visible: vm.isPasswordRowVisible(index),
+                    child: IconButton(
                       onPressed: () {
-                        vm.copyToClipboard(value);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("copied to clipboard!"),
-                        ));
+                        vm.toggleShowPassword(index);
                       },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'copy to clipboard',
+                      icon: const Icon(Icons.visibility),
+                      tooltip: 'hide',
                     ),
-                  ]),
-                ],
-              ),
-            );
-          case BlastAttributeType.typeString:
-          default:
-            return ListTile(
-              leading: const Icon(Icons.description),
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(name),
-                  const Text(": "),
-                  Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
                   IconButton(
                     onPressed: () {
                       vm.copyToClipboard(value);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("copied to clipboard!"),
+                        content: Text("secret copied to clipboard!"),
                       ));
                     },
                     icon: const Icon(Icons.copy),
                     tooltip: 'copy to clipboard',
                   ),
                 ],
+              ),
+            );
+          case BlastAttributeType.typeURL:
+            return ListTile(
+              leading: const Icon(Icons.link),
+              title: InkWell(
+                onTap: () {
+                  vm.openUrl(value);
+                },
+                child: Text(value,
+                    style: const TextStyle(
+                        decoration: TextDecoration.underline, color: Colors.blue, decorationColor: Colors.blue)),
+              ),
+              subtitle: Text(name),
+              trailing: IconButton(
+                onPressed: () {
+                  vm.copyToClipboard(value);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("secret copied to clipboard!"),
+                  ));
+                },
+                icon: const Icon(Icons.copy),
+                tooltip: 'copy to clipboard',
+              ),
+            );
+          case BlastAttributeType.typeString:
+          default:
+            return ListTile(
+              leading: const Icon(Icons.description),
+              title: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(name),
+              trailing: IconButton(
+                onPressed: () {
+                  vm.copyToClipboard(value);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("copied to clipboard!"),
+                  ));
+                },
+                icon: const Icon(Icons.copy),
+                tooltip: 'copy to clipboard',
               ),
             );
         }

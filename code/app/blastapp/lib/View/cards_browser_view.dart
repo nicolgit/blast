@@ -121,7 +121,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   builder: (context, cardsList) {
                     return Expanded(
                       child: Container(
-                        child: _buildFileList(cardsList.data ?? [], vm),
+                        child: _buildCardsList(cardsList.data ?? [], vm),
                       ),
                     );
                   }),
@@ -152,7 +152,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     });
   }
 
-  ListView _buildFileList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
+  ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
     var myList = ListView.builder(
       itemCount: cardsList.length,
       itemBuilder: (context, index) {

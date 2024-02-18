@@ -108,7 +108,7 @@ class LoremCloud extends Cloud {
       int totalCards = random.nextInt(100);
       for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
-        attribute.name = _randomStringGenerator(random.nextInt(4));
+        attribute.name = _randomStringGenerator(random.nextInt(4) + 1);
         attribute.value = _randomStringGenerator(random.nextInt(10));
         attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
 

@@ -40,4 +40,6 @@ class ChooseFileViewModel extends ChangeNotifier {
     currentPath = Future.value(currentFileService.cloud!.goToParentDirectory(await currentPath));
     notifyListeners();
   }
+
+  void copyToClipboard(param0) {}
 }

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -40,7 +41,27 @@ class _ChooseFileViewState extends State<ChooseFileView> {
             },
             child: const Text('new file'),
           ),
-          const Text('or to open an existing one'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('or to open an existing one in '),
+              FutureBuilder<String>(
+                  future: vm.currentPath,
+                  builder: (context, currentPath) =>
+                      Text(currentPath.data ?? "", style: const TextStyle(fontWeight: FontWeight.bold))),
+              FutureBuilder<String>(
+                  future: vm.currentPath,
+                  builder: (context, currentPath) {
+                    return IconButton(
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(content: Text("current path copied to clipboard!")));
+                        },
+                        icon: const Icon(Icons.copy));
+                  }),
+            ],
+          ),
           TextButton(
               child: const Text('back'),
               onPressed: () {

@@ -34,6 +34,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   void saveCommand() {
+    fileService.currentFileDocument!.isChanged = false;
+
     fileService.currentFileJsonString = fileService.currentFileDocument.toString();
     fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!, fileService.password);
     fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);

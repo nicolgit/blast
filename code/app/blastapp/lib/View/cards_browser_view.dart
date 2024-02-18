@@ -150,6 +150,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
         return ListTile(
           leading: const Icon(Icons.file_copy_outlined),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              _showDeleteCard(context, vm, cardsList[index]);
+            },
+          ),
           title: Column(
             children: [
               Row(
@@ -199,6 +205,31 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               });
             })
       ],
+    );
+  }
+
+  Future _showDeleteCard(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete ${card.title}'),
+          content: const Text('Are you sure you want to delete this card and all its content?'),
+          actions: <Widget>[
+            TextButton(
+                child: const Text('No'),
+                onPressed: () => {
+                      Navigator.pop(context),
+                    }),
+            TextButton(
+                child: const Text('Yes'),
+                onPressed: () => {
+                      vm.deleteCard(card),
+                      Navigator.pop(context),
+                    }),
+          ],
+        );
+      },
     );
   }
 

@@ -42,4 +42,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
   Future addCard() async {
     await context.router.push(CardEditRoute());
   }
+
+  deleteCard(BlastCard card) {
+    currentFileService.currentFileDocument!.cards.remove(card);
+    notifyListeners();
+  }
 }

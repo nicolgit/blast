@@ -18,8 +18,11 @@ class CardEditView extends StatefulWidget {
   State<StatefulWidget> createState() => _CardEditViewState();
 }
 
+enum FocusOn { title, lastRow }
+
 class _CardEditViewState extends State<CardEditView> {
-  
+  FocusOn _focusOn = FocusOn.title;
+
   @override
   Widget build(BuildContext context) {
     final card = widget.card; // this is the card passed in, from the CardsBrowserView
@@ -60,7 +63,7 @@ class _CardEditViewState extends State<CardEditView> {
             onChanged: (value) {
               vm.updateTitle(value);
             },
-            autofocus: true,
+            autofocus: _focusOn == FocusOn.title,
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
@@ -98,6 +101,7 @@ class _CardEditViewState extends State<CardEditView> {
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeString);
+                  _focusOn = FocusOn.lastRow;
                 },
                 icon: const Icon(Icons.description),
                 label: const Text("Add row"),
@@ -105,6 +109,7 @@ class _CardEditViewState extends State<CardEditView> {
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeHeader);
+                  _focusOn = FocusOn.lastRow;
                 },
                 icon: const Icon(Icons.text_increase),
                 label: const Text("Add header"),
@@ -112,6 +117,7 @@ class _CardEditViewState extends State<CardEditView> {
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typePassword);
+                  _focusOn = FocusOn.lastRow;
                 },
                 icon: const Icon(Icons.lock),
                 label: const Text("Add secret"),
@@ -139,7 +145,7 @@ class _CardEditViewState extends State<CardEditView> {
                         controller: TextEditingController()
                           ..text = rows[index].name,
                         onChanged: (value) => vm.updateAttributeName(index, value),
-                        autofocus: true,
+                        autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Attribute name',

@@ -8,12 +8,16 @@ import 'package:flutter/material.dart';
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
   bool isChanged = false;
-  final BlastCard _sourceCard;
+  final BlastCard? _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
 
   CardEditViewModel(this.context, this._sourceCard) {
-    currentCard.copyFrom(_sourceCard);
+    if (_sourceCard != null) {
+      currentCard.copyFrom(_sourceCard!);
+    } else {
+      currentCard = BlastCard();
+    }
   }
 
   void cancelCommand() {
@@ -21,8 +25,13 @@ class CardEditViewModel extends ChangeNotifier {
   }
 
   void saveCommand() {
-    _sourceCard.copyFrom(currentCard);
-    _sourceCard.lastUpdateDateTime = DateTime.now();
+    if (_sourceCard == null) {
+      CurrentFileService().currentFileDocument!.cards.add(currentCard);
+    } else {
+      _sourceCard?.copyFrom(currentCard);
+      _sourceCard?.lastUpdateDateTime = DateTime.now();
+    }
+
     CurrentFileService().currentFileDocument!.isChanged = true;
 
     context.router.pop();
@@ -68,9 +77,8 @@ class CardEditViewModel extends ChangeNotifier {
 
   void addAttribute(BlastAttributeType typeString) {
     isChanged = true;
-    currentCard.rows.add(BlastAttribute()
-      ..type = typeString);
-      
+    currentCard.rows.add(BlastAttribute()..type = typeString);
+
     notifyListeners();
   }
 }

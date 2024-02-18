@@ -13,7 +13,8 @@ import 'package:flutter/rendering.dart';
 part 'blast_router.gr.dart';
 
 // https://pub.dev/packages/auto_route
-// Generete route classes with command: flutter packages pub run build_runner build
+// Generete route classes with command: (deprecated) flutter packages pub run build_runner build
+// Generate route classes with command: dart run build_runner build watch
 @AutoRouterConfig(replaceInRouteName: 'View,Route')
 class BlastRouter extends _$BlastRouter {
   @override

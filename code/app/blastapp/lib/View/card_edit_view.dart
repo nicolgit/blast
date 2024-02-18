@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CardEditView extends StatefulWidget {
-  const CardEditView({super.key, required this.card});
-  final BlastCard card;
+  const CardEditView({super.key, this.card});
+  final BlastCard? card;
 
   @override
   State<StatefulWidget> createState() => _CardEditViewState();
@@ -92,12 +92,10 @@ class _CardEditViewState extends State<CardEditView> {
 
   ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ListView.builder(
-        itemCount: rows.length+1, //cardsList.length,
+        itemCount: rows.length + 1, //cardsList.length,
         itemBuilder: (context, index) {
           if (index == rows.length) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+            return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeString);
@@ -131,7 +129,7 @@ class _CardEditViewState extends State<CardEditView> {
               ),
             ]);
           }
-          
+
           return ListTile(
             title: Row(
               children: <Widget>[
@@ -142,8 +140,7 @@ class _CardEditViewState extends State<CardEditView> {
                     children: <Widget>[
                       TextField(
                         textInputAction: TextInputAction.next,
-                        controller: TextEditingController()
-                          ..text = rows[index].name,
+                        controller: TextEditingController()..text = rows[index].name,
                         onChanged: (value) => vm.updateAttributeName(index, value),
                         autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
                         decoration: const InputDecoration(
@@ -160,8 +157,7 @@ class _CardEditViewState extends State<CardEditView> {
                     children: <Widget>[
                       TextField(
                         textInputAction: TextInputAction.next,
-                        controller: TextEditingController()
-                          ..text = rows[index].value,
+                        controller: TextEditingController()..text = rows[index].value,
                         onChanged: (value) => vm.updateAttributeValue(index, value),
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -182,8 +178,6 @@ class _CardEditViewState extends State<CardEditView> {
             ),
           );
         });
-
-    
 
     return myList;
   }

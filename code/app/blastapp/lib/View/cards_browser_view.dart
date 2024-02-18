@@ -39,7 +39,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               icon: Icon(Icons.search),
               label: "Search",
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello2")
+            BottomNavigationBarItem(icon: Icon(Icons.add_card), label: "add")
           ],
           currentIndex: _selectedIndex, //New
           onTap: (i) => _onItemTapped(i, context, vm),
@@ -123,8 +123,20 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     setState(() {
       _selectedIndex = index;
 
-      if (index == 1) {
-        _showModalBottomSheet(context, vm);
+      switch (index) {
+        case 1:
+          _showModalBottomSheet(context, vm);
+          break;
+        case 2:
+          vm.addCard().then((value) {
+            vm.refreshCardListCommand();
+          });
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("not implemented, yet!"),
+          ));
+          break;
       }
     });
   }
@@ -167,23 +179,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
 
     return myList;
-  }
-
-  Row _buildTagsRowOld(List<String> tags) {
-    return Row(
-      children: [
-        for (var tag in tags)
-          Container(
-              margin: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.red,
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(6))),
-              padding: const EdgeInsets.all(1),
-              child: Text(tag)),
-      ],
-    );
   }
 
   Row _buildTagsRow(List<String> tags) {

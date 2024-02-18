@@ -38,4 +38,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   bool isFileChanged() => currentFileService.currentFileDocument!.isChanged;
+
+  Future addCard() async {
+    await context.router.push(CardEditRoute());
+  }
 }

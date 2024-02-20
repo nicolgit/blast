@@ -75,9 +75,24 @@ class CardEditViewModel extends ChangeNotifier {
     return Future.value(List.from(currentCard.rows));
   }
 
-  void addAttribute(BlastAttributeType typeString) {
+  void addAttribute(BlastAttributeType type) {
     isChanged = true;
-    currentCard.rows.add(BlastAttribute()..type = typeString);
+
+    var newAttribute = BlastAttribute();
+    newAttribute.type = type;
+
+    switch (type) {
+      case BlastAttributeType.typePassword:
+        newAttribute.name = 'password';
+        break;
+      case BlastAttributeType.typeURL:
+        newAttribute.name = 'URL';
+        break;
+      default:
+        break;
+    }
+
+    currentCard.rows.add(newAttribute);
 
     notifyListeners();
   }

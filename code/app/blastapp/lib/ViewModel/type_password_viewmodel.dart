@@ -23,6 +23,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   bool checkPassword() {
     try {
+      CurrentFileService().password = password;
       CurrentFileService().currentFileJsonString =
           CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password);
       CurrentFileService().currentFileDocument =
@@ -32,7 +33,6 @@ class TypePasswordViewModel extends ChangeNotifier {
       if (file != null) {
         SettingService().addRecentFile(file);
       }
-
       errorMessage = '';
       notifyListeners();
 

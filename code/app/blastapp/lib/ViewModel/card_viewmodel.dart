@@ -64,7 +64,9 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future editCommand() async {
-    await context.router.push(CardEditRoute(card: currentCard));
+    await context.router.push(CardEditRoute(card: currentCard)).then((value) => 
+    { showPasswordRow = List.filled(currentCard.rows.length, false)});
+    
     return Future.value();
   }
 

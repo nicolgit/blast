@@ -115,14 +115,16 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   ),
                 ],
               ),
-              const Text('your cards.'),
               FutureBuilder<List<BlastCard>>(
                   future: vm.getCards(),
                   builder: (context, cardsList) {
                     return Expanded(
-                      child: Container(
-                        child: _buildCardsList(cardsList.data ?? [], vm),
+                   
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: _buildCardsList(cardsList.data ?? [], vm),
                       ),
+                      
                     );
                   }),
             ],
@@ -167,14 +169,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               _showDeleteCard(context, vm, cardsList[index]);
             },
           ),
-          title: Column(
-            children: [
-              Row(
-                children: [
-                  Text(name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Row(
+          title: Text(name, style: const TextStyle( fontWeight: FontWeight.bold)),
+          subtitle: Row(
                 children: [
                   Icon(
                     isFavorite ? Icons.star : Icons.star_border,
@@ -184,8 +180,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   _buildTagsRow(cardsList[index].tags),
                 ],
               ),
-            ],
-          ),
           onTap: () async {
             vm.selectCard(cardsList[index]).then((value) {
               vm.refreshCardListCommand();
@@ -214,7 +208,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               setState(() {
                 //value.selected = !value.selected;
               });
-            })
+            },
+            textStyle: const TextStyle(fontSize: 12),
+            )
       ],
     );
   }

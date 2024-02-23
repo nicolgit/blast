@@ -76,12 +76,6 @@ class _CardEditViewState extends State<CardEditView> {
             ),
           ),
           _buildTagsSelector(vm),
-          TextButton(
-            onPressed: () async {
-              vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
-            },
-            child: const Text('notes'),
-          ),
           FutureBuilder<List<BlastAttribute>>(
             future: vm.getRows(),
             builder: (context, snapshot) {
@@ -102,7 +96,9 @@ class _CardEditViewState extends State<CardEditView> {
         itemCount: rows.length + 1, //cardsList.length,
         itemBuilder: (context, index) {
           if (index == rows.length) {
-            return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            return Column( 
+              children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeString);
@@ -134,7 +130,22 @@ class _CardEditViewState extends State<CardEditView> {
                 icon: const Icon(Icons.link),
                 label: const Text("Add URL"),
               ),
-            ]);
+            ]),
+            Row(
+              children: [
+              TextButton(
+                child: const Text('edit notes > '),
+              onPressed: () async {
+                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+              },
+              ),
+              Expanded (
+                child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1)
+              ),
+              ],
+          ),
+            ]
+            );
           }
 
           return ListTile(
@@ -159,7 +170,7 @@ class _CardEditViewState extends State<CardEditView> {
                   ),
                 ),
                 Expanded(
-                  flex: 3,
+                flex: rows[index].type == BlastAttributeType.typeHeader ? 1 : 3,
                   child: Column(
                     children: <Widget>[
                       TextField(
@@ -174,6 +185,7 @@ class _CardEditViewState extends State<CardEditView> {
                     ],
                   ),
                 ),
+                _iconType(vm, index),
                 IconButton(
                   onPressed: () {
                     vm.deleteAttribute(index);
@@ -286,5 +298,31 @@ class _CardEditViewState extends State<CardEditView> {
         vm.updateTags(values);
       },
     );
+  }
+  
+  _iconType(CardEditViewModel vm, int index) {
+    var icon = const Icon(Icons.error);
+
+    switch (vm.currentCard.rows[index].type) {
+      case BlastAttributeType.typeString:
+        icon = const Icon(Icons.description);
+      case BlastAttributeType.typeHeader:
+        icon = const Icon(Icons.text_increase);
+      case BlastAttributeType.typePassword:
+        icon = const Icon(Icons.lock);
+      case BlastAttributeType.typeURL:
+        icon = const Icon(Icons.link);
+      default:
+        icon = const Icon(Icons.error);
+    }
+
+    return IconButton(
+                  onPressed: (){
+                    vm.swapType(index);
+                  }, 
+                  icon: icon,
+                  tooltip: "change type",
+                  );
+
   }
 }

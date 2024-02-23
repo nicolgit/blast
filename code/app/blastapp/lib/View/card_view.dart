@@ -73,7 +73,7 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           Text(
-              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time used ${DateFormat.yMMMEd().format(vm.currentCard.lastOpenedDateTime)}, about ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} "),
+              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last used ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} "),
           _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
@@ -91,8 +91,13 @@ class _CardViewState extends State<CardView> {
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
     var myList = ListView.builder(
-      itemCount: cardsList.length,
+      itemCount: cardsList.length + 1,
       itemBuilder: (context, index) {
+
+        if (index == cardsList.length && vm.currentCard.notes != null) {
+          return _showNotes(vm.currentCard.notes!, vm);
+        }
+
         String name = cardsList[index].name;
         String value = cardsList[index].value;
         final type = cardsList[index].type;
@@ -211,6 +216,27 @@ class _CardViewState extends State<CardView> {
           }*/
         )
       ],
+    );
+  }
+  
+  ListTile _showNotes(String notes, CardViewModel vm) {
+    return ListTile(
+      leading: const Text("Notes"),
+      title: 
+      Flexible(
+        child: Text(notes, style: const TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      trailing: IconButton(
+                onPressed: () {
+                  vm.copyToClipboard(notes);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("copied to clipboard!"),
+                  ));
+                },
+                icon: const Icon(Icons.copy),
+                tooltip: 'copy to clipboard',
+              ),
+      
     );
   }
 }

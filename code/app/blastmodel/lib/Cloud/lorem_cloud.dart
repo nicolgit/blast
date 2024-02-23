@@ -31,7 +31,7 @@ class LoremCloud extends Cloud {
     List<CloudObject> files = [];
     int totalFiles = random.nextInt(20) + 1;
     for (int i = 0; i < totalFiles; i++) {
-      String name = _randomStringGenerator(random.nextInt(4) + 1);
+      String name = _randomStringGenerator(random.nextInt(4) + 1, false);
       name = name.replaceAll(" ", "-");
 
       name += random.nextInt(1000).toString();
@@ -97,8 +97,8 @@ class LoremCloud extends Cloud {
     for (int i = 0; i < totalCards; i++) {
       BlastCard card = BlastCard();
 
-      card.title = _randomStringGenerator(random.nextInt(5) + 1);
-      card.notes = _randomStringGenerator(random.nextInt(20) + 1);
+      card.title = _randomStringGenerator(random.nextInt(5) + 1, false);
+      card.notes = _randomStringGenerator(random.nextInt(200) + 1, true);
       card.isFavorite = random.nextInt(5) == 0;
       card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
@@ -108,8 +108,8 @@ class LoremCloud extends Cloud {
       int totalCards = random.nextInt(100);
       for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
-        attribute.name = _randomStringGenerator(random.nextInt(4) + 1);
-        attribute.value = _randomStringGenerator(random.nextInt(10));
+        attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false);
+        attribute.value = _randomStringGenerator(random.nextInt(10), false);
         attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
 
         card.rows.add(attribute);
@@ -121,14 +121,22 @@ class LoremCloud extends Cloud {
     return document;
   }
 
-  String _randomStringGenerator(int length) {
+  String _randomStringGenerator(int length, bool includeNewLine) {
     Random random = Random();
 
     String result = "";
-
-    for (int i = 0; i < length; i++) {
+    int nextNewLine = random.nextInt(50)+5;
+    for (int i=0,nl = 0; i < length; i++, nl++) {
       result += _words[random.nextInt(_words.length)];
-      result += " ";
+
+      if (nl == nextNewLine && includeNewLine) {
+        result += ".\n";
+        nextNewLine = random.nextInt(50)+5;
+        nl = 0;
+      }
+      else {
+        result += " ";
+      }
     }
 
     return result.trim();

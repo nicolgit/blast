@@ -96,4 +96,21 @@ class CardEditViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void swapType(int index) {
+    isChanged = true;
+
+    switch (currentCard.rows[index].type) {
+      case BlastAttributeType.typeHeader:
+        currentCard.rows[index].type = BlastAttributeType.typePassword;
+      case BlastAttributeType.typePassword:
+        currentCard.rows[index].type = BlastAttributeType.typeString;
+      case BlastAttributeType.typeString:
+        currentCard.rows[index].type = BlastAttributeType.typeURL;
+      case BlastAttributeType.typeURL:
+        currentCard.rows[index].type = BlastAttributeType.typeHeader;
+    }
+
+    notifyListeners();
+  }
 }

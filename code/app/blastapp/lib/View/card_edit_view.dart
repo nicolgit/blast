@@ -169,7 +169,8 @@ class _CardEditViewState extends State<CardEditView> {
                     ],
                   ),
                 ),
-                Expanded(
+                Visibility(visible:rows[index].type != BlastAttributeType.typeHeader,
+                child: Expanded(
                 flex: rows[index].type == BlastAttributeType.typeHeader ? 1 : 3,
                   child: Column(
                     children: <Widget>[
@@ -184,6 +185,7 @@ class _CardEditViewState extends State<CardEditView> {
                       )
                     ],
                   ),
+                ),
                 ),
                 _iconType(vm, index),
                 IconButton(

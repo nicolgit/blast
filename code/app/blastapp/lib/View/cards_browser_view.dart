@@ -172,8 +172,11 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           title: Text(name, style: const TextStyle( fontWeight: FontWeight.bold)),
           subtitle: Row(
                 children: [
-                  Icon(
-                    isFavorite ? Icons.star : Icons.star_border,
+                  Visibility(
+                    visible: isFavorite,
+                    child: Icon(
+                      isFavorite ? Icons.star : Icons.star_border,
+                    ),
                   ),
                   Text(
                       'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),

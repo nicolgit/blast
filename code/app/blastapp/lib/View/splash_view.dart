@@ -94,7 +94,8 @@ class _SplashViewState extends State<SplashView> {
                   return Row(children: [
                     Text(cloud.data?.name ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
                     const Text(" - "),
-                    Text(files[file].fileName),
+                    Expanded( child: Text(files[file].fileName, overflow: TextOverflow.ellipsis, maxLines: 1),
+                    ),
                   ]);
                 },
               ),
@@ -103,7 +104,10 @@ class _SplashViewState extends State<SplashView> {
           subtitle: Row(
             children: [
               const Text("URI: "),
-              Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold))
+              Expanded (
+                child: Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 1)
+              ),
+              
             ],
           ),
           onTap: () async {

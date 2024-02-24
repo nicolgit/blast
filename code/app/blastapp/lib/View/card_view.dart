@@ -67,6 +67,7 @@ class _CardViewState extends State<CardView> {
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               IconButton(
                   icon: vm.currentCard.isFavorite ? const Icon(Icons.star) : const Icon(Icons.star_border),
+                  tooltip: "toggle favorite",
                   onPressed: () {
                     vm.toggleFavorite();
                   })

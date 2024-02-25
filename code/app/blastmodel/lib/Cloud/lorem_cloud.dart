@@ -125,16 +125,15 @@ class LoremCloud extends Cloud {
     Random random = Random();
 
     String result = "";
-    int nextNewLine = random.nextInt(50)+5;
-    for (int i=0,nl = 0; i < length; i++, nl++) {
+    int nextNewLine = random.nextInt(50) + 5;
+    for (int i = 0, nl = 0; i < length; i++, nl++) {
       result += _words[random.nextInt(_words.length)];
 
       if (nl == nextNewLine && includeNewLine) {
         result += ".\n";
-        nextNewLine = random.nextInt(50)+5;
+        nextNewLine = random.nextInt(50) + 5;
         nl = 0;
-      }
-      else {
+      } else {
         result += " ";
       }
     }

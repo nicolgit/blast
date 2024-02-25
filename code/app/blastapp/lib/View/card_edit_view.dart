@@ -96,56 +96,52 @@ class _CardEditViewState extends State<CardEditView> {
         itemCount: rows.length + 1, //cardsList.length,
         itemBuilder: (context, index) {
           if (index == rows.length) {
-            return Column( 
-              children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeString);
-                  _focusOn = FocusOn.lastRow;
-                },
-                icon: const Icon(Icons.description),
-                label: const Text("Add row"),
+            return Column(children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                TextButton.icon(
+                  onPressed: () {
+                    vm.addAttribute(BlastAttributeType.typeString);
+                    _focusOn = FocusOn.lastRow;
+                  },
+                  icon: const Icon(Icons.description),
+                  label: const Text("Add row"),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    vm.addAttribute(BlastAttributeType.typeHeader);
+                    _focusOn = FocusOn.lastRow;
+                  },
+                  icon: const Icon(Icons.text_increase),
+                  label: const Text("Add header"),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    vm.addAttribute(BlastAttributeType.typePassword);
+                    _focusOn = FocusOn.lastRow;
+                  },
+                  icon: const Icon(Icons.lock),
+                  label: const Text("Add secret"),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    vm.addAttribute(BlastAttributeType.typeURL);
+                  },
+                  icon: const Icon(Icons.link),
+                  label: const Text("Add URL"),
+                ),
+              ]),
+              Row(
+                children: [
+                  TextButton(
+                    child: const Text('edit notes > '),
+                    onPressed: () async {
+                      vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                    },
+                  ),
+                  Expanded(child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1)),
+                ],
               ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeHeader);
-                  _focusOn = FocusOn.lastRow;
-                },
-                icon: const Icon(Icons.text_increase),
-                label: const Text("Add header"),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typePassword);
-                  _focusOn = FocusOn.lastRow;
-                },
-                icon: const Icon(Icons.lock),
-                label: const Text("Add secret"),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeURL);
-                },
-                icon: const Icon(Icons.link),
-                label: const Text("Add URL"),
-              ),
-            ]),
-            Row(
-              children: [
-              TextButton(
-                child: const Text('edit notes > '),
-              onPressed: () async {
-                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
-              },
-              ),
-              Expanded (
-                child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1)
-              ),
-              ],
-          ),
-            ]
-            );
+            ]);
           }
 
           return ListTile(
@@ -169,23 +165,24 @@ class _CardEditViewState extends State<CardEditView> {
                     ],
                   ),
                 ),
-                Visibility(visible:rows[index].type != BlastAttributeType.typeHeader,
-                child: Expanded(
-                flex: rows[index].type == BlastAttributeType.typeHeader ? 1 : 3,
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        textInputAction: TextInputAction.next,
-                        controller: TextEditingController()..text = rows[index].value,
-                        onChanged: (value) => vm.updateAttributeValue(index, value),
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Attribute value',
-                            hintText: 'Choose the attribute name'),
-                      )
-                    ],
+                Visibility(
+                  visible: rows[index].type != BlastAttributeType.typeHeader,
+                  child: Expanded(
+                    flex: rows[index].type == BlastAttributeType.typeHeader ? 1 : 3,
+                    child: Column(
+                      children: <Widget>[
+                        TextField(
+                          textInputAction: TextInputAction.next,
+                          controller: TextEditingController()..text = rows[index].value,
+                          onChanged: (value) => vm.updateAttributeValue(index, value),
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Attribute value',
+                              hintText: 'Choose the attribute name'),
+                        )
+                      ],
+                    ),
                   ),
-                ),
                 ),
                 _iconType(vm, index),
                 IconButton(
@@ -301,7 +298,7 @@ class _CardEditViewState extends State<CardEditView> {
       },
     );
   }
-  
+
   _iconType(CardEditViewModel vm, int index) {
     var icon = const Icon(Icons.error);
 
@@ -319,12 +316,11 @@ class _CardEditViewState extends State<CardEditView> {
     }
 
     return IconButton(
-                  onPressed: (){
-                    vm.swapType(index);
-                  }, 
-                  icon: icon,
-                  tooltip: "change type",
-                  );
-
+      onPressed: () {
+        vm.swapType(index);
+      },
+      icon: icon,
+      tooltip: "${vm.currentCard.rows[index].type.name}\n tap to change",
+    );
   }
 }

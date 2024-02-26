@@ -7,6 +7,7 @@ import 'package:blastmodel/Cloud/onedrive_cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/blastfilelist.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -33,8 +34,10 @@ class SettingService {
     // init cloud storages list
     cloudStorages.add(LoremCloud());
 
-    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-      cloudStorages.add(FileSystemCloud());  
+    if (kIsWeb) {
+      // nothing to do
+    } else if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
+      cloudStorages.add(FileSystemCloud());
     }
 
     cloudStorages.add(OneDriveCloud());

@@ -1,13 +1,17 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:html' as dartHtml;
+import 'dart:html';
+import 'dart:io' as dartIo;
 import 'dart:typed_data';
 
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:openid_client/openid_client.dart';
+import 'package:openid_client/openid_client_browser.dart' as browser hide Platform;
 import 'package:openid_client/openid_client_io.dart' as io;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class OneDriveCloud extends Cloud {
   //final Uri oidcMetadataUrl =
@@ -16,7 +20,7 @@ class OneDriveCloud extends Cloud {
   final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
 
   Issuer? _issuer;
-  Credential? _credential = null;
+  Credential? _credential;
 
   @override
   String get id => "ONEDRIVE";
@@ -88,11 +92,11 @@ class OneDriveCloud extends Cloud {
     return true;
   }
 
-  Future<Credential> _authenticate(Client client, {List<String> scopes = const []}) async {
+  Future<Credential?> _authenticate(Client client, {List<String> scopes = const []}) async {
     // create a function to open a browser with an url
-    urlLauncher(String url) async {
+    urlLauncherApp(String url) async {
       var uri = Uri.parse(url);
-      if (await canLaunchUrl(uri) || Platform.isAndroid) {
+      if (await canLaunchUrl(uri) || dartIo.Platform.isAndroid) {
         await launchUrl(uri);
       } else {
         throw 'Could not launch $url';
@@ -100,16 +104,43 @@ class OneDriveCloud extends Cloud {
     }
 
     // create an authenticator
-    var authenticator = io.Authenticator(client, port: 4000, scopes: scopes, urlLancher: urlLauncher);
+    if (kIsWeb) {
+      var authenticator = browser.Authenticator(client, scopes: scopes);
 
-    // close the webview when finished
-    if (Platform.isAndroid || Platform.isIOS) {
-      closeInAppWebView();
+      // starts the authentication
+      var futureCredential = authenticator.credential;
+      var credential = await futureCredential;
+
+      if (credential != null) {
+        Future<void> refresh() async {
+          var userData = await credential!.getUserInfo();
+        }
+
+        await refresh();
+
+        authenticator.logout();
+
+        //document.querySelector('#refresh')!.onClick.listen((_) async {
+        //  credential = await authenticator.trySilentRefresh();
+        //  await refresh();
+        //});
+      } else {
+        authenticator.authorize();
+      }
+
+      return credential;
+    } else {
+      var authenticator = io.Authenticator(client, port: 4000, scopes: scopes, urlLancher: urlLauncherApp);
+
+      // close the webview when finished
+      if (!kIsWeb && (dartIo.Platform.isAndroid || dartIo.Platform.isIOS)) {
+        closeInAppWebView();
+      }
+
+      // starts the authentication
+      var c = await authenticator.authorize();
+
+      return c;
     }
-
-    // starts the authentication
-    var c = await authenticator.authorize();
-
-    return c;
   }
 }

@@ -15,7 +15,6 @@ dependencies:
   pointycastle: ^3.3.4
   path_provider: ^2.1.2
   diacritic: ^0.1.5
-  openid_client: ^0.4.8
   url_launcher: ^6.2.5
 
 dev_dependencies:

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:app_links/app_links.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/secrets.dart';
@@ -14,8 +15,9 @@ class OneDriveCloud extends Cloud {
   final _tokenEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token');
   final _applicationId = Secrets.oneDriveApplicationId;
   final _applicationSecret = Secrets.oneDriveSecret;
-  final _redirectUrl = Uri.parse('http://localhost');
+  final _redirectUrl = Uri.parse('blastapp://auth');
   final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
+  final _appLinks = AppLinks();
 
   Future<oauth2.Client> _createClient() async {
     var grant = oauth2.AuthorizationCodeGrant(_applicationId, _authorizationEndpoint, _tokenEndpoint,
@@ -48,14 +50,20 @@ class OneDriveCloud extends Cloud {
   }
 
   Future<Uri> _listen(Uri url) async {
-    // Client implementation detail
-/*    final linksStream = getLinksStream().listen((Uri uri) async {
-      if (uri.toString().startsWith(redirectUrl)) {
-        responseUrl = uri;
+    Uri? responseUri;
+
+    _appLinks.allUriLinkStream.listen((uri) async {
+      if (uri.toString().startsWith(_redirectUrl.toString())) {
+        responseUri = uri;
       }
     });
-*/
-    return Uri();
+
+    while (responseUri == null) {
+      await Future.delayed(const Duration(seconds: 1));
+      print("waiting...."); x
+    }
+
+    return responseUri!;
   }
 
   @override

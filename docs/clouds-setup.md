@@ -7,7 +7,7 @@ Go to Microsoft Entra id > App Registrations > + New Registration
 * click [Registrer]
   
 Go to Microsoft Entra id > App Registrations > all apps > `blastApp`
-copy Application (Client) Id to [secrets](/code/app/blastmodel/lib/secrets.dart) in `oneDriveApplicationId`
+copy Application (Client) Id to [secrets.dart](/code/app/blastmodel/lib/secrets.dart) in `oneDriveApplicationId` field
 
 Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentication > platform configurations > add a platform:
 * platform: `mobile and desktop`

@@ -113,22 +113,29 @@ class OneDriveCloud extends Cloud {
         name: onedriveData['value'][i]['name'],
         path: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
         isDirectory: onedriveData['value'][i]['folder'] != null,
-        url: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        url: onedriveData['value'][i]['folder'] == null
+            ? onedriveData['value'][i]['@microsoft.graph.downloadUrl']
+            : onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
         lastModified: DateTime.now(),
         size: 0,
       );
       files.add(co);
     }
 
-    //print(response.body.toString());
+    print(response.body.toString());
 
     return files;
   }
 
   @override
-  Future<Uint8List> getFile(String path) {
-    // TODO: implement getFile
-    throw UnimplementedError();
+  Future<Uint8List> getFile(String path) async {
+    var client = await _createClient();
+
+    // https://graph.microsoft.com/v1.0/me/drive/root:/{item-path}:/content
+
+    var response = await client.get(Uri.parse(path));
+
+    return Uint8List.fromList(response.bodyBytes);
   }
 
   @override

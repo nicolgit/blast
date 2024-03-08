@@ -2,16 +2,16 @@ These are the instructions for setting up cloud connections.
 
 # OneDrive Setup
 Go to Microsoft Entra id > App Registrations > + New Registration
-* Name: `onedriveApp`
+* Name: `blastApp`
 * Supported account types: `Personal Microsoft Account Only`
 * click [Registrer]
   
-Go to Microsoft Entra id > App Registrations > all apps > `onedriveApp`
+Go to Microsoft Entra id > App Registrations > all apps > `blastApp`
 copy Application (Client) Id to [secrets](/code/app/blastmodel/lib/secrets.dart) in `oneDriveApplicationId`
 
-Go to Microsoft Entra id > App Registrations > all apps > `onedriveApp` > Authentication > platform configurations > add a platform:
-* platform: `web`
-* redirect URI: `http://localhost`
+Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentication > platform configurations > add a platform:
+* platform: `mobile and desktop`
+* redirect URI: `blastapp://auth`  (for windows client app)
 * click [save]
 
 Go to Microsoft Entra id > API permissions > add a permission

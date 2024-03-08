@@ -13,3 +13,7 @@ class BlastUnknownFileVersionException implements BlastException {
 class BlastInvalidFileException implements BlastException {
   BlastInvalidFileException();
 }
+
+class BlastAuthenticationFailedException implements BlastException {
+  BlastAuthenticationFailedException();
+}

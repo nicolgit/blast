@@ -21,8 +21,11 @@ class ChooseFileViewModel extends ChangeNotifier {
       currentPath = Future.value(object.url);
       notifyListeners();
     } else {
-      currentFileService.currentFileInfo =
-          BlastFile(cloudId: currentFileService.cloud!.id, fileName: object.name, fileUrl: object.url);
+      currentFileService.currentFileInfo = BlastFile(
+          cloudId: currentFileService.cloud!.id,
+          fileName: object.name,
+          fileUrl: object.url,
+          jsonCredentials: currentFileService.cloud!.cachedCredentials);
 
       currentFileService.currentFileEncrypted =
           await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);

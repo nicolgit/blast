@@ -1,27 +1,31 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
+import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/secrets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 class OneDriveCloud extends Cloud {
-  //final Uri oidcMetadataUrl =
-  //    Uri.parse('https://login.microsoftonline.com/consumers/v2.0/.well-known/openid-configuration');
-
   final _authorizationEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize');
   final _tokenEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token');
   final _applicationId = Secrets.oneDriveApplicationId;
-  final _applicationSecret = Secrets.oneDriveSecret;
   final _redirectUrl = Uri.parse('blastapp://auth');
   final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
   final _appLinks = AppLinks();
 
+  String? cachedCredentials;
+
   Future<oauth2.Client> _createClient() async {
-    var grant = oauth2.AuthorizationCodeGrant(_applicationId, _authorizationEndpoint, _tokenEndpoint,
-        secret: _applicationSecret);
+    if (cachedCredentials != null) {
+      var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
+      return oauth2.Client(credentials, identifier: _applicationId);
+    }
+
+    var grant = oauth2.AuthorizationCodeGrant(_applicationId, _authorizationEndpoint, _tokenEndpoint);
 
     // A URL on the authorization server (authorizationEndpoint with some
     // additional query parameters). Scopes and state can optionally be passed
@@ -40,7 +44,10 @@ class OneDriveCloud extends Cloud {
     // Once the user is redirected to `redirectUrl`, pass the query parameters to
     // the AuthorizationCodeGrant. It will validate them and extract the
     // authorization code to create a new Client.
-    return grant.handleAuthorizationResponse(responseUrl.queryParameters);
+    var client = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
+    cachedCredentials = client.credentials.toJson();
+
+    return client;
   }
 
   Future<void> _redirect(Uri url) async {
@@ -58,9 +65,18 @@ class OneDriveCloud extends Cloud {
       }
     });
 
-    while (responseUri == null) {
+    //wait for authentication, max 30 seconds
+    int counter = 0, timeout = 30;
+    while (responseUri == null && counter++ < timeout) {
       await Future.delayed(const Duration(seconds: 1));
-      print("waiting...."); x
+
+      if (kDebugMode) {
+        print("waiting.... $counter of $timeout");
+      }
+    }
+
+    if (responseUri == null) {
+      throw BlastAuthenticationFailedException();
     }
 
     return responseUri!;
@@ -71,39 +87,40 @@ class OneDriveCloud extends Cloud {
   @override
   String get name => 'Microsoft OneDrive personal';
   @override
-  // TODO: implement getFiles
-  Future<String> get rootpath => Future.value('https://graph.microsoft.com/v1.0/me/drive/root');
+  Future<String> get rootpath => Future.value('/drive/root');
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
     List<CloudObject> files = List.empty(growable: true);
 
-    var client = await _createClient();
-    var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root/children'));
-    /*
-    if (_credential != null) {
-      var httpClient = _credential!.createHttpClient();
-
-      var response = await httpClient.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root/children'));
-      final onedriveData = await json.decode(response.body);
-
-      for (int i = 0; i < onedriveData['@odata.count'] - 2; i++) {
-        var co = CloudObject(
-          name: onedriveData['value'][i]['name'],
-          path: onedriveData['value'][i]['parentReference']['path'],
-          isDirectory: onedriveData['value'][i]['folder'] != null,
-          url: onedriveData['value'][i]['parentReference']['path'],
-          lastModified: DateTime.now(),
-          size: 0,
-        );
-        files.add(co);
-        print(i);
-      }
-
-      print("********root");
-      print(response.body.toString());
+    //
+    // API https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_list_children?view=odsp-graph-online
+    //
+    // https://graph.microsoft.com/v1.0/me/drive/root/children
+    // https://graph.microsoft.com/v1.0/me/drive/root:/folde1/folder2/folder3:/children
+    //
+    if (path != await rootpath) {
+      path = '$path:';
     }
-    */
+
+    var client = await _createClient();
+    var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/$path/children'));
+
+    final onedriveData = await json.decode(response.body);
+
+    for (int i = 0; i < onedriveData['@odata.count'] - 2; i++) {
+      var co = CloudObject(
+        name: onedriveData['value'][i]['name'],
+        path: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        isDirectory: onedriveData['value'][i]['folder'] != null,
+        url: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        lastModified: DateTime.now(),
+        size: 0,
+      );
+      files.add(co);
+    }
+
+    //print(response.body.toString());
 
     return files;
   }
@@ -115,9 +132,17 @@ class OneDriveCloud extends Cloud {
   }
 
   @override
-  Future<String> goToParentDirectory(String currentPath) {
-    // TODO: implement goToParentDirectory
-    throw UnimplementedError();
+  Future<String> goToParentDirectory(String currentPath) async {
+    if (currentPath == ('${await rootpath}:')) {
+      return rootpath;
+    }
+
+    var newPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    if (newPath == ('${await rootpath}:')) {
+      return rootpath;
+    }
+
+    return Future.value(newPath);
   }
 
   @override

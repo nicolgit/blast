@@ -8,6 +8,7 @@ part of 'blastdocument.dart';
 
 BlastDocument _$BlastDocumentFromJson(Map<String, dynamic> json) =>
     BlastDocument()
+      ..isChanged = json['IsChanged'] as bool
       ..id = json['Id'] as String
       ..version = json['Version'] as int
       ..cards = (json['Cards'] as List<dynamic>)

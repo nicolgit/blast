@@ -10,7 +10,7 @@ BlastFile _$BlastFileFromJson(Map<String, dynamic> json) => BlastFile(
       cloudId: json['CloudId'] as String,
       fileName: json['FileName'] as String,
       fileUrl: json['FileUrl'] as String,
-      jsonCredentials: json['JsonCredentials'] as String,
+      jsonCredentials: json['JsonCredentials'] as String?,
     );
 
 Map<String, dynamic> _$BlastFileToJson(BlastFile instance) => <String, dynamic>{

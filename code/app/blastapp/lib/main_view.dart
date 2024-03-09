@@ -1,5 +1,6 @@
 import 'package:blastapp/blast_router.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class MainView extends StatelessWidget {            
   
@@ -11,8 +12,15 @@ class MainView extends StatelessWidget {
             
   @override            
   Widget build(BuildContext context){            
-    return MaterialApp.router(            
-      routerConfig: _appRouter.config(),         
+    return LoaderOverlay(   
+      useDefaultLoading: false,
+      overlayWidgetBuilder: (_) {
+        return const Center(child: CircularProgressIndicator());       
+      },
+      overlayColor: Colors.yellow.shade200.withOpacity(0.8),
+      child: MaterialApp.router(            
+      routerConfig: _appRouter.config(),
+      )         
     );            
   }            
 }      

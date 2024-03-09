@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -81,7 +82,18 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     ));
   }
 
-  ListView _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
+  Widget _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
+    if (vm.isLoading) {
+      context.loaderOverlay.show();
+    }
+    else {
+      context.loaderOverlay.hide();
+    }
+
+    if (listFiles.isEmpty) {
+      return const Center(child: Text("No files found"));
+    }
+
     var myList = ListView.builder(
       itemCount: listFiles.length,
       itemBuilder: (context, index) {

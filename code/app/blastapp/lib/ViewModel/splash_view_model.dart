@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 class SplashViewModel extends ChangeNotifier {
   BuildContext context;
 
+  bool isLoading = false;
+
   SplashViewModel(this.context);
 
   Future<bool> eulaAccepted() async {
@@ -38,6 +40,9 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   goToRecentFile(BlastFile file) async {
+    isLoading = true;
+    notifyListeners();
+
     CurrentFileService().reset();
     CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
     CurrentFileService().currentFileInfo = file;
@@ -45,6 +50,9 @@ class SplashViewModel extends ChangeNotifier {
     CurrentFileService().currentFileEncrypted =
         await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
 
+    isLoading = false;
+    notifyListeners();
+    
     if (!context.mounted) return;
     return context.router.push(const TypePasswordRoute());
   }

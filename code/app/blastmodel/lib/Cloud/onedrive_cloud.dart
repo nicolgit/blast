@@ -13,7 +13,7 @@ class OneDriveCloud extends Cloud {
   final _tokenEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token');
   final _applicationId = Secrets.oneDriveApplicationId;
   final _redirectUrl = Uri.parse('blastapp://auth');
-  final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
+  final List<String> _scopes = ['openid', 'profile', 'Files.ReadWrite'];
   final _appLinks = AppLinks();
 
   Future<oauth2.Client> _createClient() async {
@@ -129,7 +129,6 @@ class OneDriveCloud extends Cloud {
     var client = await _createClient();
 
     // /me/drive/items/{item-id}/content
-
     //var response = await client.get(Uri.parse(path));
     var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'));
 
@@ -151,8 +150,35 @@ class OneDriveCloud extends Cloud {
   }
 
   @override
-  Future<bool> setFile(String path, Uint8List bytes) {
-    // TODO: implement setFile
-    throw UnimplementedError();
+  Future<bool> setFile(String id, Uint8List bytes) async {
+    // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
+    // PUT /me/drive/items/{item-id}/content
+
+    var client = await _createClient();
+    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'), body: bytes);
+    
+    if (response.statusCode != 200) {
+      throw BlastRESTAPIException(response.statusCode, response.body);
+    }
+
+    return true;
+  }
+  
+  @override
+  Future<String> createFile(String path, Uint8List bytes) async {
+    // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
+    // PUT /me/drive/root:/FolderA/FileB.txt:/content
+
+    var client = await _createClient();
+    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
+    
+    var jsonResponse = await json.decode(response.body);
+
+    if (response.statusCode != 201) { // 201 Created
+      throw BlastRESTAPIException(response.statusCode, response.body);
+    }
+
+    return jsonResponse['id'];
+
   }
 }

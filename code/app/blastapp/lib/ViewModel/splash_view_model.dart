@@ -43,15 +43,17 @@ class SplashViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    CurrentFileService().reset();
-    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
-    CurrentFileService().currentFileInfo = file;
+    try {
+      CurrentFileService().reset();
+      CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
+      CurrentFileService().currentFileInfo = file;
 
-    CurrentFileService().currentFileEncrypted =
-        await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
-
-    isLoading = false;
-    notifyListeners();
+      CurrentFileService().currentFileEncrypted =
+          await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
     
     if (!context.mounted) return;
     return context.router.push(const TypePasswordRoute());

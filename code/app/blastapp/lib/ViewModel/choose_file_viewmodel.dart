@@ -14,9 +14,17 @@ class ChooseFileViewModel extends ChangeNotifier {
   ChooseFileViewModel(this.context);
 
   Future<List<CloudObject>>? getFiles() async {
-    isLoading = true;
-    var files = await currentFileService.cloud!.getFiles(await currentPath);
-    isLoading = false;
+    var files;
+
+    try {
+      isLoading = true;
+      files = await currentFileService.cloud!.getFiles(await currentPath);
+      isLoading = false;
+    } finally {
+      isLoading = false;
+    }
+
+    
 
     return Future<List<CloudObject>>.value(files);
   }
@@ -26,22 +34,23 @@ class ChooseFileViewModel extends ChangeNotifier {
       currentPath = Future.value(object.url);
       notifyListeners();
     } else {
+      try {
+        isLoading = true;
+        notifyListeners();
 
-      isLoading = true;
-      notifyListeners();
-
-      currentFileService.currentFileInfo = BlastFile(
+        currentFileService.currentFileInfo = BlastFile(
           cloudId: currentFileService.cloud!.id,
           fileName: object.name,
           fileUrl: object.url,
           jsonCredentials: currentFileService.cloud!.cachedCredentials);
 
-      currentFileService.currentFileEncrypted =
-          await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
+        currentFileService.currentFileEncrypted =
+            await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);        
+      } finally {
+        isLoading = false;
+        notifyListeners();
+      }
 
-      isLoading = false;
-      notifyListeners();
-      
       if (!context.mounted) return;
       context.router.push(const TypePasswordRoute());
     }

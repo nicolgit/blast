@@ -99,9 +99,22 @@ class _ChooseFileViewState extends State<ChooseFileView> {
       itemBuilder: (context, index) {
         String name = listFiles[index].name;
         String path = listFiles[index].path;
+        
+        Widget leadingIcon;
+        if (listFiles[index].isDirectory) {
+          leadingIcon = const Icon(Icons.folder);
+        }
+        else {
+          if (listFiles[index].name.endsWith(".blast")) {
+            leadingIcon = Image.asset("assets/app-icon.png");
+          }
+          else {
+            leadingIcon = const Icon(Icons.article);
+          }
+        }
 
         return ListTile(
-          leading: Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
+          leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
           title: Row(
             children: [
               Column(

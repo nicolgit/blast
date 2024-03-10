@@ -162,7 +162,13 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  Future<bool> setFile(String path, Uint8List bytes) {
+  Future<bool> setFile(String id, Uint8List bytes) {
     return Future.value(true);
+  }
+  
+  @override
+  Future<String> createFile(String path, Uint8List bytes) {
+    Random random = Random();
+    return Future.value(random.nextInt(1000000).toString());
   }
 }

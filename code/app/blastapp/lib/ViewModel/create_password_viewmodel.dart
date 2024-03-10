@@ -94,7 +94,8 @@ class CreatePasswordViewModel extends ChangeNotifier {
     CurrentFileService().currentFileEncrypted =
         CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!, password);
 
-    CurrentFileService().cloud!.setFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+    var fileId = await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+    file.fileUrl = fileId;
 
     SettingService().addRecentFile(file);
 

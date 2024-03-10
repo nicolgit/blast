@@ -92,7 +92,7 @@ class _CardViewState extends State<CardView> {
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
     var myList = ListView.builder(
-      itemCount: cardsList.length + 1,
+      itemCount: cardsList.length,
       itemBuilder: (context, index) {
 
         if (index == cardsList.length && vm.currentCard.notes != null) {

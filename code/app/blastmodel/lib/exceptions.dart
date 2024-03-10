@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class BlastException implements Exception {
   BlastException();
 }
@@ -16,4 +18,10 @@ class BlastInvalidFileException implements BlastException {
 
 class BlastAuthenticationFailedException implements BlastException {
   BlastAuthenticationFailedException();
+}
+
+class BlastRESTAPIException implements BlastException {
+  int statusCode;
+  String body;
+  BlastRESTAPIException(this.statusCode, this.body);
 }

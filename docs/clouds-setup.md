@@ -17,5 +17,5 @@ Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentic
 Go to Microsoft Entra id > API permissions > add a permission
 
 * Microsoft Graph
-* Select Permisssion: `Files.Read`
+* Select Permisssion: `Files.ReadWrite`
 * click [add permission]

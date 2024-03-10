@@ -30,7 +30,7 @@ class _SplashViewState extends State<SplashView> {
       body: Center(
           child: Column(
         children: [
-          const Image(image: AssetImage('assets/icon-v01.png')),
+          const Image(image: AssetImage('assets/general/icon-v01.png')),
           const Text("your passwords, safe and sound."),
           TextButton(
             onPressed: () {

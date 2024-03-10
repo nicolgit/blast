@@ -169,6 +169,15 @@ class OneDriveCloud extends Cloud {
     // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
     // PUT /me/drive/root:/FolderA/FileB.txt:/content
 
+    //remove string xxx from begin of path
+    if (path.startsWith(await rootpath)) {
+      path = path.substring((await rootpath).length);
+    }
+
+    if (!path.startsWith('/')) {
+      path = '/$path';
+    }
+
     var client = await _createClient();
     var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
     

@@ -106,7 +106,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
         }
         else {
           if (listFiles[index].name.endsWith(".blast")) {
-            leadingIcon = Image.asset("assets/app-icon.png");
+            leadingIcon = Image.asset("assets/general/app-icon.png");
           }
           else {
             leadingIcon = const Icon(Icons.article);

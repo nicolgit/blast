@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
@@ -16,8 +15,6 @@ class OneDriveCloud extends Cloud {
   final _redirectUrl = Uri.parse('blastapp://auth');
   final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
   final _appLinks = AppLinks();
-
-  String? cachedCredentials;
 
   Future<oauth2.Client> _createClient() async {
     if (cachedCredentials != null) {

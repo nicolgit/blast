@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';

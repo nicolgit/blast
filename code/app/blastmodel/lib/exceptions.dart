@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class BlastException implements Exception {
   BlastException();
 }

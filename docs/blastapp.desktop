@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=blastapp
+Exec="/home/USERNAME/projects/github/blast/code/app/blastapp/build/linux/x64/debug/bundle/blastapp" %U
+MimeType=x-scheme-handler/blastapp
+

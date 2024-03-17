@@ -13,14 +13,14 @@ Blast is open source and doesn't require its own cloud. It's designed to use you
 
 | storage             | android | ios | linux | mac | web | windows |
 |---------------------|---------|-----|-------|-----|-----|---------|
-| local file system   |         |     |       | 👍   |     |         |
-| OneDrive            |         |     |       | 👍   |     |  👍     |
+| local file system   |         |     | 👍    | 👍   |     | 👍     |
+| OneDrive            |         |     |       | 👍   |     | 👍     |
 | DropBox             |         |     |       |      |    |         |
 | Azure Storage       |         |     |       |      |    |         |
 | AWS S3              |         |     |       |      |    |         |
 | Google Drive        |         |     |       |      |    |         |
 | iCloud              |         |     |       |      |    |         |
-| Lorem Cloud         | 👍      | 👍   | 👍    | 👍   | 👍  | 👍       | 
+| Lorem Cloud         | 👍      | 👍  | 👍    | 👍   | 👍  | 👍       | 
 
 
 

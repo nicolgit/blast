@@ -1,83 +1,23 @@
 import 'dart:convert';
-import 'package:app_links/app_links.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
+import 'package:blastmodel/blastoauth/blastoauth.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:oauth2/oauth2.dart' as oauth2;
 
+import 'package:blastmodel/blastoauth/blastoauth_stub.dart' 
+  if (dart.library.io) 'package:blastmodel/blastoauth/blastoauth_mobile.dart'
+  if (dart.library.html) 'package:blastmodel/blastoauth/blastoauth_web.dart';
+  
 class OneDriveCloud extends Cloud {
-  final _authorizationEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize');
-  final _tokenEndpoint = Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token');
-  final _applicationId = Secrets.oneDriveApplicationId;
-  final _redirectUrl = Uri.parse('blastapp://auth');
-  final List<String> _scopes = ['openid', 'profile', 'Files.ReadWrite'];
-  final _appLinks = AppLinks();
-
-  Future<oauth2.Client> _createClient() async {
-    if (cachedCredentials != null) {
-      var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
-      return oauth2.Client(credentials, identifier: _applicationId);
-    }
-
-    var grant = oauth2.AuthorizationCodeGrant(_applicationId, _authorizationEndpoint, _tokenEndpoint);
-
-    // A URL on the authorization server (authorizationEndpoint with some
-    // additional query parameters). Scopes and state can optionally be passed
-    // into this method.
-    var authorizationUrl = grant.getAuthorizationUrl(_redirectUrl, scopes: _scopes);
-
-    // Redirect the resource owner to the authorization URL. Once the resource
-    // owner has authorized, they'll be redirected to `redirectUrl` with an
-    // authorization code. The `redirect` should cause the browser to redirect to
-    // another URL which should also have a listener.
-    //
-    // `redirect` and `listen` are not shown implemented here.
-    await _redirect(authorizationUrl);
-    var responseUrl = await _listen(_redirectUrl);
-
-    // Once the user is redirected to `redirectUrl`, pass the query parameters to
-    // the AuthorizationCodeGrant. It will validate them and extract the
-    // authorization code to create a new Client.
-    var client = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
-    cachedCredentials = client.credentials.toJson();
-
-    return client;
-  }
-
-  Future<void> _redirect(Uri url) async {
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    }
-  }
-
-  Future<Uri> _listen(Uri url) async {
-    Uri? responseUri;
-
-    _appLinks.allUriLinkStream.listen((uri) async {
-      if (uri.toString().startsWith(_redirectUrl.toString())) {
-        responseUri = uri;
-      }
-    });
-
-    //wait for authentication, max 30 seconds
-    int counter = 0, timeout = 30;
-    while (responseUri == null && counter++ < timeout) {
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (kDebugMode) {
-        print("waiting.... $counter of $timeout");
-      }
-    }
-
-    if (responseUri == null) {
-      throw BlastAuthenticationFailedException();
-    }
-
-    return responseUri!;
-  }
+  final BlastOAuth _oauth = getBlastAuth().initialize(
+      applicationId: Secrets.oneDriveApplicationId,
+      authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
+      tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
+      redirectUri: Uri.parse('blastapp://auth'),
+      scopes: ['openid', 'profile', 'Files.ReadWrite']
+  );
 
   @override
   String get id => "ONEDRIVE";
@@ -100,7 +40,7 @@ class OneDriveCloud extends Cloud {
       path = '$path:';
     }
 
-    var client = await _createClient();
+    var client = await _oauth.createClient();
     var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/$path/children'));
 
     final onedriveData = await json.decode(response.body);
@@ -126,7 +66,7 @@ class OneDriveCloud extends Cloud {
 
   @override
   Future<Uint8List> getFile(String id) async {
-    var client = await _createClient();
+    var client = await _oauth.createClient();
 
     // /me/drive/items/{item-id}/content
     //var response = await client.get(Uri.parse(path));
@@ -154,7 +94,7 @@ class OneDriveCloud extends Cloud {
     // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
     // PUT /me/drive/items/{item-id}/content
 
-    var client = await _createClient();
+    var client = await _oauth.createClient();
     var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'), body: bytes);
     
     if (response.statusCode != 200) {
@@ -178,7 +118,7 @@ class OneDriveCloud extends Cloud {
       path = '/$path';
     }
 
-    var client = await _createClient();
+    var client = await _oauth.createClient();
     var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
     
     var jsonResponse = await json.decode(response.body);

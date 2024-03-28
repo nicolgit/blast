@@ -92,7 +92,7 @@ class _SplashViewState extends State<SplashView> {
       itemCount: files.length,
       itemBuilder: (context, file) {
         return ListTile(
-          leading: const Icon(Icons.article),
+          leading: Image.asset("assets/general/app-icon.png"),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

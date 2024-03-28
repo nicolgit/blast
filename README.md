@@ -16,7 +16,7 @@ Not all storages are supported on all operating systems, as shown in the followi
 | storage             | android | ios | linux | mac | web | windows |
 |---------------------|---------|-----|-------|-----|-----|---------|
 | local file system   |         |     | 👍    | 👍  |     | 👍      |
-| OneDrive            |         |     |       | 👍  |     | 👍      |
+| OneDrive            |         |     | 👍    | 👍  | 👍   | 👍      |
 | DropBox             |         |     |       |     |     |         |
 | Azure Storage       |         |     |       |     |     |         |
 | AWS S3              |         |     |       |     |     |         |

@@ -11,13 +11,34 @@ import 'package:blastmodel/blastoauth/blastoauth_stub.dart'
   if (dart.library.html) 'package:blastmodel/blastoauth/blastoauth_web.dart';
   
 class OneDriveCloud extends Cloud {
-  final BlastOAuth _oauth = getBlastAuth().initialize(
-      applicationId: Secrets.oneDriveApplicationId,
-      authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
-      tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
-      redirectUri: Uri.parse('blastapp://auth'),
-      scopes: ['openid', 'profile', 'Files.ReadWrite']
-  );
+
+  OneDriveCloud() {
+    var redirectUri = Uri();
+
+    if (kIsWeb) {
+      final currentUri = Uri.base;
+
+      redirectUri = Uri(
+        host: currentUri.host,
+        scheme: currentUri.scheme,
+        port: currentUri.port,
+        path: '/auth-landing.html',
+      );
+    }
+    else {
+      redirectUri = Uri.parse('blastapp://auth');
+    }
+
+    _oauth = getBlastAuth().initialize(
+        applicationId: Secrets.oneDriveApplicationId,
+        authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
+        tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
+        redirectUri: redirectUri,
+        scopes: ['openid', 'profile', 'Files.ReadWrite']
+      );
+  }
+
+  late BlastOAuth _oauth;
 
   @override
   String get id => "ONEDRIVE";

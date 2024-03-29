@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_view_model.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
+import 'package:blastmodel/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _SplashViewState extends State<SplashView> {
         children: [
           const Image(image: AssetImage('assets/general/icon-v01.png')),
           const Text("your passwords, safe and sound."),
+          const Text("build ${Secrets.buildNumber}"),
           TextButton(
             onPressed: () {
               vm.showEula().then((value) => vm.refresh());

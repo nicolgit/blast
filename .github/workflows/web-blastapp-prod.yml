@@ -28,9 +28,10 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
+          app_location: "/code/app/blastapp" # App source code path
           api_location: "" # Api source code path - optional
-          output_location: "" # Built app content directory - optional
+          output_location: "/code/app/blastapp/build/web" # Built app content directory - optional
+          app_build_command: 'flutter build web'
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:

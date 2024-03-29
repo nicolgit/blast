@@ -17,6 +17,7 @@ jobs:
         run: |
           cp secretsToFill.dart secrets.dart
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
+          cat secrets.dart
       - name: Install packages
         working-directory: ./code/app/blastapp
         run: |

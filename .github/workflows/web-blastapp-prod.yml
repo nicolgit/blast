@@ -13,7 +13,7 @@ jobs:
           submodules: true
           lfs: false
       - name: Install packages
-        working-directory: /code/app/blastapp
+        working-directory: ./code/app/blastapp
         run: |
           flutter config --enable-web
           flutter pub get

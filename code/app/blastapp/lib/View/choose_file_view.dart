@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -81,15 +82,39 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     ));
   }
 
-  ListView _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
+  Widget _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
+    if (vm.isLoading) {
+      context.loaderOverlay.show();
+    }
+    else {
+      context.loaderOverlay.hide();
+    }
+
+    if (listFiles.isEmpty) {
+      return const Center(child: Text("No files found"));
+    }
+
     var myList = ListView.builder(
       itemCount: listFiles.length,
       itemBuilder: (context, index) {
         String name = listFiles[index].name;
         String path = listFiles[index].path;
+        
+        Widget leadingIcon;
+        if (listFiles[index].isDirectory) {
+          leadingIcon = const Icon(Icons.folder);
+        }
+        else {
+          if (listFiles[index].name.endsWith(".blast")) {
+            leadingIcon = Image.asset("assets/general/app-icon.png");
+          }
+          else {
+            leadingIcon = const Icon(Icons.article);
+          }
+        }
 
         return ListTile(
-          leading: Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
+          leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
           title: Row(
             children: [
               Column(

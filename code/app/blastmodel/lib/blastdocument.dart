@@ -19,7 +19,7 @@ enum SearchWhere { title, everywhere }
 class BlastDocument {
   BlastDocument();
 
-  @JsonKey(includeToJson: false)
+  @JsonKey(includeToJson: false, includeFromJson: false)
   bool isChanged = false;
 
   String id = const Uuid().v4();

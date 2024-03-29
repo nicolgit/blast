@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/splash_view_model.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -29,7 +30,7 @@ class _SplashViewState extends State<SplashView> {
       body: Center(
           child: Column(
         children: [
-          const Image(image: AssetImage('assets/icon-v01.png')),
+          const Image(image: AssetImage('assets/general/icon-v01.png')),
           const Text("your passwords, safe and sound."),
           TextButton(
             onPressed: () {
@@ -80,11 +81,18 @@ class _SplashViewState extends State<SplashView> {
   }
 
   ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
+    if (vm.isLoading) {
+      context.loaderOverlay.show();
+    }
+    else {
+      context.loaderOverlay.hide();
+    }
+
     var myList = ListView.builder(
       itemCount: files.length,
       itemBuilder: (context, file) {
         return ListTile(
-          leading: const Icon(Icons.article),
+          leading: Image.asset("assets/general/app-icon.png"),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

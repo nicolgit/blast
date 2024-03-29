@@ -109,7 +109,7 @@ class CurrentFileService {
 
         // Generate Key
         var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
-        pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
+        pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 * 8 = 256 bits key (AES256)
         Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));
 
         // Create AES cipher
@@ -129,11 +129,6 @@ class CurrentFileService {
 
         String loremDecrypted = utf8.decode(output);
 
-        /*if (!loremDecrypted.startsWith(loremText)) {
-          throw BlastWrongPasswordException();
-        } else {
-          return loremDecrypted.substring(loremText.length);
-        }*/
         return loremDecrypted;
       default:
         throw BlastUnknownFileVersionException();

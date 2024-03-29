@@ -5,11 +5,18 @@ import 'package:blastapp/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'win32register/win32register_stub.dart'
+    if (dart.library.html) 'package:blastapp/win32register/win32register_web.dart'
+    if (dart.library.io) 'package:blastapp/win32register/win32register_mobile.dart';
+  
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final AppViewModel appViewModel = AppViewModel();
-    
+
+  var r = getWin32Register();
+  await r.register('blastapp'); // register custom protocol for windows client only
+  
   runApp(
     MultiProvider(
       providers: [
@@ -28,9 +35,6 @@ void main() async {
           */
       ),
     ),
-
-    
-    );
-
-  
+  );
 }
+

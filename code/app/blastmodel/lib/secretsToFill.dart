@@ -10,6 +10,5 @@ library;
 
 class SecretsToFill {
   static const String oneDriveApplicationId = 'ONEDRIVE_APPLICATION_ID';
-  static const String oneDriveSecret = 'ONEDRIVE_SECRET';
   // Add more secret variables here
 }

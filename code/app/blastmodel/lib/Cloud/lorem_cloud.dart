@@ -26,8 +26,11 @@ class LoremCloud extends Cloud {
   Future<String> get rootpath => Future.value('http://loremcloud.com/');
 
   @override
-  Future<List<CloudObject>> getFiles(String path) {
+  Future<List<CloudObject>> getFiles(String path) async {
     Random random = Random();
+
+    await Future.delayed(Duration(seconds: random.nextInt(5)));
+
     List<CloudObject> files = [];
     int totalFiles = random.nextInt(20) + 1;
     for (int i = 0; i < totalFiles; i++) {
@@ -57,6 +60,10 @@ class LoremCloud extends Cloud {
 
   @override
   Future<Uint8List> getFile(String path) async {
+    
+    final random = Random();
+    await Future.delayed(Duration(seconds: random.nextInt(10)));
+
     BlastDocument document = buildRandomBlastDocument();
     String jsonDocument = document.toString();
 
@@ -155,7 +162,13 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  Future<bool> setFile(String path, Uint8List bytes) {
+  Future<bool> setFile(String id, Uint8List bytes) {
     return Future.value(true);
+  }
+  
+  @override
+  Future<String> createFile(String path, Uint8List bytes) {
+    Random random = Random();
+    return Future.value(random.nextInt(1000000).toString());
   }
 }

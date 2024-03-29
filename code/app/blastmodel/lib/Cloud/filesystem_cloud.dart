@@ -39,8 +39,8 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  Future<bool> setFile(String path, Uint8List bytes) async {
-    final file = File(path);
+  Future<bool> setFile(String id, Uint8List bytes) async {
+    final file = File(id);
     await file.writeAsBytes(bytes);
 
     return Future.value(true);
@@ -66,5 +66,11 @@ class FileSystemCloud extends Cloud {
     } else {
       return currentPath;
     }
+  }
+  
+  @override
+  Future<String> createFile(String path, Uint8List bytes) async {
+    await setFile(path, bytes);
+    return path;
   }
 }

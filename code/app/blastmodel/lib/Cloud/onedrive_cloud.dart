@@ -1,73 +1,154 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
+import 'package:blastmodel/blastoauth/blastoauth.dart';
+import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/secrets.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart';
 
+import 'package:blastmodel/blastoauth/blastoauth_stub.dart' 
+  if (dart.library.io) 'package:blastmodel/blastoauth/blastoauth_mobile.dart'
+  if (dart.library.html) 'package:blastmodel/blastoauth/blastoauth_web.dart';
+  
 class OneDriveCloud extends Cloud {
-  //final Uri oidcMetadataUrl =
-  //    Uri.parse('https://login.microsoftonline.com/consumers/v2.0/.well-known/openid-configuration');
-  final List<String> _scopes = ['openid', 'profile', 'User.Read', 'Files.Read'];
+
+  OneDriveCloud() {
+    var redirectUri = Uri();
+
+    if (kIsWeb) {
+      final currentUri = Uri.base;
+
+      redirectUri = Uri(
+        host: currentUri.host,
+        scheme: currentUri.scheme,
+        port: currentUri.port,
+        path: '/auth-landing.html',
+      );
+    }
+    else {
+      redirectUri = Uri.parse('blastapp://auth');
+    }
+
+    _oauth = getBlastAuth().initialize(
+        applicationId: Secrets.oneDriveApplicationId,
+        authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
+        tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
+        redirectUri: redirectUri,
+        scopes: ['openid', 'profile', 'Files.ReadWrite']
+      );
+  }
+
+  late BlastOAuth _oauth;
 
   @override
   String get id => "ONEDRIVE";
   @override
   String get name => 'Microsoft OneDrive personal';
   @override
-  // TODO: implement getFiles
-  Future<String> get rootpath => Future.value('https://graph.microsoft.com/v1.0/me/drive/root');
+  Future<String> get rootpath => Future.value('/drive/root');
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
-    //await _authenticateIfNeeded();
-
     List<CloudObject> files = List.empty(growable: true);
 
-    /*
-    if (_credential != null) {
-      var httpClient = _credential!.createHttpClient();
-
-      var response = await httpClient.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root/children'));
-      final onedriveData = await json.decode(response.body);
-
-      for (int i = 0; i < onedriveData['@odata.count'] - 2; i++) {
-        var co = CloudObject(
-          name: onedriveData['value'][i]['name'],
-          path: onedriveData['value'][i]['parentReference']['path'],
-          isDirectory: onedriveData['value'][i]['folder'] != null,
-          url: onedriveData['value'][i]['parentReference']['path'],
-          lastModified: DateTime.now(),
-          size: 0,
-        );
-        files.add(co);
-        print(i);
-      }
-
-      print("********root");
-      print(response.body.toString());
+    //
+    // API https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_list_children?view=odsp-graph-online
+    //
+    // https://graph.microsoft.com/v1.0/me/drive/root/children
+    // https://graph.microsoft.com/v1.0/me/drive/root:/folde1/folder2/folder3:/children
+    //
+    if (path != await rootpath) {
+      path = '$path:';
     }
-    */
+
+    var client = await _oauth.createClient();
+    var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/$path/children'));
+
+    final onedriveData = await json.decode(response.body);
+
+    for (int i = 0; i < onedriveData['@odata.count'] - 2; i++) {
+      var co = CloudObject(
+        name: onedriveData['value'][i]['name'],
+        path: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        isDirectory: onedriveData['value'][i]['folder'] != null,
+        url: onedriveData['value'][i]['folder'] == null
+            ? onedriveData['value'][i]['id'] // onedriveData['value'][i]['@microsoft.graph.downloadUrl']
+            : onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        lastModified: DateTime.now(),
+        size: 0,
+      );
+      files.add(co);
+    }
+
+    print(response.body.toString());
 
     return files;
   }
 
   @override
-  Future<Uint8List> getFile(String path) {
-    // TODO: implement getFile
-    throw UnimplementedError();
+  Future<Uint8List> getFile(String id) async {
+    var client = await _oauth.createClient();
+
+    // /me/drive/items/{item-id}/content
+    //var response = await client.get(Uri.parse(path));
+    var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'));
+
+    return Uint8List.fromList(response.bodyBytes);
   }
 
   @override
-  Future<String> goToParentDirectory(String currentPath) {
-    // TODO: implement goToParentDirectory
-    throw UnimplementedError();
+  Future<String> goToParentDirectory(String currentPath) async {
+    if (currentPath == ('${await rootpath}:')) {
+      return rootpath;
+    }
+
+    var newPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    if (newPath == ('${await rootpath}:')) {
+      return rootpath;
+    }
+
+    return Future.value(newPath);
   }
 
   @override
-  Future<bool> setFile(String path, Uint8List bytes) {
-    // TODO: implement setFile
-    throw UnimplementedError();
+  Future<bool> setFile(String id, Uint8List bytes) async {
+    // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
+    // PUT /me/drive/items/{item-id}/content
+
+    var client = await _oauth.createClient();
+    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'), body: bytes);
+    
+    if (response.statusCode != 200) {
+      throw BlastRESTAPIException(response.statusCode, response.body);
+    }
+
+    return true;
+  }
+  
+  @override
+  Future<String> createFile(String path, Uint8List bytes) async {
+    // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
+    // PUT /me/drive/root:/FolderA/FileB.txt:/content
+
+    //remove string xxx from begin of path
+    if (path.startsWith(await rootpath)) {
+      path = path.substring((await rootpath).length);
+    }
+
+    if (!path.startsWith('/')) {
+      path = '/$path';
+    }
+
+    var client = await _oauth.createClient();
+    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
+    
+    var jsonResponse = await json.decode(response.body);
+
+    if (response.statusCode != 201) { // 201 Created
+      throw BlastRESTAPIException(response.statusCode, response.body);
+    }
+
+    return jsonResponse['id'];
+
   }
 }

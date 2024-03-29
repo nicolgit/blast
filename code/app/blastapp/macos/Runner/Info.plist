@@ -28,5 +28,18 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<!-- abstract name for blast URL type -->
+			<string>BlastApp_MacOs</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- your schemes -->
+				<string>blastapp</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

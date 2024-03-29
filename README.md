@@ -9,6 +9,21 @@ You can try blast using the web web version available at: https://blast.duckiesf
 
 Blast is open source and doesn't require its own cloud. It's designed to use your favorite cloud as a backend. The plan is to support local device storage, Microsoft OneDrive, Google Drive, Dropbox, Apple iCloud and maybe more others. All of your information will be stored in one file, with the format documented here so that anyone can create 
 
+# Supported storage by platform
+
+Not all storages are supported on all operating systems, as shown in the following table.
+
+| storage             | android | ios | linux | mac | web | windows |
+|---------------------|---------|-----|-------|-----|-----|---------|
+| local file system   |         |     | 👍    | 👍  |     | 👍      |
+| OneDrive            |         |     | 👍    | 👍  | 👍   | 👍      |
+| DropBox             |         |     |       |     |     |         |
+| Azure Storage       |         |     |       |     |     |         |
+| AWS S3              |         |     |       |     |     |         |
+| Google Drive        |         |     |       |     |     |         |
+| iCloud              |         |     |       |     |     |         |
+| Lorem Cloud         | 👍      | 👍  | 👍    | 👍  | 👍  | 👍      | 
+
 # Blast file format
 
 ...

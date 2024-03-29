@@ -1,4 +1,4 @@
-name: Deploy to Azure blastapp-production Static Web App
+name: Deploy > Azure blastapp-production SPA
 
 on: workflow_dispatch
 
@@ -8,14 +8,15 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v1
         with:
           submodules: true
           lfs: false
+      - uses: subosito/flutter-action@v1
       - name: Prepare secrets.dart
         working-directory: ./code/app/blastmodel/lib
         run: |
           cp secretsToFill.dart secrets.dart
+          sed -i 's/class SecretsToFill/class Secrets/g' secrets.dart
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
           cat secrets.dart
       - name: Install packages

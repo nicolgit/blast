@@ -12,6 +12,12 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Prepare secrets.dart
+        working-directory: ./code/app/blastmodel/lib
+        run: |
+          cp secretsToFill.dart secrets.dart
+          sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
+          
       - name: Install packages
         working-directory: ./code/app/blastapp
         run: |

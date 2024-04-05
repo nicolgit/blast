@@ -29,27 +29,40 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
-  int _selectedIndex = 1;
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.question_mark), label: "Hello"),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: "Search",
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.add_card), label: "add")
-          ],
-          currentIndex: _selectedIndex, //New
-          onTap: (i) => _onItemTapped(i, context, vm),
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.question_mark),
+                onPressed: () {
+                  
+                },
+              ),
+              TextButton.icon( 
+                onPressed: () { _showModalBottomSheet(context, vm);},
+                icon: const Icon(
+                  Icons.search,
+                  size: 24.0,
+                ),
+                label: const Text('Search'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.question_mark),
+                onPressed: () {
+                  
+                },
+              ),
+            ],
+          ),
         ),
         body: Center(
           child: Column(
             children: [
               AppBar(
-                automaticallyImplyLeading: false,
+                automaticallyImplyLeading: true,
                 title: Text(vm.fileService.currentFileInfo!.fileName),
                 actions: [
                   IconButton(
@@ -129,29 +142,84 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   }),
             ],
           ),
-        ));
-  }
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            vm.addCard().then((value) {
+              vm.refreshCardListCommand();
+            });
+          },
+          child: const Icon(Icons.add),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('BlastApp'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.upload),
+                title: const Text('import'),
+                onTap: () {
+                  Widget noButton = TextButton(
+                    child: const Text("No"),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                    },
+                  );
 
-  void _onItemTapped(int index, BuildContext context, CardsBrowserViewModel vm) {
-    setState(() {
-      _selectedIndex = index;
+                  Widget okButton = TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    child: const Text("Yes import it anyway"),
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                      
+                      try {
+                        await vm.importCommand();
+                      } catch (e) {
+                        
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("unable to import selected file. Please check the file format."),
+                        ));
+                      }  
+                    },
+                  );
 
-      switch (index) {
-        case 1:
-          _showModalBottomSheet(context, vm);
-          break;
-        case 2:
-          vm.addCard().then((value) {
-            vm.refreshCardListCommand();
-          });
-          break;
-        default:
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("not implemented, yet!"),
-          ));
-          break;
-      }
-    });
+                  AlertDialog alert = AlertDialog(
+                    title: const Text("import blast .json file"),
+                    content: const Text("WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
+                    actions: [
+                      noButton,
+                      okButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                    
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.download),
+                title: const Text('export'),
+                onTap: () {
+                  vm.exportCommand();
+                },
+              ),
+            ],
+          )
+        ),);
   }
 
   ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
@@ -257,19 +325,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             runSpacing: 12,
             spacing: 12,
             children: [
-              TextFormField(
-                initialValue: vm.searchText,
-                onChanged: (value) {
-                  vm.searchText = value;
-                  vm.refreshCardListCommand();
-                },
-                autofocus: true,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Search',
-                ),
-              ),
               SegmentedButton<SearchOperator>(
                 segments: const <ButtonSegment<SearchOperator>>[
                   ButtonSegment<SearchOperator>(
@@ -315,7 +370,24 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     vm.refreshCardListCommand();
                   });
                 },
-              )
+              ),
+            Padding(padding: const EdgeInsets.all(12.0), 
+              child: TextFormField(
+                initialValue: vm.searchText,
+                onChanged: (value) {
+                  vm.searchText = value;
+                  vm.refreshCardListCommand();
+                },
+                autofocus: true,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Search',
+                ),
+              ), 
+              ),
+
+            
             ],
           );
         });

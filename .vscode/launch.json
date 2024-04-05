@@ -1,0 +1,68 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "blastapp",
+            "cwd": "code/app/blastapp",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "blastapp (profile mode)",
+            "cwd": "code/app/blastapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "blastapp (release mode)",
+            "cwd": "code/app/blastapp",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "blastmodel",
+            "cwd": "code/app/blastmodel",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "blastmodel (profile mode)",
+            "cwd": "code/app/blastmodel",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "blastmodel (release mode)",
+            "cwd": "code/app/blastmodel",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "lib",
+            "cwd": "code/app/blastapp/lib",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "lib (profile mode)",
+            "cwd": "code/app/blastapp/lib",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "lib (release mode)",
+            "cwd": "code/app/blastapp/lib",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

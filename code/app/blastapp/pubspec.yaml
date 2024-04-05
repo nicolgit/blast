@@ -25,6 +25,7 @@ dependencies:
   app_links: ^3.5.1
   loader_overlay: ^4.0.0
   win32_registry: ^1.1.2
+  file_picker: ^8.0.0
 
 flutter_launcher_icons:
  image_path: "assets/general/app-icon.png"

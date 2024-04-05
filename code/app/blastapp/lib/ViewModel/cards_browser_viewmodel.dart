@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class CardsBrowserViewModel extends ChangeNotifier {
@@ -50,6 +54,29 @@ class CardsBrowserViewModel extends ChangeNotifier {
   deleteCard(BlastCard card) {
     fileService.currentFileDocument!.cards.remove(card);
     fileService.currentFileDocument!.isChanged = true;
+    notifyListeners();
+  }
+
+  void exportCommand() {
+
+  }
+
+  Future importCommand() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      
+      fileService.currentFileJsonString = file.readAsStringSync();
+      
+      var importedBlastFile =
+          BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+
+      fileService.currentFileDocument = importedBlastFile;
+    } else {
+      // User canceled the picker
+    }
+
     notifyListeners();
   }
 }

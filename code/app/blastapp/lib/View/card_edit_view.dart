@@ -59,6 +59,13 @@ class _CardEditViewState extends State<CardEditView> {
                   }
                 },
               ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                tooltip: 'Delete',
+                onPressed: () async {
+                  await _showDeleteCardDialog(context, vm);
+                },
+              ),
             ],
           ),
           Form(
@@ -277,6 +284,36 @@ class _CardEditViewState extends State<CardEditView> {
                 child: const Text('Yes'),
                 onPressed: () => {
                       vm.saveCommand(),
+                      Navigator.pop(context),
+                    }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future _showDeleteCardDialog(BuildContext context, CardEditViewModel vm) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              const Text('Delete '),
+              Text('${vm.currentCard.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+          content: const Text('Are you sure you want to delete this card and all its content?'),
+          actions: <Widget>[
+            TextButton(
+                child: const Text('No'),
+                onPressed: () => {
+                      Navigator.pop(context),
+                    }),
+            TextButton(
+                child: const Text('Yes please!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                onPressed: () => {
+                      vm.deleteCard(),
                       Navigator.pop(context),
                     }),
           ],

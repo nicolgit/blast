@@ -47,7 +47,7 @@ class _CardViewState extends State<CardView> {
                 tooltip: 'Edit',
                 onPressed: () {
                   vm.editCommand().then((value) {
-                    vm.refresh();
+                    vm.closeCommand();
                   });
                 },
               ),
@@ -106,11 +106,10 @@ class _CardViewState extends State<CardView> {
         switch (type) {
           case BlastAttributeType.typeHeader:
             return ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                ],
+              title: Container(
+                padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
+                child: 
+                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
               ),
             );
           case BlastAttributeType.typePassword:

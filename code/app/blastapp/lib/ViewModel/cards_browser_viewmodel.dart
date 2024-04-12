@@ -30,6 +30,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
     await context.router.push(CardRoute(card: selectedCard));
   }
 
+  Future editCard(BlastCard selectedCard) async {
+    await context.router.push(CardEditRoute(card: selectedCard));
+  }
+
   void closeCommand() {
     context.router.replaceAll([const SplashRoute()]);
   }
@@ -75,7 +79,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
         }
 
         if (i==5) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Too many files with the same name. Please delete some files and try again.'),
           ));
           return;
@@ -109,7 +114,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
       }
 
       fileService.currentFileDocument = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Data imported successfully.'),
       ));
     } else {

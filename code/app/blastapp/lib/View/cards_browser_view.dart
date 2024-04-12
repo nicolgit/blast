@@ -156,15 +156,15 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              const DrawerHeader(
+              DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                child: Text('BlastApp'),
+                child: const Text('BlastApp'),
               ),
               ListTile(
                 leading: const Icon(Icons.upload),
-                title: const Text('import'),
+                title: const Text('import .json file'),
                 onTap: () {
                   Navigator.pop(context); // close drawer
 
@@ -215,7 +215,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
               ListTile(
                 leading: const Icon(Icons.download),
-                title: const Text('export'),
+                title: const Text('export .json file'),
                 enabled: !kIsWeb,
                 onTap: () {
                   Navigator.pop(context); // close drawer
@@ -228,19 +228,33 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
-    var myList = ListView.builder(
+    var myList = ListView.separated(
       itemCount: cardsList.length,
+      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         String name = cardsList[index].title != null ? cardsList[index].title! : '';
         bool isFavorite = cardsList[index].isFavorite;
 
         return ListTile(
           leading: const Icon(Icons.file_copy_outlined),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              _showDeleteCard(context, vm, cardsList[index]);
-            },
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+               IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    vm.editCard(cardsList[index]).then((value) {
+                      vm.refreshCardListCommand();
+                    });
+                  },
+                ),
+              IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    _showDeleteCardDialog(context, vm, cardsList[index]);
+                  },
+                ),
+            ],
           ),
           title: Text(name, style: const TextStyle( fontWeight: FontWeight.bold)),
           subtitle: Row(
@@ -291,7 +305,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
-  Future _showDeleteCard(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {
+  Future _showDeleteCardDialog(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {

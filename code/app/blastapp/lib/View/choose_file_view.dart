@@ -102,14 +102,14 @@ class _ChooseFileViewState extends State<ChooseFileView> {
         
         Widget leadingIcon;
         if (listFiles[index].isDirectory) {
-          leadingIcon = const Icon(Icons.folder);
+          leadingIcon = const Icon(Icons.folder, size: 48);
         }
         else {
           if (listFiles[index].name.endsWith(".blast")) {
-            leadingIcon = Image.asset("assets/general/app-icon.png");
+            leadingIcon = Image.asset("assets/general/app-icon.png", width: 48, height: 48);
           }
           else {
-            leadingIcon = const Icon(Icons.article);
+            leadingIcon = const Icon(Icons.article,size: 48);
           }
         }
 

@@ -113,4 +113,11 @@ class CardEditViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  deleteCard() {
+    CurrentFileService().currentFileDocument!.cards.remove(_sourceCard);
+    
+    CurrentFileService().currentFileDocument!.isChanged = true;
+    context.router.pop();
+  }
 }

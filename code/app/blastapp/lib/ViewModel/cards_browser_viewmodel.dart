@@ -7,6 +7,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CardsBrowserViewModel extends ChangeNotifier {
@@ -57,22 +58,60 @@ class CardsBrowserViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void exportCommand() {
+  void exportCommand() async {
+    String? path = await FilePicker.platform.getDirectoryPath();
 
+    if (path != null) {
+      String name = 'blastapp-export';
+      String fileName = '$path/$name.json';
+
+      int i = 0;
+      while (await File(fileName).exists()) {
+        if (i == 0) {
+          fileName = '$path/$name.json';
+        }
+        else {
+          fileName = '$path/$name-$i.json';
+        }
+
+        if (i==5) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Too many files with the same name. Please delete some files and try again.'),
+          ));
+          return;
+        }
+
+        i++;
+      }
+
+      File file = File(fileName);
+      
+      String jsonString = fileService.currentFileDocument!.toString();
+      file.writeAsStringSync(jsonString);
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Data exported to $fileName.'),
+      ));
+    }
   }
 
   Future importCommand() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      
-      fileService.currentFileJsonString = file.readAsStringSync();
-      
-      var importedBlastFile =
-          BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+    if (result != null && result.files.isNotEmpty) {
+      if (kIsWeb) {
+        final fileBytes = result.files.first.bytes;
+        fileService.currentFileJsonString = utf8.decode(fileBytes!);
+      }
+      else {
+        File file = File(result.files.single.path!);
+        fileService.currentFileJsonString = file.readAsStringSync();
+      }
 
-      fileService.currentFileDocument = importedBlastFile;
+      fileService.currentFileDocument = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Data imported successfully.'),
+      ));
     } else {
       // User canceled the picker
     }

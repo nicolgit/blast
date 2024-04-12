@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
-import 'package:blastmodel/blastoauth/blastoauth.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:blastmodel/blastoauth/blastoauth_stub.dart' 
-  if (dart.library.io) 'package:blastmodel/blastoauth/blastoauth_mobile.dart'
-  if (dart.library.html) 'package:blastmodel/blastoauth/blastoauth_web.dart';
+
+import 'package:blastmodel/specific/blastoauth/blastoauth.dart';
+import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart' 
+  if (dart.library.io) 'package:blastmodel/specific/blastoauth/blastoauth_mobile.dart'
+  if (dart.library.html) 'package:blastmodel/specific/blastoauth/blastoauth_web.dart';
   
 class OneDriveCloud extends Cloud {
 

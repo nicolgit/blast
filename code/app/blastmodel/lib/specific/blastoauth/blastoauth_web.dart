@@ -1,4 +1,4 @@
-import 'package:blastmodel/blastoauth/blastoauth.dart';
+import 'blastoauth.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;

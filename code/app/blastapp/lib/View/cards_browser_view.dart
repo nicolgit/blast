@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -165,6 +166,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 leading: const Icon(Icons.upload),
                 title: const Text('import'),
                 onTap: () {
+                  Navigator.pop(context); // close drawer
+
                   Widget noButton = TextButton(
                     child: const Text("No"),
                     onPressed: () {
@@ -213,7 +216,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ListTile(
                 leading: const Icon(Icons.download),
                 title: const Text('export'),
+                enabled: !kIsWeb,
                 onTap: () {
+                  Navigator.pop(context); // close drawer
                   vm.exportCommand();
                 },
               ),

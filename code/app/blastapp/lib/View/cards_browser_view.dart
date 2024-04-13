@@ -32,199 +32,194 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     return Scaffold(
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.question_mark),
-                onPressed: () {
-                  
-                },
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.question_mark),
+              onPressed: () {},
+            ),
+            TextButton.icon(
+              onPressed: () {
+                _showModalBottomSheet(context, vm);
+              },
+              icon: const Icon(
+                Icons.search,
+                size: 24.0,
               ),
-              TextButton.icon( 
-                onPressed: () { _showModalBottomSheet(context, vm);},
-                icon: const Icon(
-                  Icons.search,
-                  size: 24.0,
-                ),
-                label: const Text('Search'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.question_mark),
-                onPressed: () {
-                  
-                },
-              ),
-            ],
-          ),
+              label: const Text('Search'),
+            ),
+            IconButton(
+              icon: const Icon(Icons.question_mark),
+              onPressed: () {},
+            ),
+          ],
         ),
-        body: Center(
-          child: Column(
-            children: [
-              AppBar(
-                automaticallyImplyLeading: true,
-                title: Text(vm.fileService.currentFileInfo!.fileName),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.save),
-                    tooltip: 'save',
-                    onPressed: () {
-                      vm.saveCommand();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("file saved successfully!"),
-                      ));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip: 'close',
-                    onPressed: () {
-                      // set up the buttons
-                      Widget cancelButton = TextButton(
-                        child: const Text("Cancel"),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
-                        },
-                      );
-                      Widget noButton = TextButton(
-                        child: const Text("No, just exit",
-                            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                          vm.closeCommand();
-                        },
-                      );
-                      Widget okButton = TextButton(
-                        child: const Text("Yes save it"),
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                          vm.saveCommand();
-                          vm.closeCommand();
-                        },
-                      );
-
-                      if (vm.isFileChanged()) {
-                        AlertDialog alert = AlertDialog(
-                          title: const Text("File changed"),
-                          content: const Text("Do you want to save it before closing?"),
-                          actions: [
-                            cancelButton,
-                            noButton,
-                            okButton,
-                          ],
-                        );
-                        // show the dialog
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return alert;
-                          },
-                        );
-                      } else {
-                        // close the file
-                        vm.closeCommand();
-                      }
-                    },
-                  ),
-                ],
-              ),
-              FutureBuilder<List<BlastCard>>(
-                  future: vm.getCards(),
-                  builder: (context, cardsList) {
-                    return Expanded(
-                   
-                        child: Material(
-                          type: MaterialType.transparency,
-                          child: _buildCardsList(cardsList.data ?? [], vm),
-                      ),
-                      
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            AppBar(
+              automaticallyImplyLeading: true,
+              title: Text(vm.fileService.currentFileInfo!.fileName),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.save),
+                  tooltip: 'save',
+                  onPressed: () {
+                    vm.saveCommand();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("file saved successfully!"),
+                    ));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: 'close',
+                  onPressed: () {
+                    // set up the buttons
+                    Widget cancelButton = TextButton(
+                      child: const Text("Cancel"),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
+                      },
                     );
-                  }),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            vm.addCard().then((value) {
-              vm.refreshCardListCommand();
-            });
-          },
-          child: const Icon(Icons.add),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                    Widget noButton = TextButton(
+                      child:
+                          const Text("No, just exit", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                        vm.closeCommand();
+                      },
+                    );
+                    Widget okButton = TextButton(
+                      child: const Text("Yes save it"),
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                        vm.saveCommand();
+                        vm.closeCommand();
+                      },
+                    );
+
+                    if (vm.isFileChanged()) {
+                      AlertDialog alert = AlertDialog(
+                        title: const Text("File changed"),
+                        content: const Text("Do you want to save it before closing?"),
+                        actions: [
+                          cancelButton,
+                          noButton,
+                          okButton,
+                        ],
+                      );
+                      // show the dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      );
+                    } else {
+                      // close the file
+                      vm.closeCommand();
+                    }
+                  },
                 ),
-                child: const Text('BlastApp'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.upload),
-                title: const Text('import .json file'),
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-
-                  Widget noButton = TextButton(
-                    child: const Text("No"),
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                    },
-                  );
-
-                  Widget okButton = TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              ],
+            ),
+            FutureBuilder<List<BlastCard>>(
+                future: vm.getCards(),
+                builder: (context, cardsList) {
+                  return Expanded(
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: _buildCardsList(cardsList.data ?? [], vm),
                     ),
-                    child: const Text("Yes import it anyway"),
-                    onPressed: () async {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                      
-                      try {
-                        await vm.importCommand();
-                      } catch (e) {
-                        
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("unable to import selected file. Please check the file format."),
-                        ));
-                      }  
-                    },
                   );
+                }),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          vm.addCard().then((value) {
+            vm.refreshCardListCommand();
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            child: const Text('BlastApp'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.upload),
+            title: const Text('import .json file'),
+            onTap: () {
+              Navigator.pop(context); // close drawer
 
-                  AlertDialog alert = AlertDialog(
-                    title: const Text("import blast .json file"),
-                    content: const Text("WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
-                    actions: [
-                      noButton,
-                      okButton,
-                    ],
-                  );
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return alert;
-                    },
-                  );
-                    
+              Widget noButton = TextButton(
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                 },
-              ),
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('export .json file'),
-                enabled: !kIsWeb,
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-                  vm.exportCommand();
+              );
+
+              Widget okButton = TextButton(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                ),
+                child: const Text("Yes import it anyway"),
+                onPressed: () async {
+                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+
+                  try {
+                    await vm.importCommand();
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("unable to import selected file. Please check the file format."),
+                    ));
+                  }
                 },
-              ),
-            ],
-          )
-        ),);
+              );
+
+              AlertDialog alert = AlertDialog(
+                title: const Text("import blast .json file"),
+                content: const Text(
+                    "WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
+                actions: [
+                  noButton,
+                  okButton,
+                ],
+              );
+              // show the dialog
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return alert;
+                },
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.download),
+            title: const Text('export .json file'),
+            enabled: !kIsWeb,
+            onTap: () {
+              Navigator.pop(context); // close drawer
+              vm.exportCommand();
+            },
+          ),
+        ],
+      )),
+    );
   }
 
   ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
@@ -240,36 +235,38 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-               IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    vm.editCard(cardsList[index]).then((value) {
-                      vm.refreshCardListCommand();
-                    });
-                  },
-                ),
               IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    _showDeleteCardDialog(context, vm, cardsList[index]);
-                  },
-                ),
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  vm.editCard(cardsList[index]).then((value) {
+                    vm.refreshCardListCommand();
+                  });
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  _showDeleteCardDialog(context, vm, cardsList[index]);
+                },
+              ),
             ],
           ),
-          title: Text(name, style: const TextStyle( fontWeight: FontWeight.bold)),
+          title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Row(
-                children: [
-                  Visibility(
-                    visible: isFavorite,
-                    child: Icon(
-                      isFavorite ? Icons.star : Icons.star_border,
-                    ),
-                  ),
-                  Text(
-                      'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
-                  _buildTagsRow(cardsList[index].tags),
-                ],
+            children: [
+              Visibility(
+                visible: isFavorite,
+                child: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                ),
               ),
+              Text(
+                  'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
+              _buildTagsRow(cardsList[index].tags),
+            ],
+          ),
+          selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+          selected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
           onTap: () async {
             vm.selectCard(cardsList[index]).then((value) {
               vm.refreshCardListCommand();
@@ -293,14 +290,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         MultiSelectChipDisplay(
-            items: mscdTags,
-            onTap: (value) {
-              setState(() {
-                //value.selected = !value.selected;
-              });
-            },
-            textStyle: const TextStyle(fontSize: 12),
-            )
+          items: mscdTags,
+          onTap: (value) {
+            setState(() {
+              //value.selected = !value.selected;
+            });
+          },
+          textStyle: const TextStyle(fontSize: 12),
+        )
       ],
     );
   }
@@ -390,23 +387,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   });
                 },
               ),
-            Padding(padding: const EdgeInsets.all(12.0), 
-              child: TextFormField(
-                initialValue: vm.searchText,
-                onChanged: (value) {
-                  vm.searchText = value;
-                  vm.refreshCardListCommand();
-                },
-                autofocus: true,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Search',
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextFormField(
+                  initialValue: vm.searchText,
+                  onChanged: (value) {
+                    vm.searchText = value;
+                    vm.refreshCardListCommand();
+                  },
+                  autofocus: true,
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Search',
+                  ),
                 ),
-              ), 
               ),
-
-            
             ],
           );
         });

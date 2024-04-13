@@ -14,6 +14,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
   final BuildContext context;
   final CurrentFileService fileService = CurrentFileService();
   List<BlastCard> cardsView = [];
+  BlastCard? selectedCard;
 
   SortType sortType = SortType.none;
   String searchText = "";
@@ -27,10 +28,12 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   Future selectCard(BlastCard selectedCard) async {
+    this.selectedCard = selectedCard;
     await context.router.push(CardRoute(card: selectedCard));
   }
 
   Future editCard(BlastCard selectedCard) async {
+    this.selectedCard = selectedCard;
     await context.router.push(CardEditRoute(card: selectedCard));
   }
 
@@ -73,12 +76,11 @@ class CardsBrowserViewModel extends ChangeNotifier {
       while (await File(fileName).exists()) {
         if (i == 0) {
           fileName = '$path/$name.json';
-        }
-        else {
+        } else {
           fileName = '$path/$name-$i.json';
         }
 
-        if (i==5) {
+        if (i == 5) {
           if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Too many files with the same name. Please delete some files and try again.'),
@@ -90,7 +92,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
       }
 
       File file = File(fileName);
-      
+
       String jsonString = fileService.currentFileDocument!.toString();
       file.writeAsStringSync(jsonString);
 
@@ -107,8 +109,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
       if (kIsWeb) {
         final fileBytes = result.files.first.bytes;
         fileService.currentFileJsonString = utf8.decode(fileBytes!);
-      }
-      else {
+      } else {
         File file = File(result.files.single.path!);
         fileService.currentFileJsonString = file.readAsStringSync();
       }

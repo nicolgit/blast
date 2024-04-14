@@ -8,9 +8,7 @@ html.WindowBase? _popupWin;
 
 class BlastOAuthWeb extends BlastOAuth {
   @override
-  void dispose() {
-    
-  }
+  void dispose() {}
 
   @override
   Future<oauth2.Client> createClient() async {
@@ -28,11 +26,11 @@ class BlastOAuthWeb extends BlastOAuth {
     cachedCredentials = client.credentials.toJson();
     return client;
   }
-  
+
   Future<void> _redirect(Uri url) async {
     _popupWin = html.window.open(url.toString(), "blast Auth", "width=800, height=900, scrollbars=yes");
   }
-  
+
   Future<Uri> _listen(Uri url) async {
     Uri? responseUri;
 

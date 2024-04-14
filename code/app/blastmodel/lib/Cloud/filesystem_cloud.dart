@@ -33,8 +33,8 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  Future<Uint8List> getFile(String path) async {
-    final file = File(path);
+  Future<Uint8List> getFile(String id) async {
+    final file = File(id);
     return await file.readAsBytes();
   }
 

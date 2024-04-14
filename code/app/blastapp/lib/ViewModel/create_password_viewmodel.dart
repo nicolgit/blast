@@ -100,6 +100,8 @@ class CreatePasswordViewModel extends ChangeNotifier {
     SettingService().addRecentFile(file);
 
     notifyListeners();
+
+    if (!context.mounted) return;
     context.router.push(const CardsBrowserRoute());
   }
 }

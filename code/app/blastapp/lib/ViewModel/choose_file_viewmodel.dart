@@ -14,7 +14,7 @@ class ChooseFileViewModel extends ChangeNotifier {
   ChooseFileViewModel(this.context);
 
   Future<List<CloudObject>>? getFiles() async {
-    var files;
+    List<CloudObject> files;
 
     try {
       isLoading = true;
@@ -23,8 +23,6 @@ class ChooseFileViewModel extends ChangeNotifier {
     } finally {
       isLoading = false;
     }
-
-    
 
     return Future<List<CloudObject>>.value(files);
   }

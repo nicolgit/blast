@@ -81,7 +81,9 @@ class OneDriveCloud extends Cloud {
       files.add(co);
     }
 
-    print(response.body.toString());
+    if (kDebugMode) {
+      print(response.body.toString());
+    }
 
     return files;
   }

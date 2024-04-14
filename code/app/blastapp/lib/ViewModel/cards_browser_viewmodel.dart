@@ -94,6 +94,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
       String jsonString = fileService.currentFileDocument!.toString();
       file.writeAsStringSync(jsonString);
 
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Data exported to $fileName.'),
       ));

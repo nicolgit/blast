@@ -11,12 +11,12 @@ class EulaViewModel extends ChangeNotifier {
   acceptEula() async {
     SettingService().setEulaAccepted(true);
     notifyListeners();
-    context.router.pop();
+    context.router.maybePop();
   }
 
   denyEula() async {
     SettingService().setEulaAccepted(false);
     notifyListeners();
-    context.router.pop(true);
+    context.router.maybePop(true);
   }
 }

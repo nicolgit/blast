@@ -22,7 +22,7 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void closeCommand() {
-    context.router.pop();
+    context.router.maybePop();
   }
 
   void copyToClipboard(String value) async {

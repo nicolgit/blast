@@ -59,7 +59,7 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  Future<Uint8List> getFile(String path) async {
+  Future<Uint8List> getFile(String id) async {
     
     final random = Random();
     await Future.delayed(Duration(seconds: random.nextInt(10)));

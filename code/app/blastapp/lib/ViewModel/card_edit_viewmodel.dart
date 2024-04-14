@@ -21,7 +21,7 @@ class CardEditViewModel extends ChangeNotifier {
   }
 
   void cancelCommand() {
-    context.router.pop();
+    context.router.maybePop();
   }
 
   void saveCommand() {
@@ -34,7 +34,7 @@ class CardEditViewModel extends ChangeNotifier {
 
     CurrentFileService().currentFileDocument!.isChanged = true;
 
-    context.router.pop();
+    context.router.maybePop();
   }
 
   void updateTitle(String value) {
@@ -118,6 +118,6 @@ class CardEditViewModel extends ChangeNotifier {
     CurrentFileService().currentFileDocument!.cards.remove(_sourceCard);
     
     CurrentFileService().currentFileDocument!.isChanged = true;
-    context.router.pop();
+    context.router.maybePop();
   }
 }

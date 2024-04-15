@@ -25,6 +25,7 @@ jobs:
         working-directory: ./code/app/blastapp
         run: |
           flutter config --enable-web
+          flutter pub upgrade
           flutter pub get
           flutter build web --release
       - name: Build And Deploy

@@ -34,14 +34,17 @@ class BlastOAuthWeb extends BlastOAuth {
   Future<Uri> _listen(Uri url) async {
     Uri? responseUri;
 
+    //print("_listen URI: $url");
     html.window.onMessage.listen((event) async {
+      //print("received EVENT: data:${event.data}");
+
       if (event.data.toString().startsWith(redirectUri.toString())) {
         responseUri = Uri.tryParse(event.data.toString());
-      }
 
-      if (_popupWin != null) {
-        _popupWin!.close();
-        _popupWin = null;
+        if (_popupWin != null) {
+          _popupWin!.close();
+          _popupWin = null;
+        }
       }
     });
 

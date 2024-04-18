@@ -92,9 +92,8 @@ class _CardViewState extends State<CardView> {
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
     var myList = ListView.builder(
-      itemCount: cardsList.length,
+      itemCount: cardsList.length + 1,
       itemBuilder: (context, index) {
-
         if (index == cardsList.length && vm.currentCard.notes != null) {
           return _showNotes(vm.currentCard.notes!, vm);
         }
@@ -108,8 +107,7 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               title: Container(
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
-                child: 
-                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
+                child: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
               ),
             );
           case BlastAttributeType.typePassword:
@@ -218,25 +216,23 @@ class _CardViewState extends State<CardView> {
       ],
     );
   }
-  
+
   ListTile _showNotes(String notes, CardViewModel vm) {
     return ListTile(
       leading: const Text("Notes"),
-      title: 
-      Flexible(
+      title: Flexible(
         child: Text(notes, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       trailing: IconButton(
-                onPressed: () {
-                  vm.copyToClipboard(notes);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("copied to clipboard!"),
-                  ));
-                },
-                icon: const Icon(Icons.copy),
-                tooltip: 'copy to clipboard',
-              ),
-      
+        onPressed: () {
+          vm.copyToClipboard(notes);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("copied to clipboard!"),
+          ));
+        },
+        icon: const Icon(Icons.copy),
+        tooltip: 'copy to clipboard',
+      ),
     );
   }
 }

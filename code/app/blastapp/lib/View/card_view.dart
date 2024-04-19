@@ -217,22 +217,13 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  ListTile _showNotes(String notes, CardViewModel vm) {
-    return ListTile(
-      leading: const Text("Notes"),
-      title: Flexible(
-        child: Text(notes, style: const TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      trailing: IconButton(
-        onPressed: () {
-          vm.copyToClipboard(notes);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("copied to clipboard!"),
-          ));
-        },
-        icon: const Icon(Icons.copy),
-        tooltip: 'copy to clipboard',
-      ),
+  Column _showNotes(String notes, CardViewModel vm) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Text("Notes", style: TextStyle(fontWeight: FontWeight.bold)),
+        SelectableText(notes, style: const TextStyle(fontStyle: FontStyle.italic)),
+      ],
     );
   }
 }

@@ -85,8 +85,7 @@ class _SplashViewState extends State<SplashView> {
   ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
     if (vm.isLoading) {
       context.loaderOverlay.show();
-    }
-    else {
+    } else {
       context.loaderOverlay.hide();
     }
 
@@ -94,7 +93,12 @@ class _SplashViewState extends State<SplashView> {
       itemCount: files.length,
       itemBuilder: (context, file) {
         return ListTile(
-          leading: Image.asset("assets/general/app-icon.png"),
+          //leading: Image.asset("assets/general/app-icon.png"),
+          leading: Row(mainAxisSize: MainAxisSize.min, children: [
+            Image.asset("storage/onedrive.png", width: 48, height: 48),
+            const Text(" > "),
+            Image.asset("assets/general/app-icon.png"),
+          ]),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -104,7 +108,8 @@ class _SplashViewState extends State<SplashView> {
                   return Row(children: [
                     Text(cloud.data?.name ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
                     const Text(" - "),
-                    Expanded( child: Text(files[file].fileName, overflow: TextOverflow.ellipsis, maxLines: 1),
+                    Expanded(
+                      child: Text(files[file].fileName, overflow: TextOverflow.ellipsis, maxLines: 1),
                     ),
                   ]);
                 },
@@ -114,10 +119,11 @@ class _SplashViewState extends State<SplashView> {
           subtitle: Row(
             children: [
               const Text("URI: "),
-              Expanded (
-                child: Text(files[file].fileUrl, style: const TextStyle(fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis, maxLines: 1)
-              ),
-              
+              Expanded(
+                  child: Text(files[file].fileUrl,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1)),
             ],
           ),
           onTap: () async {

@@ -13,23 +13,30 @@ class ChooseFileViewModel extends ChangeNotifier {
 
   ChooseFileViewModel(this.context);
 
-  Future<List<CloudObject>>? getFiles() async {
-    List<CloudObject> files;
+  List<CloudObject>? _cachedFiles;
 
-    try {
-      isLoading = true;
-      files = await currentFileService.cloud!.getFiles(await currentPath);
-      isLoading = false;
-    } finally {
-      isLoading = false;
+  Future<List<CloudObject>>? getFiles() async {
+    if (_cachedFiles == null) {
+      List<CloudObject> files;
+
+      try {
+        isLoading = true;
+        files = await currentFileService.cloud!.getFiles(await currentPath);
+        isLoading = false;
+      } finally {
+        isLoading = false;
+      }
+
+      _cachedFiles = files;
     }
 
-    return Future<List<CloudObject>>.value(files);
+    return Future<List<CloudObject>>.value(_cachedFiles);
   }
 
   Future selectItem(CloudObject object) async {
     if (object.isDirectory) {
       currentPath = Future.value(object.url);
+      _cachedFiles = null;
       notifyListeners();
     } else {
       try {
@@ -37,13 +44,13 @@ class ChooseFileViewModel extends ChangeNotifier {
         notifyListeners();
 
         currentFileService.currentFileInfo = BlastFile(
-          cloudId: currentFileService.cloud!.id,
-          fileName: object.name,
-          fileUrl: object.url,
-          jsonCredentials: currentFileService.cloud!.cachedCredentials);
+            cloudId: currentFileService.cloud!.id,
+            fileName: object.name,
+            fileUrl: object.url,
+            jsonCredentials: currentFileService.cloud!.cachedCredentials);
 
         currentFileService.currentFileEncrypted =
-            await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);        
+            await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
       } finally {
         isLoading = false;
         notifyListeners();
@@ -60,6 +67,7 @@ class ChooseFileViewModel extends ChangeNotifier {
 
   upDirectoryCommand() async {
     currentPath = Future.value(currentFileService.cloud!.goToParentDirectory(await currentPath));
+    _cachedFiles = null;
     notifyListeners();
   }
 

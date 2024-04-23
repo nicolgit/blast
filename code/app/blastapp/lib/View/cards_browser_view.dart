@@ -395,6 +395,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     vm.searchText = value;
                     vm.refreshCardListCommand();
                   },
+                  onFieldSubmitted: (value) {
+                    Navigator.pop(context);
+                  },
+                  textInputAction: TextInputAction.search,
                   autofocus: true,
                   textAlign: TextAlign.center,
                   decoration: const InputDecoration(

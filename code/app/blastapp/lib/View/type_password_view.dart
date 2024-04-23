@@ -55,20 +55,31 @@ class _TypePasswordViewState extends State<TypePasswordView> {
             obscureText: true,
             controller: passwordController,
             onChanged: (value) => vm.setPassword(value),
-            onSubmitted: (value) => {
-              if (!vm.checkPassword())
-                passwordFocusNode.requestFocus(),
+            onSubmitted: (value) async => {
+              if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
             },
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Password', hintText: 'Enter your password'),
           ),
-          Text(vm.errorMessage, style: const TextStyle(color: Colors.red) ),
+          Text(vm.errorMessage, style: const TextStyle(color: Colors.red)),
+          FutureBuilder<bool>(
+            future: vm.isCheckingPassword(),
+            builder: (context, isCheckingPassword) {
+              if (isCheckingPassword.data ?? false) {
+                return const Text("checking password...");
+              } else {
+                return const Text("");
+              }
+            },
+          ),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
-            builder: (context, isPasswordValid) => TextButton(
-              onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
-              child: const Text('open'),
-            ),
+            builder: (context, isPasswordValid) {
+              return TextButton(
+                onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
+                child: const Text('open'),
+              );
+            },
           ),
         ],
       )),

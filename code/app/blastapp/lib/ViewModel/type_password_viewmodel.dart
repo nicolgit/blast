@@ -16,12 +16,19 @@ class TypePasswordViewModel extends ChangeNotifier {
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
   String password = '';
   String errorMessage = '';
+  bool _isCheckingPassword = false;
 
   Future<bool> isPasswordValid() async {
     return password.isNotEmpty;
   }
 
-  bool checkPassword() {
+  Future<bool> checkPassword() async {
+    bool isOk = false;
+
+    _isCheckingPassword = true;
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 100));
+
     try {
       CurrentFileService().password = password;
       CurrentFileService().currentFileJsonString =
@@ -34,32 +41,36 @@ class TypePasswordViewModel extends ChangeNotifier {
         SettingService().addRecentFile(file);
       }
       errorMessage = '';
-      notifyListeners();
 
       context.router.push(const CardsBrowserRoute());
-      return true;
+      isOk = true;
     } on BlastWrongPasswordException {
       errorMessage = 'wrong password - please check again';
-      notifyListeners();
-      return false;
+      isOk = false;
     } on BlastUnknownFileVersionException {
       errorMessage = 'unknown file version - unable to open your file';
-      notifyListeners();
-      return false;
+      isOk = false;
     } on FormatException {
       errorMessage = 'file format exception - unable to open your file';
-      notifyListeners();
-      return false;
+      isOk = false;
     } catch (e) {
       errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
-      notifyListeners();
-      return false;
+      isOk = false;
     }
+
+    _isCheckingPassword = false;
+    notifyListeners();
+
+    return isOk;
   }
 
   setPassword(String value) {
     password = value;
     errorMessage = '';
     notifyListeners();
+  }
+
+  Future<bool> isCheckingPassword() async {
+    return _isCheckingPassword;
   }
 }

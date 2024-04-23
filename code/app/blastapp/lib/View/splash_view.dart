@@ -95,7 +95,7 @@ class _SplashViewState extends State<SplashView> {
         return ListTile(
           //leading: Image.asset("assets/general/app-icon.png"),
           leading: Row(mainAxisSize: MainAxisSize.min, children: [
-            Image.asset("storage/${files[file].cloudId}.png", width: 48, height: 48),
+            Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
             const Text(" > "),
             Image.asset("assets/general/app-icon.png"),
           ]),

@@ -4,6 +4,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
@@ -30,196 +31,215 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
+  final FocusNode _focusNode = FocusNode();
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
-    return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.question_mark),
-              onPressed: () {},
-            ),
-            TextButton.icon(
-              onPressed: () {
-                _showModalBottomSheet(context, vm);
-              },
-              icon: const Icon(
-                Icons.search,
-                size: 24.0,
-              ),
-              label: const Text('Search'),
-            ),
-            IconButton(
-              icon: const Icon(Icons.question_mark),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            AppBar(
-              automaticallyImplyLeading: true,
-              title: Text(vm.fileService.currentFileInfo!.fileName),
-              actions: [
+    return KeyboardListener(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: (event) {
+          if (event is KeyDownEvent &&
+              (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.space)) {
+            _showModalBottomSheet(context, vm);
+          }
+        },
+        child: Scaffold(
+          bottomNavigationBar: BottomAppBar(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
                 IconButton(
-                  icon: const Icon(Icons.save),
-                  tooltip: 'save',
-                  onPressed: () {
-                    vm.saveCommand();
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("file saved successfully!"),
-                    ));
-                  },
+                  icon: const Icon(Icons.question_mark),
+                  onPressed: () {},
+                ),
+                Tooltip(
+                  message: 'press SPACE or ENTER to search',
+                  child: TextButton.icon(
+                    onPressed: () {
+                      _showModalBottomSheet(context, vm);
+                    },
+                    icon: const Icon(
+                      Icons.search,
+                      size: 24.0,
+                    ),
+                    label: const Text('Search'),
+                  ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close),
-                  tooltip: 'close',
-                  onPressed: () {
-                    // set up the buttons
-                    Widget cancelButton = TextButton(
-                      child: const Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
-                      },
-                    );
-                    Widget noButton = TextButton(
-                      child:
-                          const Text("No, just exit", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                        vm.closeCommand();
-                      },
-                    );
-                    Widget okButton = TextButton(
-                      child: const Text("Yes save it"),
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                        vm.saveCommand();
-                        vm.closeCommand();
-                      },
-                    );
-
-                    if (vm.isFileChanged()) {
-                      AlertDialog alert = AlertDialog(
-                        title: const Text("File changed"),
-                        content: const Text("Do you want to save it before closing?"),
-                        actions: [
-                          cancelButton,
-                          noButton,
-                          okButton,
-                        ],
-                      );
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    } else {
-                      // close the file
-                      vm.closeCommand();
-                    }
-                  },
+                  icon: const Icon(Icons.question_mark),
+                  onPressed: () {},
                 ),
               ],
             ),
-            FutureBuilder<List<BlastCard>>(
-                future: vm.getCards(),
-                builder: (context, cardsList) {
-                  return Expanded(
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: _buildCardsList(cardsList.data ?? [], vm),
+          ),
+          body: Center(
+            child: Column(
+              children: [
+                AppBar(
+                  automaticallyImplyLeading: true,
+                  title: Text(vm.fileService.currentFileInfo!.fileName),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.save),
+                      tooltip: 'save',
+                      onPressed: () {
+                        vm.saveCommand();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("file saved successfully!"),
+                        ));
+                      },
                     ),
-                  );
-                }),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          vm.addCard().then((value) {
-            vm.refreshCardListCommand();
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: const Text('BlastApp'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.upload),
-            title: const Text('import .json file'),
-            onTap: () {
-              Navigator.pop(context); // close drawer
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      tooltip: 'close',
+                      onPressed: () {
+                        // set up the buttons
+                        Widget cancelButton = TextButton(
+                          child: const Text("Cancel"),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
+                          },
+                        );
+                        Widget noButton = TextButton(
+                          child: const Text("No, just exit",
+                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                            vm.closeCommand();
+                          },
+                        );
+                        Widget okButton = TextButton(
+                          child: const Text("Yes save it"),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                            vm.saveCommand();
+                            vm.closeCommand();
+                          },
+                        );
 
-              Widget noButton = TextButton(
-                child: const Text("No"),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                },
-              );
-
-              Widget okButton = TextButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                        if (vm.isFileChanged()) {
+                          AlertDialog alert = AlertDialog(
+                            title: const Text("File changed"),
+                            content: const Text("Do you want to save it before closing?"),
+                            actions: [
+                              cancelButton,
+                              noButton,
+                              okButton,
+                            ],
+                          );
+                          // show the dialog
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return alert;
+                            },
+                          );
+                        } else {
+                          // close the file
+                          vm.closeCommand();
+                        }
+                      },
+                    ),
+                  ],
                 ),
-                child: const Text("Yes import it anyway"),
-                onPressed: () async {
-                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-
-                  try {
-                    await vm.importCommand();
-                  } catch (e) {
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("unable to import selected file. Please check the file format."),
-                    ));
-                  }
-                },
-              );
-
-              AlertDialog alert = AlertDialog(
-                title: const Text("import blast .json file"),
-                content: const Text(
-                    "WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
-                actions: [
-                  noButton,
-                  okButton,
-                ],
-              );
-              // show the dialog
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return alert;
-                },
-              );
-            },
+                FutureBuilder<List<BlastCard>>(
+                    future: vm.getCards(),
+                    builder: (context, cardsList) {
+                      return Expanded(
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: _buildCardsList(cardsList.data ?? [], vm),
+                        ),
+                      );
+                    }),
+              ],
+            ),
           ),
-          ListTile(
-            leading: const Icon(Icons.download),
-            title: const Text('export .json file'),
-            enabled: !kIsWeb,
-            onTap: () {
-              Navigator.pop(context); // close drawer
-              vm.exportCommand();
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              vm.addCard().then((value) {
+                vm.refreshCardListCommand();
+              });
             },
+            child: const Icon(Icons.add),
           ),
-        ],
-      )),
-    );
+          drawer: Drawer(
+              child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                child: const Text('BlastApp'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.upload),
+                title: const Text('import .json file'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  Widget noButton = TextButton(
+                    child: const Text("No"),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                    },
+                  );
+
+                  Widget okButton = TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    child: const Text("Yes import it anyway"),
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+
+                      try {
+                        await vm.importCommand();
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("unable to import selected file. Please check the file format."),
+                        ));
+                      }
+                    },
+                  );
+
+                  AlertDialog alert = AlertDialog(
+                    title: const Text("import blast .json file"),
+                    content: const Text(
+                        "WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
+                    actions: [
+                      noButton,
+                      okButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.download),
+                title: const Text('export .json file'),
+                enabled: !kIsWeb,
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+                  vm.exportCommand();
+                },
+              ),
+            ],
+          )),
+        ));
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {

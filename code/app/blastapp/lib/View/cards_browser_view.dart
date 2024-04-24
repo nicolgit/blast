@@ -251,7 +251,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         bool isFavorite = cardsList[index].isFavorite;
 
         return ListTile(
-          leading: const Icon(Icons.file_copy_outlined),
+          leading: const Icon(
+            Icons.file_copy_outlined,
+            size: 48,
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -271,18 +274,20 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
             ],
           ),
-          title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Row(children: [
+            Visibility(
+              visible: isFavorite,
+              child: Icon(
+                isFavorite ? Icons.star : Icons.star_border,
+              ),
+            ),
+            Text(name, style: const TextStyle(fontWeight: FontWeight.bold))
+          ]),
           subtitle: Row(
             children: [
-              Visibility(
-                visible: isFavorite,
-                child: Icon(
-                  isFavorite ? Icons.star : Icons.star_border,
-                ),
-              ),
+              _buildTagsRow(cardsList[index].tags),
               Text(
                   'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
-              _buildTagsRow(cardsList[index].tags),
             ],
           ),
           selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
@@ -299,27 +304,19 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     return myList;
   }
 
-  Row _buildTagsRow(List<String> tags) {
-    List<MultiSelectItem<String>> mscdTags = tags.map((tag) {
-      final val = MultiSelectItem<String>(tag, tag);
-      val.selected = false;
-      return val;
-    }).toList();
+  Widget _buildTagsRow(List<String> tags) {
+    List<Widget> rowItems = [];
+    for (var tag in tags) {
+      rowItems.add(Text(
+        " $tag ",
+        style: TextStyle(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),
+      ));
+      rowItems.add(
+        const Text(" "),
+      );
+    }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MultiSelectChipDisplay(
-          items: mscdTags,
-          onTap: (value) {
-            setState(() {
-              //value.selected = !value.selected;
-            });
-          },
-          textStyle: const TextStyle(fontSize: 12),
-        )
-      ],
-    );
+    return Row(children: rowItems);
   }
 
   Future _showDeleteCardDialog(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {

@@ -5,14 +5,12 @@ import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 
-
 import 'package:blastmodel/specific/blastoauth/blastoauth.dart';
-import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart' 
-  if (dart.library.io) 'package:blastmodel/specific/blastoauth/blastoauth_mobile.dart'
-  if (dart.library.html) 'package:blastmodel/specific/blastoauth/blastoauth_web.dart';
-  
-class OneDriveCloud extends Cloud {
+import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart'
+    if (dart.library.io) 'package:blastmodel/specific/blastoauth/blastoauth_mobile.dart'
+    if (dart.library.html) 'package:blastmodel/specific/blastoauth/blastoauth_web.dart';
 
+class OneDriveCloud extends Cloud {
   OneDriveCloud() {
     var redirectUri = Uri();
 
@@ -25,8 +23,7 @@ class OneDriveCloud extends Cloud {
         port: currentUri.port,
         path: '/auth-landing.html',
       );
-    }
-    else {
+    } else {
       redirectUri = Uri.parse('blastapp://auth');
     }
 
@@ -35,14 +32,13 @@ class OneDriveCloud extends Cloud {
         authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
         tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
         redirectUri: redirectUri,
-        scopes: ['openid', 'profile', 'Files.ReadWrite']
-      );
+        scopes: ['openid', 'profile', 'Files.ReadWrite']);
   }
 
   late BlastOAuth _oauth;
 
   @override
-  String get id => "ONEDRIVE";
+  String get id => "MSONEDRIVE";
   @override
   String get name => 'Microsoft OneDrive personal';
   @override
@@ -119,15 +115,16 @@ class OneDriveCloud extends Cloud {
     // PUT /me/drive/items/{item-id}/content
 
     var client = await _oauth.createClient();
-    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'), body: bytes);
-    
+    var response =
+        await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id/content'), body: bytes);
+
     if (response.statusCode != 200) {
       throw BlastRESTAPIException(response.statusCode, response.body);
     }
 
     return true;
   }
-  
+
   @override
   Future<String> createFile(String path, Uint8List bytes) async {
     // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
@@ -143,15 +140,16 @@ class OneDriveCloud extends Cloud {
     }
 
     var client = await _oauth.createClient();
-    var response = await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
-    
+    var response =
+        await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
+
     var jsonResponse = await json.decode(response.body);
 
-    if (response.statusCode != 201) { // 201 Created
+    if (response.statusCode != 201) {
+      // 201 Created
       throw BlastRESTAPIException(response.statusCode, response.body);
     }
 
     return jsonResponse['id'];
-
   }
 }

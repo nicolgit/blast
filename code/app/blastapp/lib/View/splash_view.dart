@@ -106,10 +106,10 @@ class _SplashViewState extends State<SplashView> {
                 future: vm.getCloudStorageById(files[file].cloudId),
                 builder: (context, cloud) {
                   return Row(children: [
-                    Text(cloud.data?.name ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(files[file].fileName, style: const TextStyle(fontWeight: FontWeight.bold)),
                     const Text(" - "),
                     Expanded(
-                      child: Text(files[file].fileName, overflow: TextOverflow.ellipsis, maxLines: 1),
+                      child: Text(cloud.data?.name ?? "", overflow: TextOverflow.ellipsis, maxLines: 1),
                     ),
                   ]);
                 },

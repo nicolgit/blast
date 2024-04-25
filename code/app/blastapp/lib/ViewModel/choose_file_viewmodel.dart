@@ -51,6 +51,8 @@ class ChooseFileViewModel extends ChangeNotifier {
 
         currentFileService.currentFileEncrypted =
             await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
+
+        currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
       } finally {
         isLoading = false;
         notifyListeners();

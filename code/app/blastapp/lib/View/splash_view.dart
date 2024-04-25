@@ -126,6 +126,11 @@ class _SplashViewState extends State<SplashView> {
                       maxLines: 1)),
             ],
           ),
+          trailing: IconButton(
+              icon: const Icon(Icons.cancel),
+              onPressed: () async {
+                await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
+              }),
           onTap: () async {
             await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
               ScaffoldMessenger.of(context)

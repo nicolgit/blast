@@ -54,12 +54,18 @@ class SplashViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
-    
+
     if (!context.mounted) return;
     return context.router.push(const TypePasswordRoute());
   }
 
   void refresh() {
     notifyListeners();
+  }
+
+  removeFromRecent(BlastFile file) async {
+    SettingService().recentFiles.list.remove(file);
+
+    SettingService().setRecentFiles(SettingService().recentFiles.list);
   }
 }

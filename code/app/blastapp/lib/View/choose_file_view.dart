@@ -1,6 +1,9 @@
+import 'dart:js_util';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
+import 'package:blastmodel/exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -29,64 +32,69 @@ class _ChooseFileViewState extends State<ChooseFileView> {
 
   Widget _buildScaffold(BuildContext context, ChooseFileViewModel vm) {
     return Scaffold(
+        floatingActionButton: Tooltip(
+            message: 'create a new file',
+            child: FloatingActionButton(
+              onPressed: () {
+                vm.newFileCommand();
+              },
+              child: const Icon(Icons.note_add),
+            )),
         body: Center(
-      child: Column(
-        children: [
-          AppBar(
-            title: const Text("Choose a file"),
-          ),
-          const Text('choose to create a file'),
-          TextButton(
-            onPressed: () {
-              vm.newFileCommand();
-            },
-            child: const Text('new file'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
             children: [
-              const Text('or to open an existing one in '),
-              FutureBuilder<String>(
-                  future: vm.currentPath,
-                  builder: (context, currentPath) =>
-                      Text(currentPath.data ?? "", style: const TextStyle(fontWeight: FontWeight.bold))),
-              FutureBuilder<String>(
-                  future: vm.currentPath,
-                  builder: (context, currentPath) {
-                    return IconButton(
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text("current path copied to clipboard!")));
-                        },
-                        icon: const Icon(Icons.copy));
+              AppBar(
+                title: const Text("Choose a file"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        vm.upDirectoryCommand();
+                      },
+                      icon: const Icon(Icons.drive_folder_upload)),
+                  const Text('current path: '),
+                  FutureBuilder<String>(
+                    future: vm.currentPath,
+                    builder: (context, currentPath) => Flexible(
+                        child: Text(
+                      currentPath.data ?? "",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                  ),
+                  FutureBuilder<String>(
+                      future: vm.currentPath,
+                      builder: (context, currentPath) {
+                        return IconButton(
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(content: Text("current path copied to clipboard!")));
+                            },
+                            icon: const Icon(Icons.copy));
+                      }),
+                ],
+              ),
+              FutureBuilder<List<CloudObject>>(
+                  future: vm.getFiles(),
+                  builder: (context, listFiles) {
+                    return Expanded(
+                      child: Container(
+                        child: _buildfileList(listFiles.data ?? [], vm),
+                      ),
+                    );
                   }),
             ],
           ),
-          TextButton(
-              child: const Text('back'),
-              onPressed: () {
-                vm.upDirectoryCommand();
-              }),
-          FutureBuilder<List<CloudObject>>(
-              future: vm.getFiles(),
-              builder: (context, listFiles) {
-                return Expanded(
-                  child: Container(
-                    child: _buildfileList(listFiles.data ?? [], vm),
-                  ),
-                );
-              }),
-        ],
-      ),
-    ));
+        ));
   }
 
   Widget _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
     if (vm.isLoading) {
       context.loaderOverlay.show();
-    }
-    else {
+    } else {
       context.loaderOverlay.hide();
     }
 
@@ -99,17 +107,15 @@ class _ChooseFileViewState extends State<ChooseFileView> {
       itemBuilder: (context, index) {
         String name = listFiles[index].name;
         String path = listFiles[index].path;
-        
+
         Widget leadingIcon;
         if (listFiles[index].isDirectory) {
           leadingIcon = const Icon(Icons.folder, size: 48);
-        }
-        else {
+        } else {
           if (listFiles[index].name.endsWith(".blast")) {
             leadingIcon = Image.asset("assets/general/app-icon.png", width: 48, height: 48);
-          }
-          else {
-            leadingIcon = const Icon(Icons.article,size: 48);
+          } else {
+            leadingIcon = const Icon(Icons.article, size: 48);
           }
         }
 
@@ -127,8 +133,11 @@ class _ChooseFileViewState extends State<ChooseFileView> {
             ],
           ),
           onTap: () async {
-            await vm.selectItem(listFiles[index]).catchError((e) => ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("unable to open selected file, Error: ${e.toString()}"))));
+            await vm.selectItem(listFiles[index]).catchError((error) {
+              String errorMessage = "unable to open selected file, reason: ${error.toString()}";
+
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
+            });
           },
         );
       },

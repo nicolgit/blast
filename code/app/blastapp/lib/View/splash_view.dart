@@ -32,7 +32,10 @@ class _SplashViewState extends State<SplashView> {
           child: Column(
         children: [
           const Image(image: AssetImage('assets/general/icon-v01.png')),
-          const Text("your passwords, safe and sound."),
+          const Text(
+            "your passwords, safe and sound.",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           const Text("build ${Secrets.buildNumber}"),
           TextButton(
             onPressed: () {
@@ -40,19 +43,22 @@ class _SplashViewState extends State<SplashView> {
             },
             child: const Text('show EULA'),
           ),
-          FutureBuilder<bool>(
-              future: vm.eulaAccepted(),
-              builder: (context, boolEulaAccepted) {
-                return Visibility(
-                  visible: boolEulaAccepted.data ?? false,
-                  child: TextButton(
-                    onPressed: () {
-                      vm.goToChooseStorage().then((value) => vm.refresh());
-                    },
-                    child: const Text('create or select another file'),
-                  ),
-                );
-              }),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: FutureBuilder<bool>(
+                future: vm.eulaAccepted(),
+                builder: (context, boolEulaAccepted) {
+                  return Visibility(
+                    visible: boolEulaAccepted.data ?? false,
+                    child: TextButton(
+                      onPressed: () {
+                        vm.goToChooseStorage().then((value) => vm.refresh());
+                      },
+                      child: const Text('create or select another file'),
+                    ),
+                  );
+                }),
+          ),
           FutureBuilder<bool>(
               future: vm.eulaAccepted(),
               builder: (context, boolEulaAccepted) {

@@ -23,6 +23,9 @@ class LoremCloud extends Cloud {
   @override
   String get name => 'Lorem Cloud';
   @override
+  String get description =>
+      'fake storage, to use for testing purposes only, do not store any real data here (use "password" as password)';
+  @override
   Future<String> get rootpath => Future.value('http://loremcloud.com/');
 
   @override
@@ -60,7 +63,6 @@ class LoremCloud extends Cloud {
 
   @override
   Future<Uint8List> getFile(String id) async {
-    
     final random = Random();
     await Future.delayed(Duration(seconds: random.nextInt(10)));
 
@@ -165,7 +167,7 @@ class LoremCloud extends Cloud {
   Future<bool> setFile(String id, Uint8List bytes) {
     return Future.value(true);
   }
-  
+
   @override
   Future<String> createFile(String path, Uint8List bytes) {
     Random random = Random();

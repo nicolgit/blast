@@ -32,15 +32,13 @@ class SettingService {
     // init things inside this
 
     // init cloud storages list
-    cloudStorages.add(LoremCloud());
-
+    cloudStorages.add(OneDriveCloud());
     if (kIsWeb) {
       // nothing to do
     } else if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       cloudStorages.add(FileSystemCloud());
     }
-
-    cloudStorages.add(OneDriveCloud());
+    cloudStorages.add(LoremCloud());
   }
 
   // Add your methods and properties here

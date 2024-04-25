@@ -10,6 +10,8 @@ class FileSystemCloud extends Cloud {
   String get id => "LOCAL";
   @override
   String get name => 'local file system';
+  @override
+  String get description => 'data stored on local disk, accessible only on this device';
 
   @override
   Future<String> get rootpath async => "${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}";
@@ -67,7 +69,7 @@ class FileSystemCloud extends Cloud {
       return currentPath;
     }
   }
-  
+
   @override
   Future<String> createFile(String path, Uint8List bytes) async {
     await setFile(path, bytes);

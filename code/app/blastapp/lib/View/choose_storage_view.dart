@@ -18,8 +18,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     return ChangeNotifierProvider(
       create: (context) => ChooseStorageViewModel(context),
       child: Consumer<ChooseStorageViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -30,8 +29,8 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
         child: Column(
           children: [
             AppBar(
-            title: const Text("Choose Storage"),
-          ),
+              title: const Text("Choose the storage for your Blast file"),
+            ),
             FutureBuilder<List<Cloud>>(
               future: vm.supportedClouds(),
               builder: (context, cloudList) {
@@ -48,11 +47,29 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     var myList = Column(
       children: [
         for (Cloud cloud in cloudList)
-          TextButton(
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: ElevatedButton(
               onPressed: () {
                 vm.goToChooseFile(cloud);
               },
-              child: Text(cloud.name)),
+              child: Row(children: [
+                Image.asset("assets/storage/${cloud.id}.png", width: 48, height: 48),
+                Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      cloud.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      cloud.description,
+                    ),
+                  ]),
+                )
+              ]),
+            ),
+          ),
       ],
     );
 

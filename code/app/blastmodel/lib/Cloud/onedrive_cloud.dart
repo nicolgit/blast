@@ -40,7 +40,9 @@ class OneDriveCloud extends Cloud {
   @override
   String get id => "MSONEDRIVE";
   @override
-  String get name => 'Microsoft OneDrive personal';
+  String get name => 'OneDrive personal';
+  @override
+  String get description => 'Microsoft personal cloud storage, data stored in cloud, requires a Microsoft account';
   @override
   Future<String> get rootpath => Future.value('/drive/root');
 

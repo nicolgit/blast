@@ -4,6 +4,7 @@ import 'package:blastmodel/Cloud/cloud_object.dart';
 abstract class Cloud {
   String get id;
   String get name;
+  String get description;
   String? cachedCredentials;
   Future<String> get rootpath;
 

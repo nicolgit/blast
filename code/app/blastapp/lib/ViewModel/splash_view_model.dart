@@ -12,6 +12,7 @@ class SplashViewModel extends ChangeNotifier {
   BuildContext context;
 
   bool isLoading = false;
+  Future<ThemeMode> get currentThemeMode => SettingService().appTheme;
 
   SplashViewModel(this.context);
 
@@ -67,5 +68,18 @@ class SplashViewModel extends ChangeNotifier {
     SettingService().recentFiles.list.remove(file);
 
     SettingService().setRecentFiles(SettingService().recentFiles.list);
+  }
+
+  Future<ThemeMode> toggleLightDarkMode() async {
+    var themeSwitcher = {
+      ThemeMode.system: ThemeMode.light,
+      ThemeMode.light: ThemeMode.dark,
+      ThemeMode.dark: ThemeMode.system,
+    };
+
+    var currentTheme = await SettingService().appTheme;
+    SettingService().setAppTheme(themeSwitcher[currentTheme] ?? ThemeMode.system);
+
+    return SettingService().appTheme;
   }
 }

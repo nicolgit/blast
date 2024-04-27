@@ -7,15 +7,10 @@ import 'package:blastmodel/Cloud/onedrive_cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/blastfilelist.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
-enum BlaseAppTheme {
-  auto,
-  light,
-  dark,
-}
 
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -52,12 +47,12 @@ class SettingService {
     await prefs.setBool('eulaAccepted', value);
   }
 
-  Future<BlaseAppTheme> get appTheme async {
+  Future<ThemeMode> get appTheme async {
     var prefs = await _prefs;
-    return BlaseAppTheme.values[prefs.getInt('appTheme') ?? BlaseAppTheme.auto.index];
+    return ThemeMode.values[prefs.getInt('appTheme') ?? ThemeMode.system.index];
   }
 
-  Future<void> setAppTheme(BlaseAppTheme value) async {
+  Future<void> setAppTheme(ThemeMode value) async {
     var prefs = await _prefs;
     await prefs.setInt('appTheme', value.index);
   }
@@ -72,11 +67,13 @@ class SettingService {
       try {
         recentFiles = BlastFileList.fromJson(jsonDecode(jsonRecent));
       } catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
         recentFiles = BlastFileList();
       }
+
+      recentFiles.list = recentFiles.list.where((file) {
+        var cloud = cloudStorages.any((element) => element.id == file.cloudId);
+        return cloud;
+      }).toList();
 
       return recentFiles.list;
     }

@@ -7,15 +7,6 @@ class AppViewModel {
   }
 
   Future<ThemeMode> getAppTheme() async {
-    switch (await SettingService().appTheme) {
-      case BlaseAppTheme.auto:
-        return ThemeMode.system;
-      case BlaseAppTheme.light:
-        return ThemeMode.light;
-      case BlaseAppTheme.dark:
-        return ThemeMode.dark;
-      default:
-        return ThemeMode.system;
-    }
+    return await SettingService().appTheme;
   }
 }

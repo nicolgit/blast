@@ -18,7 +18,7 @@ dependencies:
   diacritic: ^0.1.5
   url_launcher: ^6.2.5
   oauth2: ^2.0.2
-  app_links: ^3.5.1
+  app_links: ^5.0.0
   
 dev_dependencies:
   flutter_test:

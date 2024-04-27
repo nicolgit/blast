@@ -26,31 +26,49 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+
   Widget _buildScaffold(BuildContext context, SplashViewModel vm) {
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+
     return Scaffold(
+      backgroundColor: _theme.colorScheme.background,
       body: Center(
           child: Column(
         children: [
           const Image(image: AssetImage('assets/general/icon-v01.png')),
-          const Text(
-            "your passwords, safe and sound.",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const Text("build ${Secrets.buildNumber}"),
-          TextButton(
-            onPressed: () {
-              vm.showEula().then((value) => vm.refresh());
-            },
-            child: const Text('show EULA'),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Column(children: [
+              Text(
+                "your passwords, safe and sound.",
+                style: _textTheme.labelLarge,
+              ),
+              Text(
+                "build ${Secrets.buildNumber}",
+                style: _textTheme.labelSmall,
+              ),
+            ]),
           ),
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(12.0),
+            child: FilledButton.tonal(
+              onPressed: () {
+                vm.showEula().then((value) => vm.refresh());
+              },
+              child: const Text('show EULA'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
             child: FutureBuilder<bool>(
                 future: vm.eulaAccepted(),
                 builder: (context, boolEulaAccepted) {
                   return Visibility(
                     visible: boolEulaAccepted.data ?? false,
-                    child: TextButton(
+                    child: FilledButton(
                       onPressed: () {
                         vm.goToChooseStorage().then((value) => vm.refresh());
                       },
@@ -111,25 +129,31 @@ class _SplashViewState extends State<SplashView> {
               FutureBuilder<Cloud>(
                 future: vm.getCloudStorageById(files[file].cloudId),
                 builder: (context, cloud) {
-                  return Row(children: [
-                    Text(files[file].fileName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const Text(" - "),
-                    Expanded(
-                      child: Text(cloud.data?.name ?? "", overflow: TextOverflow.ellipsis, maxLines: 1),
-                    ),
-                  ]);
+                  return Row(
+                    children: [
+                      Text(files[file].fileName, style: _textTheme.headlineSmall),
+                      Text(
+                        " - ",
+                        style: _textTheme.labelLarge,
+                      ),
+                      Expanded(
+                          child: Text(cloud.data?.name ?? "",
+                              overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
+                    ],
+                  );
                 },
               ),
             ],
           ),
           subtitle: Row(
             children: [
-              const Text("URI: "),
+              Text(
+                "URI: ",
+                style: _textTheme.labelSmall,
+              ),
               Expanded(
                   child: Text(files[file].fileUrl,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1)),
+                      style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
             ],
           ),
           trailing: IconButton(

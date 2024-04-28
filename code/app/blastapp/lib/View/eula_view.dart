@@ -17,35 +17,50 @@ class _EulaViewState extends State<EulaView> {
     return ChangeNotifierProvider(
       create: (context) => EulaViewModel(context),
       child: Consumer<EulaViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+
   Widget _buildScaffold(BuildContext context, EulaViewModel vm) {
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+
     return Scaffold(
-      body: Center(
-          child: Column(
-        children: [
-          const Text('EULA'),
-          const Text(' '),
-          const Text(
-              'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua '),
-          TextButton(
-            onPressed: () {
-              vm.acceptEula();
-            },
-            child: const Text('accept and go back to splash screen'),
-          ),
-          TextButton(
-            onPressed: () {
-              vm.denyEula();
-            },
-            child: const Text('I do not want to accept and use this app'),
-          ),
-        ],
-      )),
-    );
+        backgroundColor: _theme.colorScheme.background,
+        body: SingleChildScrollView(
+          child: Center(
+              child: Column(
+            children: [
+              Text(
+                'EULA',
+                style: _textTheme.bodyLarge,
+              ),
+              const Text(' '),
+              Text(
+                  'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ',
+                  style: _textTheme.bodyMedium),
+              Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: FilledButton(
+                    onPressed: () {
+                      vm.acceptEula();
+                    },
+                    child: const Text('accept and go back to splash screen'),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      vm.denyEula();
+                    },
+                    child: const Text('I do not want to accept and use this app'),
+                  )),
+            ],
+          )),
+        ));
   }
 }

@@ -40,15 +40,22 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     super.dispose();
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+
   Widget _buildScaffold(BuildContext context, TypePasswordViewModel vm) {
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+
     return Scaffold(
+      backgroundColor: _theme.colorScheme.background,
       body: Center(
           child: Column(
         children: [
           AppBar(
             title: Text("open file: ${vm.fileName}"),
           ),
-          const Text('type the master password to open your blast file'),
+          Text('type the master password to open your blast file', style: _textTheme.labelLarge),
           TextField(
             autofocus: true,
             focusNode: passwordFocusNode,

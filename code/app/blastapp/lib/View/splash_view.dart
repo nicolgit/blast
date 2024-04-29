@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_view_model.dart';
+import 'package:blastapp/main.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/secrets.dart';
@@ -34,76 +35,94 @@ class _SplashViewState extends State<SplashView> {
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
 
     return Scaffold(
-      backgroundColor: _theme.colorScheme.background,
-      body: Center(
-          child: Column(
-        children: [
-          const Image(image: AssetImage('assets/general/icon-v01.png')),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Column(children: [
-              Text(
-                "your passwords, safe and sound.",
-                style: _textTheme.labelLarge,
-              ),
-              Text(
-                "build ${Secrets.buildNumber}",
-                style: _textTheme.labelSmall,
-              ),
-            ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: FilledButton.tonal(
-              onPressed: () {
-                vm.showEula().then((value) => vm.refresh());
-              },
-              child: const Text('show EULA'),
+        backgroundColor: _theme.colorScheme.background,
+        body: Center(
+            child: Column(
+          children: [
+            const Image(image: AssetImage('assets/general/icon-v01.png')),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Column(children: [
+                Text(
+                  "your passwords, safe and sound.",
+                  style: _textTheme.labelLarge,
+                ),
+                Text(
+                  "build ${Secrets.buildNumber}",
+                  style: _textTheme.labelSmall,
+                ),
+              ]),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: FutureBuilder<bool>(
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: FilledButton.tonal(
+                onPressed: () {
+                  vm.showEula().then((value) => vm.refresh());
+                },
+                child: const Text('show EULA'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: FutureBuilder<bool>(
+                  future: vm.eulaAccepted(),
+                  builder: (context, boolEulaAccepted) {
+                    return Visibility(
+                      visible: boolEulaAccepted.data ?? false,
+                      child: FilledButton(
+                        onPressed: () {
+                          vm.goToChooseStorage().then((value) => vm.refresh());
+                        },
+                        child: const Text('create or select another file'),
+                      ),
+                    );
+                  }),
+            ),
+            FutureBuilder<bool>(
                 future: vm.eulaAccepted(),
                 builder: (context, boolEulaAccepted) {
                   return Visibility(
-                    visible: boolEulaAccepted.data ?? false,
-                    child: FilledButton(
-                      onPressed: () {
-                        vm.goToChooseStorage().then((value) => vm.refresh());
-                      },
-                      child: const Text('create or select another file'),
-                    ),
+                      visible: boolEulaAccepted.data ?? false,
+                      child: FutureBuilder<List<BlastFile>>(
+                          future: vm.recentFiles(),
+                          builder: (context, listFiles) {
+                            return Expanded(
+                              child: Container(
+                                child: _buildRecentFilesList(listFiles.data ?? [], vm),
+                              ),
+                            );
+                          }));
+                }),
+            FutureBuilder<bool>(
+                future: vm.eulaNotAccepted(),
+                builder: (context, boolEulaNotAccepted) {
+                  return Visibility(
+                    visible: boolEulaNotAccepted.data ?? false,
+                    child: Text("you must accept the EULA to use this app", style: _textTheme.labelMedium),
                   );
                 }),
-          ),
-          FutureBuilder<bool>(
-              future: vm.eulaAccepted(),
-              builder: (context, boolEulaAccepted) {
-                return Visibility(
-                    visible: boolEulaAccepted.data ?? false,
-                    child: FutureBuilder<List<BlastFile>>(
-                        future: vm.recentFiles(),
-                        builder: (context, listFiles) {
-                          return Expanded(
-                            child: Container(
-                              child: _buildRecentFilesList(listFiles.data ?? [], vm),
-                            ),
-                          );
-                        }));
-              }),
-          FutureBuilder<bool>(
-              future: vm.eulaNotAccepted(),
-              builder: (context, boolEulaNotAccepted) {
-                return Visibility(
-                  visible: boolEulaNotAccepted.data ?? false,
-                  child: const Text("you must accept the EULA to use this app",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                );
-              }),
-        ],
-      )),
-    );
+          ],
+        )),
+        floatingActionButton: FutureBuilder<ThemeMode>(
+          future: vm.currentThemeMode,
+          builder: (context, themeMode) {
+            return IconButton(
+              icon: Icon(
+                themeMode.data == ThemeMode.light
+                    ? Icons.light_mode
+                    : (themeMode.data == ThemeMode.dark ? Icons.dark_mode : Icons.auto_awesome),
+                color: _theme.colorScheme.tertiary,
+              ),
+              onPressed: () {
+                vm.toggleLightDarkMode().then((value) {
+                  BlastApp.of(context).changeTheme(value);
+                  vm.refresh();
+                });
+              },
+              tooltip: 'system/light/dark mode',
+            );
+          },
+        ));
   }
 
   ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
@@ -157,7 +176,7 @@ class _SplashViewState extends State<SplashView> {
             ],
           ),
           trailing: IconButton(
-              icon: const Icon(Icons.cancel),
+              icon: Icon(Icons.cancel, color: _theme.colorScheme.error),
               onPressed: () async {
                 await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
               }),

@@ -35,12 +35,14 @@ class BlastApp extends StatefulWidget {
   const BlastApp(this.themeMode, {super.key});
 
   @override
-  State<BlastApp> createState() => _BlastAppState(themeMode);
+  State<BlastApp> createState() => BlastAppState(themeMode);
+
+  static BlastAppState of(BuildContext context) => context.findAncestorStateOfType<BlastAppState>()!;
 }
 
-class _BlastAppState extends State<BlastApp> {
-  final ThemeMode _themeMode;
-  _BlastAppState(this._themeMode);
+class BlastAppState extends State<BlastApp> {
+  ThemeMode _themeMode;
+  BlastAppState(this._themeMode);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class _BlastAppState extends State<BlastApp> {
           title: "Blastapp title",
           home: MaterialApp.router(
             routerConfig: _appRouter.config(),
-            theme: BlastTheme.dark,
+            theme: BlastTheme.light,
             darkTheme: BlastTheme.dark,
             themeMode: _themeMode,
             /*  ThemeMode.system to follow system theme, 
@@ -64,6 +66,12 @@ class _BlastAppState extends State<BlastApp> {
               */
           ),
         ));
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
   }
 
   final _appRouter = BlastRouter();

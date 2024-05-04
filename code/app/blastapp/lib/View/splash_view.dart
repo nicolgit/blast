@@ -135,7 +135,16 @@ class _SplashViewState extends State<SplashView> {
     var myList = ListView.builder(
       itemCount: files.length,
       itemBuilder: (context, file) {
-        return ListTile(
+        return 
+        Padding(padding: const EdgeInsets.all(12), child:
+         Material( 
+          borderRadius: BorderRadius.circular(3),
+          elevation: 3,
+          color: _theme.colorScheme.onInverseSurface,
+          shadowColor: _theme.colorScheme.onSurface,
+          surfaceTintColor: _theme.colorScheme.onBackground,
+          type: MaterialType.card,
+          child:ListTile(
           //leading: Image.asset("assets/general/app-icon.png"),
           leading: Row(mainAxisSize: MainAxisSize.min, children: [
             Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
@@ -186,7 +195,12 @@ class _SplashViewState extends State<SplashView> {
                   .showSnackBar(SnackBar(content: Text("Unable to open selected file, error: $error")));
             });
           },
-        );
+        )
+        ) )
+        
+        
+        
+        ;
       },
     );
 

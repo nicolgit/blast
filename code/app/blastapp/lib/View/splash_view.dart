@@ -135,72 +135,67 @@ class _SplashViewState extends State<SplashView> {
     var myList = ListView.builder(
       itemCount: files.length,
       itemBuilder: (context, file) {
-        return 
-        Padding(padding: const EdgeInsets.all(12), child:
-         Material( 
-          borderRadius: BorderRadius.circular(3),
-          elevation: 3,
-          color: _theme.colorScheme.onInverseSurface,
-          shadowColor: _theme.colorScheme.onSurface,
-          surfaceTintColor: _theme.colorScheme.onBackground,
-          type: MaterialType.card,
-          child:ListTile(
-          //leading: Image.asset("assets/general/app-icon.png"),
-          leading: Row(mainAxisSize: MainAxisSize.min, children: [
-            Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
-            const Text(" > "),
-            Image.asset("assets/general/app-icon.png"),
-          ]),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FutureBuilder<Cloud>(
-                future: vm.getCloudStorageById(files[file].cloudId),
-                builder: (context, cloud) {
-                  return Row(
+        return Padding(
+            padding: const EdgeInsets.all(6),
+            child: Material(
+                borderRadius: BorderRadius.circular(6),
+                elevation: 1,
+                color: _theme.colorScheme.surface,
+                shadowColor: _theme.colorScheme.onSurface,
+                surfaceTintColor: _theme.colorScheme.onBackground,
+                type: MaterialType.card,
+                child: ListTile(
+                  //leading: Image.asset("assets/general/app-icon.png"),
+                  leading: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
+                    Text(" > ", style: _textTheme.headlineSmall),
+                    Image.asset("assets/general/app-icon.png"),
+                  ]),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(files[file].fileName, style: _textTheme.headlineSmall),
+                      FutureBuilder<Cloud>(
+                        future: vm.getCloudStorageById(files[file].cloudId),
+                        builder: (context, cloud) {
+                          return Row(
+                            children: [
+                              Text(files[file].fileName, style: _textTheme.headlineSmall),
+                              Text(
+                                " - ",
+                                style: _textTheme.labelLarge,
+                              ),
+                              Expanded(
+                                  child: Text(cloud.data?.name ?? "",
+                                      overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  subtitle: Row(
+                    children: [
                       Text(
-                        " - ",
-                        style: _textTheme.labelLarge,
+                        "URI: ",
+                        style: _textTheme.labelSmall,
                       ),
                       Expanded(
-                          child: Text(cloud.data?.name ?? "",
-                              overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
+                          child: Text(files[file].fileUrl,
+                              style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
                     ],
-                  );
-                },
-              ),
-            ],
-          ),
-          subtitle: Row(
-            children: [
-              Text(
-                "URI: ",
-                style: _textTheme.labelSmall,
-              ),
-              Expanded(
-                  child: Text(files[file].fileUrl,
-                      style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
-            ],
-          ),
-          trailing: IconButton(
-              icon: Icon(Icons.cancel, color: _theme.colorScheme.error),
-              onPressed: () async {
-                await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
-              }),
-          onTap: () async {
-            await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text("Unable to open selected file, error: $error")));
-            });
-          },
-        )
-        ) )
-        
-        
-        
-        ;
+                  ),
+                  trailing: IconButton(
+                      icon: Icon(Icons.cancel, color: _theme.colorScheme.error),
+                      onPressed: () async {
+                        await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
+                      }),
+                  onTap: () async {
+                    await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("Unable to open selected file, error: $error")));
+                    });
+                  },
+                )));
       },
     );
 

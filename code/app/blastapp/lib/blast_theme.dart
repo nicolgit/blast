@@ -7,11 +7,11 @@ class BlastTheme {
 
   static ThemeData light = base.copyWith(
     brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow, brightness: Brightness.light),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.light),
   );
 
   static ThemeData dark = base.copyWith(
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow, brightness: Brightness.dark),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.dark),
   );
 }

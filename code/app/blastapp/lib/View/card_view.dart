@@ -109,6 +109,7 @@ class _CardViewState extends State<CardView> {
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
                 child: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
               ),
+              onTap: () async {},
             );
           case BlastAttributeType.typePassword:
             return ListTile(
@@ -151,6 +152,7 @@ class _CardViewState extends State<CardView> {
                   ),
                 ],
               ),
+              onTap: () async {},
             );
           case BlastAttributeType.typeURL:
             return ListTile(
@@ -174,6 +176,7 @@ class _CardViewState extends State<CardView> {
                 icon: const Icon(Icons.copy),
                 tooltip: 'copy to clipboard',
               ),
+              onTap: () async {},
             );
           case BlastAttributeType.typeString:
           default:
@@ -191,6 +194,7 @@ class _CardViewState extends State<CardView> {
                 icon: const Icon(Icons.copy),
                 tooltip: 'copy to clipboard',
               ),
+              onTap: () async {},
             );
         }
       },

@@ -27,10 +27,20 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     );
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+  late TextTheme _textTooltip;
+
   Widget _buildScaffold(BuildContext context, ChooseFileViewModel vm) {
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+    _textTooltip = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onInverseSurface);
+
     return Scaffold(
+        backgroundColor: _theme.colorScheme.background,
         floatingActionButton: Tooltip(
             message: 'create a new file',
+            textStyle: _textTooltip.labelSmall,
             child: FloatingActionButton(
               onPressed: () {
                 vm.newFileCommand();
@@ -41,7 +51,9 @@ class _ChooseFileViewState extends State<ChooseFileView> {
           child: Column(
             children: [
               AppBar(
-                title: const Text("Choose a file"),
+                title: const Text(
+                  "Choose a file",
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -51,13 +63,16 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                         vm.upDirectoryCommand();
                       },
                       icon: const Icon(Icons.drive_folder_upload)),
-                  const Text('current path: '),
+                  Text(
+                    'current path: ',
+                    style: _textTheme.bodyLarge,
+                  ),
                   FutureBuilder<String>(
                     future: vm.currentPath,
                     builder: (context, currentPath) => Flexible(
                         child: Text(
                       currentPath.data ?? "",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: _textTheme.bodyLarge,
                       overflow: TextOverflow.ellipsis,
                     )),
                   ),
@@ -67,8 +82,8 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                         return IconButton(
                             onPressed: () {
                               Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(content: Text("current path copied to clipboard!")));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text("current path copied to clipboard!", style: _textTooltip.labelSmall)));
                             },
                             icon: const Icon(Icons.copy));
                       }),

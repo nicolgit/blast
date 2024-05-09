@@ -14,18 +14,6 @@ void main() async {
   var r = getWin32Register();
   await r.register('blastapp'); // register custom protocol for windows client only
 
-  /*
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => SplashViewModel(context)),
-        ChangeNotifierProvider(create: (context) => EulaViewModel(context)),
-      ],
-      child: BlastApp(),
-    ),
-  );
-  */
-
   AppViewModel appViewModel = AppViewModel();
   runApp(BlastApp(await appViewModel.getAppTheme()));
 }

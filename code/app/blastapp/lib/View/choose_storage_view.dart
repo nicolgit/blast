@@ -23,8 +23,15 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     );
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+
   Widget _buildScaffold(BuildContext context, ChooseStorageViewModel vm) {
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+
     return Scaffold(
+      backgroundColor: _theme.colorScheme.background,
       body: Center(
         child: Column(
           children: [
@@ -49,25 +56,21 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
         for (Cloud cloud in cloudList)
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: ElevatedButton(
-              onPressed: () {
-                vm.goToChooseFile(cloud);
-              },
-              child: Row(children: [
-                Image.asset("assets/storage/${cloud.id}.png", width: 48, height: 48),
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(
-                      cloud.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      cloud.description,
-                    ),
-                  ]),
-                )
-              ]),
+            child: Material(
+              borderRadius: BorderRadius.circular(6),
+              elevation: 1,
+              color: _theme.colorScheme.surface,
+              shadowColor: _theme.colorScheme.onSurface,
+              surfaceTintColor: _theme.colorScheme.onBackground,
+              type: MaterialType.card,
+              child: ListTile(
+                leading: Image.asset("assets/storage/${cloud.id}.png", width: 48, height: 48),
+                title: Text(cloud.name, style: _textTheme.labelLarge),
+                subtitle: Text(cloud.description, style: _textTheme.labelSmall),
+                onTap: () {
+                  vm.goToChooseFile(cloud);
+                },
+              ),
             ),
           ),
       ],

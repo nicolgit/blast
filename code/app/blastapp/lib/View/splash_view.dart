@@ -137,65 +137,71 @@ class _SplashViewState extends State<SplashView> {
       itemBuilder: (context, file) {
         return Padding(
             padding: const EdgeInsets.all(6),
-            child: Material(
-                borderRadius: BorderRadius.circular(6),
-                elevation: 1,
-                color: _theme.colorScheme.surface,
-                shadowColor: _theme.colorScheme.onSurface,
-                surfaceTintColor: _theme.colorScheme.onBackground,
-                type: MaterialType.card,
-                child: ListTile(
-                  //leading: Image.asset("assets/general/app-icon.png"),
-                  leading: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
-                    Text(" > ", style: _textTheme.headlineSmall),
-                    Image.asset("assets/general/app-icon.png"),
-                  ]),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: Dismissible(
+                key: Key(files[file].fileUrl),
+                onDismissed: (direction) async {
+                  await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
+                },
+                background: Container(
+                  color: _theme.colorScheme.error,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      FutureBuilder<Cloud>(
-                        future: vm.getCloudStorageById(files[file].cloudId),
-                        builder: (context, cloud) {
-                          return Row(
-                            children: [
-                              Text(files[file].fileName, style: _textTheme.headlineSmall),
-                              Text(
-                                " - ",
-                                style: _textTheme.labelLarge,
-                              ),
-                              Expanded(
-                                  child: Text(cloud.data?.name ?? "",
-                                      overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
-                            ],
-                          );
-                        },
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Icon(Icons.cancel, color: _theme.colorScheme.onError),
                       ),
                     ],
                   ),
-                  subtitle: Row(
-                    children: [
-                      Text(
-                        "URI: ",
-                        style: _textTheme.labelSmall,
+                ),
+                child: Material(
+                    borderRadius: BorderRadius.circular(6),
+                    elevation: 1,
+                    color: _theme.colorScheme.surface,
+                    shadowColor: _theme.colorScheme.onSurface,
+                    surfaceTintColor: _theme.colorScheme.onBackground,
+                    type: MaterialType.card,
+                    child: ListTile(
+                      //leading: Image.asset("assets/general/app-icon.png"),
+                      leading: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
+                        Text(" > ", style: _textTheme.headlineSmall),
+                        Image.asset("assets/general/app-icon.png"),
+                      ]),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FutureBuilder<Cloud>(
+                            future: vm.getCloudStorageById(files[file].cloudId),
+                            builder: (context, cloud) {
+                              return Row(
+                                children: [
+                                  Text(files[file].fileName, style: _textTheme.headlineSmall),
+                                  Text(
+                                    " - ",
+                                    style: _textTheme.labelLarge,
+                                  ),
+                                  Expanded(
+                                      child: Text(cloud.data?.name ?? "",
+                                          overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      Expanded(
-                          child: Text(files[file].fileUrl,
-                              style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
-                    ],
-                  ),
-                  trailing: IconButton(
-                      icon: Icon(Icons.cancel, color: _theme.colorScheme.error),
-                      onPressed: () async {
-                        await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
-                      }),
-                  onTap: () async {
-                    await vm.goToRecentFile(files[file]).then((value) => vm.refresh()).catchError((error) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("Unable to open selected file, error: $error")));
-                    });
-                  },
-                )));
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            "URI: ",
+                            style: _textTheme.labelSmall,
+                          ),
+                          Expanded(
+                              child: Text(files[file].fileUrl,
+                                  style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
+                        ],
+                      ),
+                    ))));
       },
     );
 

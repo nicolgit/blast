@@ -163,6 +163,9 @@ class _SplashViewState extends State<SplashView> {
                     surfaceTintColor: _theme.colorScheme.onBackground,
                     type: MaterialType.card,
                     child: ListTile(
+                      onTap: () {
+                        vm.goToRecentFile(files[file]);
+                      },
                       //leading: Image.asset("assets/general/app-icon.png"),
                       leading: Row(mainAxisSize: MainAxisSize.min, children: [
                         Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),

@@ -140,27 +140,36 @@ class _ChooseFileViewState extends State<ChooseFileView> {
           }
         }
 
-        return ListTile(
-          leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
-          title: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text(path),
-                ],
-              ),
-            ],
-          ),
-          onTap: () async {
-            await vm.selectItem(listFiles[index]).catchError((error) {
-              String errorMessage = "unable to open selected file, reason: ${error.toString()}";
+        return Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Material(
+                borderRadius: BorderRadius.circular(6),
+                elevation: 1,
+                color: _theme.colorScheme.surface,
+                shadowColor: _theme.colorScheme.onSurface,
+                surfaceTintColor: _theme.colorScheme.onBackground,
+                type: MaterialType.card,
+                child: ListTile(
+                  leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
+                  title: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          Text(path),
+                        ],
+                      ),
+                    ],
+                  ),
+                  onTap: () async {
+                    await vm.selectItem(listFiles[index]).catchError((error) {
+                      String errorMessage = "unable to open selected file, reason: ${error.toString()}";
 
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-            });
-          },
-        );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
+                    });
+                  },
+                )));
       },
     );
 

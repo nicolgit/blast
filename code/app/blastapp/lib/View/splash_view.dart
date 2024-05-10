@@ -139,6 +139,7 @@ class _SplashViewState extends State<SplashView> {
             padding: const EdgeInsets.all(6),
             child: Dismissible(
                 key: Key(files[file].fileUrl),
+                confirmDismiss: (direction) => Future.value(direction == DismissDirection.endToStart),
                 onDismissed: (direction) async {
                   await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
                 },

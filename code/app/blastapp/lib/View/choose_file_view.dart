@@ -51,18 +51,23 @@ class _ChooseFileViewState extends State<ChooseFileView> {
           child: Column(
             children: [
               AppBar(
-                title: const Text(
-                  "Choose a file",
-                ),
+                title: const Text("Choose a file"),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        vm.upDirectoryCommand();
-                      },
-                      icon: const Icon(Icons.drive_folder_upload)),
+                  Tooltip(
+                      message: 'go up one directory',
+                      textStyle: _textTooltip.labelSmall,
+                      child: IconButton(
+                          onPressed: () {
+                            vm.upDirectoryCommand();
+                          },
+                          icon: Icon(
+                            Icons.drive_folder_upload,
+                            color: _theme.colorScheme.tertiary,
+                            size: 48,
+                          ))),
                   Text(
                     'current path: ',
                     style: _textTheme.bodyLarge,
@@ -72,20 +77,24 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                     builder: (context, currentPath) => Flexible(
                         child: Text(
                       currentPath.data ?? "",
-                      style: _textTheme.bodyLarge,
+                      style: _textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     )),
                   ),
                   FutureBuilder<String>(
                       future: vm.currentPath,
                       builder: (context, currentPath) {
-                        return IconButton(
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text("current path copied to clipboard!", style: _textTooltip.labelSmall)));
-                            },
-                            icon: const Icon(Icons.copy));
+                        return Tooltip(
+                            message: 'copy current path to clipboard',
+                            textStyle: _textTooltip.labelSmall,
+                            child: IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content:
+                                          Text("current path copied to clipboard!", style: _textTooltip.labelSmall)));
+                                },
+                                icon: const Icon(Icons.copy)));
                       }),
                 ],
               ),
@@ -111,7 +120,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     }
 
     if (listFiles.isEmpty) {
-      return const Center(child: Text("No files found"));
+      return Center(child: Text("No files found", style: _textTheme.bodyLarge));
     }
 
     var myList = ListView.builder(
@@ -122,12 +131,12 @@ class _ChooseFileViewState extends State<ChooseFileView> {
 
         Widget leadingIcon;
         if (listFiles[index].isDirectory) {
-          leadingIcon = const Icon(Icons.folder, size: 48);
+          leadingIcon = Icon(Icons.folder, size: 48, color: _theme.colorScheme.tertiary);
         } else {
           if (listFiles[index].name.endsWith(".blast")) {
             leadingIcon = Image.asset("assets/general/app-icon.png", width: 48, height: 48);
           } else {
-            leadingIcon = const Icon(Icons.article, size: 48);
+            leadingIcon = Icon(Icons.article, size: 48, color: _theme.colorScheme.primary);
           }
         }
 

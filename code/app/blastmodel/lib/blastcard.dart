@@ -52,10 +52,11 @@ class BlastCard {
       for (var row in rows) {
         switch (row.type) {
           case BlastAttributeType.typePassword:
+            corpus += "${row.name} ";
             break;
           case BlastAttributeType.typeString:
           case BlastAttributeType.typeURL:
-            corpus += "${row.value} ";
+            corpus += "${row.name} ${row.value} ";
             break;
           case BlastAttributeType.typeHeader:
             corpus += "${row.name} ";

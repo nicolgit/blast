@@ -12,42 +12,22 @@ class CreatePasswordViewModel extends ChangeNotifier {
   CreatePasswordViewModel(this.context);
 
   String filename = '';
-  String filenameError = '';
   String password = '';
   String passwordConfirm = '';
-  String passwordError = '';
-  String passwordConfirmError = '';
 
   void setPassword(String value) {
     password = value;
-    passwordError = validatePassword(value);
     notifyListeners();
   }
 
   void setFilename(String value) {
     filename = value;
-    filenameError = validateFilename(value);
     notifyListeners();
   }
 
   void setConfirmPassword(String value) {
     passwordConfirm = value;
-    passwordConfirmError = validatePassword(value);
-    filenameError = validateFilename(value);
     notifyListeners();
-  }
-
-  String validatePassword(String value) {
-    notifyListeners();
-
-    if (value.isEmpty) {
-      return 'Please enter a password';
-    }
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters';
-    }
-
-    return '';
   }
 
   String validateFilename(String value) {
@@ -60,20 +40,12 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return '';
   }
 
-  Future<bool> isPasswordValid() async {
-    return passwordError.isEmpty && passwordConfirmError.isEmpty;
-  }
-
   Future<bool> passwordsMatch() async {
     return password == passwordConfirm;
   }
 
-  Future<bool> isFilenameValid() async {
-    return filenameError.isEmpty;
-  }
-
   Future<bool> isFormReadyToConfirm() async {
-    return await isPasswordValid() && await passwordsMatch() && await isFilenameValid();
+    return await passwordsMatch() && await isPasswordsNotEmpty() && await isFilenameNotEmpty();
   }
 
   acceptPassword() async {
@@ -103,5 +75,13 @@ class CreatePasswordViewModel extends ChangeNotifier {
 
     if (!context.mounted) return;
     context.router.push(const CardsBrowserRoute());
+  }
+
+  Future<bool> isPasswordsNotEmpty() async {
+    return password.isNotEmpty && passwordConfirm.isNotEmpty;
+  }
+
+  Future<bool> isFilenameNotEmpty() async {
+    return filename.isNotEmpty;
   }
 }

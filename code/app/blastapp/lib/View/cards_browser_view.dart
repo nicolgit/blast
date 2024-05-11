@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:flutter/foundation.dart';
@@ -29,8 +30,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
+  late BlastWidgetFactory _widgetFactory;
+
   final FocusNode _focusNode = FocusNode();
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
+    _widgetFactory = BlastWidgetFactory(context);
+
     return KeyboardListener(
         focusNode: _focusNode,
         autofocus: true,
@@ -41,6 +46,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           }
         },
         child: Scaffold(
+          backgroundColor: _widgetFactory.viewBackgroundColor(),
           bottomNavigationBar: BottomAppBar(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -305,13 +311,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   Widget _buildTagsRow(List<String> tags) {
     List<Widget> rowItems = [];
     for (var tag in tags) {
-      rowItems.add(Text(
-        " $tag ",
-        style: TextStyle(backgroundColor: Theme.of(context).colorScheme.secondaryContainer),
-      ));
-      rowItems.add(
-        const Text(" "),
-      );
+      rowItems.add(_widgetFactory.blastTag(tag));
     }
 
     return Row(children: rowItems);

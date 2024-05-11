@@ -42,10 +42,14 @@ class _TypePasswordViewState extends State<TypePasswordView> {
 
   late ThemeData _theme;
   late TextTheme _textTheme;
+  late TextStyle _textThemeHint;
+  late TextStyle _textThemeError;
 
   Widget _buildScaffold(BuildContext context, TypePasswordViewModel vm) {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onBackground.withOpacity(0.5));
+    _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
     return Scaffold(
       backgroundColor: _theme.colorScheme.background,
@@ -55,34 +59,49 @@ class _TypePasswordViewState extends State<TypePasswordView> {
           AppBar(
             title: Text("open file: ${vm.fileName}"),
           ),
-          Text('type the master password to open your blast file', style: _textTheme.labelLarge),
-          TextField(
-            autofocus: true,
-            focusNode: passwordFocusNode,
-            obscureText: true,
-            controller: passwordController,
-            onChanged: (value) => vm.setPassword(value),
-            onSubmitted: (value) async => {
-              if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+          const SizedBox(height: 12.0),
+          FutureBuilder<bool>(
+            future: vm.isPasswordValid(),
+            builder: (context, isPasswordValid) {
+              return Icon(isPasswordValid.data ?? false ? Icons.lock_open : Icons.lock,
+                  color: _theme.colorScheme.primary, size: 48.0);
             },
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: 'Password', hintText: 'Enter your password'),
           ),
-          Text(vm.errorMessage, style: const TextStyle(color: Colors.red)),
+          Text('type the master password to open your blast file', style: _textTheme.labelMedium),
+          const SizedBox(height: 12.0),
+          Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                autofocus: true,
+                focusNode: passwordFocusNode,
+                obscureText: true,
+                controller: passwordController,
+                onChanged: (value) => vm.setPassword(value),
+                onSubmitted: (value) async => {
+                  if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                },
+                style: _textTheme.labelMedium,
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: 'Password',
+                    hintText: 'Enter your password',
+                    hintStyle: _textThemeHint),
+              )),
+          Text(vm.errorMessage, style: _textThemeError),
           FutureBuilder<bool>(
             future: vm.isCheckingPassword(),
             builder: (context, isCheckingPassword) {
               if (isCheckingPassword.data ?? false) {
-                return const Text("checking password...");
+                return Text("checking password...", style: _textTheme.labelMedium);
               } else {
-                return const Text("");
+                return Text("", style: _textTheme.labelMedium);
               }
             },
           ),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) {
-              return TextButton(
+              return FilledButton(
                 onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
                 child: const Text('open'),
               );

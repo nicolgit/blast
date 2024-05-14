@@ -127,4 +127,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  clearSearchTextCommand() {
+    searchText = "";
+    notifyListeners();
+  }
 }

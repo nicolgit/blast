@@ -139,11 +139,17 @@ class _SplashViewState extends State<SplashView> {
             padding: const EdgeInsets.all(6),
             child: Dismissible(
                 key: Key(files[file].fileUrl),
-                confirmDismiss: (direction) => Future.value(direction == DismissDirection.endToStart),
                 onDismissed: (direction) async {
+                  if (direction == DismissDirection.endToStart)
+                  {
                   await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
+                  }
+                  else
+                  {
+                    await vm.goToRecentFile(files[file]);
+                  }
                 },
-                background: Container(
+                secondaryBackground: Container(
                   color: _theme.colorScheme.error,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -151,6 +157,18 @@ class _SplashViewState extends State<SplashView> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Icon(Icons.cancel, color: _theme.colorScheme.onError),
+                      ),
+                    ],
+                  ),
+                ),
+                background: Container(
+                  color: _theme.colorScheme.inversePrimary,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Icon(Icons.file_open, color: _theme.colorScheme.onPrimary),
                       ),
                     ],
                   ),

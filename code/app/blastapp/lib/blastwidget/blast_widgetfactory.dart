@@ -48,8 +48,8 @@ class BlastWidgetFactory {
     );
   }
 
-  InputDecoration blastTextFieldDecoration(String label, String hintText) {
+  InputDecoration blastTextFieldDecoration(String label, String hintText, {void Function()? onPressed}) {
     return InputDecoration(
-        border: const OutlineInputBorder(), labelText: label, hintText: hintText, hintStyle: _textThemeHint);
+        border: const OutlineInputBorder(), labelText: label, hintText: hintText, hintStyle: _textThemeHint, suffixIcon: onPressed!=null ? IconButton(icon: const Icon(Icons.clear), onPressed: onPressed) : null);
   }
 }

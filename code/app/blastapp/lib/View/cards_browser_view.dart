@@ -346,15 +346,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     );
   }
 
+  final _searchController = TextEditingController();
+
   void _showModalBottomSheet(BuildContext context, CardsBrowserViewModel vm) {
+    _searchController.text = vm.searchText;
+    
     showModalBottomSheet(
       context: context,
       builder: (context) {
         return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
-          return Wrap(
-            runSpacing: 12,
-            spacing: 12,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Padding(padding: const EdgeInsets.all(12.0), child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                
               SegmentedButton<SearchOperator>(
                 segments: const <ButtonSegment<SearchOperator>>[
                   ButtonSegment<SearchOperator>(
@@ -370,6 +377,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   });
                 },
               ),
+              Container(width: 12),
               SegmentedButton<SearchWhere>(
                 segments: const <ButtonSegment<SearchWhere>>[
                   ButtonSegment<SearchWhere>(
@@ -385,6 +393,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   });
                 },
               ),
+                ])),
+
               SegmentedButton<SortType>(
                 segments: const <ButtonSegment<SortType>>[
                   ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
@@ -404,7 +414,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextFormField(
-                  initialValue: vm.searchText,
                   onChanged: (value) {
                     vm.searchText = value;
                     vm.refreshCardListCommand();
@@ -416,7 +425,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   autofocus: true,
                   textAlign: TextAlign.center,
                   style: _widgetFactory.textTheme.labelMedium,
-                  decoration: _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text'),
+                  controller: _searchController,
+                  decoration: _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text', onPressed: () {
+                    setModalState(() {
+                      vm.clearSearchTextCommand();
+                      _searchController.clear();
+                    });
+                  }),
                 ),
               ),
             ],

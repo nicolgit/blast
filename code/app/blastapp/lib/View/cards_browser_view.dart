@@ -255,15 +255,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         bool isFavorite = cardsList[index].isFavorite;
 
         return ListTile(
-          leading: const Icon(
-            Icons.file_copy_outlined,
-            size: 48,
-          ),
+          leading: _widgetFactory.blastCardIcon(name),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: const Icon(Icons.edit),
+                icon: const Icon(
+                  Icons.edit,
+                ),
                 onPressed: () {
                   vm.editCard(cardsList[index]).then((value) {
                     vm.refreshCardListCommand();
@@ -271,7 +270,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.delete),
+                icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
                 onPressed: () {
                   _showDeleteCardDialog(context, vm, cardsList[index]);
                 },
@@ -416,10 +415,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   textInputAction: TextInputAction.search,
                   autofocus: true,
                   textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Search',
-                  ),
+                  style: _widgetFactory.textTheme.labelMedium,
+                  decoration: _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text'),
                 ),
               ),
             ],

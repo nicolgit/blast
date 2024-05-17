@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class BlastWidgetFactory {
   late ThemeData theme;
   late TextTheme textTheme;
+  late TextTheme textTooltip;
   late TextStyle _textThemeHint;
 
   BlastWidgetFactory(BuildContext context) {
     theme = Theme.of(context);
-    textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onBackground);
-    _textThemeHint = textTheme.bodySmall!.copyWith(color: theme.colorScheme.onBackground.withOpacity(0.5));
+    textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
+    textTooltip = theme.textTheme.apply(bodyColor: theme.colorScheme.onInverseSurface);
+    _textThemeHint = textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.5));
   }
 
   Widget blastTag(String tag) => Padding(
@@ -22,7 +24,7 @@ class BlastWidgetFactory {
                 color: theme.colorScheme.onSecondaryContainer,
               ))));
 
-  Color viewBackgroundColor() => theme.colorScheme.background;
+  Color viewBackgroundColor() => theme.colorScheme.surface;
 
   Widget blastCardIcon(String text) {
     String iconText = "";

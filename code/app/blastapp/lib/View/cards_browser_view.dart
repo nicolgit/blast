@@ -101,22 +101,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       tooltip: 'close',
                       onPressed: () {
                         // set up the buttons
-                        Widget cancelButton = TextButton(
-                          child: const Text("Cancel"),
+                        Widget cancelButton = FilledButton(
+                          child: Text("Cancel", style: _widgetFactory.textTooltip.labelLarge,),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
                           },
                         );
-                        Widget noButton = TextButton(
-                          child: const Text("No, just exit",
-                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        Widget noButton = FilledButton.tonal(
+                          
+                          child: const Text("No, just exit"  ),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                             vm.closeCommand();
                           },
                         );
-                        Widget okButton = TextButton(
-                          child: const Text("Yes save it"),
+                        Widget okButton = FilledButton(
+                          child: Text("Yes save it", style: _widgetFactory.textTooltip.labelLarge),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                             vm.saveCommand();
@@ -194,8 +194,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   );
 
                   Widget okButton = TextButton(
-                    style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    
+                    style: TextButton.styleFrom(
+                      foregroundColor: _widgetFactory.theme.colorScheme.error,
                     ),
                     child: const Text("Yes import it anyway"),
                     onPressed: () async {

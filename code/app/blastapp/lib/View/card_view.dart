@@ -111,7 +111,7 @@ class _CardViewState extends State<CardView> {
           case BlastAttributeType.typeHeader:
             return ListTile(
               title: Container(
-                padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
                 child: Text(name, style: _widgetFactory.textTheme.titleLarge),
               ),
               onTap: () async {},

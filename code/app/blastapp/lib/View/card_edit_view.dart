@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
@@ -37,9 +38,14 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
+  late BlastWidgetFactory _widgetFactory;
+  
   final _formKey = GlobalKey<FormState>();
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
+    _widgetFactory = BlastWidgetFactory(context);
+
     return Scaffold(
+      backgroundColor: _widgetFactory.viewBackgroundColor(),
         body: Center(
       child: Column(
         children: [
@@ -68,6 +74,7 @@ class _CardEditViewState extends State<CardEditView> {
               ),
             ],
           ),
+          Padding(padding: const EdgeInsets.all(6.0), child:
           Form(
             key: _formKey,
             child: TextFormField(
@@ -81,7 +88,7 @@ class _CardEditViewState extends State<CardEditView> {
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
             ),
-          ),
+          )),
           _buildTagsSelector(vm),
           FutureBuilder<List<BlastAttribute>>(
             future: vm.getRows(),
@@ -145,7 +152,8 @@ class _CardEditViewState extends State<CardEditView> {
                       vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
                     },
                   ),
-                  Expanded(child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1)),
+                  Expanded(child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1,
+                      style: _widgetFactory.textTheme.labelMedium)),
                 ],
               ),
             ]);
@@ -164,10 +172,9 @@ class _CardEditViewState extends State<CardEditView> {
                         controller: TextEditingController()..text = rows[index].name,
                         onChanged: (value) => vm.updateAttributeName(index, value),
                         autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Attribute name',
-                            hintText: 'Choose the attribute name'),
+                        style: _widgetFactory.textTheme.labelMedium,
+                        decoration: 
+                        _widgetFactory.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
                       )
                     ],
                   ),
@@ -182,10 +189,8 @@ class _CardEditViewState extends State<CardEditView> {
                           textInputAction: TextInputAction.next,
                           controller: TextEditingController()..text = rows[index].value,
                           onChanged: (value) => vm.updateAttributeValue(index, value),
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Attribute value',
-                              hintText: 'Choose the attribute name'),
+                          style: _widgetFactory.textTheme.labelMedium,
+                        decoration: _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
                         )
                       ],
                     ),

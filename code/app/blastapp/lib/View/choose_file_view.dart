@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,20 +28,16 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     );
   }
 
-  late ThemeData _theme;
-  late TextTheme _textTheme;
-  late TextTheme _textTooltip;
+  late BlastWidgetFactory _widgetFactory;
 
   Widget _buildScaffold(BuildContext context, ChooseFileViewModel vm) {
-    _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
-    _textTooltip = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onInverseSurface);
+    _widgetFactory = BlastWidgetFactory(context);
 
     return Scaffold(
-        backgroundColor: _theme.colorScheme.background,
+        backgroundColor: _widgetFactory.theme.colorScheme.surface,
         floatingActionButton: Tooltip(
             message: 'create a new file',
-            textStyle: _textTooltip.labelSmall,
+            textStyle: _widgetFactory.textTooltip.labelSmall,
             child: FloatingActionButton(
               onPressed: () {
                 vm.newFileCommand();
@@ -58,26 +55,26 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                 children: [
                   Tooltip(
                       message: 'go up one directory',
-                      textStyle: _textTooltip.labelSmall,
+                      textStyle: _widgetFactory.textTooltip.labelSmall,
                       child: IconButton(
                           onPressed: () {
                             vm.upDirectoryCommand();
                           },
                           icon: Icon(
                             Icons.drive_folder_upload,
-                            color: _theme.colorScheme.tertiary,
+                            color: _widgetFactory.theme.colorScheme.tertiary,
                             size: 48,
                           ))),
                   Text(
                     'current path: ',
-                    style: _textTheme.bodyLarge,
+                    style: _widgetFactory.textTheme.bodyLarge,
                   ),
                   FutureBuilder<String>(
                     future: vm.currentPath,
                     builder: (context, currentPath) => Flexible(
                         child: Text(
                       currentPath.data ?? "",
-                      style: _textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                      style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     )),
                   ),
@@ -86,13 +83,13 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                       builder: (context, currentPath) {
                         return Tooltip(
                             message: 'copy current path to clipboard',
-                            textStyle: _textTooltip.labelSmall,
+                            textStyle: _widgetFactory.textTooltip.labelSmall,
                             child: IconButton(
                                 onPressed: () {
                                   Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content:
-                                          Text("current path copied to clipboard!", style: _textTooltip.labelSmall)));
+                                          Text("current path copied to clipboard!", style: _widgetFactory.textTooltip.labelSmall)));
                                 },
                                 icon: const Icon(Icons.copy)));
                       }),
@@ -120,7 +117,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     }
 
     if (listFiles.isEmpty) {
-      return Center(child: Text("No files found", style: _textTheme.bodyLarge));
+      return Center(child: Text("No files found", style: _widgetFactory.textTheme.bodyLarge));
     }
 
     var myList = ListView.builder(
@@ -131,12 +128,12 @@ class _ChooseFileViewState extends State<ChooseFileView> {
 
         Widget leadingIcon;
         if (listFiles[index].isDirectory) {
-          leadingIcon = Icon(Icons.folder, size: 48, color: _theme.colorScheme.tertiary);
+          leadingIcon = Icon(Icons.folder, size: 48, color: _widgetFactory.theme.colorScheme.tertiary);
         } else {
           if (listFiles[index].name.endsWith(".blast")) {
             leadingIcon = Image.asset("assets/general/app-icon.png", width: 48, height: 48);
           } else {
-            leadingIcon = Icon(Icons.article, size: 48, color: _theme.colorScheme.primary);
+            leadingIcon = Icon(Icons.article, size: 48, color: _widgetFactory.theme.colorScheme.primary);
           }
         }
 
@@ -145,9 +142,9 @@ class _ChooseFileViewState extends State<ChooseFileView> {
             child: Material(
                 borderRadius: BorderRadius.circular(6),
                 elevation: 1,
-                color: _theme.colorScheme.surface,
-                shadowColor: _theme.colorScheme.onSurface,
-                surfaceTintColor: _theme.colorScheme.onBackground,
+                color: _widgetFactory.theme.colorScheme.surface,
+                shadowColor: _widgetFactory.theme.colorScheme.onSurface,
+                surfaceTintColor: _widgetFactory.theme.colorScheme.surface,
                 type: MaterialType.card,
                 child: ListTile(
                   leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),

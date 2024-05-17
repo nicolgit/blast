@@ -26,7 +26,7 @@ class CardEditViewModel extends ChangeNotifier {
 
   void saveCommand() {
     if (_sourceCard == null) {
-      CurrentFileService().currentFileDocument!.cards.add(currentCard);
+      CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
     } else {
       _sourceCard?.copyFrom(currentCard);
       _sourceCard?.lastUpdateDateTime = DateTime.now();
@@ -116,7 +116,7 @@ class CardEditViewModel extends ChangeNotifier {
 
   deleteCard() {
     CurrentFileService().currentFileDocument!.cards.remove(_sourceCard);
-    
+
     CurrentFileService().currentFileDocument!.isChanged = true;
     context.router.maybePop();
   }

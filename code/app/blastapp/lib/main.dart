@@ -1,6 +1,7 @@
 import 'package:blastapp/ViewModel/app_view_model.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blast_theme.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
@@ -32,14 +33,18 @@ class BlastAppState extends State<BlastApp> {
   ThemeMode _themeMode;
   BlastAppState(this._themeMode);
 
+  late BlastWidgetFactory _widgetFactory;
+
   @override
   Widget build(BuildContext context) {
+    _widgetFactory = BlastWidgetFactory(context);
+
     return GlobalLoaderOverlay(
         useDefaultLoading: false,
         overlayWidgetBuilder: (_) {
           return const Center(child: CircularProgressIndicator());
         },
-        overlayColor: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.8),
+        overlayColor: _widgetFactory.theme.colorScheme.primary.withOpacity(0.8),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: "Blastapp title",

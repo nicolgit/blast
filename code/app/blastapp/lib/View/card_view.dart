@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; //for date formate locale
 
@@ -34,8 +33,13 @@ class _CardViewState extends State<CardView> {
     );
   }
 
+  late BlastWidgetFactory _widgetFactory;
+
   Widget _buildScaffold(BuildContext context, CardViewModel vm) {
+    _widgetFactory = BlastWidgetFactory(context);
+
     return Scaffold(
+      backgroundColor: _widgetFactory.viewBackgroundColor(),
         body: Center(
       child: Column(
         children: [
@@ -64,9 +68,9 @@ class _CardViewState extends State<CardView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                  style: _widgetFactory.textTheme.titleLarge),
               IconButton(
-                  icon: vm.currentCard.isFavorite ? const Icon(Icons.star) : const Icon(Icons.star_border),
+                  icon: vm.currentCard.isFavorite ? Icon(Icons.star, color: _widgetFactory.theme.colorScheme.primary ,) : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary ),
                   tooltip: "toggle favorite",
                   onPressed: () {
                     vm.toggleFavorite();
@@ -74,7 +78,8 @@ class _CardViewState extends State<CardView> {
             ],
           ),
           Text(
-              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last used ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} "),
+              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last used ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} ",
+              style: _widgetFactory.textTheme.labelSmall,),
           _rowOfTags(vm.currentCard.tags),
           FutureBuilder<List<BlastAttribute>>(
               future: vm.getRows(),
@@ -107,7 +112,7 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               title: Container(
                 padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
-                child: Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
+                child: Text(name, style: _widgetFactory.textTheme.titleLarge),
               ),
               onTap: () async {},
             );
@@ -115,8 +120,8 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               leading: const Icon(Icons.lock),
               title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-              subtitle: Text(name),
+                  style: _widgetFactory.textTheme.titleMedium!.copyWith(color: _widgetFactory.theme.colorScheme.error)),
+              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -165,7 +170,7 @@ class _CardViewState extends State<CardView> {
                     style: const TextStyle(
                         decoration: TextDecoration.underline, color: Colors.blue, decorationColor: Colors.blue)),
               ),
-              subtitle: Text(name),
+              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
               trailing: IconButton(
                 onPressed: () {
                   vm.copyToClipboard(value);
@@ -182,8 +187,8 @@ class _CardViewState extends State<CardView> {
           default:
             return ListTile(
               leading: const Icon(Icons.description),
-              title: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(name),
+              title: Text(value, style: _widgetFactory.textTheme.titleMedium),
+              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
               trailing: IconButton(
                 onPressed: () {
                   vm.copyToClipboard(value);
@@ -204,30 +209,31 @@ class _CardViewState extends State<CardView> {
   }
 
   Row _rowOfTags(List<String> tags) {
-    List<MultiSelectItem<String>> mscdTags = tags.map((tag) => MultiSelectItem<String>(tag, tag)).toList();
+    List<Widget> rowItems = [];
+    for (var tag in tags) {
+      rowItems.add(_widgetFactory.blastTag(tag));
+    }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MultiSelectChipDisplay(
-          items: mscdTags,
-          /*onTap: (value) {
-            setState(() {
-              _selectedAnimals.remove(value);
-            });
-          }*/
-        )
-      ],
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: rowItems, );
   }
 
-  Column _showNotes(String notes, CardViewModel vm) {
-    return Column(
+  Widget _showNotes(String notes, CardViewModel vm) {
+    return 
+    Padding(padding: const EdgeInsets.all(24), child:
+    Container(
+      decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(6),
+    color: _widgetFactory.theme.colorScheme.tertiaryContainer,
+  ),
+      child: 
+    Padding( padding: const EdgeInsets.all(12), child:
+    Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text("Notes", style: TextStyle(fontWeight: FontWeight.bold)),
-        SelectableText(notes, style: const TextStyle(fontStyle: FontStyle.italic)),
+        Text("Notes", style: _widgetFactory.textTheme.bodyMedium),
+        SelectableText(notes, style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic)),
       ],
-    );
+    ))))
+    ;
   }
 }

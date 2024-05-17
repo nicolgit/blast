@@ -360,6 +360,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       builder: (context) {
         return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
           return Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(padding: const EdgeInsets.all(12.0), child: Row(

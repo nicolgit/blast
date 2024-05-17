@@ -130,6 +130,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   clearSearchTextCommand() {
     searchText = "";
+    sortType = SortType.none;
+    searchOperator = SearchOperator.and;
+    searchWhere = SearchWhere.everywhere;
     notifyListeners();
   }
 }

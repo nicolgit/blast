@@ -44,6 +44,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.space)) {
             _showModalBottomSheet(context, vm);
           }
+
+          if (event.logicalKey == LogicalKeyboardKey.escape) {
+            vm.clearSearchTextCommand();
+          }
         },
         child: Scaffold(
           backgroundColor: _widgetFactory.viewBackgroundColor(),

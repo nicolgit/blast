@@ -62,6 +62,8 @@ class CardEditViewModel extends ChangeNotifier {
   void updateTags(List<String> values) {
     isChanged = true;
     currentCard.tags = values.map((tag) => tag.toString()).toList();
+
+    notifyListeners();
   }
 
   deleteAttribute(int index) {

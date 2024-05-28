@@ -5,7 +5,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:provider/provider.dart';
@@ -85,11 +85,12 @@ class _CardEditViewState extends State<CardEditView> {
               validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
               autofocus: _focusOn == FocusOn.title,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), labelText: 'Card title', hintText: 'Choose a title for the card'),
-            ),
+              style: _widgetFactory.textTheme.labelMedium,
+              decoration: 
+              _widgetFactory.blastTextFieldDecoration('Card title', 'Choose a title for the card')
+              ),
           )),
-          _buildTagsSelector(vm),
+          _buildTagsRow(vm),
           FutureBuilder<List<BlastAttribute>>(
             future: vm.getRows(),
             builder: (context, snapshot) {
@@ -111,7 +112,9 @@ class _CardEditViewState extends State<CardEditView> {
         itemBuilder: (context, index) {
           if (index == rows.length) {
             return Column(children: [
-              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.center, 
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 TextButton.icon(
                   onPressed: () {
                     vm.addAttribute(BlastAttributeType.typeString);
@@ -162,7 +165,8 @@ class _CardEditViewState extends State<CardEditView> {
           return ListTile(
             title: Row(
               children: <Widget>[
-                Text("$index"),
+                Text("$index", style: _widgetFactory.textTheme.bodySmall,),
+                const SizedBox(width: 3),
                 Expanded(
                   flex: 1,
                   child: Column(
@@ -179,6 +183,7 @@ class _CardEditViewState extends State<CardEditView> {
                     ],
                   ),
                 ),
+                const SizedBox(width: 3),
                 Visibility(
                   visible: rows[index].type != BlastAttributeType.typeHeader,
                   child: Expanded(
@@ -327,18 +332,34 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
-  _buildTagsSelector(CardEditViewModel vm) {
-    return MultiSelectDialogField(
-      initialValue: vm.currentCard.tags,
-      buttonText: const Text("choose more tags"),
-      buttonIcon: const Icon(Icons.tag),
-      title: const Text("tags"),
-      items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
-      listType: MultiSelectListType.CHIP,
-      onConfirm: (values) {
-        vm.updateTags(values);
+  Widget _buildTagsRow(CardEditViewModel vm) {
+    List<Widget> rowItems = [];
+    for (var tag in vm.currentCard.tags) {
+      rowItems.add(_widgetFactory.blastTag(tag));
+    }
+    rowItems.add(TextButton.icon(
+      onPressed: () async {
+         await showDialog(
+    context: context,
+    builder: (ctx) {
+      return  MultiSelectDialog(
+        title: const Text("Select tags"),
+        items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
+        initialValue: vm.currentCard.tags,
+        onConfirm: (values) { 
+          vm.updateTags(List<String>.from(values));
+        },
+        listType: MultiSelectListType.CHIP,
+        selectedColor: _widgetFactory.theme.colorScheme.primary,
+        selectedItemsTextStyle: _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
+      );
+    },
+  );
       },
-    );
+      icon: const Icon(Icons.calculate),
+      label: const Text("edit tags"),
+    ));
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: rowItems);
   }
 
   _iconType(CardEditViewModel vm, int index) {

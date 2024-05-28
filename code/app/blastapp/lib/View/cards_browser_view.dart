@@ -162,11 +162,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ],
             ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               vm.addCard().then((value) {
                 vm.refreshCardListCommand();
               });
+
             },
             child: const Icon(Icons.add),
           ),

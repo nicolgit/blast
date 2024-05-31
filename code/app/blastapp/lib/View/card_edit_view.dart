@@ -163,9 +163,18 @@ class _CardEditViewState extends State<CardEditView> {
           }
 
           return ListTile(
-            title: Row(
+            title: 
+              Container(
+                decoration: BoxDecoration(
+                  color: _widgetFactory.theme.colorScheme.surfaceContainerLow,
+                  borderRadius: const BorderRadius.all(Radius.circular(6))
+                ),
+                padding: const EdgeInsets.all(8.0),
+                child:
+              Column(children: [
+              Row(
               children: <Widget>[
-                Text("$index", style: _widgetFactory.textTheme.bodySmall,),
+                Text("$index", style: _widgetFactory.textTheme.labelSmall,),
                 const SizedBox(width: 3),
                 Expanded(
                   flex: 1,
@@ -184,23 +193,6 @@ class _CardEditViewState extends State<CardEditView> {
                   ),
                 ),
                 const SizedBox(width: 3),
-                Visibility(
-                  visible: rows[index].type != BlastAttributeType.typeHeader,
-                  child: Expanded(
-                    flex: rows[index].type == BlastAttributeType.typeHeader ? 1 : 3,
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          textInputAction: TextInputAction.next,
-                          controller: TextEditingController()..text = rows[index].value,
-                          onChanged: (value) => vm.updateAttributeValue(index, value),
-                          style: _widgetFactory.textTheme.labelMedium,
-                        decoration: _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
                 _iconType(vm, index),
                 IconButton(
                   onPressed: () {
@@ -211,8 +203,24 @@ class _CardEditViewState extends State<CardEditView> {
                 ),
               ],
             ),
-          );
-        });
+            Visibility(
+                  visible: rows[index].type != BlastAttributeType.typeHeader,
+                  child: 
+                  Padding( padding: const EdgeInsets.all(12.0), child:
+                        TextField(  
+                          textInputAction: TextInputAction.next,
+                          controller: TextEditingController()..text = rows[index].value,
+                          onChanged: (value) => vm.updateAttributeValue(index, value),
+                          style: _widgetFactory.textTheme.labelMedium,
+                        decoration: _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                        ),
+                  ),
+            ),
+          ],
+          ),
+        ),);
+      }
+    );
 
     return myList;
   }

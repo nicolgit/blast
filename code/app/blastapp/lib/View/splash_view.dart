@@ -32,10 +32,10 @@ class _SplashViewState extends State<SplashView> {
 
   Widget _buildScaffold(BuildContext context, SplashViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return Scaffold(
-        backgroundColor: _theme.colorScheme.background,
+        backgroundColor: _theme.colorScheme.surface,
         body: Center(
             child: Column(
           children: [
@@ -178,7 +178,7 @@ class _SplashViewState extends State<SplashView> {
                     elevation: 1,
                     color: _theme.colorScheme.surface,
                     shadowColor: _theme.colorScheme.onSurface,
-                    surfaceTintColor: _theme.colorScheme.onBackground,
+                    surfaceTintColor: _theme.colorScheme.onSurface,
                     type: MaterialType.card,
                     child: ListTile(
                       onTap: () {

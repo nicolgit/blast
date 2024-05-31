@@ -108,7 +108,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                           },
                         );
                         Widget noButton = FilledButton.tonal(
-                          
                           child: const Text("No, just exit"  ),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
@@ -180,7 +179,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                child: const Text('BlastApp'),
+                child: const Image(image: AssetImage('assets/general/icon-v01.png')),
               ),
               ListTile(
                 leading: const Icon(Icons.upload),

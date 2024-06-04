@@ -51,9 +51,12 @@ class CardsBrowserViewModel extends ChangeNotifier {
     fileService.currentFileJsonString = fileService.currentFileDocument.toString();
     fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!, fileService.password);
     fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
+
+    notifyListeners();
   }
 
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
+  Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
 
   Future addCard() async {
     await context.router.push(CardEditRoute());

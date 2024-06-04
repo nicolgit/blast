@@ -102,13 +102,16 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       onPressed: () {
                         // set up the buttons
                         Widget cancelButton = FilledButton(
-                          child: Text("Cancel", style: _widgetFactory.textTooltip.labelLarge,),
+                          child: Text(
+                            "Cancel",
+                            style: _widgetFactory.textTooltip.labelLarge,
+                          ),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
                           },
                         );
                         Widget noButton = FilledButton.tonal(
-                          child: const Text("No, just exit"  ),
+                          child: const Text("No, just exit"),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                             vm.closeCommand();
@@ -148,6 +151,36 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     ),
                   ],
                 ),
+                FutureBuilder<bool>(
+                    future: vm.isFileChangedAsync(),
+                    builder: (context, isFileChanged) {
+                      return Visibility(
+                        visible: isFileChanged.data ?? false,
+                        child: Container(
+                          width: double.infinity,
+                          color: _widgetFactory.theme.colorScheme.error,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('file changed, click',
+                                  style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                              Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: FilledButton(
+                                    child: const Text('here'),
+                                    onPressed: () {
+                                      vm.saveCommand();
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                        content: Text("file saved successfully!"),
+                                      ));
+                                    },
+                                  )),
+                              Text('to save', style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
                 FutureBuilder<List<BlastCard>>(
                     future: vm.getCards(),
                     builder: (context, cardsList) {
@@ -167,7 +200,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               vm.addCard().then((value) {
                 vm.refreshCardListCommand();
               });
-
             },
             child: const Icon(Icons.add),
           ),
@@ -195,7 +227,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   );
 
                   Widget okButton = TextButton(
-                    
                     style: TextButton.styleFrom(
                       foregroundColor: _widgetFactory.theme.colorScheme.error,
                     ),
@@ -356,7 +387,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
   void _showModalBottomSheet(BuildContext context, CardsBrowserViewModel vm) {
     _searchController.text = vm.searchText;
-    
+
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -365,43 +396,41 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(padding: const EdgeInsets.all(12.0), child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                
-              SegmentedButton<SearchOperator>(
-                segments: const <ButtonSegment<SearchOperator>>[
-                  ButtonSegment<SearchOperator>(
-                      value: SearchOperator.and, label: Text('and'), icon: Icon((Icons.radio_button_unchecked))),
-                  ButtonSegment<SearchOperator>(
-                      value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
-                ],
-                selected: <SearchOperator>{vm.searchOperator},
-                onSelectionChanged: (Set<SearchOperator> newSelection) {
-                  setModalState(() {
-                    vm.searchOperator = newSelection.first;
-                    vm.refreshCardListCommand();
-                  });
-                },
-              ),
-              Container(width: 12),
-              SegmentedButton<SearchWhere>(
-                segments: const <ButtonSegment<SearchWhere>>[
-                  ButtonSegment<SearchWhere>(
-                      value: SearchWhere.title, label: Text('title only'), icon: Icon((Icons.abc))),
-                  ButtonSegment<SearchWhere>(
-                      value: SearchWhere.everywhere, label: Text('everywhere'), icon: Icon((Icons.abc))),
-                ],
-                selected: <SearchWhere>{vm.searchWhere},
-                onSelectionChanged: (Set<SearchWhere> newSelection) {
-                  setModalState(() {
-                    vm.searchWhere = newSelection.first;
-                    vm.refreshCardListCommand();
-                  });
-                },
-              ),
-                ])),
-
+              Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    SegmentedButton<SearchOperator>(
+                      segments: const <ButtonSegment<SearchOperator>>[
+                        ButtonSegment<SearchOperator>(
+                            value: SearchOperator.and, label: Text('and'), icon: Icon((Icons.radio_button_unchecked))),
+                        ButtonSegment<SearchOperator>(
+                            value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
+                      ],
+                      selected: <SearchOperator>{vm.searchOperator},
+                      onSelectionChanged: (Set<SearchOperator> newSelection) {
+                        setModalState(() {
+                          vm.searchOperator = newSelection.first;
+                          vm.refreshCardListCommand();
+                        });
+                      },
+                    ),
+                    Container(width: 12),
+                    SegmentedButton<SearchWhere>(
+                      segments: const <ButtonSegment<SearchWhere>>[
+                        ButtonSegment<SearchWhere>(
+                            value: SearchWhere.title, label: Text('title only'), icon: Icon((Icons.abc))),
+                        ButtonSegment<SearchWhere>(
+                            value: SearchWhere.everywhere, label: Text('everywhere'), icon: Icon((Icons.abc))),
+                      ],
+                      selected: <SearchWhere>{vm.searchWhere},
+                      onSelectionChanged: (Set<SearchWhere> newSelection) {
+                        setModalState(() {
+                          vm.searchWhere = newSelection.first;
+                          vm.refreshCardListCommand();
+                        });
+                      },
+                    ),
+                  ])),
               SegmentedButton<SortType>(
                 segments: const <ButtonSegment<SortType>>[
                   ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
@@ -433,7 +462,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   textAlign: TextAlign.center,
                   style: _widgetFactory.textTheme.labelMedium,
                   controller: _searchController,
-                  decoration: _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text', onPressed: () {
+                  decoration:
+                      _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text', onPressed: () {
                     setModalState(() {
                       vm.clearSearchTextCommand();
                       _searchController.clear();

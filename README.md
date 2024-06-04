@@ -1,17 +1,21 @@
 ![blast!](images/icon-v01.png)
 # Blast👮👮‍♀️
-your passwords safe and sound.
+your passwords: safe and sound.
 
 # What is Blast?
-Blast is an open-source password keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac.
+Blast is an open-source password and secrets keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac.
 
-You can try blast using the web web version available at: https://blast.duckiesfarm.com
+You can find latest web version at https://blast.duckiesfarm.com
 
-Blast is open source and doesn't require its own cloud. It's designed to use your favorite cloud as a backend. The plan is to support local device storage, Microsoft OneDrive, Google Drive, Dropbox, Apple iCloud and maybe more others. All of your information will be stored in one file, with the format documented here so that anyone can create 
+Binaries for all the supported platform will be available in the future on their public store and/or here.
+
+Blast doesn't require its own cloud to work. It's designed to use your favorite cloud as a backend. All your data is keep in one single file protected by a master password. The file is an easily extendable .json format. Before being saved, it is ciphered using the 256-bit AES (Advanced Encryption Standard).
+
+File format is documented [here](docs/file-format.md).
 
 # Supported feature by platform
 
-Not all features and storages are supported on all operating systems, as shown in the following tables.
+My objective is to support all the most used cloud storage. Not all cloud storage are implemented and tested on all platforms. In the following table you can see current supported storages.
 
 | storage             | android | ios | linux | mac | web | windows |
 |---------------------|---------|-----|-------|-----|-----|---------|
@@ -24,16 +28,21 @@ Not all features and storages are supported on all operating systems, as shown i
 | iCloud              |         |     |       |     |     |         |
 | Lorem Cloud         | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
 
-Feature not available everywhere
+Here the list of feature available on all platforms.
 
-| feature             | android | ios | linux | mac | web | windows |
-|---------------------|---------|-----|-------|-----|-----|---------|
-| export json         | 🔹      | 🔹   | 🔹    | 👍  | 🔹  | 🔹       |
+* advanced search capability and sorting
+* favorite flag
+* tags
+* dynamic list of attribute for each blast card
+* number of card limited by the device memory
+* number of attributes for each blast card limited by the device memory
 
+Not al feature are available everywhere here the current platform < - > feature mapping
+
+| feature                     | android | ios | linux | mac | web | windows |
+|-----------------------------|---------|-----|-------|-----|-----|---------|
+| export blast readable json  | 🔹      | 🔹   | 🔹    | 👍  | 🔹  | 🔹       |
+| import blast readable json  | 🔹      | 🔹   | 👍    | 👍  |     | 👍       |
 
 👍 supported 🔹 planned
-
-# Blast file format
-
-...
 

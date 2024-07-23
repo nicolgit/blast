@@ -1,9 +1,14 @@
+import 'dart:io' as io;
 import 'package:blastapp/ViewModel/app_view_model.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blast_theme.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastmodel/currentfile_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:flutter_platform_alert/flutter_platform_alert.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 
 import 'win32register/win32register_stub.dart'
     if (dart.library.html) 'package:blastapp/win32register/win32register_web.dart'
@@ -13,7 +18,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   var r = getWin32Register();
-  await r.register('blastapp'); // register custom protocol for windows client only
+  await r
+      .register('blastapp'); // register custom protocol for windows client only
 
   AppViewModel appViewModel = AppViewModel();
   runApp(BlastApp(await appViewModel.getAppTheme()));
@@ -26,7 +32,8 @@ class BlastApp extends StatefulWidget {
   @override
   State<BlastApp> createState() => BlastAppState(themeMode);
 
-  static BlastAppState of(BuildContext context) => context.findAncestorStateOfType<BlastAppState>()!;
+  static BlastAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<BlastAppState>()!;
 }
 
 class BlastAppState extends State<BlastApp> {
@@ -65,6 +72,37 @@ class BlastAppState extends State<BlastApp> {
     setState(() {
       _themeMode = themeMode;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (kIsWeb) {
+      FlutterWindowClose.setWebReturnValue(
+          'File could not saved, are you sure?');
+      return;
+    } else {
+      if (io.Platform.isWindows || io.Platform.isLinux || io.Platform.isMacOS) {
+        FlutterWindowClose.setWindowShouldCloseHandler(() async {
+          final CurrentFileService currentFileService = CurrentFileService();
+
+          if (currentFileService.currentFileDocument != null) {
+            if (currentFileService.currentFileDocument!.isChanged) {
+              final result = await FlutterPlatformAlert.showCustomAlert(
+                windowTitle: "** You have unsaved data **",
+                text: "Do you really want to quit?",
+                positiveButtonTitle: "Yes, quit",
+                negativeButtonTitle: "Cancel",
+              );
+              return result == CustomButton.positiveButton;
+            }
+          }
+
+          return true;
+        });
+      }
+    }
   }
 
   final _appRouter = BlastRouter();

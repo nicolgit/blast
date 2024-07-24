@@ -66,6 +66,16 @@ abstract class _$BlastRouter extends RootStackRouter {
         child: const EulaView(),
       );
     },
+    FieldRoute.name: (routeData) {
+      final args = routeData.argsAs<FieldRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: FieldView(
+          key: args.key,
+          value: args.value,
+        ),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -224,6 +234,43 @@ class EulaRoute extends PageRouteInfo<void> {
   static const String name = 'EulaRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [FieldView]
+class FieldRoute extends PageRouteInfo<FieldRouteArgs> {
+  FieldRoute({
+    Key? key,
+    required String value,
+    List<PageRouteInfo>? children,
+  }) : super(
+          FieldRoute.name,
+          args: FieldRouteArgs(
+            key: key,
+            value: value,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'FieldRoute';
+
+  static const PageInfo<FieldRouteArgs> page = PageInfo<FieldRouteArgs>(name);
+}
+
+class FieldRouteArgs {
+  const FieldRouteArgs({
+    this.key,
+    required this.value,
+  });
+
+  final Key? key;
+
+  final String value;
+
+  @override
+  String toString() {
+    return 'FieldRouteArgs{key: $key, value: $value}';
+  }
 }
 
 /// generated route for

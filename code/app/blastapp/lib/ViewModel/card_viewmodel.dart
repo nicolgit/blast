@@ -64,9 +64,10 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future editCommand() async {
-    await context.router.push(CardEditRoute(card: currentCard)).then((value) => 
-    { showPasswordRow = List.filled(currentCard.rows.length, false)});
-    
+    await context.router
+        .push(CardEditRoute(card: currentCard))
+        .then((value) => {showPasswordRow = List.filled(currentCard.rows.length, false)});
+
     return Future.value();
   }
 
@@ -83,5 +84,12 @@ class CardViewModel extends ChangeNotifier {
     currentCard.isFavorite = !currentCard.isFavorite;
     _blastDocumentChanged();
     notifyListeners();
+  }
+
+  void showFieldView(String value) async {
+    _blastDocumentChanged();
+    notifyListeners();
+
+    await context.router.push(FieldRoute(value: value));
   }
 }

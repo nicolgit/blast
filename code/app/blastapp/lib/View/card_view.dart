@@ -19,8 +19,6 @@ class CardView extends StatefulWidget {
 }
 
 class _CardViewState extends State<CardView> {
-  final BlastCard card = BlastCard();
-
   @override
   Widget build(BuildContext context) {
     final card = widget.card; // this is the card passed in from the CardsBrowserView
@@ -39,60 +37,66 @@ class _CardViewState extends State<CardView> {
     _widgetFactory = BlastWidgetFactory(context);
 
     return Scaffold(
-      backgroundColor: _widgetFactory.viewBackgroundColor(),
+        backgroundColor: _widgetFactory.viewBackgroundColor(),
         body: Center(
-      child: Column(
-        children: [
-          AppBar(
-            title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                tooltip: 'Edit',
-                onPressed: () {
-                  vm.editCommand().then((value) {
-                    vm.closeCommand();
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'Quit',
-                onPressed: () {
-                  vm.closeCommand();
-                },
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
             children: [
-              Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                  style: _widgetFactory.textTheme.titleLarge),
-              IconButton(
-                  icon: vm.currentCard.isFavorite ? Icon(Icons.star, color: _widgetFactory.theme.colorScheme.primary ,) : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary ),
-                  tooltip: "toggle favorite",
-                  onPressed: () {
-                    vm.toggleFavorite();
-                  })
+              AppBar(
+                title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edit',
+                    onPressed: () {
+                      vm.editCommand().then((value) {
+                        vm.closeCommand();
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Quit',
+                    onPressed: () {
+                      vm.closeCommand();
+                    },
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+                      style: _widgetFactory.textTheme.titleLarge),
+                  IconButton(
+                      icon: vm.currentCard.isFavorite
+                          ? Icon(
+                              Icons.star,
+                              color: _widgetFactory.theme.colorScheme.primary,
+                            )
+                          : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
+                      tooltip: "toggle favorite",
+                      onPressed: () {
+                        vm.toggleFavorite();
+                      })
+                ],
+              ),
+              Text(
+                "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last used ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} ",
+                style: _widgetFactory.textTheme.labelSmall,
+              ),
+              _rowOfTags(vm.currentCard.tags),
+              FutureBuilder<List<BlastAttribute>>(
+                  future: vm.getRows(),
+                  builder: (context, cardsList) {
+                    return Expanded(
+                      child: Container(
+                        child: _buildAttributesList(cardsList.data ?? [], vm),
+                      ),
+                    );
+                  }),
             ],
           ),
-          Text(
-              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last used ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()} ",
-              style: _widgetFactory.textTheme.labelSmall,),
-          _rowOfTags(vm.currentCard.tags),
-          FutureBuilder<List<BlastAttribute>>(
-              future: vm.getRows(),
-              builder: (context, cardsList) {
-                return Expanded(
-                  child: Container(
-                    child: _buildAttributesList(cardsList.data ?? [], vm),
-                  ),
-                );
-              }),
-        ],
-      ),
-    ));
+        ));
   }
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
@@ -121,7 +125,10 @@ class _CardViewState extends State<CardView> {
               leading: const Icon(Icons.lock),
               title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
                   style: _widgetFactory.textTheme.titleMedium!.copyWith(color: _widgetFactory.theme.colorScheme.error)),
-              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
+              subtitle: Text(
+                name,
+                style: _widgetFactory.textTheme.labelSmall,
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -142,9 +149,15 @@ class _CardViewState extends State<CardView> {
                         vm.toggleShowPassword(index);
                       },
                       icon: const Icon(Icons.visibility),
-                      tooltip: 'hide',
+                      tooltip: 'show',
                     ),
                   ),
+                  IconButton(
+                      onPressed: () {
+                        vm.showFieldView(value);
+                      },
+                      icon: const Icon(Icons.qr_code),
+                      tooltip: 'show qr code'),
                   IconButton(
                     onPressed: () {
                       vm.copyToClipboard(value);
@@ -154,6 +167,13 @@ class _CardViewState extends State<CardView> {
                     },
                     icon: const Icon(Icons.copy),
                     tooltip: 'copy to clipboard',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      vm.showFieldView(value);
+                    },
+                    icon: const Icon(Icons.lens),
+                    tooltip: 'large view',
                   ),
                 ],
               ),
@@ -170,7 +190,10 @@ class _CardViewState extends State<CardView> {
                     style: const TextStyle(
                         decoration: TextDecoration.underline, color: Colors.blue, decorationColor: Colors.blue)),
               ),
-              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
+              subtitle: Text(
+                name,
+                style: _widgetFactory.textTheme.labelSmall,
+              ),
               trailing: IconButton(
                 onPressed: () {
                   vm.copyToClipboard(value);
@@ -188,7 +211,10 @@ class _CardViewState extends State<CardView> {
             return ListTile(
               leading: const Icon(Icons.description),
               title: Text(value, style: _widgetFactory.textTheme.titleMedium),
-              subtitle: Text(name, style: _widgetFactory.textTheme.labelSmall,),
+              subtitle: Text(
+                name,
+                style: _widgetFactory.textTheme.labelSmall,
+              ),
               trailing: IconButton(
                 onPressed: () {
                   vm.copyToClipboard(value);
@@ -214,26 +240,29 @@ class _CardViewState extends State<CardView> {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: rowItems, );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: rowItems,
+    );
   }
 
   Widget _showNotes(String notes, CardViewModel vm) {
-    return 
-    Padding(padding: const EdgeInsets.all(24), child:
-    Container(
-      decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(6),
-    color: _widgetFactory.theme.colorScheme.tertiaryContainer,
-  ),
-      child: 
-    Padding( padding: const EdgeInsets.all(12), child:
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text("Notes", style: _widgetFactory.textTheme.bodyMedium),
-        SelectableText(notes, style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic)),
-      ],
-    ))))
-    ;
+    return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: _widgetFactory.theme.colorScheme.tertiaryContainer,
+            ),
+            child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium),
+                    SelectableText(notes,
+                        style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic)),
+                  ],
+                ))));
   }
 }

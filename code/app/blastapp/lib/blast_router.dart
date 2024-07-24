@@ -7,6 +7,7 @@ import 'package:blastapp/View/choose_storage_view.dart';
 import 'package:blastapp/View/create_password_view.dart';
 import 'package:blastapp/View/eula_view.dart';
 import 'package:blastapp/View/splash_view.dart';
+import 'package:blastapp/View/field_view.dart';
 import 'package:blastapp/View/type_password_view.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/rendering.dart';
@@ -14,7 +15,7 @@ part 'blast_router.gr.dart';
 
 // https://pub.dev/packages/auto_route
 // Generete route classes with command: (deprecated) flutter packages pub run build_runner build
-// Generate route classes with command: dart run build_runner build 
+// Generate route classes with command: dart run build_runner build
 @AutoRouterConfig(replaceInRouteName: 'View,Route')
 class BlastRouter extends _$BlastRouter {
   @override
@@ -29,5 +30,6 @@ class BlastRouter extends _$BlastRouter {
         AutoRoute(page: CardsBrowserRoute.page),
         AutoRoute(page: CardRoute.page),
         AutoRoute(page: CardEditRoute.page),
+        AutoRoute(page: FieldRoute.page)
       ];
 }

@@ -129,54 +129,44 @@ class _CardViewState extends State<CardView> {
                 name,
                 style: _widgetFactory.textTheme.labelSmall,
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Visibility(
-                    visible: !vm.isPasswordRowVisible(index),
-                    child: IconButton(
-                      onPressed: () {
-                        vm.toggleShowPassword(index);
-                      },
-                      icon: const Icon(Icons.visibility_off),
-                      tooltip: 'hide',
-                    ),
-                  ),
-                  Visibility(
-                    visible: vm.isPasswordRowVisible(index),
-                    child: IconButton(
-                      onPressed: () {
-                        vm.toggleShowPassword(index);
-                      },
-                      icon: const Icon(Icons.visibility),
-                      tooltip: 'show',
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        vm.showFieldView(value);
-                      },
-                      icon: const Icon(Icons.qr_code),
-                      tooltip: 'show qr code'),
-                  IconButton(
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                Visibility(
+                  visible: !vm.isPasswordRowVisible(index),
+                  child: IconButton(
                     onPressed: () {
-                      vm.copyToClipboard(value);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("secret copied to clipboard!"),
-                      ));
+                      vm.toggleShowPassword(index);
                     },
-                    icon: const Icon(Icons.copy),
-                    tooltip: 'copy to clipboard',
+                    icon: const Icon(Icons.visibility_off),
+                    tooltip: 'hide',
                   ),
-                  IconButton(
+                ),
+                Visibility(
+                  visible: vm.isPasswordRowVisible(index),
+                  child: IconButton(
+                    onPressed: () {
+                      vm.toggleShowPassword(index);
+                    },
+                    icon: const Icon(Icons.visibility),
+                    tooltip: 'show',
+                  ),
+                ),
+                IconButton(
                     onPressed: () {
                       vm.showFieldView(value);
                     },
-                    icon: const Icon(Icons.lens),
-                    tooltip: 'large view',
-                  ),
-                ],
-              ),
+                    icon: const Icon(Icons.qr_code),
+                    tooltip: 'show qr code'),
+                IconButton(
+                  onPressed: () {
+                    vm.copyToClipboard(value);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("secret copied to clipboard!"),
+                    ));
+                  },
+                  icon: const Icon(Icons.copy),
+                  tooltip: 'copy to clipboard',
+                ),
+              ]),
               onTap: () async {},
             );
           case BlastAttributeType.typeURL:
@@ -194,16 +184,24 @@ class _CardViewState extends State<CardView> {
                 name,
                 style: _widgetFactory.textTheme.labelSmall,
               ),
-              trailing: IconButton(
-                onPressed: () {
-                  vm.copyToClipboard(value);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("secret copied to clipboard!"),
-                  ));
-                },
-                icon: const Icon(Icons.copy),
-                tooltip: 'copy to clipboard',
-              ),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(
+                    onPressed: () {
+                      vm.showFieldView(value);
+                    },
+                    icon: const Icon(Icons.qr_code),
+                    tooltip: 'show qr code'),
+                IconButton(
+                  onPressed: () {
+                    vm.copyToClipboard(value);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("secret copied to clipboard!"),
+                    ));
+                  },
+                  icon: const Icon(Icons.copy),
+                  tooltip: 'copy to clipboard',
+                )
+              ]),
               onTap: () async {},
             );
           case BlastAttributeType.typeString:
@@ -215,16 +213,24 @@ class _CardViewState extends State<CardView> {
                 name,
                 style: _widgetFactory.textTheme.labelSmall,
               ),
-              trailing: IconButton(
-                onPressed: () {
-                  vm.copyToClipboard(value);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("copied to clipboard!"),
-                  ));
-                },
-                icon: const Icon(Icons.copy),
-                tooltip: 'copy to clipboard',
-              ),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                IconButton(
+                    onPressed: () {
+                      vm.showFieldView(value);
+                    },
+                    icon: const Icon(Icons.qr_code),
+                    tooltip: 'show qr code'),
+                IconButton(
+                  onPressed: () {
+                    vm.copyToClipboard(value);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("secret copied to clipboard!"),
+                    ));
+                  },
+                  icon: const Icon(Icons.copy),
+                  tooltip: 'copy to clipboard',
+                )
+              ]),
               onTap: () async {},
             );
         }

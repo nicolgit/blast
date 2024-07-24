@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+enum QrCodeViewStyle { text, qrcode, barcode }
+
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   BlastFileList recentFiles = BlastFileList();
@@ -24,8 +26,6 @@ class SettingService {
   }
 
   SettingService._internal() {
-    // init things inside this
-
     // init cloud storages list
     cloudStorages.add(OneDriveCloud());
     if (kIsWeb) {
@@ -45,6 +45,16 @@ class SettingService {
   Future<void> setEulaAccepted(bool value) async {
     var prefs = await _prefs;
     await prefs.setBool('eulaAccepted', value);
+  }
+
+  Future<QrCodeViewStyle> get defaultQrCodeView async {
+    var prefs = await _prefs;
+    return QrCodeViewStyle.values[prefs.getInt('defaultQr') ?? QrCodeViewStyle.qrcode.index];
+  }
+
+  Future<void> setDefaultQrCodeView(QrCodeViewStyle value) async {
+    var prefs = await _prefs;
+    await prefs.setInt('defaultQr', value.index);
   }
 
   Future<ThemeMode> get appTheme async {

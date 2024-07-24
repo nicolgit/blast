@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/field_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 @RoutePage()
 class FieldView extends StatefulWidget {
@@ -26,7 +29,11 @@ class _FieldViewState extends State<FieldView> {
     );
   }
 
+  late BlastWidgetFactory _widgetFactory;
+
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
+    _widgetFactory = BlastWidgetFactory(context);
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -43,12 +50,66 @@ class _FieldViewState extends State<FieldView> {
               ),
             ],
           ),
-          QrImageView(
-            data: vm.currentField,
-            version: QrVersions.auto,
-            embeddedImage: const AssetImage('assets/general/app-icon.png'),
-            size: 600.0,
-          )
+          const SizedBox(height: 12),
+          FutureBuilder(
+              future: vm.getCurrentQrCodeViewStyle(),
+              builder: (context, qrCodeStyle) {
+                return Theme(
+                    data: ThemeData.light(),
+                    child: SegmentedButton<QrCodeViewStyle>(
+                        segments: const <ButtonSegment<QrCodeViewStyle>>[
+                          ButtonSegment<QrCodeViewStyle>(
+                              value: QrCodeViewStyle.text, label: Text('text'), icon: Icon(Icons.text_fields)),
+                          ButtonSegment<QrCodeViewStyle>(
+                              value: QrCodeViewStyle.qrcode, label: Text('qr code'), icon: Icon(Icons.qr_code)),
+                          ButtonSegment<QrCodeViewStyle>(
+                              value: QrCodeViewStyle.barcode, label: Text('barcode'), icon: Icon(Icons.barcode_reader)),
+                        ],
+                        selected: <QrCodeViewStyle>{
+                          qrCodeStyle.data!,
+                        },
+                        onSelectionChanged: (Set<QrCodeViewStyle> newSelection) {
+                          vm.setCurrentQrCodeViewStyle(newSelection.first);
+                        }));
+              }),
+          const SizedBox(height: 12),
+          FutureBuilder(
+              future: vm.getCurrentQrCodeViewStyle(),
+              builder: (context, qrCodeStyle) {
+                Widget displayWidget;
+
+                switch (qrCodeStyle.data!) {
+                  case QrCodeViewStyle.text:
+                    displayWidget = Text(vm.currentField,
+                        style: const TextStyle(fontSize: 96),
+                        textAlign: TextAlign.center,
+                        maxLines: 99,
+                        overflow: TextOverflow.ellipsis);
+                    break;
+                  case QrCodeViewStyle.barcode:
+                    displayWidget = Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: BarcodeWidget(
+                          barcode: Barcode.code128(), // Barcode type and settings
+                          data: vm.currentField,
+                          width: 600,
+                          height: 200,
+                          style: const TextStyle(fontSize: 24),
+                        ));
+                    break;
+                  case QrCodeViewStyle.qrcode:
+                  default:
+                    displayWidget = QrImageView(
+                      data: vm.currentField,
+                      version: QrVersions.auto,
+                      embeddedImage: const AssetImage('assets/general/app-icon.png'),
+                      size: 600.0,
+                    );
+                    break;
+                }
+
+                return displayWidget;
+              }),
         ])));
   }
 }

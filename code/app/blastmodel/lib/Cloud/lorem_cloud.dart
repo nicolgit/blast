@@ -64,7 +64,7 @@ class LoremCloud extends Cloud {
   @override
   Future<Uint8List> getFile(String id) async {
     final random = Random();
-    await Future.delayed(Duration(seconds: random.nextInt(10)));
+    await Future.delayed(Duration(seconds: random.nextInt(5)));
 
     BlastDocument document = buildRandomBlastDocument();
     String jsonDocument = document.toString();

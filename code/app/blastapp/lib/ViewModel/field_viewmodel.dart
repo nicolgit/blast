@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class FieldViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -12,9 +12,12 @@ class FieldViewModel extends ChangeNotifier {
     context.router.maybePop();
   }
 
-  void copyToClipboard(String value) async {
-    await Clipboard.setData(ClipboardData(text: value));
+  Future<QrCodeViewStyle> getCurrentQrCodeViewStyle() async {
+    return await SettingService().defaultQrCodeView;
+  }
 
+  void setCurrentQrCodeViewStyle(QrCodeViewStyle first) async {
+    await SettingService().setDefaultQrCodeView(first);
     notifyListeners();
   }
 }

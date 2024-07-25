@@ -89,22 +89,32 @@ class _FieldViewState extends State<FieldView> {
                   case QrCodeViewStyle.barcode:
                     displayWidget = Padding(
                         padding: const EdgeInsets.all(6),
-                        child: BarcodeWidget(
-                          barcode: Barcode.code128(), // Barcode type and settings
-                          data: vm.currentField,
-                          width: 600,
-                          height: 200,
-                          style: const TextStyle(fontSize: 24),
-                        ));
+                        child: Expanded(
+                            child: Align(
+                                alignment: Alignment.center,
+                                child: AspectRatio(
+                                    aspectRatio: 6 / 2,
+                                    child: BarcodeWidget(
+                                      barcode: Barcode.code128(), // Barcode type and settings
+                                      data: vm.currentField,
+                                      width: 600,
+                                      height: 200,
+                                      style: const TextStyle(fontSize: 24),
+                                    )))));
                     break;
                   case QrCodeViewStyle.qrcode:
                   default:
-                    displayWidget = QrImageView(
-                      data: vm.currentField,
-                      version: QrVersions.auto,
-                      embeddedImage: const AssetImage('assets/general/app-icon.png'),
-                      size: 600.0,
-                    );
+                    displayWidget = Expanded(
+                        child: Align(
+                            alignment: Alignment.center,
+                            child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: QrImageView(
+                                  data: vm.currentField,
+                                  version: QrVersions.auto,
+                                  embeddedImage: const AssetImage('assets/general/app-icon.png'),
+                                  size: 1000.0,
+                                ))));
                     break;
                 }
 

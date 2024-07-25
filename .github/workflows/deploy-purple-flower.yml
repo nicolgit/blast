@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
       - name: Prepare secrets.dart
         working-directory: ./code/app/blastmodel/lib
         run: |

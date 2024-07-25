@@ -47,12 +47,12 @@ class _TypePasswordViewState extends State<TypePasswordView> {
 
   Widget _buildScaffold(BuildContext context, TypePasswordViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
-    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onBackground.withOpacity(0.5));
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
     return Scaffold(
-      backgroundColor: _theme.colorScheme.background,
+      backgroundColor: _theme.colorScheme.surface,
       body: Center(
           child: Column(
         children: [

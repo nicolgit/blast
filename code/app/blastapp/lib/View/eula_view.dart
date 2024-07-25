@@ -27,10 +27,10 @@ class _EulaViewState extends State<EulaView> {
 
   Widget _buildScaffold(BuildContext context, EulaViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return Scaffold(
-        backgroundColor: _theme.colorScheme.background,
+        backgroundColor: _theme.colorScheme.surface,
         body: SingleChildScrollView(
           child: Center(
               child: Column(

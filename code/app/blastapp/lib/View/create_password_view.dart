@@ -42,8 +42,8 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
 
   Widget _buildScaffold(BuildContext context, CreatePasswordViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
-    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onBackground.withOpacity(0.5));
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
     return Scaffold(

@@ -28,10 +28,10 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
 
   Widget _buildScaffold(BuildContext context, ChooseStorageViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onBackground);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return Scaffold(
-      backgroundColor: _theme.colorScheme.background,
+      backgroundColor: _theme.colorScheme.surface,
       body: Center(
         child: Column(
           children: [
@@ -61,7 +61,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
               elevation: 1,
               color: _theme.colorScheme.surface,
               shadowColor: _theme.colorScheme.onSurface,
-              surfaceTintColor: _theme.colorScheme.onBackground,
+              surfaceTintColor: _theme.colorScheme.onSurface,
               type: MaterialType.card,
               child: ListTile(
                 leading: Image.asset("assets/storage/${cloud.id}.png", width: 48, height: 48),

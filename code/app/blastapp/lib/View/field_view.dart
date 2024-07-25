@@ -56,9 +56,9 @@ class _FieldViewState extends State<FieldView> {
                           ButtonSegment<QrCodeViewStyle>(
                               value: QrCodeViewStyle.text, label: Text('text'), icon: Icon(Icons.text_fields)),
                           ButtonSegment<QrCodeViewStyle>(
-                              value: QrCodeViewStyle.qrcode, label: Text('qr code'), icon: Icon(Icons.qr_code)),
+                              value: QrCodeViewStyle.qrcode, label: Text('qrcode'), icon: Icon(Icons.qr_code)),
                           ButtonSegment<QrCodeViewStyle>(
-                              value: QrCodeViewStyle.barcode, label: Text('barcode'), icon: Icon(Icons.barcode_reader)),
+                              value: QrCodeViewStyle.barcode, label: Text('bar'), icon: Icon(Icons.barcode_reader)),
                         ],
                         selected: <QrCodeViewStyle>{
                           qrCodeStyle.data!,
@@ -84,18 +84,13 @@ class _FieldViewState extends State<FieldView> {
                   case QrCodeViewStyle.barcode:
                     displayWidget = Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Expanded(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: AspectRatio(
-                                    aspectRatio: 6 / 2,
-                                    child: BarcodeWidget(
-                                      barcode: Barcode.code128(), // Barcode type and settings
-                                      data: vm.currentField,
-                                      width: 600,
-                                      height: 200,
-                                      style: const TextStyle(fontSize: 24),
-                                    )))));
+                        child: BarcodeWidget(
+                          barcode: Barcode.code128(), // Barcode type and settings
+                          data: vm.currentField,
+                          width: 600,
+                          height: 200,
+                          style: const TextStyle(fontSize: 24),
+                        ));
                     break;
                   case QrCodeViewStyle.qrcode:
                   default:

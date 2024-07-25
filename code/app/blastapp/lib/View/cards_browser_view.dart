@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -234,14 +235,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     onPressed: () async {
                       Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
 
-                      try {
-                        await vm.importCommand();
-                      } catch (e) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("unable to import selected file. Please check the file format."),
-                        ));
-                      }
+                      context.router.push(const ImporterRoute());
                     },
                   );
 

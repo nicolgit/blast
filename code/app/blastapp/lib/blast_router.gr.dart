@@ -76,6 +76,12 @@ abstract class _$BlastRouter extends RootStackRouter {
         ),
       );
     },
+    ImporterRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ImporterView(),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -271,6 +277,20 @@ class FieldRouteArgs {
   String toString() {
     return 'FieldRouteArgs{key: $key, value: $value}';
   }
+}
+
+/// generated route for
+/// [ImporterView]
+class ImporterRoute extends PageRouteInfo<void> {
+  const ImporterRoute({List<PageRouteInfo>? children})
+      : super(
+          ImporterRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ImporterRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for

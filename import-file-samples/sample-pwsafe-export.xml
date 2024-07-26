@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="pwsafe.xsl"?>
+
+<passwordsafe
+delimiter="»"
+Database="C:\Users\nicold\OneDrive\PadlockStorage\pwsafe-test.psafe3"
+ExportTimeStamp="2024-07-26T18:21:41"
+FromDatabaseFormat="3.14"
+WhoSaved="nicold on NICOLD11"
+WhatSaved="Password Safe V3.66.1"
+WhenLastSaved="2024-07-26T18:19:57"
+WhenPwdLastChanged="2024-07-26T18:14:33"
+Database_uuid="35f04628-5fe5-424d-83eb-6ebcbe308ca9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="pwsafe.xsd">
+
+ <!-- Nota: queste preferenze vengono usate solo quando si importa in una database vuoto. --> 
+	<Preferences>
+	</Preferences>
+
+	<EmptyGroups>
+		<EGName><![CDATA[folder1]]></EGName>
+		<EGName><![CDATA[folder3]]></EGName>
+	</EmptyGroups>
+
+	<entry id="1">
+		<title><![CDATA[element number 1]]></title>
+		<username><![CDATA[username01]]></username>
+		<password><![CDATA[password]]></password>
+		<url><![CDATA[https://www.pippo.com]]></url>
+		<notes><![CDATA[lorem ipsut dixit amen]]></notes>
+		<uuid><![CDATA[6aa339b1a63141c8a9fe00a29e4dd855]]></uuid>
+		<ctimex>2024-07-26T18:15:37</ctimex>
+		<email><![CDATA[pippo@usa,net]]></email>
+	</entry>
+
+	<entry id="2">
+		<group><![CDATA[folder2]]></group>
+		<title><![CDATA[facebook àèìòù]]></title>
+		<username><![CDATA[john"smith]]></username>
+		<password><![CDATA[password]]></password>
+		<url><![CDATA[https://www.facebook.com]]></url>
+		<uuid><![CDATA[73604a30959a446f96db3eda84f45903]]></uuid>
+		<ctimex>2024-07-26T18:18:13</ctimex>
+		<rmtimex>2024-07-26T18:18:37</rmtimex>
+		<email><![CDATA[john@facebook.com]]></email>
+	</entry>
+
+	<entry id="3">
+		<group><![CDATA[folder2.folder2-1]]></group>
+		<title><![CDATA[instagramm]]></title>
+		<username><![CDATA[instagram-user]]></username>
+		<password><![CDATA[password]]></password>
+		<url><![CDATA[https://www.instagram.com]]></url>
+		<notes><![CDATA[lorem ipsut]]></notes>
+		<uuid><![CDATA[a0420cc8b862413d90498882818ae936]]></uuid>
+		<ctimex>2024-07-26T18:19:57</ctimex>
+		<email><![CDATA[user@instagram.com]]></email>
+	</entry>
+
+</passwordsafe>

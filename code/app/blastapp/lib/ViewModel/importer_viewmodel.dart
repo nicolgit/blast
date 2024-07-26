@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/importer.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -30,7 +30,7 @@ class ImporterViewModel extends ChangeNotifier {
         fileService.currentFileJsonString = file.readAsStringSync();
       }
 
-      fileService.currentFileDocument = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+      fileService.currentFileDocument = Importer.importBlastJson(fileService.currentFileJsonString!);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -40,8 +40,31 @@ class ImporterViewModel extends ChangeNotifier {
       // User canceled the picker
     }
 
-    //notifyListeners();
+    notifyListeners();
   }
 
-  importKeepassXMLCommand() {}
+  importKeepassXMLCommand() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null && result.files.isNotEmpty) {
+      String xmlString = '';
+
+      if (kIsWeb) {
+        final fileBytes = result.files.first.bytes;
+        xmlString = utf8.decode(fileBytes!);
+      } else {
+        File file = File(result.files.single.path!);
+        xmlString = file.readAsStringSync();
+      }
+
+      fileService.currentFileDocument = Importer.importKeepassXML(xmlString);
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Data imported successfully.'),
+      ));
+    } else {
+      // User canceled the picker
+    }
+  }
 }

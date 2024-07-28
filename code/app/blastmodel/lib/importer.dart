@@ -21,8 +21,15 @@ class Importer {
     }
 
     final entries = document.rootElement.findElements("Root").first.findElements('Group');
+    List<String> tags = [];
 
-    for (var entry in entries) {
+    for (var group in entries) {
+      tags.add(group.findElements('Name').first.innerText);
+
+      _importKeepassGroup(group, tags, blastDocument);
+    }
+
+    /*
       var blastCard = BlastCard();
 
       blastCard.title =
@@ -34,9 +41,38 @@ class Importer {
       //blastCard.addEntry('Password', entry.findElements('String').firstWhere((element) => element.getAttribute('Key') == 'Password').text);
 
       blastDocument.cards.add(blastCard);
-    }
+    */
 
     return blastDocument;
+  }
+
+  static void _importKeepassGroup(xml.XmlElement group, List<String> tags, BlastDocument blastDocument) {
+    final groups = group.root.findElements('Group');
+
+    for (var subGroup in groups) {
+      String groupName = subGroup.findElements('Name').first.innerText;
+      tags.add(groupName);
+
+      _importKeepassGroup(subGroup, tags, blastDocument);
+
+      tags.removeWhere((item) => item == groupName);
+    }
+
+    final entries = group.findElements('Entry');
+    for (var entry in entries) {
+      var blastCard = BlastCard();
+
+      blastCard.title =
+          entry.findElements('String').firstWhere((element) => element.getAttribute('Key') == 'Title').value;
+      blastCard.notes =
+          entry.findElements('String').firstWhere((element) => element.getAttribute('Key') == 'Notes').value;
+      blastCard.tags = tags;
+
+      //blastCard.addEntry('Username', entry.findElements('String').firstWhere((element) => element.getAttribute('Key') == 'UserName').text);
+      //blastCard.addEntry('Password', entry.findElements('String').firstWhere((element) => element.getAttribute('Key') == 'Password').text);
+
+      blastDocument.cards.add(blastCard);
+    }
   }
 
   static BlastDocument ImportPwsafeCSV(String csvString) {

@@ -23,8 +23,3 @@ class BlastRESTAPIException implements BlastException {
   String body;
   BlastRESTAPIException(this.statusCode, this.body);
 }
-
-class BlastImportException implements BlastException {
-  String message;
-  BlastImportException(this.message);
-}

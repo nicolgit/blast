@@ -216,45 +216,41 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
               ListTile(
                 leading: const Icon(Icons.upload),
-                title: const Text('import .json file'),
+                title: const Text('import from...'),
                 onTap: () {
                   Navigator.pop(context); // close drawer
 
-                  Widget noButton = TextButton(
-                    child: const Text("No"),
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                    },
-                  );
-
-                  Widget okButton = TextButton(
+                  Widget cancelButton = TextButton(
                     style: TextButton.styleFrom(
                       foregroundColor: _widgetFactory.theme.colorScheme.error,
                     ),
-                    child: const Text("Yes import it anyway"),
+                    child: const Text("cancel"),
                     onPressed: () async {
                       Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-
-                      context.router.push(const ImporterRoute());
                     },
                   );
 
-                  AlertDialog alert = AlertDialog(
-                    title: const Text("import blast .json file"),
-                    content: const Text(
-                        "WARNING: Importing a Blast .json file here will overwrite all the current file content. Are you sure to continue?"),
-                    actions: [
-                      noButton,
-                      okButton,
-                    ],
-                  );
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return alert;
-                    },
-                  );
+                  if (vm.isFileNotEmpty()) {
+                    AlertDialog alert = AlertDialog(
+                      title: const Text("import from another password manager"),
+                      content: const Text(
+                          "WARNING: your current Blast file is not empty. To import data you must have an empty file."),
+                      actions: [
+                        cancelButton,
+                      ],
+                    );
+                    // show the dialog
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    );
+                  } else {
+                    context.router.push(const ImporterRoute()).then((value) {
+                      vm.refreshCardListCommand();
+                    });
+                  }
                 },
               ),
               ListTile(

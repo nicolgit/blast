@@ -31,16 +31,13 @@ class ImporterViewModel extends ChangeNotifier {
       }
 
       fileService.currentFileDocument = Importer.importBlastJson(fileService.currentFileJsonString!);
-
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Data imported successfully.'),
-      ));
     } else {
-      // User canceled the picker
+      throw Exception('User canceled the picker');
     }
 
-    notifyListeners();
+    if (context.mounted) {
+      context.router.maybePop();
+    }
   }
 
   importKeepassXMLCommand() async {
@@ -58,13 +55,28 @@ class ImporterViewModel extends ChangeNotifier {
       }
 
       fileService.currentFileDocument = Importer.importKeepassXML(xmlString);
-
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Data imported successfully.'),
-      ));
     } else {
-      // User canceled the picker
+      throw Exception('User canceled the picker');
+    }
+  }
+
+  importPwsafeXMLCommand() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null && result.files.isNotEmpty) {
+      String xmlString = '';
+
+      if (kIsWeb) {
+        final fileBytes = result.files.first.bytes;
+        xmlString = utf8.decode(fileBytes!);
+      } else {
+        File file = File(result.files.single.path!);
+        xmlString = file.readAsStringSync();
+      }
+
+      fileService.currentFileDocument = Importer.importPwsafeXML(xmlString);
+    } else {
+      throw Exception('User canceled the picker');
     }
   }
 }

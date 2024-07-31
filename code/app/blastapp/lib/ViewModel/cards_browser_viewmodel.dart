@@ -106,36 +106,15 @@ class CardsBrowserViewModel extends ChangeNotifier {
     }
   }
 
-  Future importCommand() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null && result.files.isNotEmpty) {
-      if (kIsWeb) {
-        final fileBytes = result.files.first.bytes;
-        fileService.currentFileJsonString = utf8.decode(fileBytes!);
-      } else {
-        File file = File(result.files.single.path!);
-        fileService.currentFileJsonString = file.readAsStringSync();
-      }
-
-      fileService.currentFileDocument = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
-
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Data imported successfully.'),
-      ));
-    } else {
-      // User canceled the picker
-    }
-
-    notifyListeners();
-  }
-
   clearSearchTextCommand() {
     searchText = "";
     sortType = SortType.none;
     searchOperator = SearchOperator.and;
     searchWhere = SearchWhere.everywhere;
     notifyListeners();
+  }
+
+  bool isFileNotEmpty() {
+    return fileService.currentFileDocument!.cards.isNotEmpty;
   }
 }

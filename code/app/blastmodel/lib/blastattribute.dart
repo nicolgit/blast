@@ -6,6 +6,7 @@ part 'blastattribute.g.dart';
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastAttribute {
   BlastAttribute();
+  BlastAttribute.withParams(this.name, this.value, this.type);
 
   String name = "";
   String value = "";

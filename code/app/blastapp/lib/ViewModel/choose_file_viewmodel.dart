@@ -23,6 +23,13 @@ class ChooseFileViewModel extends ChangeNotifier {
         isLoading = true;
         files = await currentFileService.cloud!.getFiles(await currentPath);
         isLoading = false;
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('error: $e'),
+          ));
+        }
+        files = [];
       } finally {
         isLoading = false;
       }

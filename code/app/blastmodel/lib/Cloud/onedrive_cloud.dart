@@ -9,6 +9,7 @@ import 'package:blastmodel/specific/blastoauth/blastoauth.dart';
 import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart'
     if (dart.library.io) 'package:blastmodel/specific/blastoauth/blastoauth_mobile.dart'
     if (dart.library.html) 'package:blastmodel/specific/blastoauth/blastoauth_web.dart';
+import 'package:oauth2/oauth2.dart';
 
 class OneDriveCloud extends Cloud {
   OneDriveCloud() {
@@ -60,7 +61,10 @@ class OneDriveCloud extends Cloud {
       path = '$path:';
     }
 
-    var client = await _oauth.createClient();
+    Client client;
+
+    client = await _oauth.createClient();
+
     var response = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/$path/children'));
 
     final onedriveData = await json.decode(response.body);

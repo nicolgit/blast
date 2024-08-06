@@ -49,6 +49,28 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   acceptPassword() async {
+    await createFile();
+
+    if (!context.mounted) return;
+    context.router.push(const CardsBrowserRoute());
+  }
+
+  Future<bool> isPasswordsNotEmpty() async {
+    return password.isNotEmpty && passwordConfirm.isNotEmpty;
+  }
+
+  Future<bool> isFilenameNotEmpty() async {
+    return filename.isNotEmpty;
+  }
+
+  acceptAndImport() async {
+    await createFile();
+
+    if (!context.mounted) return;
+    context.router.push(const ImporterRoute()).then((value) => context.router.push(const CardsBrowserRoute()));
+  }
+
+  createFile() async {
     if (filename.endsWith(".blast")) {
       filename = filename.substring(0, filename.length - 6);
     }
@@ -72,16 +94,5 @@ class CreatePasswordViewModel extends ChangeNotifier {
     SettingService().addRecentFile(file);
 
     notifyListeners();
-
-    if (!context.mounted) return;
-    context.router.push(const CardsBrowserRoute());
-  }
-
-  Future<bool> isPasswordsNotEmpty() async {
-    return password.isNotEmpty && passwordConfirm.isNotEmpty;
-  }
-
-  Future<bool> isFilenameNotEmpty() async {
-    return filename.isNotEmpty;
   }
 }

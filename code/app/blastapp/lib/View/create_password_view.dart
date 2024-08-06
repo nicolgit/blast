@@ -126,7 +126,17 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
                 builder: (context, isFormReadyToConfirm) => FilledButton(
                   onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptPassword() : null,
                   child: const Text(
-                    'confirm password',
+                    'create a new file',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12.0),
+              FutureBuilder<bool>(
+                future: vm.isFormReadyToConfirm(),
+                builder: (context, isFormReadyToConfirm) => FilledButton(
+                  onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptAndImport() : null,
+                  child: const Text(
+                    'import from another password manager',
                   ),
                 ),
               ),

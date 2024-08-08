@@ -5,10 +5,8 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:url_launcher/url_launcher.dart';
 
 class BlastOAuthMobile extends BlastOAuth {
-
   @override
-  void dispose() {    
-  }
+  void dispose() {}
 
   @override
   Future<oauth2.Client> createClient() async {
@@ -37,7 +35,7 @@ class BlastOAuthMobile extends BlastOAuth {
     // the AuthorizationCodeGrant. It will validate them and extract the
     // authorization code to create a new Client.
     var client = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
-    
+
     cachedCredentials = client.credentials.toJson();
 
     return client;
@@ -52,7 +50,7 @@ class BlastOAuthMobile extends BlastOAuth {
   Future<Uri> _listen(Uri url) async {
     Uri? responseUri;
 
-    appLinks.allUriLinkStream.listen((uri) async {
+    appLinks.uriLinkStream.listen((uri) async {
       if (uri.toString().startsWith(redirectUri.toString())) {
         responseUri = uri;
       }
@@ -74,7 +72,6 @@ class BlastOAuthMobile extends BlastOAuth {
 
     return responseUri!;
   }
-  
 }
 
 BlastOAuth getBlastAuth() => BlastOAuthMobile();

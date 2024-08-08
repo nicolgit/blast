@@ -9,94 +9,6 @@
 
 part of 'blast_router.dart';
 
-abstract class _$BlastRouter extends RootStackRouter {
-  // ignore: unused_element
-  _$BlastRouter({super.navigatorKey});
-
-  @override
-  final Map<String, PageFactory> pagesMap = {
-    CardEditRoute.name: (routeData) {
-      final args = routeData.argsAs<CardEditRouteArgs>(
-          orElse: () => const CardEditRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CardEditView(
-          key: args.key,
-          card: args.card,
-        ),
-      );
-    },
-    CardRoute.name: (routeData) {
-      final args = routeData.argsAs<CardRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CardView(
-          key: args.key,
-          card: args.card,
-        ),
-      );
-    },
-    CardsBrowserRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CardsBrowserView(),
-      );
-    },
-    ChooseFileRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ChooseFileView(),
-      );
-    },
-    ChooseStorageRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ChooseStorageView(),
-      );
-    },
-    CreatePasswordRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CreatePasswordView(),
-      );
-    },
-    EulaRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const EulaView(),
-      );
-    },
-    FieldRoute.name: (routeData) {
-      final args = routeData.argsAs<FieldRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: FieldView(
-          key: args.key,
-          value: args.value,
-        ),
-      );
-    },
-    ImporterRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ImporterView(),
-      );
-    },
-    SplashRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SplashView(),
-      );
-    },
-    TypePasswordRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const TypePasswordView(),
-      );
-    },
-  };
-}
-
 /// generated route for
 /// [CardEditView]
 class CardEditRoute extends PageRouteInfo<CardEditRouteArgs> {
@@ -115,8 +27,17 @@ class CardEditRoute extends PageRouteInfo<CardEditRouteArgs> {
 
   static const String name = 'CardEditRoute';
 
-  static const PageInfo<CardEditRouteArgs> page =
-      PageInfo<CardEditRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CardEditRouteArgs>(
+          orElse: () => const CardEditRouteArgs());
+      return CardEditView(
+        key: args.key,
+        card: args.card,
+      );
+    },
+  );
 }
 
 class CardEditRouteArgs {
@@ -153,7 +74,16 @@ class CardRoute extends PageRouteInfo<CardRouteArgs> {
 
   static const String name = 'CardRoute';
 
-  static const PageInfo<CardRouteArgs> page = PageInfo<CardRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CardRouteArgs>();
+      return CardView(
+        key: args.key,
+        card: args.card,
+      );
+    },
+  );
 }
 
 class CardRouteArgs {
@@ -183,7 +113,12 @@ class CardsBrowserRoute extends PageRouteInfo<void> {
 
   static const String name = 'CardsBrowserRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CardsBrowserView();
+    },
+  );
 }
 
 /// generated route for
@@ -197,7 +132,12 @@ class ChooseFileRoute extends PageRouteInfo<void> {
 
   static const String name = 'ChooseFileRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChooseFileView();
+    },
+  );
 }
 
 /// generated route for
@@ -211,7 +151,12 @@ class ChooseStorageRoute extends PageRouteInfo<void> {
 
   static const String name = 'ChooseStorageRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChooseStorageView();
+    },
+  );
 }
 
 /// generated route for
@@ -225,7 +170,12 @@ class CreatePasswordRoute extends PageRouteInfo<void> {
 
   static const String name = 'CreatePasswordRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CreatePasswordView();
+    },
+  );
 }
 
 /// generated route for
@@ -239,7 +189,12 @@ class EulaRoute extends PageRouteInfo<void> {
 
   static const String name = 'EulaRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EulaView();
+    },
+  );
 }
 
 /// generated route for
@@ -260,7 +215,16 @@ class FieldRoute extends PageRouteInfo<FieldRouteArgs> {
 
   static const String name = 'FieldRoute';
 
-  static const PageInfo<FieldRouteArgs> page = PageInfo<FieldRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<FieldRouteArgs>();
+      return FieldView(
+        key: args.key,
+        value: args.value,
+      );
+    },
+  );
 }
 
 class FieldRouteArgs {
@@ -290,7 +254,12 @@ class ImporterRoute extends PageRouteInfo<void> {
 
   static const String name = 'ImporterRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ImporterView();
+    },
+  );
 }
 
 /// generated route for
@@ -304,7 +273,12 @@ class SplashRoute extends PageRouteInfo<void> {
 
   static const String name = 'SplashRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SplashView();
+    },
+  );
 }
 
 /// generated route for
@@ -318,5 +292,10 @@ class TypePasswordRoute extends PageRouteInfo<void> {
 
   static const String name = 'TypePasswordRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TypePasswordView();
+    },
+  );
 }

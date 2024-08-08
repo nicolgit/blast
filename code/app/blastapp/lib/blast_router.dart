@@ -17,7 +17,7 @@ part 'blast_router.gr.dart';
 // https://pub.dev/packages/auto_route
 // Generate route classes with command: dart run build_runner build
 @AutoRouterConfig(replaceInRouteName: 'View,Route')
-class BlastRouter extends _$BlastRouter {
+class BlastRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         // add your routes here

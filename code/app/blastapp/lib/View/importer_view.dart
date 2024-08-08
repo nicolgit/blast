@@ -58,7 +58,10 @@ class _ImporterViewState extends State<ImporterView> {
                     await vm.importBlastCommand();
 
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Imported successfully!")));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+
+                    context.router.maybePop();
                   } catch (e) {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -76,12 +79,10 @@ class _ImporterViewState extends State<ImporterView> {
                     await vm.importKeepassXMLCommand();
 
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text("Imported successfully!")))
-                        .closed
-                        .then((reason) {
-                      context.router.maybePop();
-                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+
+                    context.router.maybePop();
                   } catch (e) {
                     if (!context.mounted) return;
 
@@ -100,12 +101,10 @@ class _ImporterViewState extends State<ImporterView> {
                     await vm.importPwsafeXMLCommand();
 
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text("Imported successfully!")))
-                        .closed
-                        .then((reason) {
-                      context.router.maybePop();
-                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+
+                    context.router.maybePop();
                   } catch (e) {
                     if (!context.mounted) return;
 

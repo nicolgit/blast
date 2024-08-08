@@ -79,4 +79,8 @@ class ImporterViewModel extends ChangeNotifier {
       throw Exception('User canceled the picker');
     }
   }
+
+  String importedCount() {
+    return fileService.currentFileDocument!.cards.length.toString();
+  }
 }

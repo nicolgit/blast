@@ -1,19 +1,18 @@
 ![blast!](images/icon-v01.png)
 # 💥 Blast 💥
-your passwords: safe and sound.
+your passwords, safe and sound.
 
 # What is Blast?
-Blast is an open-source password and secrets keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac. It stores your passwords in an encrypted file, allowing you to remember only one password (the "master password") instead of all the username/password combinations that you use.
+Blast is an open-source password and secrets keeper developed in Flutter. It can be used on **Android**, **iOS**, **Windows**, **Web**, **Linux**, and **Mac**. It stores your passwords in an encrypted file, allowing you to remember only one password (the "master password") instead of all the username/password combinations that you use.
 
-You can find latest web version at https://blast.duckiesfarm.com
+There are many password keepers out there, what makes Blast different? 
+* Blast doesn't require its own cloud to work. It's designed to use your favorite cloud as a backend or just your local file system. 
+* All your data is kept in **one single file** protected by a master password. The file is in an easily extendable .json format. Before being saved, it is encrypted using the 256-bit AES (Advanced Encryption Standard), making it super easy to move elsewhere.
+* Written from the ground up using Flutter, one of the most widely used multiplatform frameworks. One single source code will build versions for all the current most used platforms.
 
-Binaries for all the supported platform will be available in the future on their public store and/or here.
+# File Format
 
-Blast doesn't require its own cloud to work. It's designed to use your favorite cloud as a backend. All your data is keep in one single file protected by a master password. The file is an easily extendable .json format. Before being saved, it is ciphered using the 256-bit AES (Advanced Encryption Standard).
-
-File format is documented [here](docs/file-format.md).
-
-
+File format is [documented here](docs/file-format.md).
 
 # Use Blast
 
@@ -24,24 +23,8 @@ File format is documented [here](docs/file-format.md).
 * MacOS - not available yet, build it yourself
 * Linux - not available yet, build it yourself
 
-
-# Supported feature by platform
-Objective is to support all the most used cloud storage. Not all cloud storage are implemented and tested on all platforms. In the following table you can see current supported storages.
-
-| storage             | android | ios | linux | mac | web | windows |
-|---------------------|---------|-----|-------|-----|-----|---------|
-| local file system   |         |     | 👍    | 👍  |     | 👍      |
-| OneDrive            |         |     | 👍    | 👍  | 👍   | 👍      |
-| DropBox             |         |     |       |     |     |         |
-| Azure Storage       |         |     |       |     |     |         |
-| AWS S3              |         |     |       |     |     |         |
-| Google Drive        |         |     |       |     |     |         |
-| iCloud              |         |     |       |     |     |         |
-| Lorem Cloud (*)     | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
-(*) fake cloud, for testing purpose only.
-
-
-Here the list of feature available on all platforms.
+# Features 
+Here the updated list of the main feature available on all platforms.
 
 * advanced search capability and sorting
 * favorite flag
@@ -61,3 +44,23 @@ Not al feature are available everywhere here the current platform < - > feature 
 | import blast readable json  | 🔹      | 🔹   | 👍    | 👍  |     | 👍       |
 
 👍 supported 🔹 planned
+
+
+Objective is to support all the most used cloud storage. 
+
+Not all cloud storage are implemented and tested on all platforms yet. In the following table you can see current supported storages vs platforms.
+
+| storage             | android | ios | linux | mac | web | windows |
+|---------------------|---------|-----|-------|-----|-----|---------|
+| local file system   |         |     | 👍    | 👍  |     | 👍      |
+| OneDrive            |         |     | 👍    | 👍  | 👍   | 👍      |
+| DropBox             |         |     |       |     |     |         |
+| Azure Storage       |         |     |       |     |     |         |
+| AWS S3              |         |     |       |     |     |         |
+| Google Drive        |         |     |       |     |     |         |
+| iCloud              |         |     |       |     |     |         |
+| Lorem Cloud (*)     | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
+
+(*) fake cloud, for testing purpose only.
+
+

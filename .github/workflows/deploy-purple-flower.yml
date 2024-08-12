@@ -21,6 +21,14 @@ jobs:
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
           sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
           cat secrets.dart
+      - name: Time badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          name: webtime
+          label: 'Updated at'
+          status: $build
+          color: 101010
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install packages
         working-directory: ./code/app/blastapp
         run: |

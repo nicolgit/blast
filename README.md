@@ -18,7 +18,11 @@ File format is documented [here](docs/file-format.md).
 # Use Blast
 
 * ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg) ![](https://byob.yarr.is/nicolgit/blast/webtime) <https://blast.duckiesfarm.com> 
+* Android  - not available yet, build it yourself
+* iOS - not available yet, build it yourself
 * Windows - not available yet, build it yourself
+* MacOS - not available yet, build it yourself
+* Linux - not available yet, build it yourself
 
 
 # Supported feature by platform

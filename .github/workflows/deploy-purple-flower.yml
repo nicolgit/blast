@@ -7,10 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
+      # checkout the code
       - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
+      
+      # setup flutter
+      # https://github.com/marketplace/actions/flutter-action
       - uses: subosito/flutter-action@v2
       - name: Prepare secrets.dart
         working-directory: ./code/app/blastmodel/lib
@@ -21,6 +25,9 @@ jobs:
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
           sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
           cat secrets.dart
+
+      # Create badge
+      # https://github.com/marketplace/actions/bring-your-own-badge
       - name: Time badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
@@ -29,6 +36,8 @@ jobs:
           status: $build
           color: 101010
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Install packages
       - name: Install packages
         working-directory: ./code/app/blastapp
         run: |
@@ -36,6 +45,9 @@ jobs:
           flutter pub upgrade
           flutter pub get
           flutter build web --release
+      
+      # Build and deploy
+      # https://github.com/marketplace/actions/azure-static-web-apps-deploy
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1

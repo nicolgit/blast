@@ -1,4 +1,4 @@
-name: Deploy PurpleFLower
+name: web
 
 on: workflow_dispatch
 

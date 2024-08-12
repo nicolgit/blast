@@ -36,6 +36,9 @@ Here the list of feature available on all platforms.
 * dynamic list of attribute for each blast card
 * number of card limited by the device memory
 * number of attributes for each blast card limited by the device memory
+* import data from other password managers:
+  * [Keepass](https://keepass.info/) XML (2.x) file 
+  * [Password Safe](https://pwsafe.org/) XML file   
 
 Not al feature are available everywhere here the current platform < - > feature mapping
 

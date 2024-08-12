@@ -1,9 +1,9 @@
 ![blast!](images/icon-v01.png)
-# Blast👮👮‍♀️
+# 💥 Blast 💥
 your passwords: safe and sound.
 
 # What is Blast?
-Blast is an open-source password and secrets keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac.
+Blast is an open-source password and secrets keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac. It stores your passwords in an encrypted file, allowing you to remember only one password (the "master password") instead of all the username/password combinations that you use.
 
 You can find latest web version at https://blast.duckiesfarm.com
 
@@ -13,9 +13,15 @@ Blast doesn't require its own cloud to work. It's designed to use your favorite 
 
 File format is documented [here](docs/file-format.md).
 
-# Supported feature by platform
 
-My objective is to support all the most used cloud storage. Not all cloud storage are implemented and tested on all platforms. In the following table you can see current supported storages.
+
+# Use Blast
+
+* web ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg)  
+
+
+# Supported feature by platform
+Objective is to support all the most used cloud storage. Not all cloud storage are implemented and tested on all platforms. In the following table you can see current supported storages.
 
 | storage             | android | ios | linux | mac | web | windows |
 |---------------------|---------|-----|-------|-----|-----|---------|
@@ -26,7 +32,9 @@ My objective is to support all the most used cloud storage. Not all cloud storag
 | AWS S3              |         |     |       |     |     |         |
 | Google Drive        |         |     |       |     |     |         |
 | iCloud              |         |     |       |     |     |         |
-| Lorem Cloud         | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
+| Lorem Cloud (*)     | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
+(*) fake cloud, for testing purpose only.
+
 
 Here the list of feature available on all platforms.
 
@@ -48,4 +56,3 @@ Not al feature are available everywhere here the current platform < - > feature 
 | import blast readable json  | 🔹      | 🔹   | 👍    | 👍  |     | 👍       |
 
 👍 supported 🔹 planned
-

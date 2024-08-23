@@ -59,7 +59,7 @@ class _SplashViewState extends State<SplashView> {
                 onPressed: () {
                   vm.showEula().then((value) => vm.refresh());
                 },
-                child: const Text('show EULA'),
+                child: const Text('show License'),
               ),
             ),
             Padding(
@@ -98,7 +98,8 @@ class _SplashViewState extends State<SplashView> {
                 builder: (context, boolEulaNotAccepted) {
                   return Visibility(
                     visible: boolEulaNotAccepted.data ?? false,
-                    child: Text("you must accept the EULA to use this app", style: _textTheme.labelMedium),
+                    child: Text("you must accept the End User Licence Agreement to use this app",
+                        style: _textTheme.labelMedium),
                   );
                 }),
           ],
@@ -140,12 +141,9 @@ class _SplashViewState extends State<SplashView> {
             child: Dismissible(
                 key: Key(files[file].fileUrl),
                 onDismissed: (direction) async {
-                  if (direction == DismissDirection.endToStart)
-                  {
-                  await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
-                  }
-                  else
-                  {
+                  if (direction == DismissDirection.endToStart) {
+                    await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
+                  } else {
                     await vm.goToRecentFile(files[file]);
                   }
                 },

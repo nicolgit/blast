@@ -32,35 +32,49 @@ class _EulaViewState extends State<EulaView> {
     return Scaffold(
         backgroundColor: _theme.colorScheme.surface,
         body: SingleChildScrollView(
-          child: Center(
-              child: Column(
-            children: [
-              Text(
-                'EULA',
-                style: _textTheme.bodyLarge,
-              ),
-              const Text(' '),
-              Text(
-                  'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ',
-                  style: _textTheme.bodyMedium),
-              Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: FilledButton(
-                    onPressed: () {
-                      vm.acceptEula();
-                    },
-                    child: const Text('accept and go back to splash screen'),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: FilledButton.tonal(
-                    onPressed: () {
-                      vm.denyEula();
-                    },
-                    child: const Text('I do not want to accept and use this app'),
-                  )),
-            ],
-          )),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+                child: Column(
+              children: [
+                Text(
+                  'If you use this software, you accept the followig *MIT* License:',
+                  style: _textTheme.bodyLarge,
+                ),
+                const Text(' '),
+                Text('Copyright (c) 2023 Nicola Delfino', style: _textTheme.bodyMedium),
+                const Text(' '),
+                Text(
+                    'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:',
+                    style: _textTheme.bodyMedium),
+                const Text(' '),
+                Text(
+                    'The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.',
+                    style: _textTheme.bodyMedium),
+                const Text(' '),
+                Text(
+                    'THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.',
+                    style: _textTheme.bodyMedium),
+                const Text(' '),
+                Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: FilledButton(
+                      onPressed: () {
+                        vm.acceptEula();
+                      },
+                      child: const Text('accept'),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: FilledButton.tonal(
+                      onPressed: () {
+                        vm.denyEula();
+                      },
+                      child: const Text('I do not want to accept and use this app'),
+                    )),
+              ],
+            )),
+          ),
         ));
   }
 }

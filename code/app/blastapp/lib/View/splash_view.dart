@@ -36,8 +36,9 @@ class _SplashViewState extends State<SplashView> {
 
     return Scaffold(
         backgroundColor: _theme.colorScheme.surface,
-        body: Center(
-            child: Column(
+        body: SingleChildScrollView(
+            child: Center(
+                child: Column(
           children: [
             const Image(image: AssetImage('assets/general/icon-v01.png')),
             Padding(
@@ -86,10 +87,8 @@ class _SplashViewState extends State<SplashView> {
                       child: FutureBuilder<List<BlastFile>>(
                           future: vm.recentFiles(),
                           builder: (context, listFiles) {
-                            return Expanded(
-                              child: Container(
-                                child: _buildRecentFilesList(listFiles.data ?? [], vm),
-                              ),
+                            return Container(
+                              child: _buildRecentFilesList(listFiles.data ?? [], vm),
                             );
                           }));
                 }),
@@ -103,7 +102,7 @@ class _SplashViewState extends State<SplashView> {
                   );
                 }),
           ],
-        )),
+        ))),
         floatingActionButton: FutureBuilder<ThemeMode>(
           future: vm.currentThemeMode,
           builder: (context, themeMode) {
@@ -134,6 +133,7 @@ class _SplashViewState extends State<SplashView> {
     }
 
     var myList = ListView.builder(
+      shrinkWrap: true,
       itemCount: files.length,
       itemBuilder: (context, file) {
         return Padding(

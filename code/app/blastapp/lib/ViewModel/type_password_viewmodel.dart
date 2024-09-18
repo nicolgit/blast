@@ -14,6 +14,7 @@ class TypePasswordViewModel extends ChangeNotifier {
   TypePasswordViewModel(this.context);
 
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
+  String get cloudIcon => 'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
   String password = '';
   String errorMessage = '';
   bool _isCheckingPassword = false;

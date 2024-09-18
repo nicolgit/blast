@@ -60,6 +60,9 @@ class _TypePasswordViewState extends State<TypePasswordView> {
             title: Text("open file: ${vm.fileName}"),
           ),
           const SizedBox(height: 12.0),
+          Image.asset(vm.cloudIcon, width: 128, height: 128),
+          Text('type the master password to open your blast file', style: _textTheme.labelMedium),
+          const SizedBox(height: 12.0),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) {
@@ -67,8 +70,6 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                   color: _theme.colorScheme.primary, size: 48.0);
             },
           ),
-          Text('type the master password to open your blast file', style: _textTheme.labelMedium),
-          const SizedBox(height: 12.0),
           Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(

@@ -57,6 +57,25 @@ class CardEditRouteArgs {
 }
 
 /// generated route for
+/// [CardFileInfoView]
+class CardFileInfoRoute extends PageRouteInfo<void> {
+  const CardFileInfoRoute({List<PageRouteInfo>? children})
+      : super(
+          CardFileInfoRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CardFileInfoRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CardFileInfoView();
+    },
+  );
+}
+
+/// generated route for
 /// [CardView]
 class CardRoute extends PageRouteInfo<CardRouteArgs> {
   CardRoute({

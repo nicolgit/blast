@@ -47,7 +47,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     fileService.currentFileDocument!.isChanged = false;
 
     fileService.currentFileJsonString = fileService.currentFileDocument.toString();
-    fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!, fileService.password);
+    fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!);
     fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
 
     notifyListeners();
@@ -114,5 +114,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   bool isFileNotEmpty() {
     return fileService.currentFileDocument!.cards.isNotEmpty;
+  }
+
+  String GetMasterKey() {
+    return "bimbumbam";
   }
 }

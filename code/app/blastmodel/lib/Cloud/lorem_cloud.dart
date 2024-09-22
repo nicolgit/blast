@@ -69,7 +69,8 @@ class LoremCloud extends Cloud {
     BlastDocument document = buildRandomBlastDocument();
     String jsonDocument = document.toString();
 
-    final encodedFile = CurrentFileService().encodeFile(jsonDocument, "password");
+    CurrentFileService().newPassword("password");
+    final encodedFile = CurrentFileService().encodeFile(jsonDocument);
     return encodedFile;
   }
 

@@ -33,7 +33,7 @@ class TypePasswordViewModel extends ChangeNotifier {
     try {
       CurrentFileService().password = password;
       CurrentFileService().currentFileJsonString =
-          CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password);
+          CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password, PasskeyType.password);
       CurrentFileService().currentFileDocument =
           BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
 

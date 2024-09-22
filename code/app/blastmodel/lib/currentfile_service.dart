@@ -8,10 +8,13 @@ import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
 
+enum PasskeyType { password, hexkey }
+
 class CurrentFileService {
   static final CurrentFileService _instance = CurrentFileService._internal();
 
   static const String versionCurrent = "BLAST01";
+  static const int defaultIterations = 10000;
   static const String version01 = versionCurrent;
 
   Cloud? cloud;
@@ -19,6 +22,11 @@ class CurrentFileService {
   Uint8List? currentFileEncrypted;
   String? currentFileJsonString;
   BlastDocument? currentFileDocument;
+
+  int iterations = defaultIterations;
+  Uint8List salt = Uint8List(0);
+  Uint8List iv = Uint8List(0);
+  Uint8List key = Uint8List(0);
   String password = "";
 
   factory CurrentFileService() {
@@ -42,28 +50,32 @@ class CurrentFileService {
     this.cloud = cloud;
   }
 
-  Uint8List encodeFile(String jsonDocument, String password) {
+  void newPassword(String password) {
+    this.password = password;
+
     // Generate salt
     final random = Random.secure();
     final salt = Uint8List(8);
     for (int i = 0; i < salt.length; i++) {
       salt[i] = random.nextInt(256);
     }
-
-    // Generate Key
-    int iterations = 10000;
-    var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
-    pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 *8 = 256 bits key (AES256)
-    Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));
+    this.salt = salt;
 
     // Generate IV
     Uint8List iv = Uint8List(16);
     for (int i = 0; i < iv.length; i++) {
       iv[i] = random.nextInt(256);
     }
+    this.iv = iv;
 
+    iterations = defaultIterations;
+
+    // Generate Key
+    key = _generateMasterKey(salt, iterations, password);
+  }
+
+  Uint8List encodeFile(String jsonDocument) {
     // Create AES cipher
-
     final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
     final ivParams = ParametersWithIV(KeyParameter(key), iv);
     cipher.init(true, PaddedBlockCipherParameters(ivParams, null)); // true = encrypt
@@ -81,7 +93,6 @@ class CurrentFileService {
     buffer.add(ivParams.iv);
 
     // Write the lorem ipsum text
-    //var sourceBytes = utf8.encode(loremText + jsonDocument);
     var sourceBytes = utf8.encode(jsonDocument);
     var destinationEncryptedBytes = cipher.process(Uint8List.fromList(sourceBytes));
     buffer.add(destinationEncryptedBytes);
@@ -89,50 +100,61 @@ class CurrentFileService {
     return buffer.toBytes();
   }
 
-  String decodeFile(Uint8List binary, String password) {
+  String decodeFile(Uint8List binary, String passkey, PasskeyType passkeyType) {
     String fileVersion = getFileVersion(binary);
-    //int fileVersionLenght = binary[0];
-    //var fileVersion = utf8.decode(binary.sublist(1, fileVersionLenght + 1));
-    //int offset = fileVersionLenght + 1;
     int offset = fileVersion.length + 1;
 
     switch (fileVersion) {
       case version01:
-        var salt = binary.sublist(offset, offset + 8);
+        salt = binary.sublist(offset, offset + 8);
         offset += 8;
 
-        var iterations = _readIntegerFromUint8List(binary.sublist(offset, offset + 4));
+        iterations = _readIntegerFromUint8List(binary.sublist(offset, offset + 4));
         offset += 4;
 
-        var iv = binary.sublist(offset, offset + 16);
+        iv = binary.sublist(offset, offset + 16);
         offset += 16;
 
-        // Generate Key
-        var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
-        pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 * 8 = 256 bits key (AES256)
-        Uint8List key = pbkdf2.process(Uint8List.fromList(password.codeUnits));
-
-        // Create AES cipher
-        final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
-        final ivParams = ParametersWithIV(KeyParameter(key), iv);
-        cipher.init(false, PaddedBlockCipherParameters(ivParams, null)); // false = encrypt
-
-        var loremEncrypted = binary.sublist(offset);
-        Uint8List output = Uint8List(0);
-
-        try {
-          output = cipher.process(loremEncrypted);
-        } catch (e) {
-          // Wrong password => Invalid argument(s): Invalid or corrupted pad block
-          throw BlastWrongPasswordException();
+        if (passkeyType == PasskeyType.password) {
+          key = _generateMasterKey(salt, iterations, passkey);
+        } else {
+          //convert key from hex string to Uint8List
+          // TODO da sistemare
+          key = Uint8List.fromList(passkey.codeUnits);
         }
 
-        String loremDecrypted = utf8.decode(output);
-
-        return loremDecrypted;
+        return _decodeJson(binary, offset, iv, key);
       default:
         throw BlastUnknownFileVersionException();
     }
+  }
+
+  Uint8List _generateMasterKey(Uint8List salt, int iterations, String passkey) {
+    // Generate Key
+    var pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
+    pbkdf2.init(Pbkdf2Parameters(salt, iterations, 32)); // 32 * 8 = 256 bits key (AES256)
+    return pbkdf2.process(Uint8List.fromList(passkey.codeUnits));
+  }
+
+  String _decodeJson(Uint8List binary, int offset, Uint8List iv, Uint8List key) {
+    // Create AES cipher
+    final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
+    final ivParams = ParametersWithIV(KeyParameter(key), iv);
+    cipher.init(false, PaddedBlockCipherParameters(ivParams, null)); // false = encrypt
+
+    var loremEncrypted = binary.sublist(offset);
+    Uint8List output = Uint8List(0);
+
+    try {
+      output = cipher.process(loremEncrypted);
+    } catch (e) {
+      // Wrong password => Invalid argument(s): Invalid or corrupted pad block
+      throw BlastWrongPasswordException();
+    }
+
+    String loremDecrypted = utf8.decode(output);
+
+    return loremDecrypted;
   }
 
   String getFileVersion(Uint8List binary) {

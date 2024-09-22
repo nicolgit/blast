@@ -82,11 +82,12 @@ class CreatePasswordViewModel extends ChangeNotifier {
         jsonCredentials: '');
 
     CurrentFileService().currentFileInfo = file;
-    CurrentFileService().password = password;
+
+    CurrentFileService().newPassword(password);
     CurrentFileService().currentFileDocument = BlastDocument();
     CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
     CurrentFileService().currentFileEncrypted =
-        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!, password);
+        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
 
     var fileId = await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
     file.fileUrl = fileId;

@@ -262,6 +262,38 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   vm.exportCommand();
                 },
               ),
+              ListTile(
+                leading: const Icon(Icons.security),
+                title: const Text('export master key'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  Widget okButton = TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: _widgetFactory.theme.colorScheme.error,
+                    ),
+                    child: const Text("ok"),
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                    },
+                  );
+
+                  AlertDialog alert = AlertDialog(
+                    title: const Text("MASTER KEY"),
+                    content: Text(vm.GetMasterKey()),
+                    actions: [
+                      okButton,
+                    ],
+                  );
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                },
+              ),
             ],
           )),
         ));

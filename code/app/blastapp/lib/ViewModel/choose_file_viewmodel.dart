@@ -59,6 +59,7 @@ class ChooseFileViewModel extends ChangeNotifier {
         currentFileService.currentFileEncrypted =
             await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
 
+        // check if the file is a valid blast file
         currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
       } finally {
         isLoading = false;

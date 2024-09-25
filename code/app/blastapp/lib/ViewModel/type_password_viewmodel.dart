@@ -8,6 +8,11 @@ import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
+enum PasswordType {
+  password,
+  recoveryKey,
+}
+
 class TypePasswordViewModel extends ChangeNotifier {
   BuildContext context;
 
@@ -15,7 +20,9 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
   String get cloudIcon => 'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
+  PasswordType passwordType = PasswordType.password;
   String password = '';
+  String recoveryKey = '';
   String errorMessage = '';
   bool _isCheckingPassword = false;
 
@@ -67,6 +74,12 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   setPassword(String value) {
     password = value;
+    errorMessage = '';
+    notifyListeners();
+  }
+
+  setRecoveryKey(String value) {
+    recoveryKey = value;
     errorMessage = '';
     notifyListeners();
   }

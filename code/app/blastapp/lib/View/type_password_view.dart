@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/type_password_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 @RoutePage()
 class TypePasswordView extends StatefulWidget {
@@ -51,6 +52,11 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
+    var maskFormatter = MaskTextInputFormatter(
+        mask: '########-########-########-########-########-########-########-########',
+        filter: {"#": RegExp(r'[0-9a-fA-F]')},
+        type: MaskAutoCompletionType.lazy);
+
     return Scaffold(
       backgroundColor: _theme.colorScheme.surface,
       body: Center(
@@ -70,6 +76,25 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                   color: _theme.colorScheme.primary, size: 48.0);
             },
           ),
+          SegmentedButton<PasswordType>(
+              segments: <ButtonSegment<PasswordType>>[
+                ButtonSegment<PasswordType>(
+                  label: Text('Password', style: _textTheme.labelSmall),
+                  value: PasswordType.password,
+                ),
+                ButtonSegment<PasswordType>(
+                  label: Text('Recovery Key', style: _textTheme.labelSmall),
+                  value: PasswordType.recoveryKey,
+                ),
+              ],
+              selected: <PasswordType>{
+                vm.passwordType
+              },
+              onSelectionChanged: (Set<PasswordType> newSelection) {
+                setState(() {
+                  vm.passwordType = newSelection.first;
+                });
+              }),
           Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
@@ -86,6 +111,25 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                     border: const OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter your password',
+                    hintStyle: _textThemeHint),
+              )),
+          Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextField(
+                //autofocus: true,
+                //controller: recoveryKeyController,
+                //onChanged: (value) => vm.setRecoveryKey(value),
+                onSubmitted: (value) async => {
+                  vm.setRecoveryKey(maskFormatter.getUnmaskedText()),
+                  if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                },
+                style: _textTheme.labelMedium,
+                inputFormatters: [maskFormatter],
+
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: 'recovery key',
+                    hintText: '12345678-12345678-12345678-12345678-12345678-12345678-12345678-12345678',
                     hintStyle: _textThemeHint),
               )),
           Text(vm.errorMessage, style: _textThemeError),

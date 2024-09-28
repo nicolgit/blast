@@ -28,13 +28,14 @@ class CardFileInfoViewModel extends ChangeNotifier {
   }
 
   String _toReadableString(Uint8List data) {
+    // convert Uint8List to hex string each 1 byte to 2 characters hex
     final hexKey = data.map((e) => e.toRadixString(16).padLeft(2, '0')).join();
 
     // add a - every 8 characters
     var hexKeyWithDashes = hexKey.replaceAllMapped(
         RegExp(r".{8}"), (match) => '${match.group(0)}-');
 
-    // remove last char from string
+    // remove last char '-' from string
     hexKeyWithDashes =
         hexKeyWithDashes.substring(0, hexKeyWithDashes.length - 1);
 

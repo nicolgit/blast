@@ -46,16 +46,16 @@ class _TypePasswordViewState extends State<TypePasswordView> {
   late TextStyle _textThemeHint;
   late TextStyle _textThemeError;
 
+  var maskRecoveryKeyFormatter = MaskTextInputFormatter(
+        mask: '########-########-########-########-########-########-########-########',
+        filter: {"#": RegExp(r'[0-9a-fA-F]')},
+        type: MaskAutoCompletionType.lazy);
+
   Widget _buildScaffold(BuildContext context, TypePasswordViewModel vm) {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
     _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
-
-    var maskFormatter = MaskTextInputFormatter(
-        mask: '########-########-########-########-########-########-########-########',
-        filter: {"#": RegExp(r'[0-9a-fA-F]')},
-        type: MaskAutoCompletionType.lazy);
 
     return Scaffold(
       backgroundColor: _theme.colorScheme.surface,
@@ -95,7 +95,12 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                   vm.passwordType = newSelection.first;
                 });
               }),
-          Padding(
+          
+          FutureBuilder<PasswordType>(
+            future: vm.getPasswordType(),
+            builder: (context, passwordType) {
+              if (passwordType.data == PasswordType.password) {
+                return Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
                 autofocus: true,
@@ -112,26 +117,28 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                     labelText: 'Password',
                     hintText: 'Enter your password',
                     hintStyle: _textThemeHint),
-              )),
-          Padding(
+              ));
+              } else {
+                return Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
-                //autofocus: true,
-                //controller: recoveryKeyController,
-                //onChanged: (value) => vm.setRecoveryKey(value),
+                onChanged: (value) => vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
                 onSubmitted: (value) async => {
-                  vm.setRecoveryKey(maskFormatter.getUnmaskedText()),
+                  vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
                   if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
                 },
                 style: _textTheme.labelMedium,
-                inputFormatters: [maskFormatter],
+                inputFormatters: [maskRecoveryKeyFormatter],
 
                 decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                     labelText: 'recovery key',
                     hintText: '12345678-12345678-12345678-12345678-12345678-12345678-12345678-12345678',
                     hintStyle: _textThemeHint),
-              )),
+              ));
+              }
+            },
+          ),
           Text(vm.errorMessage, style: _textThemeError),
           FutureBuilder<bool>(
             future: vm.isCheckingPassword(),

@@ -101,7 +101,7 @@ class CurrentFileService {
   }
 
   String decodeFile(Uint8List binary, String passkey, PasskeyType passkeyType) {
-    String fileVersion = getFileVersion(binary);
+    String fileVersion =  getFileVersion(binary);
     int offset = fileVersion.length + 1;
 
     switch (fileVersion) {
@@ -118,9 +118,7 @@ class CurrentFileService {
         if (passkeyType == PasskeyType.password) {
           key = _generateMasterKey(salt, iterations, passkey);
         } else {
-          //convert key from hex string to Uint8List
-          // TODO da sistemare
-          key = Uint8List.fromList(passkey.codeUnits);
+          // key already contains the hex key from the recovery key
         }
 
         return _decodeJson(binary, offset, iv, key);

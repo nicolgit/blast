@@ -64,16 +64,13 @@ class TypePasswordViewModel extends ChangeNotifier {
             CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password, PasskeyType.password);
       }
 
-      CurrentFileService().currentFileDocument =
-        BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
-
-      final file = CurrentFileService().currentFileInfo;
-      if (file != null) {
-        SettingService().addRecentFile(file);
-      }
+      var testDecode = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
       errorMessage = '';
 
-      context.router.push(const CardsBrowserRoute());
+      // navigate back and return a value back to the previous screen
+      context.router.maybePop(true);
+      //context.router.push(const CardsBrowserRoute());
+
       isOk = true;
     } on BlastWrongPasswordException {
       errorMessage = 'wrong password - please try again';

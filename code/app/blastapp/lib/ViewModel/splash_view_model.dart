@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
@@ -37,6 +39,10 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   goToChooseStorage() async {
+    
+    // ChooseStorageRoute must return a cloud storage object
+    continue here
+
     return context.router.push(const ChooseStorageRoute());
   }
 
@@ -55,9 +61,20 @@ class SplashViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+    
+    var isOk = await context.router.push(const TypePasswordRoute());
 
-    if (!context.mounted) return;
-    return context.router.push(const TypePasswordRoute());
+    if (isOk == true) {
+      CurrentFileService().currentFileDocument =
+        BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
+
+      final file = CurrentFileService().currentFileInfo;
+      if (file != null) {
+        SettingService().addRecentFile(file);
+      }
+
+      context.router.push(const CardsBrowserRoute());
+    }
   }
 
   void refresh() {

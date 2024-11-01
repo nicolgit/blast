@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/exceptions.dart';
-import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 enum PasswordType {
@@ -89,6 +87,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
     if (isOk) {
       // return true to the calling function
+      if (!context.mounted) return;
       return context.router.maybePop(true);
     }
 

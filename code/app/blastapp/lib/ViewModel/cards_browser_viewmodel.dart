@@ -116,7 +116,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return fileService.currentFileDocument!.cards.isNotEmpty;
   }
 
-  String GetMasterKey() {
+  String getMasterKey() {
     return "bimbumbam";
   }
 }

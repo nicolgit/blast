@@ -20,6 +20,7 @@ dependencies:
   oauth2: ^2.0.2
   app_links: ^6.1.0
   xml: ^6.5.0
+  universal_html: ^2.2.4
   
 dev_dependencies:
   flutter_test:

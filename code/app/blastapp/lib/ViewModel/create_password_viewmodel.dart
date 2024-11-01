@@ -51,8 +51,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
   acceptPassword() async {
     await _createFile();
 
-    //if (!context.mounted) return;
-    //context.router.push(const CardsBrowserRoute());
+    if (!context.mounted) return;
     context.router.maybePop(true);
   }
 
@@ -61,7 +60,11 @@ class CreatePasswordViewModel extends ChangeNotifier {
 
     if (!context.mounted) return;
     context.router.push(const ImporterRoute()).then((value) 
-      => context.router.maybePop(true)); //context.router.push(const CardsBrowserRoute()));
+      => {
+        if (context.mounted) {
+          context.router.maybePop(true)
+        }
+      });
   }
 
   Future<bool> isPasswordsNotEmpty() async {

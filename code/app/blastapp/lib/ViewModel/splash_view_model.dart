@@ -45,12 +45,14 @@ class SplashViewModel extends ChangeNotifier {
         return;
       }
     
+    if (!context.mounted) return;
     FileSelectionResult? isFileSelected = await context.router.push<FileSelectionResult>(const ChooseFileRoute());
     if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
       return;
     }
 
     if (isFileSelected == FileSelectionResult.newFile) {
+      if (!context.mounted) return;
       var isFileCreated = await context.router.push(const CreatePasswordRoute());
 
       if (isFileCreated != true) {
@@ -58,6 +60,7 @@ class SplashViewModel extends ChangeNotifier {
       }
     }
     else if (isFileSelected == FileSelectionResult.existingFile) {
+      if (!context.mounted) return;
       var isFileDecrypted = await context.router.push(const TypePasswordRoute());
       if (isFileDecrypted != true) {
         return;
@@ -65,6 +68,8 @@ class SplashViewModel extends ChangeNotifier {
     }
 
     _addCurrentFileToRecent();
+
+    if (!context.mounted) return;
     await context.router.push(const CardsBrowserRoute());
   }
 
@@ -84,9 +89,12 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
     }
     
+    if (!context.mounted) return;
     var isFileDecrypted = await context.router.push(const TypePasswordRoute());
     if (isFileDecrypted == true) {
       _addCurrentFileToRecent();
+
+      if (!context.mounted) return;
       context.router.push(const CardsBrowserRoute());
     }
   }

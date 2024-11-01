@@ -47,7 +47,6 @@ class BlastAppState extends State<BlastApp> {
     _widgetFactory = BlastWidgetFactory(context);
 
     return GlobalLoaderOverlay(
-        useDefaultLoading: false,
         overlayWidgetBuilder: (_) {
           return const Center(child: CircularProgressIndicator());
         },

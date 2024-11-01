@@ -115,7 +115,10 @@ class _SplashViewState extends State<SplashView> {
               ),
               onPressed: () {
                 vm.toggleLightDarkMode().then((value) {
+
+                  if (!context.mounted) return;
                   BlastApp.of(context).changeTheme(value);
+                  
                   vm.refresh();
                 });
               },

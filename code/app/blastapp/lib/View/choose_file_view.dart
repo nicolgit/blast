@@ -163,6 +163,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                     await vm.selectItem(listFiles[index]).catchError((error) {
                       String errorMessage = "unable to open selected file, reason: ${error.toString()}";
 
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
                     });
                   },

@@ -2,7 +2,7 @@ import 'blastoauth.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 html.WindowBase? _popupWin;
 

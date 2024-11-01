@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
+
+enum FileSelectionResult { newFile, existingFile }
 
 class ChooseFileViewModel extends ChangeNotifier {
   BuildContext context;
@@ -61,18 +65,17 @@ class ChooseFileViewModel extends ChangeNotifier {
 
         // check if the file is a valid blast file
         currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
+
+        context.router.maybePop(FileSelectionResult.existingFile);
       } finally {
         isLoading = false;
         notifyListeners();
       }
-
-      if (!context.mounted) return;
-      context.router.push(const TypePasswordRoute());
     }
   }
 
   newFileCommand() async {
-    return context.router.push(const CreatePasswordRoute());
+    return context.router.maybePop(FileSelectionResult.newFile);
   }
 
   upDirectoryCommand() async {

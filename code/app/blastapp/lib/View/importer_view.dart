@@ -59,7 +59,7 @@ class _ImporterViewState extends State<ImporterView> {
 
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+                        SnackBar(content: Text("Imported successfully ${vm.importedCount()} items!")));
 
                     context.router.maybePop();
                   } catch (e) {
@@ -80,7 +80,7 @@ class _ImporterViewState extends State<ImporterView> {
 
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+                        SnackBar(content: Text("Imported successfully ${vm.importedCount()} items!")));
 
                     context.router.maybePop();
                   } catch (e) {
@@ -102,7 +102,7 @@ class _ImporterViewState extends State<ImporterView> {
 
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Imported successfully " + vm.importedCount() + " items!")));
+                        SnackBar(content: Text("Imported successfully ${vm.importedCount()} items!")));
 
                     context.router.maybePop();
                   } catch (e) {

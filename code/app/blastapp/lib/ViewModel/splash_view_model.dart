@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
-import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
@@ -39,11 +38,34 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   goToChooseStorage() async {
-    
-    // ChooseStorageRoute must return a cloud storage object
-    continue here
+    CurrentFileService().reset();
 
-    return context.router.push(const ChooseStorageRoute());
+    var isStorageSelected = await context.router.push(const ChooseStorageRoute());
+    if (isStorageSelected != true) {
+        return;
+      }
+    
+    FileSelectionResult? isFileSelected = await context.router.push<FileSelectionResult>(const ChooseFileRoute());
+    if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
+      return;
+    }
+
+    if (isFileSelected == FileSelectionResult.newFile) {
+      var isFileCreated = await context.router.push(const CreatePasswordRoute());
+
+      if (isFileCreated != true) {
+        return;
+      }
+    }
+    else if (isFileSelected == FileSelectionResult.existingFile) {
+      var isFileDecrypted = await context.router.push(const TypePasswordRoute());
+      if (isFileDecrypted != true) {
+        return;
+      }
+    }
+
+    _addCurrentFileToRecent();
+    await context.router.push(const CardsBrowserRoute());
   }
 
   goToRecentFile(BlastFile file) async {
@@ -62,18 +84,17 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
     }
     
-    var isOk = await context.router.push(const TypePasswordRoute());
-
-    if (isOk == true) {
-      CurrentFileService().currentFileDocument =
-        BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
-
-      final file = CurrentFileService().currentFileInfo;
-      if (file != null) {
-        SettingService().addRecentFile(file);
-      }
-
+    var isFileDecrypted = await context.router.push(const TypePasswordRoute());
+    if (isFileDecrypted == true) {
+      _addCurrentFileToRecent();
       context.router.push(const CardsBrowserRoute());
+    }
+  }
+
+  void _addCurrentFileToRecent() {
+    final file = CurrentFileService().currentFileInfo;
+    if (file != null) {
+      SettingService().addRecentFile(file);
     }
   }
 

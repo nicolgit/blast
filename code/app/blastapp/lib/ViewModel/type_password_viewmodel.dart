@@ -39,7 +39,7 @@ class TypePasswordViewModel extends ChangeNotifier {
     return passwordType;
   }
 
-  Future<bool> checkPassword() async {
+  Future checkPassword() async {
     bool isOk = false;
 
     _isCheckingPassword = true;
@@ -64,12 +64,10 @@ class TypePasswordViewModel extends ChangeNotifier {
             CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, password, PasskeyType.password);
       }
 
-      var testDecode = BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
-      errorMessage = '';
+      CurrentFileService().currentFileDocument =
+        BlastDocument.fromJson(jsonDecode(CurrentFileService().currentFileJsonString!));
 
-      // navigate back and return a value back to the previous screen
-      context.router.maybePop(true);
-      //context.router.push(const CardsBrowserRoute());
+      errorMessage = '';
 
       isOk = true;
     } on BlastWrongPasswordException {
@@ -89,7 +87,12 @@ class TypePasswordViewModel extends ChangeNotifier {
     _isCheckingPassword = false;
     notifyListeners();
 
-    return isOk;
+    if (isOk) {
+      // return true to the calling function
+      return context.router.maybePop(true);
+    }
+
+    return;
   }
 
   setPassword(String value) {

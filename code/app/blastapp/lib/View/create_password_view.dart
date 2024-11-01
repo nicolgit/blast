@@ -47,7 +47,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
     return Scaffold(
-      backgroundColor: _theme.colorScheme.background,
+      backgroundColor: _theme.colorScheme.surface,
       body: Center(
           child: Column(children: [
         AppBar(

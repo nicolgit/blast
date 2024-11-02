@@ -128,4 +128,11 @@ class SplashViewModel extends ChangeNotifier {
 
     return SettingService().appTheme;
   }
+
+  void openMostRecentFile() async {
+    final recents = await SettingService().getRecentFiles();
+    if (recents.isNotEmpty) {
+      await goToRecentFile(recents.first);
+    }
+  }
 }

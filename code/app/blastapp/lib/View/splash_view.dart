@@ -17,6 +17,16 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    // open the most recent file on first load
+    final vm = SplashViewModel(context);
+    vm.openMostRecentFile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

@@ -44,9 +44,13 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future openUrl(String urlString) async {
-    if (urlString.substring(0, 5).toLowerCase() != 'http://' &&
-        urlString.substring(0, 6).toLowerCase() != 'https://' &&
-        urlString.substring(0, 7).toLowerCase() != 'mailto:') {
+    if (urlString.toLowerCase().startsWith('http://')  ||
+        urlString.toLowerCase().startsWith('https://') ||
+        urlString.toLowerCase().startsWith('mailto:')) {
+      // do nothing
+    }
+    else
+    {
       urlString = 'https://$urlString';
     }
 

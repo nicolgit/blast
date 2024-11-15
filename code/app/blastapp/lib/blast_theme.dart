@@ -12,7 +12,7 @@ class BlastTheme {
 
   static ThemeData dark = base.copyWith(
     brightness: Brightness.dark,
-    hoverColor: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.dark).surfaceBrighr ,
+    hoverColor: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.dark).surfaceBright,
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.dark),
   );
 }

@@ -268,7 +268,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 onTap: () {
                   Navigator.pop(context); // close drawer
 
-                  context.router.push(const CardFileInfoRoute());
+                  vm.exportMasterKeyCommand();
                 },
               ),
             ],

@@ -67,6 +67,12 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   void exportCommand() async {
+    if (!context.mounted) return;
+    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    if (checkPasswordResult != true) {
+      return;
+    }
+    
     String? path = await FilePicker.platform.getDirectoryPath();
 
     if (path != null) {
@@ -116,7 +122,14 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return fileService.currentFileDocument!.cards.isNotEmpty;
   }
 
-  String getMasterKey() {
-    return "bimbumbam";
+  void exportMasterKeyCommand() async{
+    if (!context.mounted) return;
+    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    if (checkPasswordResult != true) {
+      return;
+    }
+    
+    if (!context.mounted) return;
+    context.router.push(const CardFileInfoRoute());
   }
 }

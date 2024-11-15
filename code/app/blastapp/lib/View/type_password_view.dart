@@ -63,11 +63,11 @@ class _TypePasswordViewState extends State<TypePasswordView> {
           child: Column(
         children: [
           AppBar(
-            title: Text("open file: ${vm.fileName}"),
+            title: Text("file: ${vm.fileName}"),
           ),
           const SizedBox(height: 12.0),
           Image.asset(vm.cloudIcon, width: 128, height: 128),
-          Text('type the master password to open your blast file', style: _textTheme.labelMedium),
+          Text('type the master password or the recovery key to continue', style: _textTheme.labelMedium),
           const SizedBox(height: 12.0),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),

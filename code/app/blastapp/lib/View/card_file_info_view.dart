@@ -49,7 +49,7 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
             padding: const EdgeInsets.all(24),
             child: Column(children: [
               Text("Recovery Key", style: _widgetFactory.textTheme.titleMedium),
-              Text(vm.getRecoveryKey(),
+              SelectableText(vm.getRecoveryKey(),
                   style: _widgetFactory.textTheme.titleLarge,
                   textAlign: TextAlign.center),
               IconButton(

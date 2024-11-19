@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/View/card_edit_view.dart';
 import 'package:blastapp/View/card_view.dart';
 import 'package:blastapp/View/cards_browser_view.dart';
+import 'package:blastapp/View/change_password_view.dart';
 import 'package:blastapp/View/choose_file_view.dart';
 import 'package:blastapp/View/card_file_info_view.dart';
 import 'package:blastapp/View/choose_storage_view.dart';
@@ -28,6 +29,7 @@ class BlastRouter extends RootStackRouter {
         AutoRoute(page: ChooseFileRoute.page),
         AutoRoute(page: CreatePasswordRoute.page),
         AutoRoute(page: TypePasswordRoute.page),
+        AutoRoute(page: ChangePasswordRoute.page),
         AutoRoute(page: CardsBrowserRoute.page),
         AutoRoute(page: CardRoute.page),
         AutoRoute(page: CardEditRoute.page),

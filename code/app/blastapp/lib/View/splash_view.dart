@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/ViewModel/splash_view_model.dart';
+import 'package:blastapp/ViewModel/splash_viewmodel.dart';
 import 'package:blastapp/main.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';

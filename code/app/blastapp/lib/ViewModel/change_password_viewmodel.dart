@@ -34,10 +34,12 @@ class ChangePasswordViewModel extends ChangeNotifier {
     CurrentFileService().currentFileEncrypted =
         CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
 
+    notifyListeners();
+    
     // return true if password is successfully changed
-    maybepop  does not close the dialog
     if (!context.mounted) return;
     context.router.maybePop(true);
+    return;
   }
 
   Future<bool> isPasswordsNotEmpty() async {

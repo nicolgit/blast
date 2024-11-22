@@ -37,7 +37,7 @@ class TypePasswordViewModel extends ChangeNotifier {
     return passwordType;
   }
 
-  Future checkPassword() async {
+  Future<bool> checkPassword() async {
     bool isOk = false;
 
     _isCheckingPassword = true;
@@ -87,11 +87,11 @@ class TypePasswordViewModel extends ChangeNotifier {
 
     if (isOk) {
       // return true to the calling function
-      if (!context.mounted) return;
+      if (!context.mounted) return false;
       return context.router.maybePop(true);
     }
 
-    return;
+    return false;;
   }
 
   setPassword(String value) {

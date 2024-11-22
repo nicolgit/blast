@@ -142,8 +142,13 @@ class CardsBrowserViewModel extends ChangeNotifier {
     
     if (!context.mounted) return;
     var changePasswordResult = await context.router.push(const ChangePasswordRoute());
-    if (changePasswordResult == true) {
-      fileService.currentFileDocument!.isChanged = true;
+    if (changePasswordResult != true) {
+      return;
     }
+
+    fileService.currentFileDocument!.isChanged = true;
+
+    if (!context.mounted) return;
+    context.router.push(const CardFileInfoRoute());
   }
 }

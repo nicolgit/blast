@@ -91,7 +91,7 @@ class TypePasswordViewModel extends ChangeNotifier {
       return context.router.maybePop(true);
     }
 
-    return false;;
+    return false;
   }
 
   setPassword(String value) {

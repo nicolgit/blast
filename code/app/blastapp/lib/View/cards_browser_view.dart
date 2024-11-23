@@ -4,6 +4,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,10 +33,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   late BlastWidgetFactory _widgetFactory;
+  late ThemeData _theme;
+  late TextTheme _textTheme;
 
   final FocusNode _focusNode = FocusNode();
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return KeyboardListener(
         focusNode: _focusNode,
@@ -212,7 +217,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                child: const Image(image: AssetImage('assets/general/icon-v01.png')),
+                child: 
+                  Column(
+                    children: [
+                      const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
+                      Text("build ${Secrets.buildNumber}",style: _textTheme.labelMedium),
+                    ],
+                  ),
               ),
               ListTile(
                 leading: const Icon(Icons.upload),

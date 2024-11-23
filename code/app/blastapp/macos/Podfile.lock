@@ -42,7 +42,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
-  flutter_platform_alert: b21b2b7d801e71c12ce9ffab618ff114ca9fc903
+  flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
   flutter_window_close: a0f4f388e956ebafa866e3e171ce837c166eab9c
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46

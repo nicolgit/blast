@@ -70,6 +70,9 @@ class SplashViewModel extends ChangeNotifier {
     _addCurrentFileToRecent();
 
     if (!context.mounted) return;
+    await context.router.push(const CardFileInfoRoute());
+
+    if (!context.mounted) return;
     await context.router.push(const CardsBrowserRoute());
   }
 

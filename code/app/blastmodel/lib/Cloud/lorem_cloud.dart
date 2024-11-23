@@ -119,8 +119,14 @@ class LoremCloud extends Cloud {
       for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
         attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false);
-        attribute.value = _randomStringGenerator(random.nextInt(10), false);
         attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
+        
+        if (attribute.type == BlastAttributeType.typeURL) {
+          attribute.value = _randomUrlGenerator();
+        }
+        else {
+          attribute.value = _randomStringGenerator(random.nextInt(6), false);
+        }
 
         card.rows.add(attribute);
       }
@@ -149,6 +155,11 @@ class LoremCloud extends Cloud {
     }
 
     return result.trim();
+  }
+
+  String _randomUrlGenerator(){
+    Random random = Random();
+    return "http://loremcloud.com/${_randomStringGenerator(random.nextInt(4),false).replaceAll(' ', '/')}";
   }
 
   List<String> _randomTagsGenerator(int tagsCount) {

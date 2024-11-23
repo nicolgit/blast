@@ -150,5 +150,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     if (!context.mounted) return;
     context.router.push(const CardFileInfoRoute());
+
+    notifyListeners();
   }
 }

@@ -274,7 +274,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ListTile(
                 leading: const Icon(Icons.lock_reset),
                 title: const Text('change password'),
-                enabled: !kIsWeb,
                 onTap: () {
                   Navigator.pop(context); // close drawer
                   

@@ -122,4 +122,26 @@ class CardEditViewModel extends ChangeNotifier {
     CurrentFileService().currentFileDocument!.isChanged = true;
     context.router.maybePop();
   }
+
+  void moveUp(int index) {
+    if (index > 0) {
+      isChanged = true;
+      var temp = currentCard.rows[index - 1];
+      currentCard.rows[index - 1] = currentCard.rows[index];
+      currentCard.rows[index] = temp;
+
+      notifyListeners();
+    }
+  }
+
+  void moveDown(int index) {
+    if (index < currentCard.rows.length - 1) {
+      isChanged = true;
+      var temp = currentCard.rows[index + 1];
+      currentCard.rows[index + 1] = currentCard.rows[index];
+      currentCard.rows[index] = temp;
+
+      notifyListeners();
+    }
+  }
 }

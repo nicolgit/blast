@@ -193,7 +193,9 @@ class _CardEditViewState extends State<CardEditView> {
                   ),
                 ),
                 const SizedBox(width: 3),
-                _iconType(vm, index),
+                _moveUpButton(vm, index),
+                _moveDownButton(vm, index),
+                _iconTypeButton(vm, index),
                 IconButton(
                   onPressed: () {
                     vm.deleteAttribute(index);
@@ -370,7 +372,7 @@ class _CardEditViewState extends State<CardEditView> {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: rowItems);
   }
 
-  _iconType(CardEditViewModel vm, int index) {
+  _iconTypeButton(CardEditViewModel vm, int index) {
     var icon = const Icon(Icons.error);
 
     switch (vm.currentCard.rows[index].type) {
@@ -391,7 +393,35 @@ class _CardEditViewState extends State<CardEditView> {
         vm.swapType(index);
       },
       icon: icon,
-      tooltip: "${vm.currentCard.rows[index].type.name}\n tap to change",
+      tooltip: "${vm.currentCard.rows[index].type.description}\n tap to change",
+    );
+  }
+  
+  _moveUpButton(CardEditViewModel vm, int index) {
+    if (index == 0) {
+      return const SizedBox(width: 0);
+    }
+
+    return IconButton(
+      onPressed: () {
+        vm.moveUp(index);
+      },
+      icon: const Icon(Icons.arrow_upward),
+      tooltip: "move up",
+    );
+  }
+  
+  _moveDownButton(CardEditViewModel vm, int index) {
+    if (index == vm.currentCard.rows.length - 1) {
+      return const SizedBox(width: 0);
+    }
+
+    return IconButton(
+      onPressed: () {
+        vm.moveDown(index);
+      },
+      icon: const Icon(Icons.arrow_downward),
+      tooltip: "move down",
     );
   }
 }

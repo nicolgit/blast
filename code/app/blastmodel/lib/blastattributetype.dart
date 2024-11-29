@@ -13,3 +13,20 @@ enum BlastAttributeType {
   @JsonValue(4)
   typeHeader
 }
+
+extension BlastAttributeTypeExtension on BlastAttributeType {
+  String get description {
+    switch (this) {
+      case BlastAttributeType.typeString:
+        return 'String attribute';
+      case BlastAttributeType.typePassword:
+        return 'Password attribute';
+      case BlastAttributeType.typeURL:
+        return 'URL attribute';
+      case BlastAttributeType.typeHeader:
+        return 'Header attribute';
+      default:
+        return 'Unknown';
+    }
+  }
+}

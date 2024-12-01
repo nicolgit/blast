@@ -55,92 +55,94 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
         ),
         Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Column(children: [
-              const SizedBox(height: 12.0),
-              Icon(Icons.edit_document, color: _theme.colorScheme.primary, size: 48.0),
-              Text(
-                "choose a file name for your blast file",
-                style: _textTheme.labelMedium,
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                  autofocus: true,
-                  onChanged: (value) => vm.setFilename(value),
-                  controller: filenameController,
-                  style: _textTheme.labelMedium,
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Filename',
-                      hintText: 'Choose a name for your file',
-                      hintStyle: _textThemeHint)),
-              const SizedBox(height: 12.0),
-              Icon(Icons.lock, color: _theme.colorScheme.error, size: 48.0),
-              const SizedBox(height: 12.0),
-              Text(
-                'choose a master password to protect your blast file',
-                style: _textTheme.labelMedium,
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                obscureText: true,
-                onChanged: (value) => vm.setPassword(value),
-                controller: passwordController,
-                style: _textTheme.labelMedium,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'master password',
-                    hintText: 'Choose a password for your file',
-                    hintStyle: _textThemeHint),
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                obscureText: true,
-                controller: confirmPasswordController,
-                style: _textTheme.labelMedium,
-                onChanged: (value) => vm.setConfirmPassword(value),
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Confirm Password',
-                    hintText: 'confirm password for your file',
-                    hintStyle: _textThemeHint),
-              ),
-              const SizedBox(height: 12.0),
-              FutureBuilder<bool>(
-                future: vm.passwordsMatch(),
-                builder: (context, passwordsMatch) =>
-                    Text(passwordsMatch.data ?? true ? "" : "passwords don't match", style: _textThemeError),
-              ),
-              FutureBuilder<bool>(
-                future: vm.isFilenameNotEmpty(),
-                builder: (context, filenameNotEmpty) =>
-                    Text(filenameNotEmpty.data ?? true ? "" : "filename can't be empty", style: _textThemeError),
-              ),
-              FutureBuilder<bool>(
-                future: vm.isPasswordsNotEmpty(),
-                builder: (context, passwordsNotEmpty) =>
-                    Text(passwordsNotEmpty.data ?? true ? "" : "passwords can't be empty", style: _textThemeError),
-              ),
-              const SizedBox(height: 12.0),
-              FutureBuilder<bool>(
-                future: vm.isFormReadyToConfirm(),
-                builder: (context, isFormReadyToConfirm) => FilledButton(
-                  onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptPassword() : null,
-                  child: const Text(
-                    'create a new file',
+            child: Container(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(children: [
+                  const SizedBox(height: 12.0),
+                  Icon(Icons.edit_document, color: _theme.colorScheme.primary, size: 48.0),
+                  Text(
+                    "choose a file name for your blast file",
+                    style: _textTheme.labelMedium,
                   ),
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              FutureBuilder<bool>(
-                future: vm.isFormReadyToConfirm(),
-                builder: (context, isFormReadyToConfirm) => FilledButton(
-                  onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptAndImport() : null,
-                  child: const Text(
-                    'import from another password manager',
+                  const SizedBox(height: 12.0),
+                  TextField(
+                      autofocus: true,
+                      onChanged: (value) => vm.setFilename(value),
+                      controller: filenameController,
+                      style: _textTheme.labelMedium,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'Filename',
+                          hintText: 'Choose a name for your file',
+                          hintStyle: _textThemeHint)),
+                  const SizedBox(height: 12.0),
+                  Icon(Icons.lock, color: _theme.colorScheme.error, size: 48.0),
+                  const SizedBox(height: 12.0),
+                  Text(
+                    'choose a master password to protect your blast file',
+                    style: _textTheme.labelMedium,
                   ),
-                ),
-              ),
-            ]))
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    obscureText: true,
+                    onChanged: (value) => vm.setPassword(value),
+                    controller: passwordController,
+                    style: _textTheme.labelMedium,
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'master password',
+                        hintText: 'Choose a password for your file',
+                        hintStyle: _textThemeHint),
+                  ),
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    obscureText: true,
+                    controller: confirmPasswordController,
+                    style: _textTheme.labelMedium,
+                    onChanged: (value) => vm.setConfirmPassword(value),
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'Confirm Password',
+                        hintText: 'confirm password for your file',
+                        hintStyle: _textThemeHint),
+                  ),
+                  const SizedBox(height: 12.0),
+                  FutureBuilder<bool>(
+                    future: vm.passwordsMatch(),
+                    builder: (context, passwordsMatch) =>
+                        Text(passwordsMatch.data ?? true ? "" : "passwords don't match", style: _textThemeError),
+                  ),
+                  FutureBuilder<bool>(
+                    future: vm.isFilenameNotEmpty(),
+                    builder: (context, filenameNotEmpty) =>
+                        Text(filenameNotEmpty.data ?? true ? "" : "filename can't be empty", style: _textThemeError),
+                  ),
+                  FutureBuilder<bool>(
+                    future: vm.isPasswordsNotEmpty(),
+                    builder: (context, passwordsNotEmpty) =>
+                        Text(passwordsNotEmpty.data ?? true ? "" : "passwords can't be empty", style: _textThemeError),
+                  ),
+                  const SizedBox(height: 12.0),
+                  FutureBuilder<bool>(
+                    future: vm.isFormReadyToConfirm(),
+                    builder: (context, isFormReadyToConfirm) => FilledButton(
+                      onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptPassword() : null,
+                      child: const Text(
+                        'create a new file',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  FutureBuilder<bool>(
+                    future: vm.isFormReadyToConfirm(),
+                    builder: (context, isFormReadyToConfirm) => FilledButton(
+                      onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptAndImport() : null,
+                      child: const Text(
+                        'import from another password manager',
+                      ),
+                    ),
+                  ),
+                ])))
       ])),
     );
   }

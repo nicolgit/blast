@@ -255,19 +255,22 @@ class _CardViewState extends State<CardView> {
   Widget _showNotes(String notes, CardViewModel vm) {
     return Padding(
         padding: const EdgeInsets.all(24),
-        child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              color: _widgetFactory.theme.colorScheme.tertiaryContainer,
-            ),
-            child: Padding(
-                padding: const EdgeInsets.all(12),
+        child: Center(
+            child: Container(
+                constraints: const BoxConstraints(maxWidth: 600),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Notes", style: _widgetFactory.textTheme.bodyMedium),
-                    SelectableText(notes,
-                        style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic)),
+                    const SizedBox(height: 24),
+                    Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SelectableText(notes,
+                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic))),
                   ],
                 ))));
   }

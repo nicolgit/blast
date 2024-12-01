@@ -17,7 +17,6 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-
   @override
   void initState() {
     super.initState();
@@ -98,6 +97,7 @@ class _SplashViewState extends State<SplashView> {
                           future: vm.recentFiles(),
                           builder: (context, listFiles) {
                             return Container(
+                              constraints: BoxConstraints(maxWidth: 600),
                               child: _buildRecentFilesList(listFiles.data ?? [], vm),
                             );
                           }));
@@ -125,10 +125,9 @@ class _SplashViewState extends State<SplashView> {
               ),
               onPressed: () {
                 vm.toggleLightDarkMode().then((value) {
-
                   if (!context.mounted) return;
                   BlastApp.of(context).changeTheme(value);
-                  
+
                   vm.refresh();
                 });
               },

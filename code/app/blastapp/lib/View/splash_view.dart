@@ -190,50 +190,35 @@ class _SplashViewState extends State<SplashView> {
                     shadowColor: _theme.colorScheme.onSurface,
                     surfaceTintColor: _theme.colorScheme.onSurface,
                     type: MaterialType.card,
-                    child: ListTile(
-                      onTap: () {
-                        vm.goToRecentFile(files[file]);
-                      },
-                      //leading: Image.asset("assets/general/app-icon.png"),
-                      leading: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
-                        Text(" > ", style: _textTheme.headlineSmall),
-                        Image.asset("assets/general/app-icon.png"),
-                      ]),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FutureBuilder<Cloud>(
-                            future: vm.getCloudStorageById(files[file].cloudId),
-                            builder: (context, cloud) {
-                              return Row(
-                                children: [
-                                  Text(files[file].fileName, style: _textTheme.headlineSmall),
-                                  Text(
-                                    " - ",
-                                    style: _textTheme.labelLarge,
-                                  ),
-                                  Expanded(
-                                      child: Text(cloud.data?.name ?? "",
-                                          overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
-                                ],
-                              );
+                    child: FutureBuilder<Cloud>(
+                        future: vm.getCloudStorageById(files[file].cloudId),
+                        builder: (context, cloud) {
+                          return ListTile(
+                            onTap: () {
+                              vm.goToRecentFile(files[file]);
                             },
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Text(
-                            "URI: ",
-                            style: _textTheme.labelSmall,
-                          ),
-                          Expanded(
-                              child: Text(files[file].fileUrl,
-                                  style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
-                        ],
-                      ),
-                    ))));
+                            //leading: Image.asset("assets/general/app-icon.png"),
+
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                  Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
+                                  //Text(" > ", style: _textTheme.headlineSmall),
+                                  //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
+                                ]),
+                                Text(files[file].fileName,
+                                    style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                              ],
+                            ),
+                            subtitle: Expanded(
+                                child: Text("${cloud.data?.name} ${files[file].fileUrl}",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: _textTheme.labelSmall)),
+                          );
+                        }))));
       },
     );
 

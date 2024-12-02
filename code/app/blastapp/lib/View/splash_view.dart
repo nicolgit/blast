@@ -203,7 +203,7 @@ class _SplashViewState extends State<SplashView> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                  Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
+                                  Image.asset("assets/storage/${files[file].cloudId}.png", width: 72, height: 72),
                                   //Text(" > ", style: _textTheme.headlineSmall),
                                   //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
                                 ]),

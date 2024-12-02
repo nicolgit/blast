@@ -217,13 +217,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                child: 
-                  Column(
-                    children: [
-                      const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
-                      Text("build ${Secrets.buildNumber}",style: _textTheme.labelMedium),
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
+                    Text("build ${Secrets.buildNumber}", style: _textTheme.labelMedium),
+                  ],
+                ),
               ),
               ListTile(
                 leading: const Icon(Icons.upload),
@@ -287,7 +286,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 title: const Text('change password'),
                 onTap: () {
                   Navigator.pop(context); // close drawer
-                  
+
                   vm.changePasswordCommand();
                 },
               ),
@@ -345,8 +344,11 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           subtitle: Row(
             children: [
               _buildTagsRow(cardsList[index].tags),
-              Text(
-                  'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}'),
+              Expanded(
+                  child: Text(
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}')),
             ],
           ),
           selectedTileColor: Theme.of(context).colorScheme.primaryContainer,

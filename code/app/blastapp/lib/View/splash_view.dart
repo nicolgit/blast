@@ -194,30 +194,26 @@ class _SplashViewState extends State<SplashView> {
                         future: vm.getCloudStorageById(files[file].cloudId),
                         builder: (context, cloud) {
                           return ListTile(
-                            onTap: () {
-                              vm.goToRecentFile(files[file]);
-                            },
-                            //leading: Image.asset("assets/general/app-icon.png"),
-
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                  Image.asset("assets/storage/${files[file].cloudId}.png", width: 72, height: 72),
-                                  //Text(" > ", style: _textTheme.headlineSmall),
-                                  //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
-                                ]),
-                                Text(files[file].fileName,
-                                    style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                              ],
-                            ),
-                            subtitle: Expanded(
-                                child: Text("${cloud.data?.name} ${files[file].fileUrl}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style: _textTheme.labelSmall)),
-                          );
+                              onTap: () {
+                                vm.goToRecentFile(files[file]);
+                              },
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                    Image.asset("assets/storage/${files[file].cloudId}.png", width: 72, height: 72),
+                                    //Text(" > ", style: _textTheme.headlineSmall),
+                                    //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
+                                  ]),
+                                  Text(files[file].fileName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                                  Text("${cloud.data?.name} ${files[file].fileUrl}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: _textTheme.labelSmall)
+                                ],
+                              ));
                         }))));
       },
     );

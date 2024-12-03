@@ -150,11 +150,12 @@ class _TypePasswordViewState extends State<TypePasswordView> {
               }
             },
           ),
+          CircularProgressIndicator(),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) {
               return FilledButton(
-                onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
+                onPressed: isPasswordValid.data ?? false ? () => vm.checkPasswordFake() : null,
                 child: const Text('open'),
               );
             },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
@@ -42,18 +43,17 @@ class TypePasswordViewModel extends ChangeNotifier {
 
     _isCheckingPassword = true;
     notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 100));
 
     try {
       if (passwordType == PasswordType.recoveryKey) {
         // convert string to Uint8List each 2 characters (hex) to 1 byte\
-        Uint8List recoveryKeyBinaly = Uint8List(32);
+        Uint8List recoveryKeyBinary = Uint8List(32);
         for (int i = 0; i < 32; i++) {
-          recoveryKeyBinaly[i] = int.parse(recoveryKey.substring(i * 2, i * 2 + 2), radix: 16);
+          recoveryKeyBinary[i] = int.parse(recoveryKey.substring(i * 2, i * 2 + 2), radix: 16);
         }
 
         CurrentFileService().password = '';
-        CurrentFileService().key = recoveryKeyBinaly;
+        CurrentFileService().key = recoveryKeyBinary;
         CurrentFileService().currentFileJsonString =
             CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, recoveryKey, PasskeyType.hexkey);
       } else { // password
@@ -109,4 +109,28 @@ class TypePasswordViewModel extends ChangeNotifier {
   Future<bool> isCheckingPassword() async {
     return _isCheckingPassword;
   }
+
+  Future<bool> checkPasswordFake() async {
+    //_heavyComputation();
+    int result = await Isolate.run(_heavyComputation);
+    return false; 
+  }
+
+  
+}
+
+int _heavyComputation() {
+
+  CurrentFileService().password = '';
+  Uint8List recoveryKeyBinaly = Uint8List(32);
+  CurrentFileService().currentFileJsonString =
+            CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, recoveryKey, PasskeyType.hexkey);
+
+  // Simulate a heavy computation
+  int result = 0;
+  for (int i = 0; i < 10000000000; i++) {
+    result += i;
+  }
+
+  return result;
 }

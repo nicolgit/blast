@@ -41,7 +41,8 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
             FutureBuilder<List<Cloud>>(
               future: vm.supportedClouds(),
               builder: (context, cloudList) {
-                return _buildCloudList(cloudList.data ?? [], vm);
+                return Container(
+                    constraints: BoxConstraints(maxWidth: 600), child: _buildCloudList(cloudList.data ?? [], vm));
               },
             ),
           ],

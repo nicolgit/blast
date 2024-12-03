@@ -17,7 +17,6 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-
   @override
   void initState() {
     super.initState();
@@ -98,6 +97,7 @@ class _SplashViewState extends State<SplashView> {
                           future: vm.recentFiles(),
                           builder: (context, listFiles) {
                             return Container(
+                              constraints: BoxConstraints(maxWidth: 600),
                               child: _buildRecentFilesList(listFiles.data ?? [], vm),
                             );
                           }));
@@ -125,10 +125,9 @@ class _SplashViewState extends State<SplashView> {
               ),
               onPressed: () {
                 vm.toggleLightDarkMode().then((value) {
-
                   if (!context.mounted) return;
                   BlastApp.of(context).changeTheme(value);
-                  
+
                   vm.refresh();
                 });
               },
@@ -191,50 +190,31 @@ class _SplashViewState extends State<SplashView> {
                     shadowColor: _theme.colorScheme.onSurface,
                     surfaceTintColor: _theme.colorScheme.onSurface,
                     type: MaterialType.card,
-                    child: ListTile(
-                      onTap: () {
-                        vm.goToRecentFile(files[file]);
-                      },
-                      //leading: Image.asset("assets/general/app-icon.png"),
-                      leading: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Image.asset("assets/storage/${files[file].cloudId}.png", width: 48, height: 48),
-                        Text(" > ", style: _textTheme.headlineSmall),
-                        Image.asset("assets/general/app-icon.png"),
-                      ]),
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FutureBuilder<Cloud>(
-                            future: vm.getCloudStorageById(files[file].cloudId),
-                            builder: (context, cloud) {
-                              return Row(
+                    child: FutureBuilder<Cloud>(
+                        future: vm.getCloudStorageById(files[file].cloudId),
+                        builder: (context, cloud) {
+                          return ListTile(
+                              onTap: () {
+                                vm.goToRecentFile(files[file]);
+                              },
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(files[file].fileName, style: _textTheme.headlineSmall),
-                                  Text(
-                                    " - ",
-                                    style: _textTheme.labelLarge,
-                                  ),
-                                  Expanded(
-                                      child: Text(cloud.data?.name ?? "",
-                                          overflow: TextOverflow.ellipsis, maxLines: 1, style: _textTheme.labelSmall))
+                                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                    Image.asset("assets/storage/${files[file].cloudId}.png", width: 72, height: 72),
+                                    //Text(" > ", style: _textTheme.headlineSmall),
+                                    //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
+                                  ]),
+                                  Text(files[file].fileName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                                  Text("${cloud.data?.name} ${files[file].fileUrl}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: _textTheme.labelSmall)
                                 ],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Text(
-                            "URI: ",
-                            style: _textTheme.labelSmall,
-                          ),
-                          Expanded(
-                              child: Text(files[file].fileUrl,
-                                  style: _textTheme.labelSmall, overflow: TextOverflow.ellipsis, maxLines: 1)),
-                        ],
-                      ),
-                    ))));
+                              ));
+                        }))));
       },
     );
 

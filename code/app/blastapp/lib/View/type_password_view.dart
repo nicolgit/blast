@@ -47,9 +47,9 @@ class _TypePasswordViewState extends State<TypePasswordView> {
   late TextStyle _textThemeError;
 
   var maskRecoveryKeyFormatter = MaskTextInputFormatter(
-        mask: '########-########-########-########-########-########-########-########',
-        filter: {"#": RegExp(r'[0-9a-fA-F]')},
-        type: MaskAutoCompletionType.lazy);
+      mask: '########-########-########-########-########-########-########-########',
+      filter: {"#": RegExp(r'[0-9a-fA-F]')},
+      type: MaskAutoCompletionType.lazy);
 
   Widget _buildScaffold(BuildContext context, TypePasswordViewModel vm) {
     _theme = Theme.of(context);
@@ -95,47 +95,47 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                   vm.passwordType = newSelection.first;
                 });
               }),
-          
           FutureBuilder<PasswordType>(
             future: vm.getPasswordType(),
             builder: (context, passwordType) {
               if (passwordType.data == PasswordType.password) {
                 return Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextField(
-                autofocus: true,
-                focusNode: passwordFocusNode,
-                obscureText: true,
-                controller: passwordController,
-                onChanged: (value) => vm.setPassword(value),
-                onSubmitted: (value) async => {
-                  if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
-                },
-                style: _textTheme.labelMedium,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
-                    hintStyle: _textThemeHint),
-              ));
+                    padding: const EdgeInsets.all(12.0),
+                    child: Container(
+                        constraints: BoxConstraints(maxWidth: 600),
+                        child: TextField(
+                          autofocus: true,
+                          focusNode: passwordFocusNode,
+                          obscureText: true,
+                          controller: passwordController,
+                          onChanged: (value) => vm.setPassword(value),
+                          onSubmitted: (value) async => {
+                            if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                          },
+                          style: _textTheme.labelMedium,
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: 'Password',
+                              hintText: 'Enter your password',
+                              hintStyle: _textThemeHint),
+                        )));
               } else {
                 return Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextField(
-                onChanged: (value) => vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
-                onSubmitted: (value) async => {
-                  vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
-                  if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
-                },
-                style: _textTheme.labelMedium,
-                inputFormatters: [maskRecoveryKeyFormatter],
-
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'recovery key',
-                    hintText: '12345678-12345678-12345678-12345678-12345678-12345678-12345678-12345678',
-                    hintStyle: _textThemeHint),
-              ));
+                    padding: const EdgeInsets.all(12.0),
+                    child: TextField(
+                      onChanged: (value) => vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
+                      onSubmitted: (value) async => {
+                        vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
+                        if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                      },
+                      style: _textTheme.labelMedium,
+                      inputFormatters: [maskRecoveryKeyFormatter],
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'recovery key',
+                          hintText: '12345678-12345678-12345678-12345678-12345678-12345678-12345678-12345678',
+                          hintStyle: _textThemeHint),
+                    ));
               }
             },
           ),

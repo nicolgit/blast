@@ -53,62 +53,64 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
         AppBar(
           title: const Text("Change your password"),
         ),
-        Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(children: [
-              const SizedBox(height: 12.0),
-              Icon(Icons.lock, color: _theme.colorScheme.error, size: 48.0),
-              const SizedBox(height: 12.0),
-              Text(
-                'choose the new master password of your blast file',
-                style: _textTheme.labelMedium,
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                obscureText: true,
-                onChanged: (value) => vm.setPassword(value),
-                controller: passwordController,
-                style: _textTheme.labelMedium,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'master password',
-                    hintText: 'Choose a password for your file',
-                    hintStyle: _textThemeHint),
-              ),
-              const SizedBox(height: 12.0),
-              TextField(
-                obscureText: true,
-                controller: confirmPasswordController,
-                style: _textTheme.labelMedium,
-                onChanged: (value) => vm.setConfirmPassword(value),
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Confirm Password',
-                    hintText: 'confirm password for your file',
-                    hintStyle: _textThemeHint),
-              ),
-              const SizedBox(height: 12.0),
-              FutureBuilder<bool>(
-                future: vm.passwordsMatch(),
-                builder: (context, passwordsMatch) =>
-                    Text(passwordsMatch.data ?? true ? "" : "passwords don't match", style: _textThemeError),
-              ),
-              FutureBuilder<bool>(
-                future: vm.isPasswordsNotEmpty(),
-                builder: (context, passwordsNotEmpty) =>
-                    Text(passwordsNotEmpty.data ?? true ? "" : "passwords can't be empty", style: _textThemeError),
-              ),
-              const SizedBox(height: 12.0),
-              FutureBuilder<bool>(
-                future: vm.isFormReadyToConfirm(),
-                builder: (context, isFormReadyToConfirm) => FilledButton(
-                  onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptPassword() : null,
-                  child: const Text(
-                    'change password',
+        Container(
+            constraints: BoxConstraints(maxWidth: 600),
+            child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(children: [
+                  const SizedBox(height: 12.0),
+                  Icon(Icons.lock, color: _theme.colorScheme.error, size: 48.0),
+                  const SizedBox(height: 12.0),
+                  Text(
+                    'choose the new master password of your blast file',
+                    style: _textTheme.labelMedium,
                   ),
-                ),
-              ),
-            ]))
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    obscureText: true,
+                    onChanged: (value) => vm.setPassword(value),
+                    controller: passwordController,
+                    style: _textTheme.labelMedium,
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'master password',
+                        hintText: 'Choose a password for your file',
+                        hintStyle: _textThemeHint),
+                  ),
+                  const SizedBox(height: 12.0),
+                  TextField(
+                    obscureText: true,
+                    controller: confirmPasswordController,
+                    style: _textTheme.labelMedium,
+                    onChanged: (value) => vm.setConfirmPassword(value),
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'Confirm Password',
+                        hintText: 'confirm password for your file',
+                        hintStyle: _textThemeHint),
+                  ),
+                  const SizedBox(height: 12.0),
+                  FutureBuilder<bool>(
+                    future: vm.passwordsMatch(),
+                    builder: (context, passwordsMatch) =>
+                        Text(passwordsMatch.data ?? true ? "" : "passwords don't match", style: _textThemeError),
+                  ),
+                  FutureBuilder<bool>(
+                    future: vm.isPasswordsNotEmpty(),
+                    builder: (context, passwordsNotEmpty) =>
+                        Text(passwordsNotEmpty.data ?? true ? "" : "passwords can't be empty", style: _textThemeError),
+                  ),
+                  const SizedBox(height: 12.0),
+                  FutureBuilder<bool>(
+                    future: vm.isFormReadyToConfirm(),
+                    builder: (context, isFormReadyToConfirm) => FilledButton(
+                      onPressed: isFormReadyToConfirm.data ?? true ? () => vm.acceptPassword() : null,
+                      child: const Text(
+                        'change password',
+                      ),
+                    ),
+                  ),
+                ])))
       ])),
     );
   }

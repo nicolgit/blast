@@ -16,6 +16,9 @@ jobs:
       # setup flutter
       # https://github.com/marketplace/actions/flutter-action
       - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.24.5
       - name: Prepare secrets.dart
         working-directory: ./code/app/blastmodel/lib
         run: |

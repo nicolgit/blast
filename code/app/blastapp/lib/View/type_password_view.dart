@@ -76,6 +76,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                   color: _theme.colorScheme.primary, size: 48.0);
             },
           ),
+          const SizedBox(height: 12.0),
           SegmentedButton<PasswordType>(
               segments: <ButtonSegment<PasswordType>>[
                 ButtonSegment<PasswordType>(
@@ -140,24 +141,26 @@ class _TypePasswordViewState extends State<TypePasswordView> {
             },
           ),
           Text(vm.errorMessage, style: _textThemeError),
-          FutureBuilder<bool>(
-            future: vm.isCheckingPassword(),
-            builder: (context, isCheckingPassword) {
-              if (isCheckingPassword.data ?? false) {
-                return Text("checking password...", style: _textTheme.labelMedium);
-              } else {
-                return Text("", style: _textTheme.labelMedium);
-              }
-            },
-          ),
-          CircularProgressIndicator(),
+          const SizedBox(height: 12.0),
           FutureBuilder<bool>(
             future: vm.isPasswordValid(),
             builder: (context, isPasswordValid) {
               return FilledButton(
-                onPressed: isPasswordValid.data ?? false ? () => vm.checkPasswordFake() : null,
+                onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
                 child: const Text('open'),
               );
+            },
+          ),
+          const SizedBox(height: 12.0),
+          FutureBuilder<bool>(
+            future: vm.isCheckingPassword(),
+            builder: (context, isCheckingPassword) {
+              if (isCheckingPassword.data ?? false) {
+                return 
+          CircularProgressIndicator();//Text("checking password...", style: _textTheme.labelMedium);
+              } else {
+                return Text("", style: _textTheme.labelMedium);
+              }
             },
           ),
         ],

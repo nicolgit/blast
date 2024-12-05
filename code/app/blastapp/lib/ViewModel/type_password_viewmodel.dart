@@ -6,6 +6,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/exceptions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 enum PasswordType {
@@ -38,7 +39,7 @@ class TypePasswordViewModel extends ChangeNotifier {
     return passwordType;
   }
 
-  Future<bool> checkPassword() async {
+  Future<bool> checkPasswordOld() async {
     bool isOk = false;
 
     _isCheckingPassword = true;
@@ -110,27 +111,96 @@ class TypePasswordViewModel extends ChangeNotifier {
     return _isCheckingPassword;
   }
 
-  Future<bool> checkPasswordFake() async {
-    //_heavyComputation();
-    int result = await Isolate.run(_heavyComputation);
-    return false; 
-  }
+  Future<bool> checkPassword() async {
+    bool isOk = false;
 
-  
+    _isCheckingPassword = true;
+    notifyListeners();
+
+    try {
+
+      Map<String, dynamic> inputData = {'type': passwordType,
+                                        'password': password,
+                                        'recoveryKey': recoveryKey,
+                                        'currentFileServiceInstance': CurrentFileService()
+                                        };
+                                    
+      Map<String, dynamic> resultMap = await compute(_checkPasswordComputation , inputData); 
+      
+      CurrentFileService().currentFileJsonString = resultMap['jsonFile'];
+      CurrentFileService().currentFileDocument = resultMap['binaryFile'];
+      CurrentFileService().key = resultMap['binaryRecoveryKey'];
+      CurrentFileService().password = resultMap['password'];
+      
+      errorMessage = '';
+
+      isOk = true;
+    } on BlastWrongPasswordException {
+      errorMessage = 'wrong password - please try again';
+      isOk = false;
+    } on BlastUnknownFileVersionException {
+      errorMessage = 'unknown file version - unable to open your file';
+      isOk = false;
+    } on FormatException {
+      errorMessage = 'file format exception - unable to open your file';
+      isOk = false;
+    } catch (e) {
+      errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
+      isOk = false;
+    }
+
+    var x = CurrentFileService().currentFileDocument;
+    var y = CurrentFileService().currentFileJsonString;
+
+    _isCheckingPassword = false;
+    notifyListeners();
+
+    if (isOk) {
+      // return true to the calling function
+      if (!context.mounted) return false;
+      return context.router.maybePop(true);
+    }
+
+    return false;
+  }
+ 
 }
 
-int _heavyComputation() {
 
-  CurrentFileService().password = '';
-  Uint8List recoveryKeyBinaly = Uint8List(32);
-  CurrentFileService().currentFileJsonString =
-            CurrentFileService().decodeFile(CurrentFileService().currentFileEncrypted!, recoveryKey, PasskeyType.hexkey);
 
-  // Simulate a heavy computation
-  int result = 0;
-  for (int i = 0; i < 10000000000; i++) {
-    result += i;
-  }
+Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
 
-  return result;
+  PasswordType passwordType = inputData['type'];
+  String password = inputData['password'];
+  String recoveryKey = inputData['recoveryKey'];
+  CurrentFileService currentFileService = inputData['currentFileServiceInstance'];
+  
+
+  if (passwordType == PasswordType.recoveryKey) {
+        // convert string to Uint8List each 2 characters (hex) to 1 byte\
+        Uint8List recoveryKeyBinary = Uint8List(32);      
+        for (int i = 0; i < 32; i++) {
+          recoveryKeyBinary[i] = int.parse(recoveryKey.substring(i * 2, i * 2 + 2), radix: 16);
+        }
+
+        currentFileService.password = '';
+        currentFileService.key = recoveryKeyBinary;
+        currentFileService.currentFileJsonString =
+            currentFileService.decodeFile(currentFileService.currentFileEncrypted!, recoveryKey, PasskeyType.hexkey);
+      } else { // password
+        currentFileService.password = password;
+        currentFileService.currentFileJsonString =
+            currentFileService.decodeFile(currentFileService.currentFileEncrypted!, password, PasskeyType.password);
+      }
+
+      currentFileService.currentFileDocument =
+        BlastDocument.fromJson(jsonDecode(currentFileService.currentFileJsonString!));
+
+      Map<String, dynamic> resultMap = { 
+        'binaryRecoveryKey': currentFileService.key,
+        'password': password,
+        'binaryFile': currentFileService.currentFileDocument,
+        'jsonFile': currentFileService.currentFileJsonString};
+  
+  return resultMap;
 }

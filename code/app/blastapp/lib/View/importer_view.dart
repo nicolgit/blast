@@ -24,14 +24,16 @@ class _ImporterViewState extends State<ImporterView> {
   }
 
   late BlastWidgetFactory _widgetFactory;
+  late ThemeData _theme;
   late TextTheme _textTheme;
 
   Widget _buildScaffold(BuildContext context, ImporterViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
+    _theme = _widgetFactory.theme;
     _textTheme = _widgetFactory.textTheme.apply(bodyColor: _widgetFactory.theme.colorScheme.onSurface);
 
-    return Scaffold(
-        backgroundColor: _widgetFactory.viewBackgroundColor(),
+    return Container( color: _theme.colorScheme.surface, child: SafeArea(child: Scaffold(
+        backgroundColor: _theme.colorScheme.surface,
         body: Center(
             child: Column(children: [
           AppBar(
@@ -116,6 +118,6 @@ class _ImporterViewState extends State<ImporterView> {
                 child: const Text('Password Safe XML file'),
               )),
           const Text("WARNING: Importing your data here will overwrite all the current file content."),
-        ])));
+        ])))));
   }
 }

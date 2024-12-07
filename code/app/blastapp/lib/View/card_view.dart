@@ -32,11 +32,18 @@ class _CardViewState extends State<CardView> {
   }
 
   late BlastWidgetFactory _widgetFactory;
+  late ThemeData _theme;
+  late TextTheme _textTheme;
 
   Widget _buildScaffold(BuildContext context, CardViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Scaffold(
+    return 
+    Container( color: _theme.colorScheme.surface,child:
+    SafeArea(child: 
+    Scaffold(
         backgroundColor: _widgetFactory.viewBackgroundColor(),
         body: Center(
           child: Column(
@@ -96,7 +103,7 @@ class _CardViewState extends State<CardView> {
                   }),
             ],
           ),
-        ));
+        ))));
   }
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {

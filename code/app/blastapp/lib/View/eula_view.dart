@@ -29,7 +29,7 @@ class _EulaViewState extends State<EulaView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Scaffold(
+    return Container( color: _theme.colorScheme.surface, child: SafeArea(child: Scaffold(
         backgroundColor: _theme.colorScheme.surface,
         body: SingleChildScrollView(
           child: Padding(
@@ -75,6 +75,6 @@ class _EulaViewState extends State<EulaView> {
               ],
             )),
           ),
-        ));
+        ))));
   }
 }

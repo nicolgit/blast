@@ -28,9 +28,15 @@ class _FieldViewState extends State<FieldView> {
     );
   }
 
+  late ThemeData _theme;
+  late TextTheme _textTheme;
+
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
-    return Scaffold(
-        backgroundColor: Colors.white,
+    _theme = Theme.of(context);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+
+    return Container( color: _theme.colorScheme.surface, child: SafeArea( child: Scaffold(
+        backgroundColor: _theme.colorScheme.surface,
         body: Center(
             child: Column(children: [
           AppBar(
@@ -110,6 +116,6 @@ class _FieldViewState extends State<FieldView> {
 
                 return displayWidget;
               }),
-        ])));
+        ])))));
   }
 }

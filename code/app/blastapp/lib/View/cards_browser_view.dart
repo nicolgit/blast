@@ -55,7 +55,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             vm.clearSearchTextCommand();
           }
         },
-        child: Scaffold(
+        child: SafeArea( child: Scaffold(
           backgroundColor: _widgetFactory.viewBackgroundColor(),
           bottomNavigationBar: BottomAppBar(
             child: Row(
@@ -292,7 +292,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
             ],
           )),
-        ));
+        )));
   }
 
   @override

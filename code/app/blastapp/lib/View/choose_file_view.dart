@@ -33,7 +33,12 @@ class _ChooseFileViewState extends State<ChooseFileView> {
   Widget _buildScaffold(BuildContext context, ChooseFileViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
 
-    return Scaffold(
+    return 
+    Container( 
+      color: _widgetFactory.theme.colorScheme.surface,
+      child:
+    SafeArea(child:
+    Scaffold(
         backgroundColor: _widgetFactory.theme.colorScheme.surface,
         floatingActionButton: Tooltip(
             message: 'create a new file',
@@ -106,7 +111,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                   }),
             ],
           ),
-        ));
+        ))));
   }
 
   Widget _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {

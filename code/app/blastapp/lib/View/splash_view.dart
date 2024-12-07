@@ -43,7 +43,8 @@ class _SplashViewState extends State<SplashView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Scaffold(
+    return Container( color: _theme.colorScheme.surface, child: SafeArea(
+      child: Scaffold(
         backgroundColor: _theme.colorScheme.surface,
         body: SingleChildScrollView(
             child: Center(
@@ -134,7 +135,7 @@ class _SplashViewState extends State<SplashView> {
               tooltip: 'system/light/dark mode',
             );
           },
-        ));
+        ))));
   }
 
   ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {

@@ -30,7 +30,11 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Scaffold(
+    return 
+    Container( 
+      color: _theme.colorScheme.surface,
+      child: SafeArea(child:
+    Scaffold(
       backgroundColor: _theme.colorScheme.surface,
       body: Center(
         child: Column(
@@ -48,7 +52,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
           ],
         ),
       ),
-    );
+    )));
   }
 
   Column _buildCloudList(List<Cloud> cloudList, ChooseStorageViewModel vm) {

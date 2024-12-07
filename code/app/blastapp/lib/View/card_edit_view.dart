@@ -39,12 +39,15 @@ class _CardEditViewState extends State<CardEditView> {
   }
 
   late BlastWidgetFactory _widgetFactory;
-  
+  late ThemeData _theme;
+
   final _formKey = GlobalKey<FormState>();
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
+    _theme = _widgetFactory.theme;
 
-    return Scaffold(
+    return Container( color: _theme.colorScheme.surface, child:
+    SafeArea ( child: Scaffold(
       backgroundColor: _widgetFactory.viewBackgroundColor(),
         body: Center(
       child: Column(
@@ -103,7 +106,7 @@ class _CardEditViewState extends State<CardEditView> {
           ),
         ],
       ),
-    ));
+    ))));
   }
 
   ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {

@@ -57,7 +57,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
-    return Scaffold(
+    return Container( color: _theme.colorScheme.surface, child: SafeArea(child: Scaffold(
       backgroundColor: _theme.colorScheme.surface,
       body: Center(
           child: Column(
@@ -165,6 +165,6 @@ class _TypePasswordViewState extends State<TypePasswordView> {
           ),
         ],
       )),
-    );
+    )));
   }
 }

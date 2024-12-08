@@ -411,15 +411,20 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       builder: (context) {
         return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
-          return Column(
+          return Padding(
+          padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  child: Wrap(alignment: WrapAlignment.center, children: [
                     SegmentedButton<SearchOperator>(
                       segments: const <ButtonSegment<SearchOperator>>[
                         ButtonSegment<SearchOperator>(
@@ -435,7 +440,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         });
                       },
                     ),
-                    Container(width: 12),
                     SegmentedButton<SearchWhere>(
                       segments: const <ButtonSegment<SearchWhere>>[
                         ButtonSegment<SearchWhere>(
@@ -451,12 +455,11 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         });
                       },
                     ),
-                  ])),
-              SegmentedButton<SortType>(
+                    SegmentedButton<SortType>(
                 segments: const <ButtonSegment<SortType>>[
                   ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
-                  ButtonSegment<SortType>(value: SortType.star, label: Text('starred'), icon: Icon(Icons.star)),
-                  ButtonSegment<SortType>(value: SortType.mostUsed, label: Text('most used'), icon: Icon(Icons.upload)),
+                  ButtonSegment<SortType>(value: SortType.star, label: Text('star'), icon: Icon(Icons.star)),
+                  ButtonSegment<SortType>(value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
                   ButtonSegment<SortType>(
                       value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
                 ],
@@ -468,6 +471,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   });
                 },
               ),
+                  ])),
+              
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextFormField(
@@ -493,7 +498,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 ),
               ),
             ],
-          );
+          ));
         });
       },
     );

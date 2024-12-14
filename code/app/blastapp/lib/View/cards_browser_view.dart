@@ -302,15 +302,24 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
-    var myList = ListView.separated(
+    var myList = ListView.builder(
       itemCount: cardsList.length,
-      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         String name = cardsList[index].title != null ? cardsList[index].title! : '';
         bool isFavorite = cardsList[index].isFavorite;
 
-        return ListTile(
+        return Container( 
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Card(
+            elevation: 6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          ListTile(
           leading: _widgetFactory.blastCardIcon(name),
+          tileColor: _theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6) )),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -343,7 +352,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           ]),
           subtitle: Row(
             children: [
-              _buildTagsRow(cardsList[index].tags),
               Expanded(
                   child: Text(
                       overflow: TextOverflow.ellipsis,
@@ -358,7 +366,17 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               vm.refreshCardListCommand();
             });
           },
-        );
+        ),
+         Container(
+          decoration: BoxDecoration(
+            color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))
+            ),
+          child: Container( 
+            padding: const EdgeInsets.all(6),
+            child:_buildTagsRow(cardsList[index].tags)),
+        ),
+        ])));
       },
     );
 
@@ -424,7 +442,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             children: [
               Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Wrap(alignment: WrapAlignment.center, children: [
+                  child: Wrap(alignment: WrapAlignment.center, 
+                  spacing: 6.0, runSpacing: 6.0,
+                  children: [
                     SegmentedButton<SearchOperator>(
                       segments: const <ButtonSegment<SearchOperator>>[
                         ButtonSegment<SearchOperator>(
@@ -474,7 +494,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   ])),
               
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 6.0),
                 child: TextFormField(
                   onChanged: (value) {
                     vm.searchText = value;

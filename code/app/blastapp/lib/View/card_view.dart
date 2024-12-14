@@ -264,7 +264,7 @@ class _CardViewState extends State<CardView> {
         padding: const EdgeInsets.all(24),
         child: Center(
             child: Container(
-                constraints: const BoxConstraints(maxWidth: 600),
+                constraints: const BoxConstraints(maxWidth: 600, minWidth: 300),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: _widgetFactory.theme.colorScheme.tertiaryContainer,

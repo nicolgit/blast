@@ -18,10 +18,11 @@ class BlastWidgetFactory {
       padding: const EdgeInsets.only(right: 3, left: 3),
       child: Container(
           decoration:
-              BoxDecoration(borderRadius: BorderRadius.circular(3), color: theme.colorScheme.secondaryContainer),
+              BoxDecoration(borderRadius: BorderRadius.circular(3), 
+              color: theme.colorScheme.primary),
           child: Text("   $tag   ",
               style: textTheme.labelSmall!.copyWith(
-                color: theme.colorScheme.onSecondaryContainer,
+                color: theme.colorScheme.onPrimary,
               ))));
 
   Color viewBackgroundColor() => theme.colorScheme.surface;

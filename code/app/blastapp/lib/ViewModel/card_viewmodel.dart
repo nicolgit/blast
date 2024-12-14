@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
   final BlastCard currentCard;
+  var cardHasBeenUsed = false;
 
   List<bool> showPasswordRow = [];
 
@@ -27,15 +28,17 @@ class CardViewModel extends ChangeNotifier {
 
   void copyToClipboard(String value) async {
     await Clipboard.setData(ClipboardData(text: value));
-    currentCard.usedCounter++;
-    _blastDocumentChanged();
+    _markCardAsUsed();
     notifyListeners();
   }
 
   void toggleShowPassword(int cardRow) {
     showPasswordRow[cardRow] = !showPasswordRow[cardRow];
-    currentCard.usedCounter++;
-    _blastDocumentChanged();
+    
+    if (showPasswordRow[cardRow]) {
+      _markCardAsUsed();
+    }
+    
     notifyListeners();
   }
 
@@ -57,8 +60,7 @@ class CardViewModel extends ChangeNotifier {
     final url = Uri.parse(urlString);
 
     if (await canLaunchUrl(url)) {
-      currentCard.usedCounter++;
-      _blastDocumentChanged();
+      _markCardAsUsed();
       notifyListeners();
 
       await launchUrl(url);
@@ -95,5 +97,15 @@ class CardViewModel extends ChangeNotifier {
     notifyListeners();
 
     await context.router.push(FieldRoute(value: value));
+  }
+
+  void _markCardAsUsed() {
+    if (cardHasBeenUsed) return;
+
+    cardHasBeenUsed = true;
+    currentCard.usedCounter++;
+    _blastDocumentChanged();
+
+    notifyListeners();
   }
 }

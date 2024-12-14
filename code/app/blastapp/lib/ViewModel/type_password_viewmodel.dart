@@ -122,7 +122,7 @@ class TypePasswordViewModel extends ChangeNotifier {
       Map<String, dynamic> inputData = {'type': passwordType,
                                         'password': password,
                                         'recoveryKey': recoveryKey,
-                                        'currentFileServiceInstance': CurrentFileService()
+                                        'currentFileEncrypted': CurrentFileService().currentFileEncrypted!
                                         };
                                     
       Map<String, dynamic> resultMap = await compute(_checkPasswordComputation , inputData); 
@@ -131,6 +131,8 @@ class TypePasswordViewModel extends ChangeNotifier {
       CurrentFileService().currentFileDocument = resultMap['binaryFile'];
       CurrentFileService().key = resultMap['binaryRecoveryKey'];
       CurrentFileService().password = resultMap['password'];
+      CurrentFileService().salt = resultMap['salt'];
+      CurrentFileService().iv = resultMap['iv'];
       
       errorMessage = '';
 
@@ -169,11 +171,12 @@ class TypePasswordViewModel extends ChangeNotifier {
 
 
 Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
-
   PasswordType passwordType = inputData['type'];
   String password = inputData['password'];
   String recoveryKey = inputData['recoveryKey'];
-  CurrentFileService currentFileService = inputData['currentFileServiceInstance'];
+  Uint8List currentFileEncrypted = inputData['currentFileEncrypted'];
+
+  CurrentFileService currentFileService = CurrentFileService();
   
 
   if (passwordType == PasswordType.recoveryKey) {
@@ -186,11 +189,11 @@ Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
         currentFileService.password = '';
         currentFileService.key = recoveryKeyBinary;
         currentFileService.currentFileJsonString =
-            currentFileService.decodeFile(currentFileService.currentFileEncrypted!, recoveryKey, PasskeyType.hexkey);
+            currentFileService.decodeFile(currentFileEncrypted, recoveryKey, PasskeyType.hexkey);
       } else { // password
         currentFileService.password = password;
         currentFileService.currentFileJsonString =
-            currentFileService.decodeFile(currentFileService.currentFileEncrypted!, password, PasskeyType.password);
+            currentFileService.decodeFile(currentFileEncrypted, password, PasskeyType.password);
       }
 
       currentFileService.currentFileDocument =
@@ -200,7 +203,10 @@ Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
         'binaryRecoveryKey': currentFileService.key,
         'password': password,
         'binaryFile': currentFileService.currentFileDocument,
-        'jsonFile': currentFileService.currentFileJsonString};
+        'jsonFile': currentFileService.currentFileJsonString,
+        'salt': currentFileService.salt,
+        'iv': currentFileService.iv
+      };
   
   return resultMap;
 }

@@ -348,7 +348,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 isFavorite ? Icons.star : Icons.star_border,
               ),
             ),
-            Text(name, style: const TextStyle(fontWeight: FontWeight.bold))
+            Expanded(child:
+            Text(name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)))
           ]),
           subtitle: Row(
             children: [
@@ -388,8 +389,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     for (var tag in tags) {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
-
-    return Row(children: rowItems);
+    return     Row(children: rowItems);
   }
 
   Future _showDeleteCardDialog(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {

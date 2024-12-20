@@ -10,12 +10,13 @@ import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 class SplashViewModel extends ChangeNotifier {
-  BuildContext context;
+  BuildContext? context;
 
+  bool isInitializing = true;
   bool isLoading = false;
   Future<ThemeMode> get currentThemeMode => SettingService().appTheme;
 
-  SplashViewModel(this.context);
+  SplashViewModel();
 
   Future<bool> eulaAccepted() async {
     return SettingService().eulaAccepted;
@@ -34,34 +35,36 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   showEula() async {
-    return context.router.push(const EulaRoute());
+    return context!.router.push(const EulaRoute());
   }
 
   goToChooseStorage() async {
     CurrentFileService().reset();
 
-    var isStorageSelected = await context.router.push(const ChooseStorageRoute());
+    final myContext = context!;
+    
+    var isStorageSelected = await myContext.router.push(const ChooseStorageRoute());
     if (isStorageSelected != true) {
         return;
       }
     
-    if (!context.mounted) return;
-    FileSelectionResult? isFileSelected = await context.router.push<FileSelectionResult>(const ChooseFileRoute());
+    if (!myContext.mounted) return;
+    FileSelectionResult? isFileSelected = await myContext.router.push<FileSelectionResult>(const ChooseFileRoute());
     if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
       return;
     }
 
     if (isFileSelected == FileSelectionResult.newFile) {
-      if (!context.mounted) return;
-      var isFileCreated = await context.router.push(const CreatePasswordRoute());
+      if (!myContext.mounted) return;
+      var isFileCreated = await myContext.router.push(const CreatePasswordRoute());
 
       if (isFileCreated != true) {
         return;
       }
     }
     else if (isFileSelected == FileSelectionResult.existingFile) {
-      if (!context.mounted) return;
-      var isFileDecrypted = await context.router.push(const TypePasswordRoute());
+      if (!myContext.mounted) return;
+      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
       if (isFileDecrypted != true) {
         return;
       }
@@ -69,16 +72,18 @@ class SplashViewModel extends ChangeNotifier {
 
     _addCurrentFileToRecent();
 
-    if (!context.mounted) return;
-    await context.router.push(const CardFileInfoRoute());
+    if (!myContext.mounted) return;
+    await myContext.router.push(const CardFileInfoRoute());
 
-    if (!context.mounted) return;
-    await context.router.push(const CardsBrowserRoute());
+    if (!myContext.mounted) return;
+    await myContext.router.push(const CardsBrowserRoute());
   }
 
   goToRecentFile(BlastFile file) async {
     isLoading = true;
     notifyListeners();
+
+    final myContext = context!;
 
     try {
       CurrentFileService().reset();
@@ -92,13 +97,13 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
     }
     
-    if (!context.mounted) return;
-    var isFileDecrypted = await context.router.push(const TypePasswordRoute());
+    if (!myContext.mounted) return;
+    var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
     if (isFileDecrypted == true) {
       _addCurrentFileToRecent();
 
-      if (!context.mounted) return;
-      context.router.push(const CardsBrowserRoute());
+      if (!myContext.mounted) return;
+      myContext.router.push(const CardsBrowserRoute());
     }
   }
 
@@ -137,5 +142,9 @@ class SplashViewModel extends ChangeNotifier {
     if (recents.isNotEmpty) {
       await goToRecentFile(recents.first);
     }
+  }
+
+  Future<bool> isInitializingAsync() async {
+    return isInitializing;
   }
 }

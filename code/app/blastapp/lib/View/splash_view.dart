@@ -17,19 +17,22 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
+  final viewModel = SplashViewModel();
+
   @override
   void initState() {
     super.initState();
 
     // open the most recent file on first load
-    final vm = SplashViewModel(context);
-    vm.openMostRecentFile();
+    viewModel.context = context;
+    viewModel.openMostRecentFile();
+    viewModel.isInitializing = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => SplashViewModel(context),
+      create: (context) => viewModel,
       child: Consumer<SplashViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
@@ -46,7 +49,42 @@ class _SplashViewState extends State<SplashView> {
     return Container( color: _theme.colorScheme.surface, child: SafeArea(
       child: Scaffold(
         backgroundColor: _theme.colorScheme.surface,
-        body: SingleChildScrollView(
+        body: 
+        FutureBuilder(future: vm.isInitializingAsync(), builder: (context, isInitializing) {
+          if (isInitializing.data == true) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return _buildBody(context, vm);
+          }
+        }),
+        floatingActionButton: FutureBuilder<ThemeMode>(
+          future: vm.currentThemeMode,
+          builder: (context, themeMode) {
+            return IconButton(
+              icon: Icon(
+                themeMode.data == ThemeMode.light
+                    ? Icons.light_mode
+                    : (themeMode.data == ThemeMode.dark ? Icons.dark_mode : Icons.auto_awesome),
+                color: _theme.colorScheme.tertiary,
+              ),
+              onPressed: () {
+                vm.toggleLightDarkMode().then((value) {
+                  if (!context.mounted) return;
+                  BlastApp.of(context).changeTheme(value);
+
+                  vm.refresh();
+                });
+              },
+              tooltip: 'system/light/dark mode',
+            );
+          },
+        )
+        )));
+  }
+
+  Widget _buildBody(context, SplashViewModel vm) {
+    return 
+        SingleChildScrollView(
             child: Center(
                 child: Column(
           children: [
@@ -113,29 +151,10 @@ class _SplashViewState extends State<SplashView> {
                   );
                 }),
           ],
-        ))),
-        floatingActionButton: FutureBuilder<ThemeMode>(
-          future: vm.currentThemeMode,
-          builder: (context, themeMode) {
-            return IconButton(
-              icon: Icon(
-                themeMode.data == ThemeMode.light
-                    ? Icons.light_mode
-                    : (themeMode.data == ThemeMode.dark ? Icons.dark_mode : Icons.auto_awesome),
-                color: _theme.colorScheme.tertiary,
-              ),
-              onPressed: () {
-                vm.toggleLightDarkMode().then((value) {
-                  if (!context.mounted) return;
-                  BlastApp.of(context).changeTheme(value);
-
-                  vm.refresh();
-                });
-              },
-              tooltip: 'system/light/dark mode',
-            );
-          },
-        ))));
+        ))
+        
+        
+          );
   }
 
   ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {

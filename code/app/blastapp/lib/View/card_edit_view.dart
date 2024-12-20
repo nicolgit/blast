@@ -19,7 +19,7 @@ class CardEditView extends StatefulWidget {
   State<StatefulWidget> createState() => _CardEditViewState();
 }
 
-enum FocusOn { title, lastRow }
+enum FocusOn { title, lastRow, lastRowValue }
 
 class _CardEditViewState extends State<CardEditView> {
   FocusOn _focusOn = FocusOn.title;
@@ -137,7 +137,7 @@ class _CardEditViewState extends State<CardEditView> {
                 TextButton.icon(
                   onPressed: () {
                     vm.addAttribute(BlastAttributeType.typePassword);
-                    _focusOn = FocusOn.lastRow;
+                    _focusOn = FocusOn.lastRowValue;
                   },
                   icon: const Icon(Icons.lock),
                   label: const Text("Add secret"),
@@ -216,6 +216,7 @@ class _CardEditViewState extends State<CardEditView> {
                           textInputAction: TextInputAction.next,
                           controller: TextEditingController()..text = rows[index].value,
                           onChanged: (value) => vm.updateAttributeValue(index, value),
+                          autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
                           style: _widgetFactory.textTheme.labelMedium,
                         decoration: _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
                         ),

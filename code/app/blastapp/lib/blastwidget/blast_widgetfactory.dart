@@ -36,10 +36,14 @@ class BlastWidgetFactory {
         iconText += world[0].toUpperCase();
         i++;
       }
+    }
 
-      if (i == 3) {
-        break;
-      }
+    // remove from words all non-alphabetic characters
+    iconText = iconText.replaceAll(RegExp(r'[^a-zA-Z]'), '');
+
+    // max 3 characters
+    if (i>3) {
+      iconText = iconText.substring(0, 3);
     }
 
     return CircleAvatar(

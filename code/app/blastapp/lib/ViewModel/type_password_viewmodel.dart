@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastdocument.dart';

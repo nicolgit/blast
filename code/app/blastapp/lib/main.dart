@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
+import 'package:desktop_window/desktop_window.dart';
 
 import 'win32register/win32register_stub.dart'
     if (dart.library.html) 'package:blastapp/win32register/win32register_web.dart'
@@ -21,7 +22,11 @@ void main() async {
   await r
       .register('blastapp'); // register custom protocol for windows client only
 
+  await DesktopWindow.setMinWindowSize(const Size(020, 300));
+
   AppViewModel appViewModel = AppViewModel();
+
+
   runApp(BlastApp(await appViewModel.getAppTheme()));
 }
 

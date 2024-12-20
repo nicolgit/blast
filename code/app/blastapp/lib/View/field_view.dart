@@ -67,7 +67,7 @@ class _FieldViewState extends State<FieldView> {
                               value: QrCodeViewStyle.barcode, label: Text('bar'), icon: Icon(Icons.barcode_reader)),
                         ],
                         selected: <QrCodeViewStyle>{
-                          qrCodeStyle.data!,
+                          qrCodeStyle.data== null ? QrCodeViewStyle.barcode : qrCodeStyle.data!,
                         },
                         onSelectionChanged: (Set<QrCodeViewStyle> newSelection) {
                           vm.setCurrentQrCodeViewStyle(newSelection.first);
@@ -79,7 +79,9 @@ class _FieldViewState extends State<FieldView> {
               builder: (context, qrCodeStyle) {
                 Widget displayWidget;
 
-                switch (qrCodeStyle.data!) {
+                final qr = qrCodeStyle.data != null ? qrCodeStyle.data! : QrCodeViewStyle.qrcode;
+
+                switch (qr) {
                   case QrCodeViewStyle.text:
                     displayWidget = Text(vm.currentField,
                         style: const TextStyle(fontSize: 96),

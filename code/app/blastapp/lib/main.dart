@@ -22,7 +22,7 @@ void main() async {
   await r
       .register('blastapp'); // register custom protocol for windows client only
 
-  await DesktopWindow.setMinWindowSize(const Size(020, 300));
+  await DesktopWindow.setMinWindowSize(const Size(300, 300));
 
   AppViewModel appViewModel = AppViewModel();
 

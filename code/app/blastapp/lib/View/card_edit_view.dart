@@ -345,7 +345,7 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
-  Widget _buildTagsRow(CardEditViewModel vm) {
+  Wrap _buildTagsRow(CardEditViewModel vm) {
     List<Widget> rowItems = [];
     for (var tag in vm.currentCard.tags) {
       rowItems.add(_widgetFactory.blastTag(tag));
@@ -372,7 +372,7 @@ class _CardEditViewState extends State<CardEditView> {
       icon: const Icon(Icons.calculate),
       label: const Text("edit tags"),
     ));
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: rowItems);
+    return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
   }
 
   _iconTypeButton(CardEditViewModel vm, int index) {

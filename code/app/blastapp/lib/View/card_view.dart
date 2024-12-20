@@ -69,14 +69,16 @@ class _CardViewState extends State<CardView> {
                           ),
                         ],
                       ),
-                      Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child:
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Expanded(child: 
                                 Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                                    style: _widgetFactory.textTheme.titleLarge),
+                                  textAlign: TextAlign.center,
+                                    style: _widgetFactory.textTheme.titleLarge)),
                                 IconButton(
                                     icon: vm.currentCard.isFavorite
                                         ? Icon(
@@ -89,11 +91,12 @@ class _CardViewState extends State<CardView> {
                                       vm.toggleFavorite();
                                     })
                               ],
-                            ),
+                            )),
+                            Padding(padding: const EdgeInsets.all(12.0), child:
                             Text(
                               "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()}",
                               style: _widgetFactory.textTheme.labelSmall,
-                            ),
+                            )),
                             _rowOfTags(vm.currentCard.tags),
                             FutureBuilder<List<BlastAttribute>>(
                                 future: vm.getRows(),
@@ -104,10 +107,8 @@ class _CardViewState extends State<CardView> {
                                     ),
                                   );
                                 }),
-                          ]))
-                    ],
-                  ),
-                ))));
+                          ])) 
+                )));
   }
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
@@ -263,14 +264,14 @@ class _CardViewState extends State<CardView> {
     return myList;
   }
 
-  Row _rowOfTags(List<String> tags) {
+  Wrap _rowOfTags(List<String> tags) {
     List<Widget> rowItems = [];
     for (var tag in tags) {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center,
       children: rowItems,
     );
   }

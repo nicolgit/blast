@@ -384,12 +384,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     return myList;
   }
 
-  Widget _buildTagsRow(List<String> tags) {
+  Wrap _buildTagsRow(List<String> tags) {
     List<Widget> rowItems = [];
     for (var tag in tags) {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
-    return     Row(children: rowItems);
+    return     Wrap(
+      spacing: 6.0, runSpacing: 6.0,
+      children: rowItems);
   }
 
   Future _showDeleteCardDialog(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Blast.Model.DataFile
@@ -165,29 +159,6 @@ namespace Blast.Model.DataFile
             String textToEncrypt = FileReadable;
             var encryptedString = encryptString(algorithm, textToEncrypt);
             outputWriter.Write(encryptedString);
-            
-            /*
-            var encryptedString = encryptString(algorithm, LOREM_TEXT) ;
-
-            outputWriter.Write(encryptedString.Length);
-            outputWriter.Write(encryptedString);
-
-            for (int i = 0; i < FileReadable.Length; i += BLOCK_SIZE)
-            {
-                if (i + BLOCK_SIZE <= FileReadable.Length)
-                {
-                    encryptedString = encryptString(algorithm, FileReadable.Substring(i, BLOCK_SIZE));
-                    outputWriter.Write(encryptedString.Length);
-                    outputWriter.Write(encryptedString);
-                }
-                else
-                {
-                    encryptedString = encryptString(algorithm, FileReadable.Substring(i));
-                    outputWriter.Write(encryptedString.Length);
-                    outputWriter.Write(encryptedString);
-                }
-            }
-            */
 
             outputWriter.Close();
             this.FileEncrypted = outputStream.ToArray();

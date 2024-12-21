@@ -69,7 +69,7 @@ class OneDriveCloud extends Cloud {
 
     final onedriveData = await json.decode(response.body);
 
-    for (int i = 0; i < onedriveData['@odata.count']; i++) {
+    for (int i = 0; i < onedriveData['value'].length; i++) {
       var co = CloudObject(
         name: onedriveData['value'][i]['name'],
         path: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],

@@ -9,23 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
-import 'package:desktop_window/desktop_window.dart';
 
-import 'win32register/win32register_stub.dart'
-    if (dart.library.html) 'package:blastapp/win32register/win32register_web.dart'
-    if (dart.library.io) 'package:blastapp/win32register/win32register_mobile.dart';
+import 'specific/desktopwindow/blast_desktop_window_stub.dart'
+    if (dart.library.html) 'package:blastapp/specific/desktopwindow/desktopwindow_web.dart'
+    if (dart.library.io) 'package:blastapp/specific/desktopwindow/desktopwindow_mobile.dart';
+
+import 'specific/win32register/win32register_stub.dart'
+    if (dart.library.html) 'package:blastapp/specific/win32register/win32register_web.dart'
+    if (dart.library.io) 'package:blastapp/specific/win32register/win32register_mobile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  var r = getWin32Register();
-  await r
-      .register('blastapp'); // register custom protocol for windows client only
+  final r = getWin32Register();
+  await r.register('blastapp'); // register custom protocol for windows client only
 
-  await DesktopWindow.setMinWindowSize(const Size(300, 300));
+  // set min window size on desktop version
+  final d = getBlastDesktopWindow();
+  d.setMinWindowSize();
 
   AppViewModel appViewModel = AppViewModel();
-
 
   runApp(BlastApp(await appViewModel.getAppTheme()));
 }
@@ -37,8 +40,7 @@ class BlastApp extends StatefulWidget {
   @override
   State<BlastApp> createState() => BlastAppState(themeMode);
 
-  static BlastAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<BlastAppState>()!;
+  static BlastAppState of(BuildContext context) => context.findAncestorStateOfType<BlastAppState>()!;
 }
 
 class BlastAppState extends State<BlastApp> {
@@ -83,8 +85,7 @@ class BlastAppState extends State<BlastApp> {
     super.initState();
 
     if (kIsWeb) {
-      FlutterWindowClose.setWebReturnValue(
-          'File could not saved, are you sure?');
+      FlutterWindowClose.setWebReturnValue('File could not saved, are you sure?');
       return;
     } else {
       if (io.Platform.isWindows || io.Platform.isLinux || io.Platform.isMacOS) {

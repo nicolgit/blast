@@ -32,7 +32,7 @@ dependencies:
   qr_flutter: ^4.1.0
   barcode_widget: ^2.0.4
   mask_text_input_formatter: ^2.9.0
-  desktop_window: ^0.4.2
+  window_manager: ^0.4.3
 
 flutter_launcher_icons:
  image_path: "assets/general/app-icon.png"

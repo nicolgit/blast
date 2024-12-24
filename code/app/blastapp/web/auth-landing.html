@@ -10,8 +10,14 @@
 </head>
 
 <body>
+
+    this window should close automatically and send the following message to the caller:
+<div id="message"></div>
+
 </body>
 <script>
+    document.getElementById('message').innerHTML = window.location.href;
+
     window.opener.postMessage(window.location.href, '*');
 </script>
 

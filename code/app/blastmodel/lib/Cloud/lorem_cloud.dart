@@ -62,7 +62,7 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  Future<Uint8List> getFile(String id) async {
+  Future<CloudFile> getFile(String id) async {
     final random = Random();
     await Future.delayed(Duration(seconds: random.nextInt(5)));
 
@@ -71,7 +71,9 @@ class LoremCloud extends Cloud {
 
     CurrentFileService().newPassword("password");
     final encodedFile = CurrentFileService().encodeFile(jsonDocument);
-    return encodedFile;
+
+    final file = CloudFile(data: encodedFile, lastModified: DateTime.now(), id: id);
+    return file;
   }
 
   @override
@@ -176,13 +178,16 @@ class LoremCloud extends Cloud {
   }
 
   @override
-  Future<bool> setFile(String id, Uint8List bytes) {
-    return Future.value(true);
+  Future<CloudFile> setFile(String id, Uint8List bytes) {
+    final CloudFile cf = CloudFile(data: bytes, lastModified: DateTime.now(), id: id);
+
+    return Future.value(cf);
   }
 
   @override
-  Future<String> createFile(String path, Uint8List bytes) {
-    Random random = Random();
-    return Future.value(random.nextInt(1000000).toString());
+  Future<CloudFile> createFile(String path, Uint8List bytes) {
+    final CloudFile cf = CloudFile(data: bytes, lastModified: DateTime.now(), id: path);
+
+    return Future.value(cf);
   }
 }

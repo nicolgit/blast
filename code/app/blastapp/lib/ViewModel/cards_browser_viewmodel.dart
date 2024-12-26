@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -43,13 +44,14 @@ class CardsBrowserViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveCommand() {
+  void saveCommand() async {
     fileService.currentFileDocument!.isChanged = false;
 
     fileService.currentFileJsonString = fileService.currentFileDocument.toString();
     fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!);
-    fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
-
+    final CloudFile cf = await fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
+    fileService.currentFileInfo!.lastModified = cf.lastModified;
+    
     notifyListeners();
   }
 

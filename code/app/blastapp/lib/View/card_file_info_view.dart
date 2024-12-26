@@ -50,8 +50,8 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
             child: Column(children: [
               Text("Recovery Key", style: _widgetFactory.textTheme.titleMedium),
               const SizedBox(height: 24),
-              SelectableText(vm.getRecoveryKey(),
-                  style: _widgetFactory.textTheme.titleLarge, textAlign: TextAlign.center),
+                SelectableText(vm.getRecoveryKey(),
+                  style: _widgetFactory.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
               IconButton(
                 onPressed: () {
                   vm.copyToClipboard();
@@ -90,7 +90,10 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
                     FilledButton(
                       onPressed: () => vm.closeCommand(),
                       child: const Text('continue'),
-                    )
+                    ),
+                    const SizedBox(height: 12),
+                    Text ("last update: ${vm.fileService.currentFileInfo?.lastModified}", style: _widgetFactory.textTheme.titleSmall),
+              
                   ]))
             ]),
           ),

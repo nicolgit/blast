@@ -35,17 +35,22 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  Future<Uint8List> getFile(String id) async {
+  Future<CloudFile> getFile(String id) async {
     final file = File(id);
-    return await file.readAsBytes();
+
+    return CloudFile(data: await file.readAsBytes(), lastModified: file.lastModifiedSync(), id: id);
   }
 
   @override
-  Future<bool> setFile(String id, Uint8List bytes) async {
+  Future<CloudFile> setFile(String id, Uint8List bytes) async {
     final file = File(id);
     await file.writeAsBytes(bytes);
 
-    return Future.value(true);
+    final lastModified = file.lastModifiedSync();
+    
+    final CloudFile cf = CloudFile(data: bytes, lastModified: lastModified, id: id);
+
+    return Future.value(cf);
   }
 
   @override
@@ -71,8 +76,9 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
-  Future<String> createFile(String path, Uint8List bytes) async {
-    await setFile(path, bytes);
-    return path;
+  Future<CloudFile> createFile(String path, Uint8List bytes) async {
+    final cf = await setFile(path, bytes);
+
+    return cf;
   }
 }

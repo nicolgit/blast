@@ -7,6 +7,8 @@ class BlastDesktopWindowMobile extends BlastDesktopWindow {
   @override
   void setMinWindowSize() async {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      await windowManager.ensureInitialized();
+      
       windowManager.setMinimumSize(const Size(350, 350));
     }
   }

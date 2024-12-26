@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -94,8 +95,10 @@ class CreatePasswordViewModel extends ChangeNotifier {
     CurrentFileService().currentFileEncrypted =
         CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
 
-    var fileId = await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
-    file.fileUrl = fileId;
+    final CloudFile cf = await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+
+    CurrentFileService().currentFileInfo!.lastModified =cf.lastModified;    
+    file.fileUrl = cf.id;
 
     SettingService().addRecentFile(file);
 

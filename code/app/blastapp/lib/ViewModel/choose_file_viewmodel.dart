@@ -57,8 +57,11 @@ class ChooseFileViewModel extends ChangeNotifier {
             fileUrl: object.url,
             jsonCredentials: currentFileService.cloud!.cachedCredentials);
 
-        currentFileService.currentFileEncrypted =
-            await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
+        final cloudFile = await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
+        currentFileService.currentFileInfo!.lastModified = cloudFile.lastModified;
+
+        currentFileService.currentFileEncrypted = cloudFile.data;
+            
 
         // check if the file is a valid blast file
         currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);

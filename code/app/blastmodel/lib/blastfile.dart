@@ -9,6 +9,7 @@ class BlastFile {
   final String cloudId;
   String fileName;
   String fileUrl;
+  DateTime? lastModified;
   String? jsonCredentials;
 
   BlastFile({required this.cloudId, required this.fileName, required this.fileUrl, required this.jsonCredentials});

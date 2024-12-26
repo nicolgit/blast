@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class CloudObject {
   final String name;
   final String path;
@@ -14,4 +16,12 @@ class CloudObject {
     required this.size,
     required this.isDirectory,
   });
+}
+
+class CloudFile{
+  Uint8List data;
+  DateTime lastModified;
+  String id;
+
+  CloudFile({required this.data, required this.lastModified, required this.id});
 }

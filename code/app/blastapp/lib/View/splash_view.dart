@@ -26,6 +26,7 @@ class _SplashViewState extends State<SplashView> {
     // open the most recent file on first load
     viewModel.context = context;
     viewModel.openMostRecentFile();
+    
     viewModel.isInitializing = false;
   }
 

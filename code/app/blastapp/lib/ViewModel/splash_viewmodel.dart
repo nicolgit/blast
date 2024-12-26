@@ -90,12 +90,13 @@ class SplashViewModel extends ChangeNotifier {
       CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
 
-      CurrentFileService().currentFileEncrypted =
-          await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
-    } finally {
+      final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
+      CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
+
+      CurrentFileService().currentFileEncrypted = myFile.data;
+          
       isLoading = false;
       notifyListeners();
-    }
     
     if (!myContext.mounted) return;
     var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
@@ -104,6 +105,14 @@ class SplashViewModel extends ChangeNotifier {
 
       if (!myContext.mounted) return;
       myContext.router.push(const CardsBrowserRoute());
+    }
+
+    } catch (e) {
+      print(e);
+    }  
+    finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 

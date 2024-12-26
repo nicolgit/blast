@@ -56,8 +56,8 @@ class BlastOAuthMobile extends BlastOAuth {
       }
     });
 
-    //wait for authentication, max 30 seconds
-    int counter = 0, timeout = 30;
+    //wait for authentication, max 15 seconds
+    int counter = 0, timeout = 15;
     while (responseUri == null && counter++ < timeout) {
       await Future.delayed(const Duration(seconds: 1));
 

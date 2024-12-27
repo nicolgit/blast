@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_viewmodel.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/main.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/material.dart';
+import 'package:humanizer/humanizer.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +22,15 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView> {
   final viewModel = SplashViewModel();
+  final Duration _inactivityTimerDuration = const Duration(minutes: 5);
+  Timer ?_inactivityTimer;
 
   @override
   void initState() {
     super.initState();
+
+    // initialize inactivity timer
+    _initializeInactivityTimer();
 
     // open the most recent file on first load
     viewModel.context = context;
@@ -47,7 +56,19 @@ class _SplashViewState extends State<SplashView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Container( color: _theme.colorScheme.surface, child: SafeArea(
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        _initializeInactivityTimer();
+      },
+      onPanDown: (_) {
+        _initializeInactivityTimer();
+      },
+      onPanUpdate: (_) {
+        _initializeInactivityTimer();
+      },
+      
+      child:Container( color: _theme.colorScheme.surface, child: SafeArea(
       child: Scaffold(
         backgroundColor: _theme.colorScheme.surface,
         body: 
@@ -80,7 +101,7 @@ class _SplashViewState extends State<SplashView> {
             );
           },
         )
-        )));
+        ))));
   }
 
   Widget _buildBody(context, SplashViewModel vm) {
@@ -168,6 +189,7 @@ class _SplashViewState extends State<SplashView> {
     var myList = ListView.builder(
       shrinkWrap: true,
       itemCount: files.length,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, file) {
         return Padding(
             padding: const EdgeInsets.all(6),
@@ -241,4 +263,54 @@ class _SplashViewState extends State<SplashView> {
 
     return myList;
   }
+
+  // start/restart timer
+    void _initializeInactivityTimer() {
+      if (_inactivityTimer != null) {
+        _inactivityTimer?.cancel();
+      }
+
+      print('inactivity timer started! ${_inactivityTimerDuration.toApproximateTime(isRelativeToNow: false)}');
+      _inactivityTimer = Timer(_inactivityTimerDuration, () => _handleInactivity());
+    }
+
+    void _handleInactivity() {
+      _inactivityTimer?.cancel();
+      _inactivityTimer = null;
+
+      // check if the current page is the splash screen
+      if (context.router.current.name == SplashRoute.name) {
+        print('**** inactivity timer ended, you are already on the splash screen, nothing to do.');
+        return;
+      }
+
+      print('**** inactivity timer ended!');
+
+      // shows a modal popup on the center of the screen and wait user tap to continue
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+        title: const Text('Session timeout'),
+        content: Text('You have been inactive for the last ${_inactivityTimerDuration.toApproximateTime(isRelativeToNow: false)} . for security reason the session has been closed.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Continue'),
+            onPressed: () {
+          Navigator.of(context).pop();
+          _initializeInactivityTimer();
+            },
+          ),
+        ],
+          );
+        },
+      );
+
+      // navigate back up to the splash screen
+      context.router.popUntil((route) => route.settings.name == SplashRoute.name);
+
+      //context.router.push(const SplashRoute()); 
+    }
+
 }

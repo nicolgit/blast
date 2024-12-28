@@ -77,40 +77,38 @@ class CardsBrowserViewModel extends ChangeNotifier {
     
     String? path = await FilePicker.platform.getDirectoryPath();
 
-    if (path != null) {
-      String name = 'blastapp-export';
-      String fileName = '$path/$name.json';
+    String name = 'blastapp-export';
+    String fileName = '$path/$name.json';
 
-      int i = 0;
-      while (await File(fileName).exists()) {
-        if (i == 0) {
-          fileName = '$path/$name.json';
-        } else {
-          fileName = '$path/$name-$i.json';
-        }
-
-        if (i == 5) {
-          if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Too many files with the same name. Please delete some files and try again.'),
-          ));
-          return;
-        }
-
-        i++;
+    int i = 0;
+    while (await File(fileName).exists()) {
+      if (i == 0) {
+        fileName = '$path/$name.json';
+      } else {
+        fileName = '$path/$name-$i.json';
       }
 
-      File file = File(fileName);
+      if (i == 5) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Too many files with the same name. Please delete some files and try again.'),
+        ));
+        return;
+      }
 
-      String jsonString = fileService.currentFileDocument!.toString();
-      file.writeAsStringSync(jsonString);
-
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Data exported to $fileName.'),
-      ));
+      i++;
     }
-  }
+
+    File file = File(fileName);
+
+    String jsonString = fileService.currentFileDocument!.toString();
+    file.writeAsStringSync(jsonString);
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Data exported to $fileName.'),
+    ));
+    }
 
   clearSearchTextCommand() {
     searchText = "";

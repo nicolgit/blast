@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io' as io;
-import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/app_view_model.dart';
+import 'package:blastapp/ViewModel/splash_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blast_theme.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:humanizer/humanizer.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -48,6 +49,8 @@ class BlastApp extends StatefulWidget {
 class BlastAppState extends State<BlastApp> {
   ThemeMode _themeMode;
   BlastAppState(this._themeMode);
+  final Duration _inactivityTimerDuration = const Duration(minutes: 5);
+  Timer ?_inactivityTimer;
 
   late BlastWidgetFactory _widgetFactory;
 
@@ -55,7 +58,19 @@ class BlastAppState extends State<BlastApp> {
   Widget build(BuildContext context) {
     _widgetFactory = BlastWidgetFactory(context);
 
-    return GlobalLoaderOverlay(
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        _initializeInactivityTimer();
+      },
+      onPanDown: (_) {
+        _initializeInactivityTimer();
+      },
+      onPanUpdate: (_) {
+        _initializeInactivityTimer();
+      },
+      
+      child:GlobalLoaderOverlay(
         overlayWidgetBuilder: (_) {
           return const Center(child: CircularProgressIndicator());
         },
@@ -73,7 +88,7 @@ class BlastAppState extends State<BlastApp> {
                   ThemeMode.dark for dark theme
               */
           ),
-        ));
+        )));
   }
 
   void changeTheme(ThemeMode themeMode) {
@@ -85,6 +100,9 @@ class BlastAppState extends State<BlastApp> {
   @override
   void initState() {
     super.initState();
+
+    // initialize inactivity timer
+    _initializeInactivityTimer();
 
     if (kIsWeb) {
       FlutterWindowClose.setWebReturnValue('File could not saved, are you sure?');
@@ -111,6 +129,33 @@ class BlastAppState extends State<BlastApp> {
       }
     }
   }
+
+  // start/restart timer
+    void _initializeInactivityTimer() {
+      if (_inactivityTimer != null) {
+        _inactivityTimer?.cancel();
+      }
+
+      print('inactivity timer started! ${_inactivityTimerDuration.toApproximateTime(isRelativeToNow: false)}');
+      _inactivityTimer = Timer(_inactivityTimerDuration, () => _handleInactivity());
+    }
+
+    void _handleInactivity() {
+      _inactivityTimer?.cancel();
+      _inactivityTimer = null;
+
+      print('**** inactivity timer ended!');
+      
+      SplashViewModel vm =SplashViewModel(); // singleton reference
+      
+      if (vm.closeAll(_inactivityTimerDuration) == true) {
+        _initializeInactivityTimer();
+      } 
+      else
+      {
+        print('**** inactivity timer ended, you are already on the splash screen, nothing to do.');
+      }
+    }
 
   final _appRouter = BlastRouter();
 }

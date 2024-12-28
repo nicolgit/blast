@@ -8,15 +8,23 @@ import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:humanizer/humanizer.dart';
 
 class SplashViewModel extends ChangeNotifier {
+
+  // SplashViewModel singleton implementation begin
+  SplashViewModel._privateConstructor();
+  static final SplashViewModel _instance = SplashViewModel._privateConstructor();
+  factory SplashViewModel() {
+    return _instance;
+  }
+  // singleton end
+
   BuildContext? context;
 
   bool isInitializing = true;
   bool isLoading = false;
   Future<ThemeMode> get currentThemeMode => SettingService().appTheme;
-
-  SplashViewModel();
 
   Future<bool> eulaAccepted() async {
     return SettingService().eulaAccepted;
@@ -155,5 +163,37 @@ class SplashViewModel extends ChangeNotifier {
 
   Future<bool> isInitializingAsync() async {
     return isInitializing;
+  }
+
+  bool closeAll(Duration d) {
+      // check if the current page is already the splash screen
+      if (context?.router.current.name == SplashRoute.name) {
+        return false;
+      }
+
+      // navigate back up to the splash screen
+      context?.router.popUntil((route) => route.settings.name == SplashRoute.name);
+
+      showDialog(
+        context: context!,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+        title: const Text('Session timeout'),
+        content: Text('You have been inactive for the last ${d.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Continue'),
+            onPressed: () {
+          Navigator.of(context).pop();
+          
+            },
+          ),
+        ],
+          );
+        },
+      );
+
+      return true;
   }
 }

@@ -101,7 +101,6 @@ class _FieldViewState extends State<FieldView> {
                         ));
                     break;
                   case QrCodeViewStyle.qrcode:
-                  default:
                     displayWidget = Expanded(
                         child: Align(
                             alignment: Alignment.center,

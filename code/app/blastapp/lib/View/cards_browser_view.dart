@@ -95,11 +95,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     IconButton(
                       icon: const Icon(Icons.save),
                       tooltip: 'save',
-                      onPressed: () {
-                        vm.saveCommand();
+                      onPressed: () async {
+                        if (await vm.saveCommand()) {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("file saved successfully!"),
                         ));
+                        }
                       },
                     ),
                     IconButton(
@@ -125,15 +126,16 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         );
                         Widget okButton = FilledButton(
                           child: Text("Yes save it", style: _widgetFactory.textTooltip.labelLarge),
-                          onPressed: () {
+                          onPressed: () async {
                             Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                            vm.saveCommand();
+                            await vm.saveCommand();
                             vm.closeCommand();
                           },
                         );
 
                         if (vm.isFileChanged()) {
                           AlertDialog alert = AlertDialog(
+                            backgroundColor: Colors.white,
                             title: const Text("File changed"),
                             content: const Text("Do you want to save it before closing?"),
                             actions: [
@@ -174,11 +176,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                                   padding: const EdgeInsets.all(6.0),
                                   child: FilledButton(
                                     child: const Text('here'),
-                                    onPressed: () {
-                                      vm.saveCommand();
+                                    onPressed: () async {
+                                      if (await vm.saveCommand()){
+                                        if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                         content: Text("file saved successfully!"),
                                       ));
+                                        }
+                                      }
                                     },
                                   )),
                               Text('to save', style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
@@ -242,6 +247,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
                   if (vm.isFileNotEmpty()) {
                     AlertDialog alert = AlertDialog(
+                      backgroundColor: Colors.white,
                       title: const Text("import from another password manager"),
                       content: const Text(
                           "WARNING: your current Blast file is not empty. To import data you must have an empty file."),
@@ -399,6 +405,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: Row(
             children: [
               const Text('Delete '),

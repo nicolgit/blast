@@ -226,7 +226,6 @@ class _CardViewState extends State<CardView> {
                   onTap: () async {},
                 )));
           case BlastAttributeType.typeString:
-          default:
             return Padding(
                 padding: EdgeInsets.only(left: 12, right: 12),
                 child: Card(

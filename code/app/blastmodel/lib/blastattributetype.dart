@@ -25,8 +25,6 @@ extension BlastAttributeTypeExtension on BlastAttributeType {
         return 'URL attribute';
       case BlastAttributeType.typeHeader:
         return 'Header attribute';
-      default:
-        return 'Unknown';
     }
   }
 }

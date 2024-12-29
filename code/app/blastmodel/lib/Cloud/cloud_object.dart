@@ -18,10 +18,15 @@ class CloudObject {
   });
 }
 
-class CloudFile{
-  Uint8List data;
+class CloudFileInfo {
   DateTime lastModified;
   String id;
 
-  CloudFile({required this.data, required this.lastModified, required this.id});
+  CloudFileInfo({required this.lastModified, required this.id});
+}
+
+class CloudFile extends CloudFileInfo {
+  Uint8List data;
+
+  CloudFile({required this.data, required super.lastModified, required super.id});
 }

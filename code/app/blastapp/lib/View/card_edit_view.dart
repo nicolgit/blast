@@ -388,8 +388,6 @@ class _CardEditViewState extends State<CardEditView> {
         icon = const Icon(Icons.lock);
       case BlastAttributeType.typeURL:
         icon = const Icon(Icons.link);
-      default:
-        icon = const Icon(Icons.error);
     }
 
     return IconButton(

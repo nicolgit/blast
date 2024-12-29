@@ -179,6 +179,7 @@ class SplashViewModel extends ChangeNotifier {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Colors.white,
         title: const Text('Session timeout'),
         content: Text('You have been inactive for the last ${d.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
         actions: <Widget>[

@@ -190,4 +190,12 @@ class LoremCloud extends Cloud {
 
     return Future.value(cf);
   }
+  
+  @override
+  Future<CloudFileInfo> getFileInfo(String id) {
+    CloudFileInfo cfi = CloudFileInfo(lastModified: DateTime.now(), id: id);
+
+    return Future.value(cfi);
+  }
+  
 }

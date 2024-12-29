@@ -130,7 +130,7 @@ class OneDriveCloud extends Cloud {
   @override
   Future<CloudFile> setFile(String id, Uint8List bytes) async {
     // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
-    // PUT /me/drive/items/{item-id}/content
+    // PUT /me/drive/items/{item-id}/contents
 
     var client = await _oauth.createClient();
     var response =
@@ -177,12 +177,22 @@ class OneDriveCloud extends Cloud {
 
     final fileId =jsonResponse['id'];
 
-    final fileInfo = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$fileId'));
+    final CloudFileInfo cfi = await getFileInfo(id);
+
+    final CloudFile cf = CloudFile(data: bytes, lastModified: cfi.lastModified, id: fileId);
+    return cf;
+  }
+  
+  @override
+  Future<CloudFileInfo> getFileInfo(String id) async {
+    
+    var client = await _oauth.createClient();
+    final fileInfo = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id'));
     final fileInfoDecoded = await json.decode(fileInfo.body);
     final lastmodified = fileInfoDecoded["lastModifiedDateTime"];
     final lastModifiedDateTime = DateTime.parse(lastmodified);
 
-    final CloudFile cf = CloudFile(data: bytes, lastModified: lastModifiedDateTime, id: fileId);
-    return cf;
+    final CloudFileInfo cfi = CloudFileInfo(lastModified: lastModifiedDateTime, id: id);
+    return cfi;
   }
 }

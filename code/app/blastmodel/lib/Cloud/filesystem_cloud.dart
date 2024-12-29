@@ -81,4 +81,15 @@ class FileSystemCloud extends Cloud {
 
     return cf;
   }
+  
+  @override
+  Future<CloudFileInfo> getFileInfo(String id) {
+    final file = File(id);
+
+    final CloudFileInfo cfi = CloudFileInfo(
+      id: id,
+      lastModified: file.lastModifiedSync());
+
+    return Future.value(cfi);
+  }
 }

@@ -29,7 +29,7 @@ class _FieldViewState extends State<FieldView> {
   }
 
   late ThemeData _theme;
-  late TextTheme _textTheme;
+  //late TextTheme _textTheme;
 
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
     _theme = Theme.of(context);

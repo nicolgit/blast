@@ -149,8 +149,8 @@ class TypePasswordViewModel extends ChangeNotifier {
       isOk = false;
     }
 
-    var x = CurrentFileService().currentFileDocument;
-    var y = CurrentFileService().currentFileJsonString;
+    //var x = CurrentFileService().currentFileDocument;
+    //var y = CurrentFileService().currentFileJsonString;
 
     _isCheckingPassword = false;
     notifyListeners();

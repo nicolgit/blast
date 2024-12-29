@@ -33,7 +33,7 @@ class _FieldViewState extends State<FieldView> {
 
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+    //_textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return Container( color: _theme.colorScheme.surface, child: SafeArea( child: Scaffold(
         backgroundColor: _theme.colorScheme.surface,

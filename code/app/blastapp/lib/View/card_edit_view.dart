@@ -46,67 +46,69 @@ class _CardEditViewState extends State<CardEditView> {
     _widgetFactory = BlastWidgetFactory(context);
     _theme = _widgetFactory.theme;
 
-    return Container( color: _theme.colorScheme.surface, child:
-    SafeArea ( child: Scaffold(
-      backgroundColor: _widgetFactory.viewBackgroundColor(),
-        body: Center(
-      child: Column(
-        children: [
-          AppBar(
-            automaticallyImplyLeading: false,
-            leading: BackButton(
-              onPressed: () => _showChangedDialog(context, vm),
-            ),
-            title: Text('Edit Card ${vm.currentCard.id}'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.save),
-                tooltip: 'Save',
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    vm.saveCommand();
-                  }
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                tooltip: 'Delete',
-                onPressed: () async {
-                  await _showDeleteCardDialog(context, vm);
-                },
-              ),
-            ],
-          ),
-          Padding(padding: const EdgeInsets.all(6.0), child:
-          Form(
-            key: _formKey,
-            child: TextFormField(
-              initialValue: vm.currentCard.title,
-              onChanged: (value) {
-                vm.updateTitle(value);
-              },
-              validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
-              autofocus: _focusOn == FocusOn.title,
-              textInputAction: TextInputAction.next,
-              style: _widgetFactory.textTheme.labelMedium,
-              decoration: 
-              _widgetFactory.blastTextFieldDecoration('Card title', 'Choose a title for the card')
-              ),
-          )),
-          _buildTagsRow(vm),
-          FutureBuilder<List<BlastAttribute>>(
-            future: vm.getRows(),
-            builder: (context, snapshot) {
-              return Expanded(
-                child: Container(
-                  child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    ))));
+    return Container(
+        color: _theme.colorScheme.surface,
+        child: SafeArea(
+            child: Scaffold(
+                backgroundColor: _widgetFactory.viewBackgroundColor(),
+                body: Center(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        leading: BackButton(
+                          onPressed: () => _showChangedDialog(context, vm),
+                        ),
+                        title: Text('Edit Card ${vm.currentCard.id}'),
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.save),
+                            tooltip: 'Save',
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                vm.saveCommand();
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            tooltip: 'Delete',
+                            onPressed: () async {
+                              await _showDeleteCardDialog(context, vm);
+                            },
+                          ),
+                        ],
+                      ),
+                      Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Form(
+                            key: _formKey,
+                            child: TextFormField(
+                                initialValue: vm.currentCard.title,
+                                onChanged: (value) {
+                                  vm.updateTitle(value);
+                                },
+                                validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                                autofocus: _focusOn == FocusOn.title,
+                                textInputAction: TextInputAction.next,
+                                style: _widgetFactory.textTheme.labelMedium,
+                                decoration: _widgetFactory.blastTextFieldDecoration(
+                                    'Card title', 'Choose a title for the card')),
+                          )),
+                      _buildTagsRow(vm),
+                      FutureBuilder<List<BlastAttribute>>(
+                        future: vm.getRows(),
+                        builder: (context, snapshot) {
+                          return Expanded(
+                            child: Container(
+                              child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ))));
   }
 
   ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
@@ -115,9 +117,7 @@ class _CardEditViewState extends State<CardEditView> {
         itemBuilder: (context, index) {
           if (index == rows.length) {
             return Column(children: [
-              Row(crossAxisAlignment: CrossAxisAlignment.center, 
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
                 TextButton.icon(
                   onPressed: () {
                     vm.addAttribute(BlastAttributeType.typeString);
@@ -158,75 +158,78 @@ class _CardEditViewState extends State<CardEditView> {
                       vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
                     },
                   ),
-                  Expanded(child: Text(vm.currentCard.notes ?? "", overflow: TextOverflow.ellipsis, maxLines: 1,
-                      style: _widgetFactory.textTheme.labelMedium)),
+                  Expanded(
+                      child: Text(vm.currentCard.notes ?? "",
+                          overflow: TextOverflow.ellipsis, maxLines: 1, style: _widgetFactory.textTheme.labelMedium)),
                 ],
               ),
             ]);
           }
 
           return ListTile(
-            title: 
-              Container(
-                decoration: BoxDecoration(
+            title: Container(
+              decoration: BoxDecoration(
                   color: _widgetFactory.theme.colorScheme.surfaceContainerLow,
-                  borderRadius: const BorderRadius.all(Radius.circular(6))
-                ),
-                padding: const EdgeInsets.all(8.0),
-                child:
-              Column(children: [
-              Row(
-              children: <Widget>[
-                Text("$index", style: _widgetFactory.textTheme.labelSmall,),
-                const SizedBox(width: 3),
-                Expanded(
-                  flex: 1,
-                  child: Column(
+                  borderRadius: const BorderRadius.all(Radius.circular(6))),
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
                     children: <Widget>[
-                      TextField(
-                        textInputAction: TextInputAction.next,
-                        controller: TextEditingController()..text = rows[index].name,
-                        onChanged: (value) => vm.updateAttributeName(index, value),
-                        autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
-                        style: _widgetFactory.textTheme.labelMedium,
-                        decoration: 
-                        _widgetFactory.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
-                      )
+                      Text(
+                        "$index",
+                        style: _widgetFactory.textTheme.labelSmall,
+                      ),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: <Widget>[
+                            TextField(
+                              textInputAction: TextInputAction.next,
+                              controller: TextEditingController()..text = rows[index].name,
+                              onChanged: (value) => vm.updateAttributeName(index, value),
+                              autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
+                              style: _widgetFactory.textTheme.labelMedium,
+                              decoration: _widgetFactory.blastTextFieldDecoration(
+                                  'Attribute name', 'Choose the attribute name'),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 3),
+                      _moveUpButton(vm, index),
+                      _moveDownButton(vm, index),
+                      _iconTypeButton(vm, index),
+                      IconButton(
+                        onPressed: () {
+                          vm.deleteAttribute(index);
+                        },
+                        icon: const Icon(Icons.delete),
+                        tooltip: "delete",
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 3),
-                _moveUpButton(vm, index),
-                _moveDownButton(vm, index),
-                _iconTypeButton(vm, index),
-                IconButton(
-                  onPressed: () {
-                    vm.deleteAttribute(index);
-                  },
-                  icon: const Icon(Icons.delete),
-                  tooltip: "delete",
-                ),
-              ],
-            ),
-            Visibility(
-                  visible: rows[index].type != BlastAttributeType.typeHeader,
-                  child: 
-                  Padding( padding: const EdgeInsets.all(12.0), child:
-                        TextField(  
-                          textInputAction: TextInputAction.next,
-                          controller: TextEditingController()..text = rows[index].value,
-                          onChanged: (value) => vm.updateAttributeValue(index, value),
-                          autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
-                          style: _widgetFactory.textTheme.labelMedium,
-                        decoration: _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
-                        ),
+                  Visibility(
+                    visible: rows[index].type != BlastAttributeType.typeHeader,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextField(
+                        textInputAction: TextInputAction.next,
+                        controller: TextEditingController()..text = rows[index].value,
+                        onChanged: (value) => vm.updateAttributeValue(index, value),
+                        autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
+                        style: _widgetFactory.textTheme.labelMedium,
+                        decoration:
+                            _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                      ),
+                    ),
                   ),
+                ],
+              ),
             ),
-          ],
-          ),
-        ),);
-      }
-    );
+          );
+        });
 
     return myList;
   }
@@ -353,22 +356,23 @@ class _CardEditViewState extends State<CardEditView> {
     }
     rowItems.add(TextButton.icon(
       onPressed: () async {
-         await showDialog(
-    context: context,
-    builder: (ctx) {
-      return  MultiSelectDialog(
-        title: const Text("Select tags"),
-        items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
-        initialValue: vm.currentCard.tags,
-        onConfirm: (values) { 
-          vm.updateTags(List<String>.from(values));
-        },
-        listType: MultiSelectListType.CHIP,
-        selectedColor: _widgetFactory.theme.colorScheme.primary,
-        selectedItemsTextStyle: _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
-      );
-    },
-  );
+        await showDialog(
+          context: context,
+          builder: (ctx) {
+            return MultiSelectDialog(
+              title: const Text("Select tags"),
+              items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
+              initialValue: vm.currentCard.tags,
+              onConfirm: (values) {
+                vm.updateTags(List<String>.from(values));
+              },
+              listType: MultiSelectListType.CHIP,
+              selectedColor: _widgetFactory.theme.colorScheme.primary,
+              selectedItemsTextStyle:
+                  _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
+            );
+          },
+        );
       },
       icon: const Icon(Icons.calculate),
       label: const Text("edit tags"),
@@ -398,7 +402,7 @@ class _CardEditViewState extends State<CardEditView> {
       tooltip: "${vm.currentCard.rows[index].type.description}\n tap to change",
     );
   }
-  
+
   _moveUpButton(CardEditViewModel vm, int index) {
     if (index == 0) {
       return const SizedBox(width: 0);
@@ -412,7 +416,7 @@ class _CardEditViewState extends State<CardEditView> {
       tooltip: "move up",
     );
   }
-  
+
   _moveDownButton(CardEditViewModel vm, int index) {
     if (index == vm.currentCard.rows.length - 1) {
       return const SizedBox(width: 0);

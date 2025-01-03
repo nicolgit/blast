@@ -11,7 +11,7 @@ dependencies:
   kt_dart: ^1.1.0
   flutter:
     sdk: flutter
-  blastmodel:
+  blastmodel: 
     path: ../blastmodel
   provider: ^6.0.5
   auto_route: ^7.8.4

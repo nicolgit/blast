@@ -33,7 +33,6 @@ class CardEditViewModel extends ChangeNotifier {
     }
 
     CurrentFileService().currentFileDocument!.isChanged = true;
-
     context.router.maybePop();
   }
 
@@ -118,30 +117,17 @@ class CardEditViewModel extends ChangeNotifier {
 
   deleteCard() {
     CurrentFileService().currentFileDocument!.cards.remove(_sourceCard);
-
     CurrentFileService().currentFileDocument!.isChanged = true;
     context.router.maybePop();
   }
 
-  void moveUp(int index) {
-    if (index > 0) {
-      isChanged = true;
-      var temp = currentCard.rows[index - 1];
-      currentCard.rows[index - 1] = currentCard.rows[index];
-      currentCard.rows[index] = temp;
+  void moveRow(int oldIndex, int newIndex) {
+    newIndex = newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-      notifyListeners();
-    }
-  }
+    final oldItem = currentCard.rows.removeAt(oldIndex);
+    currentCard.rows.insert(newIndex, oldItem);
 
-  void moveDown(int index) {
-    if (index < currentCard.rows.length - 1) {
-      isChanged = true;
-      var temp = currentCard.rows[index + 1];
-      currentCard.rows[index + 1] = currentCard.rows[index];
-      currentCard.rows[index] = temp;
-
-      notifyListeners();
-    }
+    isChanged = true;
+    notifyListeners();
   }
 }

@@ -5,6 +5,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
@@ -108,128 +109,134 @@ class _CardEditViewState extends State<CardEditView> {
                       ),
                     ],
                   ),
+                ),
+                bottomSheet: Container(
+                  decoration: BoxDecoration(
+                    color: _theme.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3.0),
+                      topRight: Radius.circular(3.0),
+                    ),
+                  ),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          vm.addAttribute(BlastAttributeType.typeString);
+                          _focusOn = FocusOn.lastRow;
+                        },
+                        icon: const Icon(Icons.description),
+                        label: const Text("Add row"),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          vm.addAttribute(BlastAttributeType.typeHeader);
+                          _focusOn = FocusOn.lastRow;
+                        },
+                        icon: const Icon(Icons.text_increase),
+                        label: const Text("Add header"),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          vm.addAttribute(BlastAttributeType.typePassword);
+                          _focusOn = FocusOn.lastRowValue;
+                        },
+                        icon: const Icon(Icons.lock),
+                        label: const Text("Add secret"),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          vm.addAttribute(BlastAttributeType.typeURL);
+                        },
+                        icon: const Icon(Icons.link),
+                        label: const Text("Add URL"),
+                      ),
+                    ]),
+                    Row(
+                      children: [
+                        TextButton(
+                          child: const Text('edit notes > '),
+                          onPressed: () async {
+                            vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                          },
+                        ),
+                        Expanded(
+                            child: Text(vm.currentCard.notes ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: _widgetFactory.textTheme.labelMedium)),
+                      ],
+                    ),
+                  ]),
                 ))));
   }
 
-  ListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
-    var myList = ListView.builder(
-        itemCount: rows.length + 1, //cardsList.length,
-        itemBuilder: (context, index) {
-          if (index == rows.length) {
-            return Column(children: [
-              Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
-                TextButton.icon(
-                  onPressed: () {
-                    vm.addAttribute(BlastAttributeType.typeString);
-                    _focusOn = FocusOn.lastRow;
-                  },
-                  icon: const Icon(Icons.description),
-                  label: const Text("Add row"),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    vm.addAttribute(BlastAttributeType.typeHeader);
-                    _focusOn = FocusOn.lastRow;
-                  },
-                  icon: const Icon(Icons.text_increase),
-                  label: const Text("Add header"),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    vm.addAttribute(BlastAttributeType.typePassword);
-                    _focusOn = FocusOn.lastRowValue;
-                  },
-                  icon: const Icon(Icons.lock),
-                  label: const Text("Add secret"),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    vm.addAttribute(BlastAttributeType.typeURL);
-                  },
-                  icon: const Icon(Icons.link),
-                  label: const Text("Add URL"),
-                ),
-              ]),
-              Row(
-                children: [
-                  TextButton(
-                    child: const Text('edit notes > '),
-                    onPressed: () async {
-                      vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
-                    },
-                  ),
-                  Expanded(
-                      child: Text(vm.currentCard.notes ?? "",
-                          overflow: TextOverflow.ellipsis, maxLines: 1, style: _widgetFactory.textTheme.labelMedium)),
-                ],
-              ),
-            ]);
-          }
-
-          return ListTile(
-            title: Container(
-              decoration: BoxDecoration(
-                  color: _widgetFactory.theme.colorScheme.surfaceContainerLow,
-                  borderRadius: const BorderRadius.all(Radius.circular(6))),
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "$index",
-                        style: _widgetFactory.textTheme.labelSmall,
-                      ),
-                      const SizedBox(width: 3),
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: <Widget>[
-                            TextField(
-                              textInputAction: TextInputAction.next,
-                              controller: TextEditingController()..text = rows[index].name,
-                              onChanged: (value) => vm.updateAttributeName(index, value),
-                              autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRow),
-                              style: _widgetFactory.textTheme.labelMedium,
-                              decoration: _widgetFactory.blastTextFieldDecoration(
-                                  'Attribute name', 'Choose the attribute name'),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 3),
-                      _moveUpButton(vm, index),
-                      _moveDownButton(vm, index),
-                      _iconTypeButton(vm, index),
-                      IconButton(
-                        onPressed: () {
-                          vm.deleteAttribute(index);
-                        },
-                        icon: const Icon(Icons.delete),
-                        tooltip: "delete",
-                      ),
-                    ],
-                  ),
-                  Visibility(
-                    visible: rows[index].type != BlastAttributeType.typeHeader,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextField(
-                        textInputAction: TextInputAction.next,
-                        controller: TextEditingController()..text = rows[index].value,
-                        onChanged: (value) => vm.updateAttributeValue(index, value),
-                        autofocus: (index == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
-                        style: _widgetFactory.textTheme.labelMedium,
-                        decoration:
-                            _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+  ReorderableListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
+    var myList = ReorderableListView(onReorder: (oldIndex, newIndex) => vm.moveRow(oldIndex, newIndex), children: [
+      for (int i = 0; i < rows.length; i++)
+        ListTile(
+          key: ValueKey(i),
+          title: Container(
+            decoration: BoxDecoration(
+                color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+                borderRadius: const BorderRadius.all(Radius.circular(6))),
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "$i",
+                      style: _widgetFactory.textTheme.labelSmall,
+                    ),
+                    const SizedBox(width: 3),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: <Widget>[
+                          TextField(
+                            textInputAction: TextInputAction.next,
+                            controller: TextEditingController()..text = rows[i].name,
+                            onChanged: (value) => vm.updateAttributeName(i, value),
+                            autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRow),
+                            style: _widgetFactory.textTheme.labelMedium,
+                            decoration:
+                                _widgetFactory.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
+                          )
+                        ],
                       ),
                     ),
+                    const SizedBox(width: 3),
+                    _iconTypeButton(vm, i),
+                    IconButton(
+                      onPressed: () {
+                        vm.deleteAttribute(i);
+                      },
+                      icon: const Icon(Icons.delete),
+                      tooltip: "delete",
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: rows[i].type != BlastAttributeType.typeHeader,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: TextField(
+                      textInputAction: TextInputAction.next,
+                      controller: TextEditingController()..text = rows[i].value,
+                      onChanged: (value) => vm.updateAttributeValue(i, value),
+                      autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
+                      style: _widgetFactory.textTheme.labelMedium,
+                      decoration:
+                          _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        ),
+    ]);
 
     return myList;
   }
@@ -403,6 +410,7 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
+  /*
   _moveUpButton(CardEditViewModel vm, int index) {
     if (index == 0) {
       return const SizedBox(width: 0);
@@ -430,4 +438,5 @@ class _CardEditViewState extends State<CardEditView> {
       tooltip: "move down",
     );
   }
+  */
 }

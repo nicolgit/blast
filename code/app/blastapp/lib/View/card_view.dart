@@ -40,75 +40,68 @@ class _CardViewState extends State<CardView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Container(
-        color: _theme.colorScheme.surface,
-        child: SafeArea(
-            child: Scaffold(
-                backgroundColor: _widgetFactory.viewBackgroundColor(),
-                body: Center(
-                  child: Column(
+    return SafeArea(
+        child: Scaffold(
+            backgroundColor: _widgetFactory.viewBackgroundColor(),
+            body: Center(
+                child: Column(children: [
+              AppBar(
+                title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edit',
+                    onPressed: () {
+                      vm.editCommand();
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Quit',
+                    onPressed: () {
+                      vm.closeCommand();
+                    },
+                  ),
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppBar(
-                        title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
-                        actions: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            tooltip: 'Edit',
-                            onPressed: () {
-                              vm.editCommand().then((value) {
-                                vm.closeCommand();
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            tooltip: 'Quit',
-                            onPressed: () {
-                              vm.closeCommand();
-                            },
-                          ),
-                        ],
+                      Expanded(
+                          child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+                              textAlign: TextAlign.center, style: _widgetFactory.textTheme.titleLarge)),
+                      IconButton(
+                          icon: vm.currentCard.isFavorite
+                              ? Icon(
+                                  Icons.star,
+                                  color: _widgetFactory.theme.colorScheme.primary,
+                                )
+                              : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
+                          tooltip: "toggle favorite",
+                          onPressed: () {
+                            vm.toggleFavorite();
+                          })
+                    ],
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()}",
+                    style: _widgetFactory.textTheme.labelSmall,
+                  )),
+              _rowOfTags(vm.currentCard.tags),
+              FutureBuilder<List<BlastAttribute>>(
+                  future: vm.getRows(),
+                  builder: (context, cardsList) {
+                    return Expanded(
+                      child: Container(
+                        child: _buildAttributesList(cardsList.data ?? [], vm),
                       ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child:
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(child: 
-                                Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                                  textAlign: TextAlign.center,
-                                    style: _widgetFactory.textTheme.titleLarge)),
-                                IconButton(
-                                    icon: vm.currentCard.isFavorite
-                                        ? Icon(
-                                            Icons.star,
-                                            color: _widgetFactory.theme.colorScheme.primary,
-                                          )
-                                        : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
-                                    tooltip: "toggle favorite",
-                                    onPressed: () {
-                                      vm.toggleFavorite();
-                                    })
-                              ],
-                            )),
-                            Padding(padding: const EdgeInsets.all(12.0), child:
-                            Text(
-                              "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()}",
-                              style: _widgetFactory.textTheme.labelSmall,
-                            )),
-                            _rowOfTags(vm.currentCard.tags),
-                            FutureBuilder<List<BlastAttribute>>(
-                                future: vm.getRows(),
-                                builder: (context, cardsList) {
-                                  return Expanded(
-                                    child: Container(
-                                      child: _buildAttributesList(cardsList.data ?? [], vm),
-                                    ),
-                                  );
-                                }),
-                          ])) 
-                )));
+                    );
+                  }),
+            ]))));
   }
 
   ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
@@ -270,7 +263,9 @@ class _CardViewState extends State<CardView> {
     }
 
     return Wrap(
-      spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center,
+      spacing: 6.0,
+      runSpacing: 6.0,
+      alignment: WrapAlignment.center,
       children: rowItems,
     );
   }

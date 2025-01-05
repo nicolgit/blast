@@ -29,16 +29,16 @@ class _FieldViewState extends State<FieldView> {
   }
 
   late ThemeData _theme;
-  //late TextTheme _textTheme;
 
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
     _theme = Theme.of(context);
-    //_textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return Container( color: _theme.colorScheme.surface, child: SafeArea( child: Scaffold(
-        backgroundColor: _theme.colorScheme.surface,
-        body: Center(
-            child: Column(children: [
+    return Container(
+        color: Colors.white,
+        child: SafeArea(
+            child: Scaffold(
+                body: Center(
+                    child: Column(children: [
           AppBar(
             title: Text(vm.currentField),
             actions: [
@@ -67,56 +67,56 @@ class _FieldViewState extends State<FieldView> {
                               value: QrCodeViewStyle.barcode, label: Text('bar'), icon: Icon(Icons.barcode_reader)),
                         ],
                         selected: <QrCodeViewStyle>{
-                          qrCodeStyle.data== null ? QrCodeViewStyle.barcode : qrCodeStyle.data!,
+                          qrCodeStyle.data == null ? QrCodeViewStyle.barcode : qrCodeStyle.data!,
                         },
                         onSelectionChanged: (Set<QrCodeViewStyle> newSelection) {
                           vm.setCurrentQrCodeViewStyle(newSelection.first);
                         }));
               }),
           const SizedBox(height: 12),
-          FutureBuilder(
-              future: vm.getCurrentQrCodeViewStyle(),
-              builder: (context, qrCodeStyle) {
-                Widget displayWidget;
+          Flexible(
+              fit: FlexFit.loose,
+              child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                      child: FutureBuilder(
+                          future: vm.getCurrentQrCodeViewStyle(),
+                          builder: (context, qrCodeStyle) {
+                            Widget displayWidget;
 
-                final qr = qrCodeStyle.data != null ? qrCodeStyle.data! : QrCodeViewStyle.qrcode;
+                            final qr = qrCodeStyle.data != null ? qrCodeStyle.data! : QrCodeViewStyle.qrcode;
 
-                switch (qr) {
-                  case QrCodeViewStyle.text:
-                    displayWidget = Text(vm.currentField,
-                        style: const TextStyle(fontSize: 96),
-                        textAlign: TextAlign.center,
-                        maxLines: 99,
-                        overflow: TextOverflow.ellipsis);
-                    break;
-                  case QrCodeViewStyle.barcode:
-                    displayWidget = Padding(
-                        padding: const EdgeInsets.all(6),
-                        child: BarcodeWidget(
-                          barcode: Barcode.code128(), // Barcode type and settings
-                          data: vm.currentField,
-                          width: 600,
-                          height: 200,
-                          style: const TextStyle(fontSize: 24),
-                        ));
-                    break;
-                  case QrCodeViewStyle.qrcode:
-                    displayWidget = Expanded(
-                        child: Align(
-                            alignment: Alignment.center,
-                            child: AspectRatio(
-                                aspectRatio: 1.0,
-                                child: QrImageView(
-                                  data: vm.currentField,
-                                  version: QrVersions.auto,
-                                  embeddedImage: const AssetImage('assets/general/app-icon.png'),
-                                  size: 1000.0,
-                                ))));
-                    break;
-                }
+                            switch (qr) {
+                              case QrCodeViewStyle.text:
+                                displayWidget = Text(vm.currentField,
+                                    style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 99,
+                                    overflow: TextOverflow.ellipsis);
+                                break;
+                              case QrCodeViewStyle.barcode:
+                                displayWidget = ConstrainedBox(
+                                    constraints: const BoxConstraints(maxHeight: 250),
+                                    child: BarcodeWidget(
+                                      barcode: Barcode.code128(), // Barcode type and settings
+                                      data: vm.currentField,
+                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                    ));
+                                break;
+                              case QrCodeViewStyle.qrcode:
+                                displayWidget = AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child: QrImageView(
+                                      data: vm.currentField,
+                                      version: QrVersions.auto,
+                                      embeddedImage: const AssetImage('assets/general/app-icon.png'),
+                                      size: 1000.0,
+                                    ));
+                                break;
+                            }
 
-                return displayWidget;
-              }),
+                            return displayWidget;
+                          })))),
         ])))));
   }
 }

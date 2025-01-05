@@ -28,11 +28,7 @@ class _FieldViewState extends State<FieldView> {
     );
   }
 
-  late ThemeData _theme;
-
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
-    _theme = Theme.of(context);
-
     return Container(
         color: Colors.white,
         child: SafeArea(

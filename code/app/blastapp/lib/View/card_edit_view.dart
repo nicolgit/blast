@@ -53,190 +53,202 @@ class _CardEditViewState extends State<CardEditView> {
             child: Scaffold(
                 backgroundColor: _widgetFactory.viewBackgroundColor(),
                 body: Center(
-                  child: Column(
-                    children: [
-                      AppBar(
-                        automaticallyImplyLeading: false,
-                        leading: BackButton(
-                          onPressed: () => _showChangedDialog(context, vm),
-                        ),
-                        title: Text('Edit Card ${vm.currentCard.id}'),
-                        actions: [
-                          IconButton(
-                            icon: const Icon(Icons.save),
-                            tooltip: 'Save',
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                vm.saveCommand();
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            tooltip: 'Delete',
-                            onPressed: () async {
-                              await _showDeleteCardDialog(context, vm);
-                            },
-                          ),
-                        ],
+                    child: Column(
+                  children: [
+                    AppBar(
+                      automaticallyImplyLeading: false,
+                      leading: BackButton(
+                        onPressed: () => _showChangedDialog(context, vm),
                       ),
-                      Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Form(
-                            key: _formKey,
-                            child: TextFormField(
-                                initialValue: vm.currentCard.title,
-                                onChanged: (value) {
-                                  vm.updateTitle(value);
-                                },
-                                validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
-                                autofocus: _focusOn == FocusOn.title,
-                                textInputAction: TextInputAction.next,
-                                style: _widgetFactory.textTheme.labelMedium,
-                                decoration: _widgetFactory.blastTextFieldDecoration(
-                                    'Card title', 'Choose a title for the card')),
-                          )),
-                      _buildTagsRow(vm),
-                      FutureBuilder<List<BlastAttribute>>(
-                        future: vm.getRows(),
-                        builder: (context, snapshot) {
-                          return Expanded(
-                            child: Container(
-                              child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                bottomSheet: Container(
-                  decoration: BoxDecoration(
-                    color: _theme.colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(3.0),
-                      topRight: Radius.circular(3.0),
-                    ),
-                  ),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          vm.addAttribute(BlastAttributeType.typeString);
-                          _focusOn = FocusOn.lastRow;
-                        },
-                        icon: const Icon(Icons.description),
-                        label: const Text("Add row"),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          vm.addAttribute(BlastAttributeType.typeHeader);
-                          _focusOn = FocusOn.lastRow;
-                        },
-                        icon: const Icon(Icons.text_increase),
-                        label: const Text("Add header"),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          vm.addAttribute(BlastAttributeType.typePassword);
-                          _focusOn = FocusOn.lastRowValue;
-                        },
-                        icon: const Icon(Icons.lock),
-                        label: const Text("Add secret"),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          vm.addAttribute(BlastAttributeType.typeURL);
-                        },
-                        icon: const Icon(Icons.link),
-                        label: const Text("Add URL"),
-                      ),
-                    ]),
-                    Row(
-                      children: [
-                        TextButton(
-                          child: const Text('edit notes > '),
-                          onPressed: () async {
-                            vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                      title: Text('Edit Card ${vm.currentCard.id}'),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.save),
+                          tooltip: 'Save',
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              vm.saveCommand();
+                            }
                           },
                         ),
-                        Expanded(
-                            child: Text(vm.currentCard.notes ?? "",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: _widgetFactory.textTheme.labelMedium)),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          tooltip: 'Delete',
+                          onPressed: () async {
+                            await _showDeleteCardDialog(context, vm);
+                          },
+                        ),
                       ],
                     ),
-                  ]),
-                ))));
+                    Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Form(
+                          key: _formKey,
+                          child: TextFormField(
+                              initialValue: vm.currentCard.title,
+                              onChanged: (value) {
+                                vm.updateTitle(value);
+                              },
+                              validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                              autofocus: _focusOn == FocusOn.title,
+                              textInputAction: TextInputAction.next,
+                              style: _widgetFactory.textTheme.labelMedium,
+                              decoration:
+                                  _widgetFactory.blastTextFieldDecoration('Card title', 'Choose a title for the card')),
+                        )),
+                    _buildTagsRow(vm),
+                    FutureBuilder<List<BlastAttribute>>(
+                      future: vm.getRows(),
+                      builder: (context, snapshot) {
+                        return Expanded(
+                          child: Container(
+                            child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+                          ),
+                        );
+                      },
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: _theme.colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(3.0),
+                          topRight: Radius.circular(3.0),
+                        ),
+                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
+                          TextButton.icon(
+                            onPressed: () {
+                              vm.addAttribute(BlastAttributeType.typeString);
+                              _focusOn = FocusOn.lastRow;
+                            },
+                            icon: const Icon(Icons.description),
+                            label: const Text("Add row"),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              vm.addAttribute(BlastAttributeType.typeHeader);
+                              _focusOn = FocusOn.lastRow;
+                            },
+                            icon: const Icon(Icons.text_increase),
+                            label: const Text("Add header"),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              vm.addAttribute(BlastAttributeType.typePassword);
+                              _focusOn = FocusOn.lastRowValue;
+                            },
+                            icon: const Icon(Icons.lock),
+                            label: const Text("Add secret"),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              vm.addAttribute(BlastAttributeType.typeURL);
+                            },
+                            icon: const Icon(Icons.link),
+                            label: const Text("Add URL"),
+                          ),
+                        ]),
+                        Row(
+                          children: [
+                            TextButton(
+                              child: const Text('edit notes > '),
+                              onPressed: () async {
+                                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                              },
+                            ),
+                            Expanded(
+                                child: Text(vm.currentCard.notes ?? "",
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: _widgetFactory.textTheme.labelMedium)),
+                          ],
+                        ),
+                      ]),
+                    )
+                  ],
+                )))));
   }
 
   ReorderableListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
-    var myList = ReorderableListView(onReorder: (oldIndex, newIndex) => vm.moveRow(oldIndex, newIndex), children: [
-      for (int i = 0; i < rows.length; i++)
-        ListTile(
-          key: ValueKey(i),
-          title: Container(
-            decoration: BoxDecoration(
-                color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
-                borderRadius: const BorderRadius.all(Radius.circular(6))),
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  children: <Widget>[
-                    Text(
-                      "$i",
-                      style: _widgetFactory.textTheme.labelSmall,
+    var myList = ReorderableListView(
+        onReorder: (oldIndex, newIndex) => vm.moveRow(oldIndex, newIndex),
+        buildDefaultDragHandles: false,
+        children: [
+          for (int i = 0; i < rows.length; i++)
+            ListTile(
+              key: ValueKey(i),
+              title: Container(
+                decoration: BoxDecoration(
+                    color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: const BorderRadius.all(Radius.circular(6))),
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          "$i",
+                          style: _widgetFactory.textTheme.labelSmall,
+                        ),
+                        const SizedBox(width: 3),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: <Widget>[
+                              TextField(
+                                textInputAction: TextInputAction.next,
+                                controller: TextEditingController()..text = rows[i].name,
+                                onChanged: (value) => vm.updateAttributeName(i, value),
+                                autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRow),
+                                style: _widgetFactory.textTheme.labelMedium,
+                                decoration: _widgetFactory.blastTextFieldDecoration(
+                                    'Attribute name', 'Choose the attribute name'),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        _iconTypeButton(vm, i),
+                        IconButton(
+                          onPressed: () {
+                            vm.deleteAttribute(i);
+                          },
+                          icon: const Icon(Icons.delete),
+                          tooltip: "delete",
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 3),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        children: <Widget>[
-                          TextField(
-                            textInputAction: TextInputAction.next,
-                            controller: TextEditingController()..text = rows[i].name,
-                            onChanged: (value) => vm.updateAttributeName(i, value),
-                            autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRow),
-                            style: _widgetFactory.textTheme.labelMedium,
-                            decoration:
-                                _widgetFactory.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
-                          )
-                        ],
+                    Visibility(
+                      visible: rows[i].type != BlastAttributeType.typeHeader,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextField(
+                          textInputAction: TextInputAction.next,
+                          controller: TextEditingController()..text = rows[i].value,
+                          onChanged: (value) => vm.updateAttributeValue(i, value),
+                          autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
+                          style: _widgetFactory.textTheme.labelMedium,
+                          decoration:
+                              _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 3),
-                    _iconTypeButton(vm, i),
-                    IconButton(
-                      onPressed: () {
-                        vm.deleteAttribute(i);
-                      },
-                      icon: const Icon(Icons.delete),
-                      tooltip: "delete",
                     ),
                   ],
                 ),
-                Visibility(
-                  visible: rows[i].type != BlastAttributeType.typeHeader,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      controller: TextEditingController()..text = rows[i].value,
-                      onChanged: (value) => vm.updateAttributeValue(i, value),
-                      autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
-                      style: _widgetFactory.textTheme.labelMedium,
-                      decoration:
-                          _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
-                    ),
-                  ),
+              ),
+              trailing: ReorderableDragStartListener(
+                index: i,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                      color: _widgetFactory.theme.colorScheme.surfaceContainer),
+                  padding: EdgeInsets.all(1.0),
+                  child: Icon(Icons.drag_handle),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-    ]);
+        ]);
 
     return myList;
   }

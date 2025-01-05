@@ -291,7 +291,7 @@ class _CardViewState extends State<CardView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium),
+                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 24),
                     Padding(
                         padding: const EdgeInsets.all(12.0),

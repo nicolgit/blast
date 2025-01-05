@@ -131,124 +131,132 @@ class _CardViewState extends State<CardView> {
             return Padding(
                 padding: EdgeInsets.only(left: 12, right: 12),
                 child: Card(
-                    child: ListTile(
-                  leading: const Icon(Icons.lock),
-                  title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
-                      style: _widgetFactory.textTheme.titleMedium!
-                          .copyWith(color: _widgetFactory.theme.colorScheme.error)),
-                  subtitle: Text(
-                    name,
-                    style: _widgetFactory.textTheme.labelSmall,
-                  ),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Visibility(
-                      visible: !vm.isPasswordRowVisible(index),
-                      child: IconButton(
-                        onPressed: () {
-                          vm.toggleShowPassword(index);
+                    child: GestureDetector(
+                        onDoubleTap: () {
+                          // Handle double-tap event here
+                          vm.copyToClipboard(value);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("$name copied to clipboard!"),
+                          ));
                         },
-                        icon: const Icon(Icons.visibility_off),
-                        tooltip: 'hide',
-                      ),
-                    ),
-                    Visibility(
-                      visible: vm.isPasswordRowVisible(index),
-                      child: IconButton(
-                        onPressed: () {
-                          vm.toggleShowPassword(index);
-                        },
-                        icon: const Icon(Icons.visibility),
-                        tooltip: 'show',
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          vm.showFieldView(value);
-                        },
-                        icon: const Icon(Icons.qr_code),
-                        tooltip: 'show qr code'),
-                    IconButton(
-                      onPressed: () {
-                        vm.copyToClipboard(value);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("secret copied to clipboard!"),
-                        ));
-                      },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'copy to clipboard',
-                    ),
-                  ]),
-                  onTap: () async {},
-                )));
+                        child: ListTile(
+                          leading: const Icon(Icons.lock),
+                          title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
+                              style: _widgetFactory.textTheme.titleMedium!
+                                  .copyWith(color: _widgetFactory.theme.colorScheme.error)),
+                          subtitle: Text(
+                            name,
+                            style: _widgetFactory.textTheme.labelSmall,
+                          ),
+                          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Visibility(
+                              visible: !vm.isPasswordRowVisible(index),
+                              child: IconButton(
+                                onPressed: () {
+                                  vm.toggleShowPassword(index);
+                                },
+                                icon: const Icon(Icons.visibility_off),
+                                tooltip: 'hide',
+                              ),
+                            ),
+                            Visibility(
+                              visible: vm.isPasswordRowVisible(index),
+                              child: IconButton(
+                                onPressed: () {
+                                  vm.toggleShowPassword(index);
+                                },
+                                icon: const Icon(Icons.visibility),
+                                tooltip: 'show',
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  vm.showFieldView(value);
+                                },
+                                icon: const Icon(Icons.qr_code),
+                                tooltip: 'show qr code'),
+                          ]),
+                          onTap: () async {
+                            // toast notification warning
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
+                          },
+                        ))));
           case BlastAttributeType.typeURL:
             return Padding(
                 padding: EdgeInsets.only(left: 12, right: 12),
-                child: Card(
-                    child: ListTile(
-                  leading: const Icon(Icons.link),
-                  title: InkWell(
-                    onTap: () {
-                      vm.openUrl(value);
+                child: GestureDetector(
+                    onDoubleTap: () {
+                      // Handle double-tap event here
+                      vm.copyToClipboard(value);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("$name copied to clipboard!"),
+                      ));
                     },
-                    child: Text(value,
-                        style: const TextStyle(
-                            decoration: TextDecoration.underline, color: Colors.blue, decorationColor: Colors.blue)),
-                  ),
-                  subtitle: Text(
-                    name,
-                    style: _widgetFactory.textTheme.labelSmall,
-                  ),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    IconButton(
-                        onPressed: () {
-                          vm.showFieldView(value);
+                    child: Card(
+                        child: ListTile(
+                      leading: const Icon(Icons.link),
+                      title: InkWell(
+                        onTap: () {
+                          vm.openUrl(value);
                         },
-                        icon: const Icon(Icons.qr_code),
-                        tooltip: 'show qr code'),
-                    IconButton(
-                      onPressed: () {
-                        vm.copyToClipboard(value);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("secret copied to clipboard!"),
-                        ));
+                        child: Text(value,
+                            style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                                decorationColor: Colors.blue)),
+                      ),
+                      subtitle: Text(
+                        name,
+                        style: _widgetFactory.textTheme.labelSmall,
+                      ),
+                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                        IconButton(
+                            onPressed: () {
+                              vm.showFieldView(value);
+                            },
+                            icon: const Icon(Icons.qr_code),
+                            tooltip: 'show qr code'),
+                      ]),
+                      onTap: () async {
+                        // toast notification warning
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
                       },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'copy to clipboard',
-                    )
-                  ]),
-                  onTap: () async {},
-                )));
+                    ))));
           case BlastAttributeType.typeString:
             return Padding(
                 padding: EdgeInsets.only(left: 12, right: 12),
-                child: Card(
-                    child: ListTile(
-                  leading: const Icon(Icons.description),
-                  title: Text(value, style: _widgetFactory.textTheme.titleMedium),
-                  subtitle: Text(
-                    name,
-                    style: _widgetFactory.textTheme.labelSmall,
-                  ),
-                  trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                    IconButton(
-                        onPressed: () {
-                          vm.showFieldView(value);
-                        },
-                        icon: const Icon(Icons.qr_code),
-                        tooltip: 'show qr code'),
-                    IconButton(
-                      onPressed: () {
-                        vm.copyToClipboard(value);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("secret copied to clipboard!"),
-                        ));
+                child: GestureDetector(
+                    onDoubleTap: () {
+                      // Handle double-tap event here
+                      vm.copyToClipboard(value);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("$name copied to clipboard!"),
+                      ));
+                    },
+                    child: Card(
+                        child: ListTile(
+                      leading: const Icon(Icons.description),
+                      title: Text(value, style: _widgetFactory.textTheme.titleMedium),
+                      subtitle: Text(
+                        name,
+                        style: _widgetFactory.textTheme.labelSmall,
+                      ),
+                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                        IconButton(
+                            onPressed: () {
+                              vm.showFieldView(value);
+                            },
+                            icon: const Icon(Icons.qr_code),
+                            tooltip: 'show qr code'),
+                      ]),
+                      onTap: () async {
+                        // toast notification warning
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
                       },
-                      icon: const Icon(Icons.copy),
-                      tooltip: 'copy to clipboard',
-                    )
-                  ]),
-                  onTap: () async {},
-                )));
+                    ))));
         }
       },
     );

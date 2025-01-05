@@ -34,11 +34,11 @@ class CardViewModel extends ChangeNotifier {
 
   void toggleShowPassword(int cardRow) {
     showPasswordRow[cardRow] = !showPasswordRow[cardRow];
-    
+
     if (showPasswordRow[cardRow]) {
       _markCardAsUsed();
     }
-    
+
     notifyListeners();
   }
 
@@ -47,13 +47,11 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future openUrl(String urlString) async {
-    if (urlString.toLowerCase().startsWith('http://')  ||
+    if (urlString.toLowerCase().startsWith('http://') ||
         urlString.toLowerCase().startsWith('https://') ||
         urlString.toLowerCase().startsWith('mailto:')) {
       // do nothing
-    }
-    else
-    {
+    } else {
       urlString = 'https://$urlString';
     }
 
@@ -72,7 +70,7 @@ class CardViewModel extends ChangeNotifier {
   Future editCommand() async {
     await context.router
         .push(CardEditRoute(card: currentCard))
-        .then((value) => {showPasswordRow = List.filled(currentCard.rows.length, false)});
+        .then((value) => {showPasswordRow = List.filled(currentCard.rows.length, false), notifyListeners()});
 
     return Future.value();
   }

@@ -317,30 +317,30 @@ class _CardEditViewState extends State<CardEditView> {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
     rowItems.add(TextButton.icon(
-      onPressed: () async {
-        await showDialog(
-          context: context,
-          builder: (ctx) {
-            return MultiSelectDialog(
-              title: const Text("Select tags"),
-              items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
-              initialValue: vm.currentCard.tags,
-              onConfirm: (values) {
-                vm.updateTags(List<String>.from(values));
-              },
-              listType: MultiSelectListType.CHIP,
-              selectedColor: _widgetFactory.theme.colorScheme.primary,
-              selectedItemsTextStyle:
-                  _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
-            );
-          },
-        );
-      },
-      icon: const Icon(Icons.calculate),
-      label: const Text("edit"),
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 1.0),
-    ));
+        onPressed: () async {
+          await showDialog(
+            context: context,
+            builder: (ctx) {
+              return MultiSelectDialog(
+                title: const Text("Select tags"),
+                items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
+                initialValue: vm.currentCard.tags,
+                onConfirm: (values) {
+                  vm.updateTags(List<String>.from(values));
+                },
+                listType: MultiSelectListType.CHIP,
+                selectedColor: _widgetFactory.theme.colorScheme.primary,
+                selectedItemsTextStyle:
+                    _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
+              );
+            },
+          );
+        },
+        icon: const Icon(Icons.calculate),
+        label: const Text("edit"),
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 1.0),
+        )));
     return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
   }
 

@@ -5,6 +5,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -107,65 +108,7 @@ class _CardEditViewState extends State<CardEditView> {
                         );
                       },
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: _theme.colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(3.0),
-                          topRight: Radius.circular(3.0),
-                        ),
-                      ),
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Wrap(spacing: 6.0, runSpacing: 6.0, alignment: WrapAlignment.center, children: [
-                          TextButton.icon(
-                            onPressed: () {
-                              vm.addAttribute(BlastAttributeType.typeString);
-                              _focusOn = FocusOn.lastRow;
-                            },
-                            icon: const Icon(Icons.description),
-                            label: const Text("Add row"),
-                          ),
-                          TextButton.icon(
-                            onPressed: () {
-                              vm.addAttribute(BlastAttributeType.typeHeader);
-                              _focusOn = FocusOn.lastRow;
-                            },
-                            icon: const Icon(Icons.text_increase),
-                            label: const Text("Add header"),
-                          ),
-                          TextButton.icon(
-                            onPressed: () {
-                              vm.addAttribute(BlastAttributeType.typePassword);
-                              _focusOn = FocusOn.lastRowValue;
-                            },
-                            icon: const Icon(Icons.lock),
-                            label: const Text("Add secret"),
-                          ),
-                          TextButton.icon(
-                            onPressed: () {
-                              vm.addAttribute(BlastAttributeType.typeURL);
-                            },
-                            icon: const Icon(Icons.link),
-                            label: const Text("Add URL"),
-                          ),
-                        ]),
-                        Row(
-                          children: [
-                            TextButton(
-                              child: const Text('edit notes > '),
-                              onPressed: () async {
-                                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
-                              },
-                            ),
-                            Expanded(
-                                child: Text(vm.currentCard.notes ?? "",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: _widgetFactory.textTheme.labelMedium)),
-                          ],
-                        ),
-                      ]),
-                    )
+                    _showBottomToolbar(vm),
                   ],
                 )))));
   }
@@ -394,7 +337,9 @@ class _CardEditViewState extends State<CardEditView> {
         );
       },
       icon: const Icon(Icons.calculate),
-      label: const Text("edit tags"),
+      label: const Text("edit"),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 1.0),
     ));
     return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
   }
@@ -422,33 +367,65 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
-  /*
-  _moveUpButton(CardEditViewModel vm, int index) {
-    if (index == 0) {
-      return const SizedBox(width: 0);
-    }
-
-    return IconButton(
-      onPressed: () {
-        vm.moveUp(index);
-      },
-      icon: const Icon(Icons.arrow_upward),
-      tooltip: "move up",
+  Widget _showBottomToolbar(CardEditViewModel vm) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _theme.colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(3.0),
+          topRight: Radius.circular(3.0),
+        ),
+      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Wrap(spacing: 3.0, runSpacing: 1.0, alignment: WrapAlignment.center, children: [
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeString);
+                  _focusOn = FocusOn.lastRow;
+                },
+                icon: const Icon(Icons.description),
+                label: const Text("add value"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typePassword);
+                  _focusOn = FocusOn.lastRowValue;
+                },
+                icon: const Icon(Icons.lock),
+                label: const Text("add password"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeURL);
+                },
+                icon: const Icon(Icons.link),
+                label: const Text("add URL"),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  vm.addAttribute(BlastAttributeType.typeHeader);
+                  _focusOn = FocusOn.lastRow;
+                },
+                icon: const Icon(Icons.text_increase),
+                label: const Text("add title"),
+              ),
+            ])),
+        Row(
+          children: [
+            TextButton(
+              child: const Text('edit notes > '),
+              onPressed: () async {
+                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+              },
+            ),
+            Expanded(
+                child: Text(vm.currentCard.notes ?? "",
+                    overflow: TextOverflow.ellipsis, maxLines: 1, style: _widgetFactory.textTheme.labelMedium)),
+          ],
+        ),
+      ]),
     );
   }
-
-  _moveDownButton(CardEditViewModel vm, int index) {
-    if (index == vm.currentCard.rows.length - 1) {
-      return const SizedBox(width: 0);
-    }
-
-    return IconButton(
-      onPressed: () {
-        vm.moveDown(index);
-      },
-      icon: const Icon(Icons.arrow_downward),
-      tooltip: "move down",
-    );
-  }
-  */
 }

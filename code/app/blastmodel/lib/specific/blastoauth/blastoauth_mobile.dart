@@ -5,6 +5,8 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:url_launcher/url_launcher.dart';
 
 class BlastOAuthMobile extends BlastOAuth {
+  final _timeout = 15;
+
   @override
   void dispose() {}
 
@@ -56,13 +58,13 @@ class BlastOAuthMobile extends BlastOAuth {
       }
     });
 
-    //wait for authentication, max 15 seconds
-    int counter = 0, timeout = 15;
-    while (responseUri == null && counter++ < timeout) {
+    //wait for authentication
+    int counter = 0;
+    while (responseUri == null && counter++ < _timeout) {
       await Future.delayed(const Duration(seconds: 1));
 
       if (kDebugMode) {
-        print("waiting.... $counter of $timeout");
+        print("waiting.... $counter of $_timeout secs.");
       }
     }
 
@@ -71,6 +73,44 @@ class BlastOAuthMobile extends BlastOAuth {
     }
 
     return responseUri!;
+  }
+
+  @override
+  Future<bool> logout() async {
+    cachedCredentials = null;
+    final logoffUrl = Uri.parse(
+        'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
+
+    await _redirect(logoffUrl);
+    var responseUrl = await _listenLogout(redirectUri);
+
+    return true;
+  }
+
+  Future<bool> _listenLogout(Uri url) async {
+    Uri? responseUri;
+
+    appLinks.uriLinkStream.listen((uri) async {
+      if (uri.toString().startsWith(redirectUri.toString())) {
+        responseUri = uri;
+      }
+    });
+
+    //wait for logout
+    int counter = 0;
+    while (responseUri == null && counter++ < _timeout) {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (kDebugMode) {
+        print("waiting.... $counter of $_timeout secs.");
+      }
+    }
+
+    if (responseUri == null) {
+      throw BlastAuthenticationFailedException();
+    }
+
+    return true;
   }
 }
 

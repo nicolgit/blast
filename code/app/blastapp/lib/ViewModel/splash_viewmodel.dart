@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
 
 class SplashViewModel extends ChangeNotifier {
-
   // SplashViewModel singleton implementation begin
   SplashViewModel._privateConstructor();
   static final SplashViewModel _instance = SplashViewModel._privateConstructor();
@@ -50,12 +49,12 @@ class SplashViewModel extends ChangeNotifier {
     CurrentFileService().reset();
 
     final myContext = context!;
-    
+
     var isStorageSelected = await myContext.router.push(const ChooseStorageRoute());
     if (isStorageSelected != true) {
-        return;
-      }
-    
+      return;
+    }
+
     if (!myContext.mounted) return;
     FileSelectionResult? isFileSelected = await myContext.router.push<FileSelectionResult>(const ChooseFileRoute());
     if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
@@ -69,8 +68,7 @@ class SplashViewModel extends ChangeNotifier {
       if (isFileCreated != true) {
         return;
       }
-    }
-    else if (isFileSelected == FileSelectionResult.existingFile) {
+    } else if (isFileSelected == FileSelectionResult.existingFile) {
       if (!myContext.mounted) return;
       var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
       if (isFileDecrypted != true) {
@@ -102,23 +100,21 @@ class SplashViewModel extends ChangeNotifier {
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
 
       CurrentFileService().currentFileEncrypted = myFile.data;
-          
+
       isLoading = false;
       notifyListeners();
-    
-    if (!myContext.mounted) return;
-    var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
-    if (isFileDecrypted == true) {
-      _addCurrentFileToRecent();
 
       if (!myContext.mounted) return;
-      myContext.router.push(const CardsBrowserRoute());
-    }
+      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+      if (isFileDecrypted == true) {
+        _addCurrentFileToRecent();
 
+        if (!myContext.mounted) return;
+        myContext.router.push(const CardsBrowserRoute());
+      }
     } catch (e) {
       print(e);
-    }  
-    finally {
+    } finally {
       isLoading = false;
       notifyListeners();
     }
@@ -136,6 +132,9 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   removeFromRecent(BlastFile file) async {
+    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
+    await CurrentFileService().cloud!.logOut();
+
     SettingService().recentFiles.list.remove(file);
 
     SettingService().setRecentFiles(SettingService().recentFiles.list);
@@ -166,35 +165,35 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   bool closeAll(Duration d) {
-      // check if the current page is already the splash screen
-      if (context?.router.current.name == SplashRoute.name) {
-        return false;
-      }
+    // check if the current page is already the splash screen
+    if (context?.router.current.name == SplashRoute.name) {
+      return false;
+    }
 
-      // navigate back up to the splash screen
-      context?.router.popUntil((route) => route.settings.name == SplashRoute.name);
+    // navigate back up to the splash screen
+    context?.router.popUntil((route) => route.settings.name == SplashRoute.name);
 
-      showDialog(
-        context: context!,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-        title: const Text('Session timeout'),
-        content: Text('You have been inactive for the last ${d.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Continue'),
-            onPressed: () {
-          Navigator.of(context).pop();
-          
-            },
-          ),
-        ],
-          );
-        },
-      );
+    showDialog(
+      context: context!,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Session timeout'),
+          content: Text(
+              'You have been inactive for the last ${d.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Continue'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
 
-      return true;
+    return true;
   }
 }

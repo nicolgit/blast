@@ -47,7 +47,7 @@ class FileSystemCloud extends Cloud {
     await file.writeAsBytes(bytes);
 
     final lastModified = file.lastModifiedSync();
-    
+
     final CloudFile cf = CloudFile(data: bytes, lastModified: lastModified, id: id);
 
     return Future.value(cf);
@@ -81,15 +81,18 @@ class FileSystemCloud extends Cloud {
 
     return cf;
   }
-  
+
   @override
   Future<CloudFileInfo> getFileInfo(String id) {
     final file = File(id);
 
-    final CloudFileInfo cfi = CloudFileInfo(
-      id: id,
-      lastModified: file.lastModifiedSync());
+    final CloudFileInfo cfi = CloudFileInfo(id: id, lastModified: file.lastModifiedSync());
 
     return Future.value(cfi);
+  }
+
+  @override
+  Future<bool> logOut() {
+    return Future.value(true);
   }
 }

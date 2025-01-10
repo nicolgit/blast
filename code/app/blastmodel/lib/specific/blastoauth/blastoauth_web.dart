@@ -48,8 +48,8 @@ class BlastOAuthWeb extends BlastOAuth {
       }
     });
 
-    //wait for authentication, max 30 seconds
-    int counter = 0, timeout = 30;
+    //wait for authentication, max 20 seconds
+    int counter = 0, timeout = 20;
     while (responseUri == null && counter++ < timeout) {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -63,6 +63,18 @@ class BlastOAuthWeb extends BlastOAuth {
     }
 
     return responseUri!;
+  }
+
+  @override
+  Future<bool> logout() async {
+    cachedCredentials = null;
+    final logoffUrl = Uri.parse(
+        'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
+
+    await _redirect(logoffUrl);
+    //var responseUrl = await _listen(redirectUri);
+
+    return true;
   }
 }
 

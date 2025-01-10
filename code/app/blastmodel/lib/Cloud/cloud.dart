@@ -14,4 +14,6 @@ abstract class Cloud {
   Future<CloudFileInfo> getFileInfo(String id);
   Future<CloudFile> setFile(String id, Uint8List bytes);
   Future<String> goToParentDirectory(String currentPath);
+
+  Future<bool> logOut();
 }

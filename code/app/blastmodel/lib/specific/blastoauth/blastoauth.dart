@@ -11,22 +11,24 @@ abstract class BlastOAuth {
   late Uri tokenEndpoint;
   late Uri redirectUri;
   late Iterable<String> scopes;
-  
-  BlastOAuth initialize({ required String applicationId, 
-    required Uri authorizationEndpoint, 
-    required Uri tokenEndpoint, 
-    required Uri redirectUri, 
-    required Iterable<String> scopes }) {
-      this.applicationId = applicationId;
-      this.authorizationEndpoint = authorizationEndpoint;
-      this.tokenEndpoint = tokenEndpoint;
-      this.redirectUri = redirectUri;
-      this.scopes = scopes;
 
-      return this;
+  BlastOAuth initialize(
+      {required String applicationId,
+      required Uri authorizationEndpoint,
+      required Uri tokenEndpoint,
+      required Uri redirectUri,
+      required Iterable<String> scopes}) {
+    this.applicationId = applicationId;
+    this.authorizationEndpoint = authorizationEndpoint;
+    this.tokenEndpoint = tokenEndpoint;
+    this.redirectUri = redirectUri;
+    this.scopes = scopes;
+
+    return this;
   }
-  
+
   Future<oauth2.Client> createClient();
-  
+
+  Future<bool> logout();
   void dispose();
 }

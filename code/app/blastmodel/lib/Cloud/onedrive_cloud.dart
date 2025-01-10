@@ -175,17 +175,16 @@ class OneDriveCloud extends Cloud {
       throw BlastRESTAPIException(response.statusCode, response.body);
     }
 
-    final fileId =jsonResponse['id'];
+    final fileId = jsonResponse['id'];
 
     final CloudFileInfo cfi = await getFileInfo(id);
 
     final CloudFile cf = CloudFile(data: bytes, lastModified: cfi.lastModified, id: fileId);
     return cf;
   }
-  
+
   @override
   Future<CloudFileInfo> getFileInfo(String id) async {
-    
     var client = await _oauth.createClient();
     final fileInfo = await client.get(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/items/$id'));
     final fileInfoDecoded = await json.decode(fileInfo.body);
@@ -194,5 +193,10 @@ class OneDriveCloud extends Cloud {
 
     final CloudFileInfo cfi = CloudFileInfo(lastModified: lastModifiedDateTime, id: id);
     return cfi;
+  }
+
+  @override
+  Future<bool> logOut() async {
+    return await _oauth.logout();
   }
 }

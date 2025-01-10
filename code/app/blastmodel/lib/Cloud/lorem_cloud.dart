@@ -122,11 +122,10 @@ class LoremCloud extends Cloud {
         BlastAttribute attribute = BlastAttribute();
         attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false);
         attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
-        
+
         if (attribute.type == BlastAttributeType.typeURL) {
           attribute.value = _randomUrlGenerator();
-        }
-        else {
+        } else {
           attribute.value = _randomStringGenerator(random.nextInt(6), false);
         }
 
@@ -159,9 +158,9 @@ class LoremCloud extends Cloud {
     return result.trim();
   }
 
-  String _randomUrlGenerator(){
+  String _randomUrlGenerator() {
     Random random = Random();
-    return "http://loremcloud.com/${_randomStringGenerator(random.nextInt(4),false).replaceAll(' ', '/')}";
+    return "http://loremcloud.com/${_randomStringGenerator(random.nextInt(4), false).replaceAll(' ', '/')}";
   }
 
   List<String> _randomTagsGenerator(int tagsCount) {
@@ -190,12 +189,16 @@ class LoremCloud extends Cloud {
 
     return Future.value(cf);
   }
-  
+
   @override
   Future<CloudFileInfo> getFileInfo(String id) {
     CloudFileInfo cfi = CloudFileInfo(lastModified: DateTime.now(), id: id);
 
     return Future.value(cfi);
   }
-  
+
+  @override
+  Future<bool> logOut() {
+    return Future.value(true);
+  }
 }

@@ -82,7 +82,7 @@ class BlastOAuthMobile extends BlastOAuth {
         'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
 
     await _redirect(logoffUrl);
-    var responseUrl = await _listenLogout(redirectUri);
+    var ok = await _listenLogout(redirectUri);
 
     return true;
   }
@@ -104,10 +104,6 @@ class BlastOAuthMobile extends BlastOAuth {
       if (kDebugMode) {
         print("waiting.... $counter of $_timeout secs.");
       }
-    }
-
-    if (responseUri == null) {
-      throw BlastAuthenticationFailedException();
     }
 
     return true;

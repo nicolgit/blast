@@ -100,9 +100,6 @@ class CardsBrowserViewModel extends ChangeNotifier {
     fileService.currentFileInfo!.lastModified = cf.lastModified;
   }
 
-
-
-
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
   Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
 
@@ -200,5 +197,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
     context.router.push(const CardFileInfoRoute());
 
     notifyListeners();
+  }
+
+  void goToSettings() {
+    if (!context.mounted) return;
+    context.router.push(const SettingsRoute());
   }
 }

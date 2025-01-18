@@ -82,9 +82,9 @@ class BlastOAuthMobile extends BlastOAuth {
         'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
 
     await _redirect(logoffUrl);
-    var ok = await _listenLogout(redirectUri);
+    var retValue = await _listenLogout(redirectUri);
 
-    return true;
+    return retValue;
   }
 
   Future<bool> _listenLogout(Uri url) async {

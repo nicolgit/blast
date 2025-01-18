@@ -214,90 +214,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             },
             child: const Icon(Icons.add),
           ),
-          drawer: Drawer(
-              child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                child: Column(
-                  children: [
-                    const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
-                    Text("build ${Secrets.buildNumber}", style: _textTheme.labelMedium),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.upload),
-                title: const Text('import from...'),
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-
-                  Widget cancelButton = TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: _widgetFactory.theme.colorScheme.error,
-                    ),
-                    child: const Text("cancel"),
-                    onPressed: () async {
-                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-                    },
-                  );
-
-                  if (vm.isFileNotEmpty()) {
-                    AlertDialog alert = AlertDialog(
-                      backgroundColor: Colors.white,
-                      title: const Text("import from another password manager"),
-                      content: const Text(
-                          "WARNING: your current Blast file is not empty. To import data you must have an empty file."),
-                      actions: [
-                        cancelButton,
-                      ],
-                    );
-                    // show the dialog
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return alert;
-                      },
-                    );
-                  } else {
-                    context.router.push(const ImporterRoute()).then((value) {
-                      vm.refreshCardListCommand();
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.download),
-                title: const Text('export .json file'),
-                enabled: !kIsWeb,
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-                  vm.exportCommand();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.security),
-                title: const Text('export master key'),
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-
-                  vm.exportMasterKeyCommand();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.lock_reset),
-                title: const Text('change password'),
-                onTap: () {
-                  Navigator.pop(context); // close drawer
-
-                  vm.changePasswordCommand();
-                },
-              ),
-            ],
-          )),
+          drawer: _buildHamburgetMenu(context, vm)
         )));
   }
 
@@ -531,5 +448,103 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         });
       },
     );
+  }
+  
+  Widget _buildHamburgetMenu(BuildContext context, CardsBrowserViewModel vm) {
+    return Drawer(
+              child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                child: Column(
+                  children: [
+                    const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
+                    Text("build ${Secrets.buildNumber}", style: _textTheme.labelMedium?.copyWith(color: _theme.colorScheme.onPrimary)),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.upload),
+                title: const Text('import from...'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  Widget cancelButton = TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: _widgetFactory.theme.colorScheme.error,
+                    ),
+                    child: const Text("cancel"),
+                    onPressed: () async {
+                      Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+                    },
+                  );
+
+                  if (vm.isFileNotEmpty()) {
+                    AlertDialog alert = AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Text("import from another password manager"),
+                      content: const Text(
+                          "WARNING: your current Blast file is not empty. To import data you must have an empty file."),
+                      actions: [
+                        cancelButton,
+                      ],
+                    );
+                    // show the dialog
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      },
+                    );
+                  } else {
+                    context.router.push(const ImporterRoute()).then((value) {
+                      vm.refreshCardListCommand();
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.download),
+                title: const Text('export .json file'),
+                enabled: !kIsWeb,
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+                  vm.exportCommand();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.security),
+                title: const Text('export master key'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  vm.exportMasterKeyCommand();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.lock_reset),
+                title: const Text('change password'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  vm.changePasswordCommand();
+                },
+                
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('settings'),
+                onTap: () {
+                  Navigator.pop(context); // close drawer
+
+                  vm.goToSettings();
+                },
+                
+              ),
+            ],
+          ));
   }
 }

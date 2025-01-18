@@ -12,13 +12,22 @@ class ThemeTuple {
 
 class SettingsViewModel extends ChangeNotifier {
   final BuildContext context;
-  final SettingService settingService = SettingService();
+  final SettingService _settingService = SettingService();
   
+
+  Future<int> get autoLogoutAfter async {
+    return await _settingService.autoLogoutAfter;
+  }
+  Future<void> setAutoLogoutAfter(int value) async {
+    _settingService.setAutoLogoutAfter(value);
+    notifyListeners();
+  }
+
   Future<ThemeMode> get themeMode async {
-    return await settingService.appTheme;
+    return await _settingService.appTheme;
   }
   Future<void> setThemeMode(ThemeMode value) async {
-    settingService.setAppTheme(value);
+    _settingService.setAppTheme(value);
     notifyListeners();
   }
 
@@ -34,5 +43,9 @@ class SettingsViewModel extends ChangeNotifier {
       ThemeTuple("  Light  ", ThemeMode.light, Icons.light_mode),
       ThemeTuple("  Dark  ", ThemeMode.dark , Icons.dark_mode ),
     ];
+  }
+
+  List<int>? getAutoLogoutAfterItems() {
+    return [ 1, 3, 5, 10, 15];
   }
 }

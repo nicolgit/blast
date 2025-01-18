@@ -67,6 +67,16 @@ class SettingService {
     await prefs.setInt('appTheme', value.index);
   }
 
+  Future<int> get autoLogoutAfter async {
+    var prefs = await _prefs;
+    return prefs.getInt('appTimeout') ?? 5;
+  }
+
+  Future<void> setAutoLogoutAfter(int value) async {
+    var prefs = await _prefs;
+    await prefs.setInt('appTimeout', value);
+  }
+  
   Future<List<BlastFile>> getRecentFiles() async {
     if (recentFiles.list.isNotEmpty) {
       return recentFiles.list;

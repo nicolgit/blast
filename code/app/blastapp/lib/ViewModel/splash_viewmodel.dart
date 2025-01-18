@@ -164,11 +164,14 @@ class SplashViewModel extends ChangeNotifier {
     return isInitializing;
   }
 
-  bool closeAll(Duration d) {
+  Future<bool> closeAll() async {
     // check if the current page is already the splash screen
     if (context?.router.current.name == SplashRoute.name) {
       return false;
     }
+
+    final durationInt = await SettingService().autoLogoutAfter;
+    final duration = Duration(minutes: durationInt);
 
     // navigate back up to the splash screen
     context?.router.popUntil((route) => route.settings.name == SplashRoute.name);
@@ -181,7 +184,7 @@ class SplashViewModel extends ChangeNotifier {
           backgroundColor: Colors.white,
           title: const Text('Session timeout'),
           content: Text(
-              'You have been inactive for the last ${d.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
+              'You have been inactive for the last ${duration.toApproximateTime(isRelativeToNow: false)} . For security reason the session has been closed.'),
           actions: <Widget>[
             TextButton(
               child: const Text('Continue'),

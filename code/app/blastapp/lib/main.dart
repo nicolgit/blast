@@ -6,6 +6,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blast_theme.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
@@ -49,7 +50,6 @@ class BlastApp extends StatefulWidget {
 class BlastAppState extends State<BlastApp> {
   ThemeMode _themeMode;
   BlastAppState(this._themeMode);
-  final Duration _inactivityTimerDuration = const Duration(minutes: 5);
   Timer ?_inactivityTimer;
 
   late BlastWidgetFactory _widgetFactory;
@@ -131,16 +131,22 @@ class BlastAppState extends State<BlastApp> {
   }
 
   // start/restart timer
-    void _initializeInactivityTimer() {
+    Future _initializeInactivityTimer() async {
+      
+      // get timeout from settings
+      int timeout = await SettingService().autoLogoutAfter;
+      final timeoutDuration = Duration(minutes: timeout);
+
+
       if (_inactivityTimer != null) {
         _inactivityTimer?.cancel();
       }
 
-      print('inactivity timer started! ${_inactivityTimerDuration.toApproximateTime(isRelativeToNow: false)}');
-      _inactivityTimer = Timer(_inactivityTimerDuration, () => _handleInactivity());
+      print('inactivity timer started! ${timeoutDuration.toApproximateTime(isRelativeToNow: false)}');
+      _inactivityTimer = Timer(timeoutDuration, () => _handleInactivity());
     }
 
-    void _handleInactivity() {
+    void _handleInactivity() async {
       _inactivityTimer?.cancel();
       _inactivityTimer = null;
 
@@ -148,7 +154,7 @@ class BlastAppState extends State<BlastApp> {
       
       SplashViewModel vm =SplashViewModel(); // singleton reference
       
-      if (vm.closeAll(_inactivityTimerDuration) == true) {
+      if (await vm.closeAll() == true) {
         _initializeInactivityTimer();
       } 
       else

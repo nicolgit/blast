@@ -1,13 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/settings_viewmodel.dart';
-import 'package:blastapp/ViewModel/splash_viewmodel.dart';
 import 'package:blastapp/main.dart';
-import 'package:blastmodel/Cloud/cloud.dart';
-import 'package:blastmodel/blastfile.dart';
-import 'package:blastmodel/secrets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -70,6 +64,7 @@ class _SettingsViewState extends State<SettingsView> {
               child:Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // dropdown theme selector
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -114,15 +109,46 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                   
 
-                  Text("ciao", style: _textTheme.bodyLarge),
-                  
                   Container( padding: EdgeInsets.only(top: 6, bottom: 6), child:
+
                   Divider(
                     color: _theme.colorScheme.outline,
                     thickness: 1,
                     height: 1,
                   )),
-                  Text("ciao", style: _textTheme.bodyLarge),
+                  
+                  // dropdown timeout selector
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("auto logoff after", style: _textTheme.bodyLarge),
+                      FutureBuilder<int>(future: vm.autoLogoutAfter, 
+                          builder: (BuildContext context, AsyncSnapshot<int> timeout) {
+                            return DropdownButton<int>(
+                              borderRadius: BorderRadius.circular(6),
+                              dropdownColor: _theme.colorScheme.surface,
+                              value: timeout.data,
+                              onChanged: (int? newValue) async {
+                                  await vm.setAutoLogoutAfter(newValue!);
+                               },
+                              items: vm.getAutoLogoutAfterItems()!
+                              .map((int value) {
+                                return DropdownMenuItem<int>(
+                                  value: value,
+                                  child: Container(
+                                      color: Colors.transparent,
+                                      child: Text(" $value minutes", style: _textTheme.bodyLarge)
+                                  )
+                                );
+                              }).toList()
+                            
+                            
+                            
+                          );
+                          }) 
+                        
+                    ],
+                  ),
                 ],)
               )            
             )

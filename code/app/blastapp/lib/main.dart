@@ -74,7 +74,7 @@ class BlastAppState extends State<BlastApp> {
         overlayWidgetBuilder: (_) {
           return const Center(child: CircularProgressIndicator());
         },
-        overlayColor: _widgetFactory.theme.colorScheme.primary.withOpacity(0.8),
+        overlayColor: _widgetFactory.theme.colorScheme.primary.withValues(alpha:0.8), // .withOpacity(0.8),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: "Blastapp title",
@@ -83,7 +83,7 @@ class BlastAppState extends State<BlastApp> {
             theme: BlastTheme.light,
             darkTheme: BlastTheme.dark,
             themeMode: _themeMode,
-            /*  ThemeMode.system to follow system theme, 
+              /*  ThemeMode.system to follow system theme, 
                   ThemeMode.light for light theme, 
                   ThemeMode.dark for dark theme
               */

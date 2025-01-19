@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class FieldViewModel extends ChangeNotifier {
   final BuildContext context;
   final String currentField;
+  QrCodeViewStyle? qrCodeViewStyle = null;
 
   FieldViewModel(this.context, this.currentField);
 
@@ -13,11 +14,16 @@ class FieldViewModel extends ChangeNotifier {
   }
 
   Future<QrCodeViewStyle> getCurrentQrCodeViewStyle() async {
-    return await SettingService().defaultQrCodeView;
+    qrCodeViewStyle ??= await SettingService().defaultQrCodeView;
+    return qrCodeViewStyle!;
   }
 
-  void setCurrentQrCodeViewStyle(QrCodeViewStyle first) async {
-    await SettingService().setDefaultQrCodeView(first);
+  void setCurrentQrCodeViewStyle(QrCodeViewStyle newValue) async {
+    if (await SettingService().rememberLastQrCodeView) {
+      await SettingService().setDefaultQrCodeView(newValue);
+    }
+    qrCodeViewStyle = newValue;
+
     notifyListeners();
   }
 }

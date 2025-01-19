@@ -47,6 +47,16 @@ class SettingService {
     await prefs.setBool('eulaAccepted', value);
   }
 
+  Future<bool> get rememberLastQrCodeView async {
+    var prefs = await _prefs;
+    return prefs.getBool('rememberLastQr') ?? true;
+  }
+
+  Future<void> setRememberLastQrCodeView(bool value) async {
+    var prefs = await _prefs;
+    await prefs.setBool('rememberLastQr', value);
+  }
+
   Future<QrCodeViewStyle> get defaultQrCodeView async {
     var prefs = await _prefs;
     return QrCodeViewStyle.values[prefs.getInt('defaultQr') ?? QrCodeViewStyle.qrcode.index];

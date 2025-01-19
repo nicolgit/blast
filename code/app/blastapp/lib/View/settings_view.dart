@@ -129,6 +129,8 @@ class _SettingsViewState extends State<SettingsView> {
                                             future: vm.rememberLastQrCodeView,
                                             builder: (BuildContext context, AsyncSnapshot<bool> remember) {
                                               if (remember.hasData && remember.data!) {
+                                                return Container();
+                                              } else {
                                                 return Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
@@ -167,8 +169,6 @@ class _SettingsViewState extends State<SettingsView> {
                                                         }),
                                                   ],
                                                 );
-                                              } else {
-                                                return Container();
                                               }
                                             }),
 

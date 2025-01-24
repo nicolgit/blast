@@ -98,6 +98,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                             tooltip: 'save',
                             onPressed: () async {
                               if (await vm.saveCommand()) {
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                   content: Text("file saved successfully!"),
                                 ));

@@ -72,11 +72,11 @@ class OneDriveCloud extends Cloud {
     for (int i = 0; i < onedriveData['value'].length; i++) {
       var co = CloudObject(
         name: onedriveData['value'][i]['name'],
-        path: onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+        path: onedriveData['value'][i]['parentReference']['path'] + '/${onedriveData['value'][i]['name']}',
         isDirectory: onedriveData['value'][i]['folder'] != null,
         url: onedriveData['value'][i]['folder'] == null
             ? onedriveData['value'][i]['id'] // onedriveData['value'][i]['@microsoft.graph.downloadUrl']
-            : onedriveData['value'][i]['parentReference']['path'] + '/' + onedriveData['value'][i]['name'],
+            : onedriveData['value'][i]['parentReference']['path'] + '/${onedriveData['value'][i]['name']}',
         lastModified: DateTime.now(),
         size: 0,
       );

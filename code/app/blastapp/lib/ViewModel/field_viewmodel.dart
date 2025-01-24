@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class FieldViewModel extends ChangeNotifier {
   final BuildContext context;
   final String currentField;
-  QrCodeViewStyle? qrCodeViewStyle = null;
+  QrCodeViewStyle? qrCodeViewStyle;
 
   FieldViewModel(this.context, this.currentField);
 

@@ -43,7 +43,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget _buildScaffold(BuildContext context, ChangePasswordViewModel vm) {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
-    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withOpacity(0.5));
+    _textThemeHint = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.onSurface.withValues(alpha: 0.5));
     _textThemeError = _textTheme.bodySmall!.copyWith(color: _theme.colorScheme.error);
 
     return Scaffold(

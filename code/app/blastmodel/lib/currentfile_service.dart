@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:pointycastle/export.dart';
 
@@ -74,6 +75,22 @@ class CurrentFileService {
     key = _generateMasterKey(salt, iterations, password);
   }
 
+  Future<bool> saveFile(bool force) async {
+    currentFileJsonString = currentFileDocument.toString();
+    currentFileEncrypted = encodeFile(currentFileJsonString!);
+
+    final CloudFileInfo lastSavedFileInfo = await cloud!.getFileInfo(currentFileInfo!.fileUrl);
+
+    if (force || lastSavedFileInfo.lastModified == currentFileInfo!.lastModified) {
+      final CloudFile cf = await cloud!.setFile(currentFileInfo!.fileUrl, currentFileEncrypted!);
+      currentFileInfo!.lastModified = cf.lastModified;
+      currentFileDocument!.isChanged = false;
+      return true;
+    }
+
+    return false;
+  }
+
   Uint8List encodeFile(String jsonDocument) {
     // Create AES cipher
     final cipher = PaddedBlockCipher("AES/CBC/PKCS7");
@@ -101,7 +118,7 @@ class CurrentFileService {
   }
 
   String decodeFile(Uint8List binary, String passkey, PasskeyType passkeyType) {
-    String fileVersion =  getFileVersion(binary);
+    String fileVersion = getFileVersion(binary);
     int offset = fileVersion.length + 1;
 
     switch (fileVersion) {

@@ -3,6 +3,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,9 @@ import 'package:url_launcher/url_launcher.dart';
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
   final BlastCard currentCard;
+  final fileService = CurrentFileService();
+  final settingsService = SettingService();
+
   var cardHasBeenUsed = false;
 
   List<bool> showPasswordRow = [];
@@ -97,13 +101,64 @@ class CardViewModel extends ChangeNotifier {
     await context.router.push(FieldRoute(value: value));
   }
 
-  void _markCardAsUsed() {
+  void _markCardAsUsed() async {
     if (cardHasBeenUsed) return;
 
     cardHasBeenUsed = true;
     currentCard.usedCounter++;
     _blastDocumentChanged();
 
+    if (await settingsService.autoSave) {
+      await fileService.saveFile(false);
+    }
+
     notifyListeners();
+  }
+
+  Future<bool> isFileChangedAsync() {
+    return Future.value(CurrentFileService().currentFileDocument?.isChanged ?? false);
+  }
+
+  Future<bool> saveCommand() async {
+    if (await fileService.saveFile(false)) {
+      return true;
+    } else {
+      // message box: file modified on another device - save or discard
+      if (!context.mounted) return false;
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text('File Modified'),
+            content: const Text(
+                'The file has been modified on another device. Do you want to save your changes or discard them?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false); // Discard changes
+                },
+                child: const Text('Discard'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop(true); // Save changes
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (result == true) {
+        await fileService.saveFile(true);
+        notifyListeners();
+
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 }

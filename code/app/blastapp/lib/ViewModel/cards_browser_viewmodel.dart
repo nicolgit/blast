@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
-import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -45,13 +44,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveCommand() async {
-    fileService.currentFileJsonString = fileService.currentFileDocument.toString();
-    fileService.currentFileEncrypted = fileService.encodeFile(fileService.currentFileJsonString!);
-
-    final CloudFileInfo cfi = await fileService.cloud!.getFileInfo(fileService.currentFileInfo!.fileUrl);
-
-    if (cfi.lastModified != fileService.currentFileInfo!.lastModified) {
-
+    if (await fileService.saveFile(false)) {
+      return true;
+    } else {
       // message box: file modified on another device - save or discard
       if (!context.mounted) return false;
       final result = await showDialog<bool>(
@@ -59,45 +54,36 @@ class CardsBrowserViewModel extends ChangeNotifier {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-        title: const Text('File Modified'),
-        content: const Text('The file has been modified on another device. Do you want to save your changes or discard them?'),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-          Navigator.of(context).pop(false); // Discard changes
-            },
-            child: const Text('Discard'),
-          ),
-          TextButton(
-            onPressed: () async {
-          Navigator.of(context).pop(true); // Save changes
-            },
-            child: const Text('Save'),
-          ),
-        ],
+            title: const Text('File Modified'),
+            content: const Text(
+                'The file has been modified on another device. Do you want to save your changes or discard them?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false); // Discard changes
+                },
+                child: const Text('Discard'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop(true); // Save changes
+                },
+                child: const Text('Save'),
+              ),
+            ],
           );
         },
       );
 
       if (result == true) {
-        await _save();
-        fileService.currentFileDocument!.isChanged = false;
+        await fileService.saveFile(true);
         notifyListeners();
+
+        return true;
+      } else {
+        return false;
       }
-      return result!;
     }
-    else {
-      await _save();
-      fileService.currentFileDocument!.isChanged = false;
-      notifyListeners();
-    }
-
-    return true;
-  }
-
-  Future<void> _save() async {
-    final CloudFile cf = await fileService.cloud!.setFile(fileService.currentFileInfo!.fileUrl, fileService.currentFileEncrypted!);
-    fileService.currentFileInfo!.lastModified = cf.lastModified;
   }
 
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
@@ -119,7 +105,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     if (checkPasswordResult != true) {
       return;
     }
-    
+
     String? path = await FilePicker.platform.getDirectoryPath();
 
     String name = 'blastapp-export';
@@ -153,7 +139,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Data exported to $fileName.'),
     ));
-    }
+  }
 
   clearSearchTextCommand() {
     searchText = "";
@@ -167,24 +153,24 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return fileService.currentFileDocument!.cards.isNotEmpty;
   }
 
-  void exportMasterKeyCommand() async{
+  void exportMasterKeyCommand() async {
     if (!context.mounted) return;
     var checkPasswordResult = await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
-    
+
     if (!context.mounted) return;
     context.router.push(const CardFileInfoRoute());
   }
 
-  void changePasswordCommand() async{
+  void changePasswordCommand() async {
     if (!context.mounted) return;
     var checkPasswordResult = await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
-    
+
     if (!context.mounted) return;
     var changePasswordResult = await context.router.push(const ChangePasswordRoute());
     if (changePasswordResult != true) {

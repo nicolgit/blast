@@ -22,6 +22,16 @@ class SettingsViewModel extends ChangeNotifier {
   final BuildContext context;
   final SettingService _settingService = SettingService();
 
+  //autosave
+  Future<bool> get autoSave async {
+    return await _settingService.autoSave;
+  }
+
+  Future<void> setAutoSave(bool value) async {
+    await _settingService.setAutoSave(value);
+    notifyListeners();
+  }
+
   Future<int> get autoLogoutAfter async {
     return await _settingService.autoLogoutAfter;
   }

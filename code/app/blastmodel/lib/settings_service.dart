@@ -86,7 +86,17 @@ class SettingService {
     var prefs = await _prefs;
     await prefs.setInt('appTimeout', value);
   }
-  
+
+  Future<bool> get autoSave async {
+    var prefs = await _prefs;
+    return prefs.getBool('autoSave') ?? true;
+  }
+
+  Future<void> setAutoSave(bool value) async {
+    var prefs = await _prefs;
+    await prefs.setBool('autoSave', value);
+  }
+
   Future<List<BlastFile>> getRecentFiles() async {
     if (recentFiles.list.isNotEmpty) {
       return recentFiles.list;

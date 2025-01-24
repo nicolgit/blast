@@ -3,6 +3,7 @@ import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 
 class CardEditViewModel extends ChangeNotifier {
@@ -11,6 +12,8 @@ class CardEditViewModel extends ChangeNotifier {
   final BlastCard? _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
+
+  final _settingsService = SettingService();
 
   CardEditViewModel(this.context, this._sourceCard) {
     if (_sourceCard != null) {
@@ -24,7 +27,7 @@ class CardEditViewModel extends ChangeNotifier {
     context.router.maybePop();
   }
 
-  void saveCommand() {
+  void saveCommand() async {
     if (_sourceCard == null) {
       CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
     } else {
@@ -33,6 +36,12 @@ class CardEditViewModel extends ChangeNotifier {
     }
 
     CurrentFileService().currentFileDocument!.isChanged = true;
+
+    if (await _settingsService.autoSave) {
+      CurrentFileService().saveFile(false);
+    }
+
+    if (!context.mounted) return;
     context.router.maybePop();
   }
 

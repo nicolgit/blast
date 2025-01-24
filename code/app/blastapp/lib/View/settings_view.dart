@@ -181,8 +181,23 @@ class _SettingsViewState extends State<SettingsView> {
                                               thickness: 1,
                                               height: 1,
                                             )),
-
-                                        // dropdown timeout selector
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("auto save on update", style: _textTheme.bodyLarge),
+                                            FutureBuilder<bool>(
+                                                future: vm.autoSave,
+                                                builder: (BuildContext context, AsyncSnapshot<bool> autoSave) {
+                                                  return Switch(
+                                                    value: autoSave.hasData ? autoSave.data! : false,
+                                                    onChanged: (bool value) async {
+                                                      await vm.setAutoSave(value);
+                                                    },
+                                                    activeColor: _theme.colorScheme.primary,
+                                                  );
+                                                }),
+                                          ],
+                                        ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [

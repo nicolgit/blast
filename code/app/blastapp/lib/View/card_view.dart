@@ -64,6 +64,39 @@ class _CardViewState extends State<CardView> {
                   ),
                 ],
               ),
+              FutureBuilder<bool>(
+                  future: vm.isFileChangedAsync(),
+                  builder: (context, isFileChanged) {
+                    return Visibility(
+                      visible: isFileChanged.data ?? false,
+                      child: Container(
+                        width: double.infinity,
+                        color: _widgetFactory.theme.colorScheme.error,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('file changed, click',
+                                style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                            Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: FilledButton(
+                                  child: const Text('here'),
+                                  onPressed: () async {
+                                    if (await vm.saveCommand()) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                          content: Text("file saved successfully!"),
+                                        ));
+                                      }
+                                    }
+                                  },
+                                )),
+                            Text('to save', style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
               Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Row(

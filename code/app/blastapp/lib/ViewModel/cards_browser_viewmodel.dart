@@ -45,6 +45,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   Future<bool> saveCommand() async {
     if (await fileService.saveFile(false)) {
+      notifyListeners();
       return true;
     } else {
       // message box: file modified on another device - save or discard

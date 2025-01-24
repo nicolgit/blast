@@ -11,8 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 class CardViewModel extends ChangeNotifier {
   final BuildContext context;
   final BlastCard currentCard;
-  final fileService = CurrentFileService();
-  final settingsService = SettingService();
+  final _fileService = CurrentFileService();
+  final _settingsService = SettingService();
 
   var cardHasBeenUsed = false;
 
@@ -88,9 +88,14 @@ class CardViewModel extends ChangeNotifier {
     CurrentFileService().currentFileDocument?.isChanged = true;
   }
 
-  void toggleFavorite() {
+  void toggleFavorite() async {
     currentCard.isFavorite = !currentCard.isFavorite;
     _blastDocumentChanged();
+
+    if (await _settingsService.autoSave) {
+      _fileService.saveFile(false);
+    }
+
     notifyListeners();
   }
 
@@ -108,8 +113,8 @@ class CardViewModel extends ChangeNotifier {
     currentCard.usedCounter++;
     _blastDocumentChanged();
 
-    if (await settingsService.autoSave) {
-      await fileService.saveFile(false);
+    if (await _settingsService.autoSave) {
+      await _fileService.saveFile(false);
     }
 
     notifyListeners();
@@ -120,7 +125,8 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveCommand() async {
-    if (await fileService.saveFile(false)) {
+    if (await _fileService.saveFile(false)) {
+      notifyListeners();
       return true;
     } else {
       // message box: file modified on another device - save or discard
@@ -152,7 +158,7 @@ class CardViewModel extends ChangeNotifier {
       );
 
       if (result == true) {
-        await fileService.saveFile(true);
+        await _fileService.saveFile(true);
         notifyListeners();
 
         return true;

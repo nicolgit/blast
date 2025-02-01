@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  biometric_storage
   flutter_platform_alert
   flutter_window_close
   gtk

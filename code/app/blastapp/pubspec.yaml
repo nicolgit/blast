@@ -33,6 +33,7 @@ dependencies:
   barcode_widget: ^2.0.4
   mask_text_input_formatter: ^2.9.0
   window_manager: ^0.4.3
+  biometric_storage: ^5.0.1
 
 flutter_launcher_icons:
  image_path: "assets/general/app-icon.png"

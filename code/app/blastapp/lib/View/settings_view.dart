@@ -184,7 +184,7 @@ class _SettingsViewState extends State<SettingsView> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("auto save on update", style: _textTheme.bodyLarge),
+                                            Text("auto save changes", style: _textTheme.bodyLarge),
                                             FutureBuilder<bool>(
                                                 future: vm.autoSave,
                                                 builder: (BuildContext context, AsyncSnapshot<bool> autoSave) {

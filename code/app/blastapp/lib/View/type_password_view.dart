@@ -15,17 +15,22 @@ class TypePasswordView extends StatefulWidget {
 class _TypePasswordViewState extends State<TypePasswordView> {
   final passwordController = TextEditingController();
   late FocusNode passwordFocusNode;
+  final viewModel = TypePasswordViewModel();
 
   @override
   void initState() {
     super.initState();
+
+    viewModel.context = context;
+    viewModel.useBiometricAuth();
+
     passwordFocusNode = FocusNode();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TypePasswordViewModel(context),
+      create: (context) => viewModel,
       child: Consumer<TypePasswordViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
@@ -114,7 +119,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                               controller: passwordController,
                               onChanged: (value) => vm.setPassword(value),
                               onSubmitted: (value) async => {
-                                if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                                if (!await vm.checkPassword(true)) passwordFocusNode.requestFocus(),
                               },
                               style: _textTheme.labelMedium,
                               decoration: InputDecoration(
@@ -130,7 +135,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                           onChanged: (value) => vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
                           onSubmitted: (value) async => {
                             vm.setRecoveryKey(maskRecoveryKeyFormatter.getUnmaskedText()),
-                            if (!await vm.checkPassword()) passwordFocusNode.requestFocus(),
+                            if (!await vm.checkPassword(false)) passwordFocusNode.requestFocus(),
                           },
                           style: _textTheme.labelMedium,
                           inputFormatters: [maskRecoveryKeyFormatter],
@@ -149,7 +154,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                 future: vm.isPasswordValid(),
                 builder: (context, isPasswordValid) {
                   return FilledButton(
-                    onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword() : null,
+                    onPressed: isPasswordValid.data ?? false ? () => vm.checkPassword(true) : null,
                     child: const Text('open'),
                   );
                 },

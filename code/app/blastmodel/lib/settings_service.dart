@@ -87,6 +87,16 @@ class SettingService {
     await prefs.setInt('appTimeout', value);
   }
 
+  Future<bool> get biometricAuthEnabled async {
+    var prefs = await _prefs;
+    return prefs.getBool('biometricAuthEnabled') ?? false;
+  }
+
+  Future<void> setBiometricAuthEnabled(bool value) async {
+    var prefs = await _prefs;
+    await prefs.setBool('biometricAuthEnabled', value);
+  }
+
   Future<bool> get autoSave async {
     var prefs = await _prefs;
     return prefs.getBool('autoSave') ?? true;

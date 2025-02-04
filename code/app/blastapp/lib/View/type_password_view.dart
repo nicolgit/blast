@@ -126,7 +126,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                                   border: const OutlineInputBorder(),
                                   labelText: 'Password',
                                   hintText: 'Enter your password',
-                                  hintStyle: _textThemeHint),
+                                  hintStyle: _textThemeHi
                             )));
                   } else {
                     return Padding(

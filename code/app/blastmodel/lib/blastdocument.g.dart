@@ -9,7 +9,7 @@ part of 'blastdocument.dart';
 BlastDocument _$BlastDocumentFromJson(Map<String, dynamic> json) =>
     BlastDocument()
       ..id = json['Id'] as String
-      ..version = json['Version'] as int
+      ..version = (json['Version'] as num).toInt()
       ..cards = (json['Cards'] as List<dynamic>)
           .map((e) => BlastCard.fromJson(e as Map<String, dynamic>))
           .toList();

@@ -113,7 +113,7 @@ class LoremCloud extends Cloud {
       card.notes = _randomStringGenerator(random.nextInt(200) + 1, true);
       card.isFavorite = random.nextInt(5) == 0;
       card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
-      card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
+      //card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       card.usedCounter = random.nextInt(100);
       card.tags = _randomTagsGenerator(random.nextInt(5));
 

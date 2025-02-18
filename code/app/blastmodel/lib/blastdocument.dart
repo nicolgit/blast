@@ -83,7 +83,7 @@ class BlastDocument {
               .toList();
         }
 
-        recentUsedList.sort((a, b) => a.lastOpenedDateTime.compareTo(b.lastOpenedDateTime));
+        recentUsedList.sort((a, b) => b.lastUpdateDateTime.compareTo(a.lastUpdateDateTime));
         return recentUsedList;
     }
   }

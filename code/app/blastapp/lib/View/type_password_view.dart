@@ -113,21 +113,20 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                         child: Container(
                             constraints: BoxConstraints(maxWidth: 600),
                             child: TextField(
-                              autofocus: true,
-                              focusNode: passwordFocusNode,
-                              obscureText: true,
-                              controller: passwordController,
-                              onChanged: (value) => vm.setPassword(value),
-                              onSubmitted: (value) async => {
-                                if (!await vm.checkPassword(true)) passwordFocusNode.requestFocus(),
-                              },
-                              style: _textTheme.labelMedium,
-                              decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  labelText: 'Password',
-                                  hintText: 'Enter your password',
-                                  hintStyle: _textThemeHi
-                            )));
+                                autofocus: true,
+                                focusNode: passwordFocusNode,
+                                obscureText: true,
+                                controller: passwordController,
+                                onChanged: (value) => vm.setPassword(value),
+                                onSubmitted: (value) async => {
+                                      if (!await vm.checkPassword(true)) passwordFocusNode.requestFocus(),
+                                    },
+                                style: _textTheme.labelMedium,
+                                decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    labelText: 'Password',
+                                    hintText: 'Enter your password',
+                                    hintStyle: _textThemeHint))));
                   } else {
                     return Padding(
                         padding: const EdgeInsets.all(12.0),

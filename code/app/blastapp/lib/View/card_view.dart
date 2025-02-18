@@ -121,7 +121,7 @@ class _CardViewState extends State<CardView> {
               Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
-                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastOpenedDateTime.difference(DateTime.now()).toApproximateTime()}",
+                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
                     style: _widgetFactory.textTheme.labelSmall,
                   )),
               _rowOfTags(vm.currentCard.tags),

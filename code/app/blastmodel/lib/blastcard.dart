@@ -22,7 +22,7 @@ class BlastCard {
 
   bool isFavorite = false;
   late DateTime lastUpdateDateTime = DateTime.now();
-  late DateTime lastOpenedDateTime = DateTime.now();
+  //late DateTime lastOpenedDateTime = DateTime.now();
   int usedCounter = 0;
   List<String> tags = List.empty(growable: true);
   List<BlastAttribute> rows = List.empty(growable: true);
@@ -78,7 +78,7 @@ class BlastCard {
     notes = card.notes;
     isFavorite = card.isFavorite;
     lastUpdateDateTime = card.lastUpdateDateTime;
-    lastOpenedDateTime = card.lastOpenedDateTime;
+    //lastOpenedDateTime = card.lastOpenedDateTime;
     usedCounter = card.usedCounter;
     tags = List.from(card.tags);
     rows = List.from(card.rows);

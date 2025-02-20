@@ -9,3 +9,5 @@
 # is commented out by default.
 .vscode/
 *azurite*
+
+.DS_Store

@@ -1,5 +1,6 @@
-# Blast Password Manager
-## Your Passwords, Safe and Sound
+# Blast open source password mgr
+
+## promotional text: Your Passwords, Safe and Sound
 
 Blast is an open-source password and secrets keeper developed in Flutter. It can be used on Android, iOS, Windows, Web, Linux, and Mac. It stores your passwords in an encrypted file, allowing you to remember only one password (the "master password") instead of all the username/password combinations that you use.
 

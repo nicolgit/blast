@@ -1,11 +1,11 @@
 name: blastapp
 description: your password safe and sound
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 homepage: https://github.com/nicolgit/blast
 
 environment:
-  sdk: '>=3.1.3 <4.0.0'
+  sdk: ">=3.1.3 <4.0.0"
 
 dependencies:
   kt_dart: ^1.1.0
@@ -36,19 +36,17 @@ dependencies:
   biometric_storage: ^5.0.1
 
 flutter_launcher_icons:
- image_path: "assets/general/app-icon.png"
- android: true
- ios: true
- web:
+  image_path: "assets/general/app-icon.png"
+  remove_alpha_ios: true
+  android: true
+  ios: true
+  web:
     generate: true
-    image_path: "assets/general/app-icon.png"
- windows:
+  windows:
     generate: true
-    image_path: "assets/general/app-icon.png"
     icon_size: 128 # min:48, max:256, default: 48
- macos:
+  macos:
     generate: true
-    image_path: "assets/general/app-icon.png"
 
 dev_dependencies:
   flutter_test:

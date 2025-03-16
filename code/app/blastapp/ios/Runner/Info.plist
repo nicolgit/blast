@@ -50,6 +50,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>blastapp</string>
+		<string>https</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

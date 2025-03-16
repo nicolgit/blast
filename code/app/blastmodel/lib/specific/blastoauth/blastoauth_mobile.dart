@@ -45,7 +45,7 @@ class BlastOAuthMobile extends BlastOAuth {
 
   Future<void> _redirect(Uri url) async {
     if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     }
   }
 

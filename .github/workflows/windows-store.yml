@@ -1,5 +1,4 @@
-name: web (purple-flower)
-
+name: deploy-to-windows-store
 on: workflow_dispatch
 
 jobs:

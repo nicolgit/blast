@@ -46,7 +46,7 @@ jobs:
         uses: peterrhodesdev/build-a-badge@v1.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          filename: windowstime
+          filename: build-badge-windows
           label: 'Updated at'
           message: $build
     

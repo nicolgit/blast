@@ -49,6 +49,4 @@ jobs:
           filename: windowstime
           label: 'Updated at'
           message: $build
-          github_token: ${{ secrets.GITHUB_TOKEN }}
     
-      

@@ -38,7 +38,7 @@ jobs:
           $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'ONEDRIVE_APPLICATION_ID', '${{ secrets.ONEDRIVE_APPLICATION_ID }}' | Set-Content -Path "secrets.dart"
-          (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', '$build' | Set-Content -Path "secrets.dart"
+          (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', $build | Set-Content -Path "secrets.dart"
           Get-Content -Path "secrets.dart"
 
 

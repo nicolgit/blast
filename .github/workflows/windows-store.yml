@@ -41,14 +41,14 @@ jobs:
           (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', '$build' | Set-Content -Path "secrets.dart"
           Get-Content -Path "secrets.dart"
 
-      # Create badge
-      # https://github.com/marketplace/actions/bring-your-own-badge
-      - name: Time badge
-        uses: RubbaBoy/BYOB@v1.3.0
+
+      - name: Build-A-Badge
+        uses: peterrhodesdev/build-a-badge@v1.3.1
         with:
-          name: webtime
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filename: windowstime
           label: 'Updated at'
-          status: $build
-          color: 101010
+          message: $build
           github_token: ${{ secrets.GITHUB_TOKEN }}
+    
       

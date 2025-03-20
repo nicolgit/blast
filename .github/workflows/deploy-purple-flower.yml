@@ -37,7 +37,7 @@ jobs:
       
       
       # build
-      - name: build app
+      - name: build flutter app
         working-directory: ./code/app/blastapp
         run: |
           flutter config --enable-web

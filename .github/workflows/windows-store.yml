@@ -20,7 +20,7 @@ jobs:
         working-directory: ./code/app/blastmodel/lib
         shell: pwsh
         run: |
-          $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
+          $build = (Get-Date -Format "yyyy.MM.dd") + ".win"
           echo "MYBUILD=$build" >> $env:GITHUB_ENV
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"

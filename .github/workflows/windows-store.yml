@@ -47,8 +47,8 @@ jobs:
 
       - name: Dump GitHub Actions context
         run: |
-          echo "Dumping context for debugging"
-          env
+          echo "${{ toJSON(steps) }}"
+      
           
       # https://github.com/marketplace/actions/build-a-badge
       - name: Build-A-Badge

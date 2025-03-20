@@ -1,7 +1,9 @@
 name: web (purple-flower)
 
 on: workflow_dispatch
-
+env:
+  MYBUILD: empty
+  
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
@@ -13,35 +15,29 @@ jobs:
           submodules: true
           lfs: false
       
+
+      - name: variables
+        working-directory: ./code/app/blastmodel/lib
+        run: |
+          build=$(date +%Y.%m.%d).web
+          echo 'MYBUILD='$build >> $GITHUB_ENV
+
+          cp secretsToFill.dart secrets.dart
+          sed -i 's/class SecretsToFill/class Secrets/g' secrets.dart
+          sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
+          sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
+          cat secrets.dart
+
       # setup flutter
       # https://github.com/marketplace/actions/flutter-action
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: 3.27.2
-      - name: Prepare secrets.dart
-        working-directory: ./code/app/blastmodel/lib
-        run: |
-          cp secretsToFill.dart secrets.dart
-          build=$(date +%Y.%m.%d).web
-          sed -i 's/class SecretsToFill/class Secrets/g' secrets.dart
-          sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
-          sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
-          cat secrets.dart
-
-      # Create badge
-      # https://github.com/marketplace/actions/bring-your-own-badge
-      - name: Time badge
-        uses: RubbaBoy/BYOB@v1.3.0
-        with:
-          name: webtime
-          label: 'Updated at'
-          status: $build
-          color: 101010
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       
-      # Install packages
-      - name: Install packages
+      
+      # build
+      - name: build app
         working-directory: ./code/app/blastapp
         run: |
           flutter config --enable-web
@@ -49,9 +45,9 @@ jobs:
           flutter pub get
           flutter build web --release
       
-      # Build and deploy
+      # deploy to static web app
       # https://github.com/marketplace/actions/azure-static-web-apps-deploy
-      - name: Build And Deploy
+      - name: deploy to static web app
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -65,15 +61,13 @@ jobs:
           output_location: "/code/app/blastapp/build/web" # Built app content directory - optional
           # app_build_command: 'flutter build web'
           ###### End of Repository/Build Configurations ######
-          
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
+
+      # https://github.com/marketplace/actions/build-a-badge
+      - name: build read.me badge
+        uses: peterrhodesdev/build-a-badge@v1.3.1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_FLOWER_03FFD151E }}
-          action: "close"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filename: badge-web
+          label: latest build
+          message: ${{ env.MYBUILD }}
+  

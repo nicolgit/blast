@@ -48,7 +48,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: $build
+          message: '123stella'
 
 
 

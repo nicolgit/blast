@@ -45,6 +45,11 @@ jobs:
           (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', $build | Set-Content -Path "secrets.dart"
           Get-Content -Path "secrets.dart"
 
+      - name: Dump GitHub Actions context
+        run: |
+          echo "Dumping context for debugging"
+          env
+          
       # https://github.com/marketplace/actions/build-a-badge
       - name: Build-A-Badge
         uses: peterrhodesdev/build-a-badge@v1.3.1

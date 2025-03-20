@@ -36,8 +36,7 @@ jobs:
         run: |
           $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
           echo "mybuild=$build" >> $GITHUB_OUTPUT
-          $env:GITHUB_OUTPUT += ";mybuild=$build"
-          echo $env:GITHUB_OUTPUT
+          $env:MYBUILD += "$build"
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"
@@ -57,7 +56,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: ${{ steps.variables.outputs.mybuild }}
+          message: ${{ env:mybuild }}
 
 
 

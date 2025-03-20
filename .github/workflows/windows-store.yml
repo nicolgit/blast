@@ -22,7 +22,7 @@ jobs:
         working-directory: ./code/app/blastmodel/lib
         run: |
           cp secretsToFill.dart secrets.dart
-          build=$(date +%Y.%m.%d).web
+          build=$(date +%Y.%m.%d).win
           sed -i 's/class SecretsToFill/class Secrets/g' secrets.dart
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
           sed -i "s/BUILD_NUMBER/$build/g" secrets.dart

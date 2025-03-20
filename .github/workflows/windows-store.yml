@@ -56,7 +56,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: ${{ env:mybuild }}
+          message: ${{ env:MYBUILD }}
 
 
 

@@ -1,6 +1,9 @@
 name: deploy-to-windows-store
 on: workflow_dispatch
 
+env:
+  MYBUILD: empty
+  
 jobs:
   build_and_deploy_job:
     runs-on: windows-latest
@@ -35,7 +38,8 @@ jobs:
         shell: pwsh
         run: |
           $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
-          Add-Content -Path $env:GITHUB_ENV -Value "mybuild=$build"
+
+          $env:MYBUILD = $build
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"
@@ -43,8 +47,6 @@ jobs:
           (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', $build | Set-Content -Path "secrets.dart"
           Get-Content -Path "secrets.dart"
 
-      
-          
       # https://github.com/marketplace/actions/build-a-badge
       - name: Build-A-Badge
         uses: peterrhodesdev/build-a-badge@v1.3.1
@@ -52,7 +54,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: ${{ env:mybuild }}
+          message: ${{ env:MYBUILD }}
 
 
 

@@ -35,8 +35,7 @@ jobs:
         shell: pwsh
         run: |
           $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
-          echo "mybuild=$build" >> $GITHUB_OUTPUT
-          $env:MYBUILD += "$build"
+          Add-Content -Path $env:GITHUB_ENV -Value "mybuild=$build"
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"
@@ -44,9 +43,6 @@ jobs:
           (Get-Content -Path "secrets.dart") -replace 'BUILD_NUMBER', $build | Set-Content -Path "secrets.dart"
           Get-Content -Path "secrets.dart"
 
-      - name: Dump GitHub Actions context
-        run: |
-          echo "${{ toJSON(steps) }}"
       
           
       # https://github.com/marketplace/actions/build-a-badge
@@ -56,7 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: ${{ env:MYBUILD }}
+          message: ${{ env:mybuild }}
 
 
 

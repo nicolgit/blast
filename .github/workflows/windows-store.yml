@@ -2,6 +2,7 @@ name: deploy-to-windows-store
 on: workflow_dispatch
 
 env:
+  MYBUILDTXT: empty
   MYBUILD: empty
   
 jobs:
@@ -20,8 +21,10 @@ jobs:
         working-directory: ./code/app/blastmodel/lib
         shell: pwsh
         run: |
-          $build = (Get-Date -Format "yyyy.MM.dd") + ".win"
+          $build = (Get-Date -Format "yyyy.MM.dd")
           echo "MYBUILD=$build" >> $env:GITHUB_ENV
+          $build = $build + ".win"
+          echo "MYBUILDTXT=$build" >> $env:GITHUB_ENV
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"
@@ -42,7 +45,7 @@ jobs:
           flutter config --enable-web
           flutter pub upgrade
           flutter pub get
-          flutter build windows --release
+          flutter build windows --release  --build-name ${{ env.MYBUILD }} --build-number 1
 
       # https://github.com/marketplace/actions/build-a-badge
       - name: build read.me badge
@@ -51,5 +54,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           filename: badge-windows
           label: latest build
-          message: ${{ env.MYBUILD }}
+          message: ${{ env.MYBUILDTXT }}
 

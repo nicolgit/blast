@@ -1,4 +1,4 @@
-name: web (purple-flower)
+name: deploy to web (purple-flower)
 
 on: workflow_dispatch
 env:

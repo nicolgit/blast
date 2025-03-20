@@ -35,7 +35,7 @@ jobs:
         shell: pwsh
         run: |
           $build = (Get-Date -Format "yyyy.MM.dd") + ".web"
-          echo "/mybuild=$build" >> $GITHUB_OUTPUT
+          echo "mybuild=$build" >> $GITHUB_OUTPUT
           
           Copy-Item -Path "secretsToFill.dart" -Destination "secrets.dart"
           (Get-Content -Path "secrets.dart") -replace 'class SecretsToFill', 'class Secrets' | Set-Content -Path "secrets.dart"

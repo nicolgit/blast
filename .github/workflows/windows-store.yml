@@ -30,10 +30,10 @@ jobs:
 
       # Create badge
       # https://github.com/marketplace/actions/bring-your-own-badge
-      - name: time build badge
+      - name: build badge windows
         uses: RubbaBoy/BYOB@v1.3.0
         with:
-          NAME: winbuild
+          NAME: build-win-badge
           label: 'windows store build no.'
           status: $build
           color: 101010

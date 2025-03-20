@@ -16,7 +16,7 @@ jobs:
           lfs: false
       
       # Step 3: Run the PowerShell script
-      - name: variables
+      - name: prepare variables
         working-directory: ./code/app/blastmodel/lib
         shell: pwsh
         run: |
@@ -36,7 +36,7 @@ jobs:
           channel: stable
 
       # build app
-      - name: Install packages
+      - name: build app
         working-directory: ./code/app/blastapp
         run: |
           flutter config --enable-web
@@ -45,7 +45,7 @@ jobs:
           flutter build windows --release
 
       # https://github.com/marketplace/actions/build-a-badge
-      - name: Build read.me badge
+      - name: build read.me badge
         uses: peterrhodesdev/build-a-badge@v1.3.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

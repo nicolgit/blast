@@ -97,34 +97,32 @@ class _CardViewState extends State<CardView> {
                       ),
                     );
                   }),
-              Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                              textAlign: TextAlign.center, style: _widgetFactory.textTheme.titleLarge)),
-                      IconButton(
-                          icon: vm.currentCard.isFavorite
-                              ? Icon(
-                                  Icons.star,
-                                  color: _widgetFactory.theme.colorScheme.primary,
-                                )
-                              : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
-                          tooltip: "toggle favorite",
-                          onPressed: () {
-                            vm.toggleFavorite();
-                          })
-                    ],
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
-                    style: _widgetFactory.textTheme.labelSmall,
-                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                      icon: vm.currentCard.isFavorite
+                          ? Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            )
+                          : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
+                      tooltip: "toggle favorite",
+                      onPressed: () {
+                        vm.toggleFavorite();
+                      }),
+                  Center(
+                      child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+                          textAlign: TextAlign.center, style: _widgetFactory.textTheme.titleLarge)),
+                ],
+              ),
+              Text(
+                "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
+                style: _widgetFactory.textTheme.labelSmall,
+              ),
+              const SizedBox(height: 12),
               _rowOfTags(vm.currentCard.tags),
+              const SizedBox(height: 12),
               FutureBuilder<List<BlastAttribute>>(
                   future: vm.getRows(),
                   builder: (context, cardsList) {

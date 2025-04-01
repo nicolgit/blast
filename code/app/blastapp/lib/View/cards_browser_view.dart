@@ -238,7 +238,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 elevation: 6,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   ListTile(
-                    leading: _widgetFactory.blastCardIcon(name),
+                    leading: _widgetFactory.blastCardIcon(name, isFavorite ? Colors.amber : _theme.colorScheme.primary),
                     tileColor: _theme.colorScheme.surfaceContainer,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
@@ -268,6 +268,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         visible: isFavorite,
                         child: Icon(
                           isFavorite ? Icons.star : Icons.star_border,
+                          color: Colors.amber,
                         ),
                       ),
                       Expanded(

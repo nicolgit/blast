@@ -90,10 +90,12 @@ class CardViewModel extends ChangeNotifier {
 
   void toggleFavorite() async {
     currentCard.isFavorite = !currentCard.isFavorite;
-    _blastDocumentChanged();
+    notifyListeners();
 
     if (await _settingsService.autoSave) {
-      _fileService.saveFile(false);
+      await _fileService.saveFile(false);
+    } else {
+      _blastDocumentChanged();
     }
 
     notifyListeners();

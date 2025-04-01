@@ -25,7 +25,7 @@ class BlastWidgetFactory {
 
   Color viewBackgroundColor() => theme.colorScheme.surface;
 
-  Widget blastCardIcon(String text) {
+  Widget blastCardIcon(String text, Color bgColor) {
     String iconText = "";
 
     int i = 0;
@@ -45,7 +45,7 @@ class BlastWidgetFactory {
     }
 
     return CircleAvatar(
-      backgroundColor: theme.colorScheme.primary,
+      backgroundColor: bgColor,
       child: Text(
         iconText,
         style: textTheme.labelSmall!.copyWith(color: theme.colorScheme.onPrimary),

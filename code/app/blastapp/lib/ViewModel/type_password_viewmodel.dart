@@ -106,13 +106,17 @@ class TypePasswordViewModel extends ChangeNotifier {
         if (!kIsWeb && biometricAuthIntegration && response == CanAuthenticateResponse.success) {
           if (!context.mounted) return false;
 
+          var theme = Theme.of(context);
+          var textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
+
           // show alert dialog
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Biometric authentication'),
-                content: const Text('Do you want to enable biometric authentication for this file?'),
+                title: Text('Biometric authentication', style: textTheme.titleLarge),
+                content:
+                    Text('Do you want to enable biometric authentication for this file?', style: textTheme.labelMedium),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -130,7 +134,9 @@ class TypePasswordViewModel extends ChangeNotifier {
                         SettingService().setBiometricAuthEnabled(false);
                       }
 
-                      Navigator.of(context).pop();
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: const Text('Yes'),
                   ),
@@ -142,7 +148,9 @@ class TypePasswordViewModel extends ChangeNotifier {
       }
 
       // return true to the calling function
-      context.router.maybePop(true);
+      if (context.mounted) {
+        context.router.maybePop(true);
+      }
     }
 
     return isOk;
@@ -166,6 +174,7 @@ class TypePasswordViewModel extends ChangeNotifier {
             return true;
           } else {
             await SettingService().setBiometricAuthEnabled(false);
+            return false;
           }
         }
       }

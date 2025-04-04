@@ -10,4 +10,13 @@
 .vscode/
 *azurite*
 
+# macOS creates .DS_Store files in every directory. These files are used by the
+# Finder to store custom attributes of a folder such as the position of icons,
+# the choice of a background image, and the view options for the folder. They
+# are not needed for your project and can be ignored.
 .DS_Store
+
+
+# Android Studio directories
+.idea
+.cxx

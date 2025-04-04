@@ -128,6 +128,7 @@ class TypePasswordViewModel extends ChangeNotifier {
                     onPressed: () async {
                       try {
                         final storageFile = await BiometricStorage().getStorage('blastvault');
+
                         await storageFile.write(password);
                         SettingService().setBiometricAuthEnabled(true);
                       } on AuthException catch (_, e) {

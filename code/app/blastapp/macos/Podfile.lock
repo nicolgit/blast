@@ -3,6 +3,8 @@ PODS:
     - FlutterMacOS
   - biometric_storage (0.0.1):
     - FlutterMacOS
+  - file_picker (0.0.1):
+    - FlutterMacOS
   - flutter_platform_alert (0.0.1):
     - FlutterMacOS
   - flutter_window_close (0.0.1):
@@ -24,6 +26,7 @@ PODS:
 DEPENDENCIES:
   - app_links (from `Flutter/ephemeral/.symlinks/plugins/app_links/macos`)
   - biometric_storage (from `Flutter/ephemeral/.symlinks/plugins/biometric_storage/macos`)
+  - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - flutter_platform_alert (from `Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos`)
   - flutter_window_close (from `Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -38,6 +41,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/app_links/macos
   biometric_storage:
     :path: Flutter/ephemeral/.symlinks/plugins/biometric_storage/macos
+  file_picker:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   flutter_platform_alert:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos
   flutter_window_close:
@@ -56,8 +61,9 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
+  app_links: 86a57d95d4dec830373b8c85c21d1c59a4a5dc21
   biometric_storage: 43caa6e7ef00e8e19c074216e7e1786dacda9e76
+  file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
   flutter_window_close: a0f4f388e956ebafa866e3e171ce837c166eab9c
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24

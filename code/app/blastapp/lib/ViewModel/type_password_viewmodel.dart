@@ -131,7 +131,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
                         await storageFile.write(password);
                         SettingService().setBiometricAuthEnabled(true);
-                      } on AuthException catch (_, e) {
+                      } catch (e) {
                         SettingService().setBiometricAuthEnabled(false);
                       }
 

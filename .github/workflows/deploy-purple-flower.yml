@@ -19,7 +19,7 @@ jobs:
       - name: variables
         working-directory: ./code/app/blastmodel/lib
         run: |
-          build=$(date +%Y.%m.%d).web
+          build=$(date +%Y.%m.%d).$(date +%H%M)
           echo 'MYBUILD='$build >> $GITHUB_ENV
 
           cp secretsToFill.dart secrets.dart

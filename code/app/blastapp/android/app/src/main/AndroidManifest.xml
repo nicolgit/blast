@@ -67,4 +67,6 @@
     <!--#docregion android-queries-->
   </queries>
   <!--#enddocregion android-queries-->
+
+  <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

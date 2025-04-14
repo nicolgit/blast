@@ -60,7 +60,7 @@ class _CardEditViewState extends State<CardEditView> {
                       leading: BackButton(
                         onPressed: () => _showChangedDialog(context, vm),
                       ),
-                      title: Text('Edit Card ${vm.currentCard.id}'),
+                      title: Text('Edit Card'),
                       actions: [
                         IconButton(
                           icon: const Icon(Icons.save),
@@ -93,8 +93,8 @@ class _CardEditViewState extends State<CardEditView> {
                               autofocus: _focusOn == FocusOn.title,
                               textInputAction: TextInputAction.next,
                               style: _widgetFactory.textTheme.labelMedium,
-                              decoration:
-                                  _widgetFactory.blastTextFieldDecoration('Card title', 'Choose a title for the card')),
+                              decoration: _widgetFactory.blastTextFieldDecoration(
+                                  'Card <${vm.currentCard.id}> title', 'Choose a title for the card')),
                         )),
                     _buildTagsRow(vm),
                     FutureBuilder<List<BlastAttribute>>(
@@ -254,8 +254,12 @@ class _CardEditViewState extends State<CardEditView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Unsaved changes'),
-          content: const Text('Do you want to save your changes?'),
+          title: Text('Unsaved changes',
+              style: _widgetFactory.textTheme.headlineMedium!
+                  .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
+          content: Text('Do you want to save your changes?',
+              style: _widgetFactory.textTheme.bodyMedium!
+                  .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
           actions: <Widget>[
             TextButton(
                 child: const Text('Cancel'),
@@ -313,15 +317,21 @@ class _CardEditViewState extends State<CardEditView> {
   Wrap _buildTagsRow(CardEditViewModel vm) {
     List<Widget> rowItems = [];
     for (var tag in vm.currentCard.tags) {
-      rowItems.add(_widgetFactory.blastTag(tag));
+      rowItems.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0), // Add padding to top and bottom
+        child: _widgetFactory.blastTag(tag),
+      ));
     }
+
     rowItems.add(TextButton.icon(
         onPressed: () async {
           await showDialog(
             context: context,
             builder: (ctx) {
               return MultiSelectDialog(
-                title: const Text("Select tags"),
+                title: Text("Select tags",
+                    style: _widgetFactory.textTheme.headlineMedium!
+                        .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
                 items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
                 initialValue: vm.currentCard.tags,
                 onConfirm: (values) {
@@ -329,6 +339,7 @@ class _CardEditViewState extends State<CardEditView> {
                 },
                 listType: MultiSelectListType.CHIP,
                 selectedColor: _widgetFactory.theme.colorScheme.primary,
+                unselectedColor: _widgetFactory.theme.colorScheme.surface,
                 selectedItemsTextStyle:
                     _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
               );

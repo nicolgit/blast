@@ -48,7 +48,7 @@ android {
         applicationId = "com.nicoladefino.blastapp"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toItoInteger()
+        versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 

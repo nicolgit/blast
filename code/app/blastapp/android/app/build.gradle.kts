@@ -11,7 +11,8 @@ plugins {
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-if (keystorePropertiesFile.exists()) {
+val keystoreExists = keystorePropertiesFile.exists()
+if (keystoreExists) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
@@ -52,18 +53,27 @@ android {
         versionName = flutterVersionName
     }
 
-    signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String
+    if (keystoreExists) {
+        signingConfigs {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 
     buildTypes {
+        getByName("debug") {
+            // Debug configuration that doesn't use the release signing config
+            isDebuggable = true
+        }
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            // Only apply signing config if it exists
+            if (keystoreExists) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }

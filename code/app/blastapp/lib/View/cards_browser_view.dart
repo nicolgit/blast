@@ -228,9 +228,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        //final isWideScreen = constraints.maxWidth > 600;
-
-        //if (isWideScreen) {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 800.0,
@@ -254,24 +251,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             );
           },
         );
-        /*} else {
-          return ListView.builder(
-            itemCount: cardsList.length,
-            itemBuilder: (context, index) {
-              return _buildCardItem(
-                card: cardsList[index],
-                onEditPressed: (card) => vm.editCard(card).then((value) {
-                  vm.refreshCardListCommand();
-                }),
-                onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
-                onTap: (card) => vm.selectCard(card).then((value) {
-                  vm.refreshCardListCommand();
-                }),
-                isSelected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
-              );
-            },
-          );
-        }*/
       },
     );
   }

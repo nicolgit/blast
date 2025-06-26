@@ -225,85 +225,132 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     super.dispose();
   }
 
-  ListView _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
-    var myList = ListView.builder(
-      itemCount: cardsList.length,
-      itemBuilder: (context, index) {
-        String name = cardsList[index].title != null ? cardsList[index].title! : '';
-        bool isFavorite = cardsList[index].isFavorite;
+  Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        //final isWideScreen = constraints.maxWidth > 600;
 
-        return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Card(
-                elevation: 6,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  ListTile(
-                    leading: _widgetFactory.blastCardIcon(name, isFavorite ? Colors.amber : _theme.colorScheme.primary),
-                    tileColor: _theme.colorScheme.surfaceContainer,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.edit,
-                          ),
-                          onPressed: () {
-                            vm.editCard(cardsList[index]).then((value) {
-                              vm.refreshCardListCommand();
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
-                          onPressed: () {
-                            _showDeleteCardDialog(context, vm, cardsList[index]);
-                          },
-                        ),
-                      ],
-                    ),
-                    title: Row(children: [
-                      Visibility(
-                        visible: isFavorite,
-                        child: Icon(
-                          isFavorite ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
-                        ),
-                      ),
-                      Expanded(
-                          child: Text(name,
-                              overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)))
-                    ]),
-                    subtitle: Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                'used ${cardsList[index].usedCounter} times, last time ${cardsList[index].lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}')),
-                      ],
-                    ),
-                    selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-                    selected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
-                    onTap: () async {
-                      vm.selectCard(cardsList[index]).then((value) {
-                        vm.refreshCardListCommand();
-                      });
-                    },
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
-                        borderRadius:
-                            BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))),
-                    child: Container(padding: const EdgeInsets.all(6), child: _buildTagsRow(cardsList[index].tags)),
-                  ),
-                ])));
+        //if (isWideScreen) {
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 800.0,
+            childAspectRatio: 3.0,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          itemCount: cardsList.length,
+          itemBuilder: (context, index) {
+            return _buildCardItem(
+              card: cardsList[index],
+              onEditPressed: (card) => vm.editCard(card).then((value) {
+                vm.refreshCardListCommand();
+              }),
+              onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
+              onTap: (card) => vm.selectCard(card).then((value) {
+                vm.refreshCardListCommand();
+              }),
+              isSelected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
+            );
+          },
+        );
+        /*} else {
+          return ListView.builder(
+            itemCount: cardsList.length,
+            itemBuilder: (context, index) {
+              return _buildCardItem(
+                card: cardsList[index],
+                onEditPressed: (card) => vm.editCard(card).then((value) {
+                  vm.refreshCardListCommand();
+                }),
+                onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
+                onTap: (card) => vm.selectCard(card).then((value) {
+                  vm.refreshCardListCommand();
+                }),
+                isSelected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
+              );
+            },
+          );
+        }*/
       },
     );
+  }
 
-    return myList;
+  Widget _buildCardItem({
+    required BlastCard card,
+    required Function(BlastCard) onEditPressed,
+    required Function(BlastCard) onDeletePressed,
+    required Function(BlastCard) onTap,
+    required bool isSelected,
+  }) {
+    String name = card.title != null ? card.title! : '';
+    bool isFavorite = card.isFavorite;
+
+    return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        child: Card(
+            elevation: 6,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Expanded(
+                child: ListTile(
+                  leading: _widgetFactory.blastCardIcon(name, isFavorite ? Colors.amber : _theme.colorScheme.primary),
+                  tileColor: _theme.colorScheme.surfaceContainer,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit,
+                        ),
+                        onPressed: () {
+                          onEditPressed(card);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
+                        onPressed: () {
+                          onDeletePressed(card);
+                        },
+                      ),
+                    ],
+                  ),
+                  title: Row(children: [
+                    Visibility(
+                      visible: isFavorite,
+                      child: Icon(
+                        isFavorite ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    Expanded(
+                        child: Text(name,
+                            overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)))
+                  ]),
+                  subtitle: Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}')),
+                    ],
+                  ),
+                  selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+                  selected: isSelected,
+                  onTap: () async {
+                    onTap(card);
+                  },
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))),
+                child: Container(padding: const EdgeInsets.all(6), child: _buildTagsRow(card.tags)),
+              ),
+            ])));
   }
 
   Wrap _buildTagsRow(List<String> tags) {

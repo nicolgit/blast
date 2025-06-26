@@ -54,7 +54,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   auto_route_generator: ^9.0.0
   build_runner: ^2.4.12
-  msix: ^3.16.8
+  msix: ^3.16.9
 
 flutter:
   uses-material-design: true
@@ -67,4 +67,5 @@ msix_config:
   publisher_display_name: Rubber Duckies farm
   identity_name: RubberDuckiesfarm.blastopensourcepasswordmanager
   publisher: CN=4CCF9CCB-473B-4745-A9F5-E48C2703FA41
+  logo_path: assets/general/app-icon.png
   store: true

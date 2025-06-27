@@ -230,10 +230,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       builder: (context, constraints) {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 800.0,
-            childAspectRatio: 3.0,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
+            maxCrossAxisExtent: 600.0,
+            mainAxisExtent: 180.0,
           ),
           padding: const EdgeInsets.all(8.0),
           itemCount: cardsList.length,
@@ -276,25 +274,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   tileColor: _theme.colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.edit,
-                        ),
-                        onPressed: () {
-                          onEditPressed(card);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
-                        onPressed: () {
-                          onDeletePressed(card);
-                        },
-                      ),
-                    ],
-                  ),
                   title: Row(children: [
                     Visibility(
                       visible: isFavorite,
@@ -327,7 +306,33 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 decoration: BoxDecoration(
                     color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))),
-                child: Container(padding: const EdgeInsets.all(6), child: _buildTagsRow(card.tags)),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    children: [
+                      Expanded(child: _buildTagsRow(card.tags)),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: _widgetFactory.theme.colorScheme.secondary),
+                            onPressed: () {
+                              onEditPressed(card);
+                            },
+                            tooltip: "edit",
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
+                            onPressed: () {
+                              onDeletePressed(card);
+                            },
+                            tooltip: "delete",
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ])));
   }

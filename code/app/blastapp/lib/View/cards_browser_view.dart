@@ -4,6 +4,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -252,6 +253,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 vm.refreshCardListCommand();
               }),
               onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
+              onFavoritePressed: (card) {
+                card.isFavorite = !card.isFavorite;
+                card.lastUpdateDateTime = DateTime.now();
+                CurrentFileService().currentFileDocument!.isChanged = true;
+                vm.refreshCardListCommand();
+              },
               onTap: (card) => vm.selectCard(card).then((value) {
                 vm.refreshCardListCommand();
               }),
@@ -268,6 +275,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     required BlastCard card,
     required Function(BlastCard) onEditPressed,
     required Function(BlastCard) onDeletePressed,
+    required Function(BlastCard) onFavoritePressed,
     required Function(BlastCard) onTap,
     required bool isSelected,
     required List<String> textToHighlight,
@@ -322,6 +330,16 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.star : Icons.star_border,
+                              color: isFavorite ? Colors.amber : _widgetFactory.theme.colorScheme.secondary,
+                            ),
+                            onPressed: () {
+                              onFavoritePressed(card);
+                            },
+                            tooltip: isFavorite ? "remove from favorites" : "add to favorites",
+                          ),
                           IconButton(
                             icon: Icon(Icons.edit, color: _widgetFactory.theme.colorScheme.secondary),
                             onPressed: () {
@@ -597,8 +615,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
     // Ensure the base style has proper color
     TextStyle baseStyle = style?.copyWith(
-      color: style.color ?? _theme.colorScheme.onSurface,
-    ) ?? TextStyle(color: _theme.colorScheme.onSurface);
+          color: style.color ?? _theme.colorScheme.onSurface,
+        ) ??
+        TextStyle(color: _theme.colorScheme.onSurface);
 
     while (remainingText.isNotEmpty) {
       String? foundTerm;

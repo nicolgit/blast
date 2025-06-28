@@ -40,7 +40,7 @@ class BlastWidgetFactory {
     iconText = iconText.replaceAll(RegExp(r'[^a-zA-Z]'), '');
 
     // max 3 characters
-    if (i > 3) {
+    if (iconText.length > 3) {
       iconText = iconText.substring(0, 3);
     }
 

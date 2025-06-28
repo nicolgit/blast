@@ -226,6 +226,16 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
+    List<String> searchTerms = vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
+    if (cardsList.isEmpty) {
+      return Center(
+        child: Text(
+          'No cards found. Press the + button to add a new card.',
+          style: _widgetFactory.textTheme.labelMedium,
+        ),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.builder(
@@ -246,6 +256,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 vm.refreshCardListCommand();
               }),
               isSelected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
+              textToHighlight: searchTerms,
             );
           },
         );
@@ -259,6 +270,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     required Function(BlastCard) onDeletePressed,
     required Function(BlastCard) onTap,
     required bool isSelected,
+    required List<String> textToHighlight,
   }) {
     String name = card.title != null ? card.title! : '';
     bool isFavorite = card.isFavorite;
@@ -283,17 +295,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ),
                     ),
                     Expanded(
-                        child: Text(name,
-                            overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)))
+                        child:
+                            _buildHighlightedText(name, textToHighlight, const TextStyle(fontWeight: FontWeight.bold)))
                   ]),
-                  subtitle: Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}')),
-                    ],
+                  subtitle: Text(
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}',
                   ),
                   selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
                   selected: isSelected,
@@ -572,5 +580,68 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ),
       ],
     ));
+  }
+
+  Widget _buildHighlightedText(String text, List<String> textToHighlight, TextStyle? style) {
+    if (textToHighlight.isEmpty) {
+      return Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        style: style,
+      );
+    }
+
+    List<TextSpan> spans = [];
+    String remainingText = text;
+
+    // Ensure the base style has proper color
+    TextStyle baseStyle = style?.copyWith(
+      color: style.color ?? _theme.colorScheme.onSurface,
+    ) ?? TextStyle(color: _theme.colorScheme.onSurface);
+
+    while (remainingText.isNotEmpty) {
+      String? foundTerm;
+      int foundIndex = -1;
+
+      // Find the first occurrence of any highlight term
+      for (String term in textToHighlight) {
+        int index = remainingText.toLowerCase().indexOf(term.toLowerCase());
+        if (index != -1 && (foundIndex == -1 || index < foundIndex)) {
+          foundIndex = index;
+          foundTerm = term;
+        }
+      }
+
+      if (foundIndex == -1) {
+        // No more terms to highlight, add the rest as normal text
+        spans.add(TextSpan(text: remainingText, style: baseStyle));
+        break;
+      } else {
+        // Add text before the highlighted term
+        if (foundIndex > 0) {
+          spans.add(TextSpan(text: remainingText.substring(0, foundIndex), style: baseStyle));
+        }
+
+        // Add the highlighted term
+        String actualTerm = remainingText.substring(foundIndex, foundIndex + foundTerm!.length);
+        spans.add(TextSpan(
+          text: actualTerm,
+          style: baseStyle.copyWith(
+            backgroundColor: _theme.colorScheme.secondary,
+            color: _theme.colorScheme.onSecondary,
+          ),
+        ));
+
+        // Continue with the remaining text
+        remainingText = remainingText.substring(foundIndex + foundTerm.length);
+      }
+    }
+
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      text: TextSpan(children: spans),
+    );
   }
 }

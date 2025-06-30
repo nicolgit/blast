@@ -86,7 +86,7 @@ class _EulaViewState extends State<EulaView> {
                           padding: const EdgeInsets.all(12.0),
                           child: TextButton.icon(
                             onPressed: () async {
-                              final Uri url = Uri.parse('https://github.com/nicolgit/');
+                              final Uri url = Uri.parse('https://github.com/nicolgit/blast');
                               if (await canLaunchUrl(url)) {
                                 await launchUrl(url, mode: LaunchMode.externalApplication);
                               }

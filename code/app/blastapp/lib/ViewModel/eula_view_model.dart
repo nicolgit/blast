@@ -8,13 +8,13 @@ class EulaViewModel extends ChangeNotifier {
 
   EulaViewModel(this.context);
 
-  acceptEula() async {
+  Future<void> acceptEula() async {
     SettingService().setEulaAccepted(true);
     notifyListeners();
     context.router.maybePop();
   }
 
-  denyEula() async {
+  Future<void> denyEula() async {
     SettingService().setEulaAccepted(false);
     notifyListeners();
     context.router.maybePop(true);

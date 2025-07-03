@@ -30,7 +30,8 @@ class ImporterViewModel extends ChangeNotifier {
         fileService.currentFileJsonString = file.readAsStringSync();
       }
 
-      fileService.currentFileDocument = Importer.importBlastJson(fileService.currentFileJsonString!);
+      fileService.currentFileDocument =
+          Importer.importBlastJson(fileService.currentFileJsonString!);
     } else {
       throw Exception('User canceled the picker');
     }
@@ -40,7 +41,7 @@ class ImporterViewModel extends ChangeNotifier {
     }
   }
 
-  importKeepassXMLCommand() async {
+  Future<void> importKeepassXMLCommand() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {
@@ -60,7 +61,7 @@ class ImporterViewModel extends ChangeNotifier {
     }
   }
 
-  importPwsafeXMLCommand() async {
+  Future<void> importPwsafeXMLCommand() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {

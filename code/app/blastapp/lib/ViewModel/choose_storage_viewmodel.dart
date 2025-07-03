@@ -13,7 +13,7 @@ class ChooseStorageViewModel extends ChangeNotifier {
     return SettingService().getCloudStoragelist();
   }
 
-  goToChooseFile(Cloud cloud) async {
+  Future<void> goToChooseFile(Cloud cloud) async {
     CurrentFileService().setCloud(cloud);
 
     // return true to indicate that a cloud has been selected

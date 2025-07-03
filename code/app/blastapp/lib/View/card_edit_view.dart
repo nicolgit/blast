@@ -27,14 +27,16 @@ class _CardEditViewState extends State<CardEditView> {
 
   @override
   Widget build(BuildContext context) {
-    final card = widget.card; // this is the card passed in, from the CardsBrowserView
+    final card =
+        widget.card; // this is the card passed in, from the CardsBrowserView
 
     return ChangeNotifierProvider(
       create: (context) {
         return CardEditViewModel(context, card);
       },
       child: Consumer<CardEditViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -89,12 +91,16 @@ class _CardEditViewState extends State<CardEditView> {
                               onChanged: (value) {
                                 vm.updateTitle(value);
                               },
-                              validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                              validator: (value) => value!.isEmpty
+                                  ? 'Please enter a title'
+                                  : null,
                               autofocus: _focusOn == FocusOn.title,
                               textInputAction: TextInputAction.next,
                               style: _widgetFactory.textTheme.labelMedium,
-                              decoration: _widgetFactory.blastTextFieldDecoration(
-                                  'Card <${vm.currentCard.id}> title', 'Choose a title for the card')),
+                              decoration:
+                                  _widgetFactory.blastTextFieldDecoration(
+                                      'Card <${vm.currentCard.id}> title',
+                                      'Choose a title for the card')),
                         )),
                     _buildTagsRow(vm),
                     FutureBuilder<List<BlastAttribute>>(
@@ -102,7 +108,9 @@ class _CardEditViewState extends State<CardEditView> {
                       builder: (context, snapshot) {
                         return Expanded(
                           child: Container(
-                            child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+                            child: _buildFieldList(
+                                snapshot.data != null ? snapshot.data! : [],
+                                vm),
                           ),
                         );
                       },
@@ -112,7 +120,8 @@ class _CardEditViewState extends State<CardEditView> {
                 )))));
   }
 
-  ReorderableListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
+  ReorderableListView _buildFieldList(
+      List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ReorderableListView(
         onReorder: (oldIndex, newIndex) => vm.moveRow(oldIndex, newIndex),
         buildDefaultDragHandles: false,
@@ -122,7 +131,8 @@ class _CardEditViewState extends State<CardEditView> {
               key: ValueKey(i),
               title: Container(
                 decoration: BoxDecoration(
-                    color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+                    color: _widgetFactory
+                        .theme.colorScheme.surfaceContainerHighest,
                     borderRadius: const BorderRadius.all(Radius.circular(6))),
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -140,12 +150,17 @@ class _CardEditViewState extends State<CardEditView> {
                             children: <Widget>[
                               TextField(
                                 textInputAction: TextInputAction.next,
-                                controller: TextEditingController()..text = rows[i].name,
-                                onChanged: (value) => vm.updateAttributeName(i, value),
-                                autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRow),
+                                controller: TextEditingController()
+                                  ..text = rows[i].name,
+                                onChanged: (value) =>
+                                    vm.updateAttributeName(i, value),
+                                autofocus: (i == rows.length - 1) &&
+                                    (_focusOn == FocusOn.lastRow),
                                 style: _widgetFactory.textTheme.labelMedium,
-                                decoration: _widgetFactory.blastTextFieldDecoration(
-                                    'Attribute name', 'Choose the attribute name'),
+                                decoration:
+                                    _widgetFactory.blastTextFieldDecoration(
+                                        'Attribute name',
+                                        'Choose the attribute name'),
                               )
                             ],
                           ),
@@ -167,12 +182,15 @@ class _CardEditViewState extends State<CardEditView> {
                         padding: const EdgeInsets.all(12.0),
                         child: TextField(
                           textInputAction: TextInputAction.next,
-                          controller: TextEditingController()..text = rows[i].value,
-                          onChanged: (value) => vm.updateAttributeValue(i, value),
-                          autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
+                          controller: TextEditingController()
+                            ..text = rows[i].value,
+                          onChanged: (value) =>
+                              vm.updateAttributeValue(i, value),
+                          autofocus: (i == rows.length - 1) &&
+                              (_focusOn == FocusOn.lastRowValue),
                           style: _widgetFactory.textTheme.labelMedium,
-                          decoration:
-                              _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                          decoration: _widgetFactory.blastTextFieldDecoration(
+                              'Attribute value', 'Choose the attribute value'),
                         ),
                       ),
                     ),
@@ -195,7 +213,8 @@ class _CardEditViewState extends State<CardEditView> {
     return myList;
   }
 
-  Future<String> _displayTextInputDialog(BuildContext context, String valueText) async {
+  Future<String> _displayTextInputDialog(
+      BuildContext context, String valueText) async {
     final oldValue = valueText;
 
     await showDialog(
@@ -213,7 +232,8 @@ class _CardEditViewState extends State<CardEditView> {
                   valueText = value;
                 });
               },
-              decoration: const InputDecoration(hintText: "Text Field in Dialog"),
+              decoration:
+                  const InputDecoration(hintText: "Text Field in Dialog"),
             ),
             actions: <Widget>[
               MaterialButton(
@@ -255,11 +275,11 @@ class _CardEditViewState extends State<CardEditView> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Unsaved changes',
-              style: _widgetFactory.textTheme.headlineMedium!
-                  .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
+              style: _widgetFactory.textTheme.headlineMedium!.copyWith(
+                  color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
           content: Text('Do you want to save your changes?',
-              style: _widgetFactory.textTheme.bodyMedium!
-                  .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
+              style: _widgetFactory.textTheme.bodyMedium!.copyWith(
+                  color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
           actions: <Widget>[
             TextButton(
                 child: const Text('Cancel'),
@@ -284,7 +304,8 @@ class _CardEditViewState extends State<CardEditView> {
     );
   }
 
-  Future _showDeleteCardDialog(BuildContext context, CardEditViewModel vm) async {
+  Future _showDeleteCardDialog(
+      BuildContext context, CardEditViewModel vm) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -292,10 +313,12 @@ class _CardEditViewState extends State<CardEditView> {
           title: Row(
             children: [
               const Text('Delete '),
-              Text('${vm.currentCard.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('${vm.currentCard.title}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
-          content: const Text('Are you sure you want to delete this card and all its content?'),
+          content: const Text(
+              'Are you sure you want to delete this card and all its content?'),
           actions: <Widget>[
             TextButton(
                 child: const Text('No'),
@@ -303,7 +326,9 @@ class _CardEditViewState extends State<CardEditView> {
                       Navigator.pop(context),
                     }),
             TextButton(
-                child: const Text('Yes please!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                child: const Text('Yes please!',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
                 onPressed: () => {
                       vm.deleteCard(),
                       Navigator.pop(context),
@@ -318,7 +343,8 @@ class _CardEditViewState extends State<CardEditView> {
     List<Widget> rowItems = [];
     for (var tag in vm.currentCard.tags) {
       rowItems.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0), // Add padding to top and bottom
+        padding: const EdgeInsets.symmetric(
+            vertical: 8.0), // Add padding to top and bottom
         child: _widgetFactory.blastTag(tag),
       ));
     }
@@ -330,8 +356,9 @@ class _CardEditViewState extends State<CardEditView> {
             builder: (ctx) {
               return MultiSelectDialog(
                 title: Text("Select tags",
-                    style: _widgetFactory.textTheme.headlineMedium!
-                        .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
+                    style: _widgetFactory.textTheme.headlineMedium!.copyWith(
+                        color: _widgetFactory
+                            .theme.colorScheme.onPrimaryContainer)),
                 items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
                 initialValue: vm.currentCard.tags,
                 onConfirm: (values) {
@@ -340,8 +367,9 @@ class _CardEditViewState extends State<CardEditView> {
                 listType: MultiSelectListType.CHIP,
                 selectedColor: _widgetFactory.theme.colorScheme.primary,
                 unselectedColor: _widgetFactory.theme.colorScheme.surface,
-                selectedItemsTextStyle:
-                    _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
+                selectedItemsTextStyle: _widgetFactory.textTheme.labelSmall!
+                    .copyWith(
+                        color: _widgetFactory.theme.colorScheme.onPrimary),
               );
             },
           );
@@ -354,7 +382,7 @@ class _CardEditViewState extends State<CardEditView> {
     return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
   }
 
-  _iconTypeButton(CardEditViewModel vm, int index) {
+  IconButton _iconTypeButton(CardEditViewModel vm, int index) {
     var icon = const Icon(Icons.error);
 
     switch (vm.currentCard.rows[index].type) {
@@ -389,50 +417,57 @@ class _CardEditViewState extends State<CardEditView> {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Wrap(spacing: 3.0, runSpacing: 1.0, alignment: WrapAlignment.center, children: [
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeString);
-                  _focusOn = FocusOn.lastRow;
-                },
-                icon: const Icon(Icons.description),
-                label: const Text("add value"),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typePassword);
-                  _focusOn = FocusOn.lastRowValue;
-                },
-                icon: const Icon(Icons.lock),
-                label: const Text("add password"),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeURL);
-                },
-                icon: const Icon(Icons.link),
-                label: const Text("add URL"),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  vm.addAttribute(BlastAttributeType.typeHeader);
-                  _focusOn = FocusOn.lastRow;
-                },
-                icon: const Icon(Icons.text_increase),
-                label: const Text("add title"),
-              ),
-            ])),
+            child: Wrap(
+                spacing: 3.0,
+                runSpacing: 1.0,
+                alignment: WrapAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      vm.addAttribute(BlastAttributeType.typeString);
+                      _focusOn = FocusOn.lastRow;
+                    },
+                    icon: const Icon(Icons.description),
+                    label: const Text("add value"),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      vm.addAttribute(BlastAttributeType.typePassword);
+                      _focusOn = FocusOn.lastRowValue;
+                    },
+                    icon: const Icon(Icons.lock),
+                    label: const Text("add password"),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      vm.addAttribute(BlastAttributeType.typeURL);
+                    },
+                    icon: const Icon(Icons.link),
+                    label: const Text("add URL"),
+                  ),
+                  TextButton.icon(
+                    onPressed: () {
+                      vm.addAttribute(BlastAttributeType.typeHeader);
+                      _focusOn = FocusOn.lastRow;
+                    },
+                    icon: const Icon(Icons.text_increase),
+                    label: const Text("add title"),
+                  ),
+                ])),
         Row(
           children: [
             TextButton(
               child: const Text('edit notes > '),
               onPressed: () async {
-                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                vm.updateNotes(await _displayTextInputDialog(
+                    context, vm.currentCard.notes ?? ""));
               },
             ),
             Expanded(
                 child: Text(vm.currentCard.notes ?? "",
-                    overflow: TextOverflow.ellipsis, maxLines: 1, style: _widgetFactory.textTheme.labelMedium)),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: _widgetFactory.textTheme.labelMedium)),
           ],
         ),
       ]),

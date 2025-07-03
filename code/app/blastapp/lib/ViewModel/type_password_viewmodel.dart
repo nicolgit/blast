@@ -20,7 +20,8 @@ class TypePasswordViewModel extends ChangeNotifier {
   TypePasswordViewModel();
 
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
-  String get cloudIcon => 'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
+  String get cloudIcon =>
+      'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
   PasswordType passwordType = PasswordType.password;
   String password = '';
   String recoveryKey = '';
@@ -39,13 +40,13 @@ class TypePasswordViewModel extends ChangeNotifier {
     return passwordType;
   }
 
-  setPassword(String value) {
+  void setPassword(String value) {
     password = value;
     errorMessage = '';
     notifyListeners();
   }
 
-  setRecoveryKey(String value) {
+  void setRecoveryKey(String value) {
     recoveryKey = value;
     errorMessage = '';
     notifyListeners();
@@ -69,7 +70,8 @@ class TypePasswordViewModel extends ChangeNotifier {
         'currentFileEncrypted': CurrentFileService().currentFileEncrypted!
       };
 
-      Map<String, dynamic> resultMap = await compute(_checkPasswordComputation, inputData);
+      Map<String, dynamic> resultMap =
+          await compute(_checkPasswordComputation, inputData);
 
       CurrentFileService().currentFileJsonString = resultMap['jsonFile'];
       CurrentFileService().currentFileDocument = resultMap['binaryFile'];
@@ -91,7 +93,8 @@ class TypePasswordViewModel extends ChangeNotifier {
       errorMessage = 'file format exception - unable to open your file';
       isOk = false;
     } catch (e) {
-      errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
+      errorMessage =
+          'unexpeceted error - unable to open your file - ${e.toString()}';
       isOk = false;
     }
 
@@ -103,20 +106,25 @@ class TypePasswordViewModel extends ChangeNotifier {
         final response = await BiometricStorage().canAuthenticate();
 
         // biometric authentication support (no web)
-        if (!kIsWeb && biometricAuthIntegration && response == CanAuthenticateResponse.success) {
+        if (!kIsWeb &&
+            biometricAuthIntegration &&
+            response == CanAuthenticateResponse.success) {
           if (!context.mounted) return false;
 
           var theme = Theme.of(context);
-          var textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
+          var textTheme =
+              theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
 
           // show alert dialog
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Biometric authentication', style: textTheme.titleLarge),
-                content:
-                    Text('Do you want to enable biometric authentication for this file?', style: textTheme.labelMedium),
+                title: Text('Biometric authentication',
+                    style: textTheme.titleLarge),
+                content: Text(
+                    'Do you want to enable biometric authentication for this file?',
+                    style: textTheme.labelMedium),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -127,7 +135,8 @@ class TypePasswordViewModel extends ChangeNotifier {
                   TextButton(
                     onPressed: () async {
                       try {
-                        final storageFile = await BiometricStorage().getStorage('blastvault');
+                        final storageFile =
+                            await BiometricStorage().getStorage('blastvault');
 
                         await storageFile.write(password);
                         SettingService().setBiometricAuthEnabled(true);
@@ -199,22 +208,23 @@ Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
     // convert string to Uint8List each 2 characters (hex) to 1 byte\
     Uint8List recoveryKeyBinary = Uint8List(32);
     for (int i = 0; i < 32; i++) {
-      recoveryKeyBinary[i] = int.parse(recoveryKey.substring(i * 2, i * 2 + 2), radix: 16);
+      recoveryKeyBinary[i] =
+          int.parse(recoveryKey.substring(i * 2, i * 2 + 2), radix: 16);
     }
 
     currentFileService.password = '';
     currentFileService.key = recoveryKeyBinary;
-    currentFileService.currentFileJsonString =
-        currentFileService.decodeFile(currentFileEncrypted, recoveryKey, PasskeyType.hexkey);
+    currentFileService.currentFileJsonString = currentFileService.decodeFile(
+        currentFileEncrypted, recoveryKey, PasskeyType.hexkey);
   } else {
     // password
     currentFileService.password = password;
-    currentFileService.currentFileJsonString =
-        currentFileService.decodeFile(currentFileEncrypted, password, PasskeyType.password);
+    currentFileService.currentFileJsonString = currentFileService.decodeFile(
+        currentFileEncrypted, password, PasskeyType.password);
   }
 
-  currentFileService.currentFileDocument =
-      BlastDocument.fromJson(jsonDecode(currentFileService.currentFileJsonString!));
+  currentFileService.currentFileDocument = BlastDocument.fromJson(
+      jsonDecode(currentFileService.currentFileJsonString!));
 
   Map<String, dynamic> resultMap = {
     'binaryRecoveryKey': currentFileService.key,

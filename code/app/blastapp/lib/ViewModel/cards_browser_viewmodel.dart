@@ -22,7 +22,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
   CardsBrowserViewModel(this.context);
 
   Future<List<BlastCard>>? getCards() async {
-    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
+    return fileService.currentFileDocument!
+        .search(searchText, searchOperator, sortType, searchWhere);
   }
 
   Future selectCard(BlastCard selectedCard) async {
@@ -88,13 +89,14 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
-  Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
+  Future<bool> isFileChangedAsync() async =>
+      fileService.currentFileDocument!.isChanged;
 
   Future addCard() async {
     await context.router.push(CardEditRoute());
   }
 
-  deleteCard(BlastCard card) {
+  void deleteCard(BlastCard card) {
     fileService.currentFileDocument!.cards.remove(card);
     fileService.currentFileDocument!.isChanged = true;
     notifyListeners();
@@ -102,7 +104,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult =
+        await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -123,7 +126,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
       if (i == 5) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Too many files with the same name. Please delete some files and try again.'),
+          content: Text(
+              'Too many files with the same name. Please delete some files and try again.'),
         ));
         return;
       }
@@ -142,7 +146,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     ));
   }
 
-  clearSearchTextCommand() {
+  void clearSearchTextCommand() {
     searchText = "";
     sortType = SortType.none;
     searchOperator = SearchOperator.and;
@@ -156,7 +160,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportMasterKeyCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult =
+        await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -167,13 +172,15 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void changePasswordCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult =
+        await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
 
     if (!context.mounted) return;
-    var changePasswordResult = await context.router.push(const ChangePasswordRoute());
+    var changePasswordResult =
+        await context.router.push(const ChangePasswordRoute());
     if (changePasswordResult != true) {
       return;
     }

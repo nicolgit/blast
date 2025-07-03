@@ -28,14 +28,15 @@ class ChangePasswordViewModel extends ChangeNotifier {
     return await passwordsMatch() && await isPasswordsNotEmpty();
   }
 
-  acceptPassword() async {
+  Future<void> acceptPassword() async {
     CurrentFileService().newPassword(password);
-    CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
-    CurrentFileService().currentFileEncrypted =
-        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
+    CurrentFileService().currentFileJsonString =
+        CurrentFileService().currentFileDocument.toString();
+    CurrentFileService().currentFileEncrypted = CurrentFileService()
+        .encodeFile(CurrentFileService().currentFileJsonString!);
 
     notifyListeners();
-    
+
     // return true if password is successfully changed
     if (!context.mounted) return;
     context.router.maybePop(true);

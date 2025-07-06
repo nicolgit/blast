@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'blastdocument.g.dart';
 
-enum SortType { none, star, mostUsed, recentUsed }
+enum SortType { mostUsed, recentUsed }
 
 enum SearchResult { notFound, foundInTitle, foundInBody }
 
@@ -32,7 +32,8 @@ class BlastDocument {
     return jsonEncode(_toJson());
   }
 
-  List<BlastCard> search(String searchText, SearchOperator searchOperator, SortType sortType, SearchWhere searchWhere) {
+  List<BlastCard> search(String searchText, SearchOperator searchOperator, SortType sortType, SearchWhere searchWhere,
+      bool favoritesOnly) {
     final List<String> words = removeDiacritics(searchText).toLowerCase().split(" ");
 
     bool skipWhereClause = false;
@@ -45,24 +46,6 @@ class BlastDocument {
     }
 
     switch (sortType) {
-      case SortType.none:
-        if (skipWhereClause) {
-          return cards;
-        } else {
-          return cards
-              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
-              .toList();
-        }
-      case SortType.star:
-        final List<BlastCard> starredCards = cards.where((element) => element.isFavorite).toList();
-
-        if (skipWhereClause) {
-          return starredCards;
-        } else {
-          return starredCards
-              .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
-              .toList();
-        }
       case SortType.mostUsed:
         var mostUsedList = cards;
 
@@ -70,6 +53,10 @@ class BlastDocument {
           mostUsedList = cards
               .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
               .toList();
+        }
+
+        if (favoritesOnly) {
+          mostUsedList = mostUsedList.where((element) => element.isFavorite).toList();
         }
 
         mostUsedList.sort((b, a) => a.usedCounter.compareTo(b.usedCounter));
@@ -81,6 +68,10 @@ class BlastDocument {
           recentUsedList = cards
               .where((element) => element.seach(words, searchOperator, searchWhere) != SearchResult.notFound)
               .toList();
+        }
+
+        if (favoritesOnly) {
+          recentUsedList = recentUsedList.where((element) => element.isFavorite).toList();
         }
 
         recentUsedList.sort((a, b) => b.lastUpdateDateTime.compareTo(a.lastUpdateDateTime));

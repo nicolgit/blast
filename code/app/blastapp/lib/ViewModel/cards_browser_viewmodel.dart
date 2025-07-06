@@ -14,16 +14,16 @@ class CardsBrowserViewModel extends ChangeNotifier {
   List<BlastCard> cardsView = [];
   BlastCard? selectedCard;
 
-  SortType sortType = SortType.none;
+  SortType sortType = SortType.recentUsed;
   String searchText = "";
   SearchOperator searchOperator = SearchOperator.and;
   SearchWhere searchWhere = SearchWhere.everywhere;
+  bool favoritesOnly = false;
 
   CardsBrowserViewModel(this.context);
 
   Future<List<BlastCard>>? getCards() async {
-    return fileService.currentFileDocument!
-        .search(searchText, searchOperator, sortType, searchWhere);
+    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }
 
   Future selectCard(BlastCard selectedCard) async {
@@ -89,8 +89,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
-  Future<bool> isFileChangedAsync() async =>
-      fileService.currentFileDocument!.isChanged;
+  Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
 
   Future addCard() async {
     await context.router.push(CardEditRoute());
@@ -104,8 +103,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult =
-        await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -126,8 +124,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
       if (i == 5) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Too many files with the same name. Please delete some files and try again.'),
+          content: Text('Too many files with the same name. Please delete some files and try again.'),
         ));
         return;
       }
@@ -148,7 +145,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void clearSearchTextCommand() {
     searchText = "";
-    sortType = SortType.none;
+    sortType = SortType.recentUsed;
     searchOperator = SearchOperator.and;
     searchWhere = SearchWhere.everywhere;
     notifyListeners();
@@ -160,8 +157,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportMasterKeyCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult =
-        await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -172,15 +168,13 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void changePasswordCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult =
-        await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
 
     if (!context.mounted) return;
-    var changePasswordResult =
-        await context.router.push(const ChangePasswordRoute());
+    var changePasswordResult = await context.router.push(const ChangePasswordRoute());
     if (changePasswordResult != true) {
       return;
     }

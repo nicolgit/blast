@@ -422,54 +422,99 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Wrap(alignment: WrapAlignment.center, spacing: 6.0, runSpacing: 6.0, children: [
-                        SegmentedButton<SearchOperator>(
-                          segments: const <ButtonSegment<SearchOperator>>[
-                            ButtonSegment<SearchOperator>(
-                                value: SearchOperator.and,
-                                label: Text('and'),
-                                icon: Icon((Icons.radio_button_unchecked))),
-                            ButtonSegment<SearchOperator>(
-                                value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
-                          ],
-                          selected: <SearchOperator>{vm.searchOperator},
-                          onSelectionChanged: (Set<SearchOperator> newSelection) {
-                            setModalState(() {
-                              vm.searchOperator = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'toggle favorites only',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  vm.favoritesOnly ? _theme.colorScheme.secondaryContainer : _theme.colorScheme.surface,
+                              border: Border.all(
+                                color: _theme.colorScheme.outline,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20.0),
+                                onTap: () {
+                                  setModalState(() {
+                                    vm.favoritesOnly = !vm.favoritesOnly;
+                                    vm.refreshCardListCommand();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: vm.favoritesOnly
+                                        ? _theme.colorScheme.onSecondaryContainer
+                                        : _theme.colorScheme.onSurface,
+                                    size: 18.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        SegmentedButton<SearchWhere>(
-                          segments: const <ButtonSegment<SearchWhere>>[
-                            ButtonSegment<SearchWhere>(
-                                value: SearchWhere.title, label: Text('title only'), icon: Icon((Icons.abc))),
-                            ButtonSegment<SearchWhere>(
-                                value: SearchWhere.everywhere, label: Text('everywhere'), icon: Icon((Icons.abc))),
-                          ],
-                          selected: <SearchWhere>{vm.searchWhere},
-                          onSelectionChanged: (Set<SearchWhere> newSelection) {
-                            setModalState(() {
-                              vm.searchWhere = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'search operator',
+                          child: SegmentedButton<SearchOperator>(
+                            segments: const <ButtonSegment<SearchOperator>>[
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.and,
+                                  label: Text('and'),
+                                  icon: Icon((Icons.radio_button_unchecked))),
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.or,
+                                  label: Text('or'),
+                                  icon: Icon(Icons.radio_button_unchecked)),
+                            ],
+                            selected: <SearchOperator>{vm.searchOperator},
+                            onSelectionChanged: (Set<SearchOperator> newSelection) {
+                              setModalState(() {
+                                vm.searchOperator = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
                         ),
-                        SegmentedButton<SortType>(
-                          segments: const <ButtonSegment<SortType>>[
-                            ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
-                            ButtonSegment<SortType>(value: SortType.star, label: Text('star'), icon: Icon(Icons.star)),
-                            ButtonSegment<SortType>(
-                                value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
-                            ButtonSegment<SortType>(
-                                value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
-                          ],
-                          selected: <SortType>{vm.sortType},
-                          onSelectionChanged: (Set<SortType> newSelection) {
-                            setModalState(() {
-                              vm.sortType = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'search scope',
+                          child: SegmentedButton<SearchWhere>(
+                            segments: const <ButtonSegment<SearchWhere>>[
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.title, label: Text('title'), icon: Icon(Icons.subject)),
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.everywhere, label: Text('all'), icon: Icon(Icons.all_inclusive)),
+                            ],
+                            selected: <SearchWhere>{vm.searchWhere},
+                            onSelectionChanged: (Set<SearchWhere> newSelection) {
+                              setModalState(() {
+                                vm.searchWhere = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'sort type',
+                          child: SegmentedButton<SortType>(
+                            segments: const <ButtonSegment<SortType>>[
+                              ButtonSegment<SortType>(
+                                  value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
+                              ButtonSegment<SortType>(
+                                  value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
+                            ],
+                            selected: <SortType>{vm.sortType},
+                            onSelectionChanged: (Set<SortType> newSelection) {
+                              setModalState(() {
+                                vm.sortType = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
                         ),
                       ])),
                   Padding(

@@ -106,28 +106,32 @@ class _EulaViewState extends State<EulaView> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          child: Wrap(
+                            alignment: WrapAlignment.spaceEvenly,
+                            runSpacing: 8.0,
                             children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: FilledButton.tonal(
-                                    onPressed: () {
-                                      vm.denyEula();
-                                    },
-                                    child: const Text('I do not accept and I will not use this app'),
-                                  ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: FilledButton(
+                                  onPressed: () {
+                                    vm.acceptEula();
+                                  },
+                                  child: const Text('accept'),
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                  child: FilledButton(
-                                    onPressed: () {
-                                      vm.acceptEula();
-                                    },
-                                    child: const Text('accept'),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: FilledButton.tonal(
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: _theme.colorScheme.error,
+                                    foregroundColor: _theme.colorScheme.onError,
+                                  ),
+                                  onPressed: () {
+                                    vm.denyEula();
+                                  },
+                                  child: const Text(
+                                    'I do not accept and I will not use this app',
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),

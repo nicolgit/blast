@@ -223,6 +223,23 @@ class _SettingsViewState extends State<SettingsView> {
                                                 })
                                           ],
                                         ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("ask for biometric authentication", style: _textTheme.bodyLarge),
+                                            FutureBuilder<bool>(
+                                                future: vm.askForBiometricAuth,
+                                                builder: (BuildContext context, AsyncSnapshot<bool> askBiometric) {
+                                                  return Switch(
+                                                    value: askBiometric.hasData ? askBiometric.data! : true,
+                                                    onChanged: (bool value) async {
+                                                      await vm.setAskForBiometricAuth(value);
+                                                    },
+                                                    activeColor: _theme.colorScheme.primary,
+                                                  );
+                                                }),
+                                          ],
+                                        ),
                                       ],
                                     )))
                           ],

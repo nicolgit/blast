@@ -130,7 +130,10 @@ class TypePasswordViewModel extends ChangeNotifier {
         final response = await BiometricStorage().canAuthenticate();
 
         // biometric authentication support (no web)
-        if (!kIsWeb && biometricAuthIntegration && response == CanAuthenticateResponse.success) {
+        if (!kIsWeb &&
+            biometricAuthIntegration &&
+            response == CanAuthenticateResponse.success &&
+            await SettingService().askForBiometricAuth) {
           if (!context.mounted) return false;
 
           var theme = Theme.of(context);
@@ -146,12 +149,25 @@ class TypePasswordViewModel extends ChangeNotifier {
                     Text('Do you want to enable biometric authentication for this file?', style: textTheme.labelMedium),
                 actions: <Widget>[
                   TextButton(
+                    onPressed: () async {
+                      await SettingService().setAskForBiometricAuth(false);
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Do not ask whaanymore'),
+                  ),
+                  FilledButton.tonal(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: theme.colorScheme.errorContainer,
+                      foregroundColor: theme.colorScheme.onErrorContainer,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: const Text('No'),
                   ),
-                  TextButton(
+                  FilledButton(
                     onPressed: () async {
                       try {
                         final storageFile = await BiometricStorage().getStorage('blastvault');
@@ -187,6 +203,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   Future<bool> useBiometricAuth() async {
     if (kIsWeb) return false;
+    if (await SettingService().askForBiometricAuth == false) return false;
     if (await SettingService().biometricAuthEnabled == false) return false;
 
     try {

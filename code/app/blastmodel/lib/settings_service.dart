@@ -97,6 +97,16 @@ class SettingService {
     await prefs.setBool('biometricAuthEnabled', value);
   }
 
+  Future<bool> get askForBiometricAuth async {
+    var prefs = await _prefs;
+    return prefs.getBool('askForBiometricAuth') ?? true;
+  }
+
+  Future<void> setAskForBiometricAuth(bool value) async {
+    var prefs = await _prefs;
+    await prefs.setBool('askForBiometricAuth', value);
+  }
+
   Future<bool> get autoSave async {
     var prefs = await _prefs;
     return prefs.getBool('autoSave') ?? true;

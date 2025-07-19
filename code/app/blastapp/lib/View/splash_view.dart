@@ -107,8 +107,9 @@ class _SplashViewState extends State<SplashView> {
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: FilledButton.tonal(
-            onPressed: () {
-              vm.showEula().then((value) => vm.refresh());
+            onPressed: () async {
+              await vm.showEula();
+              vm.refresh();
             },
             child: const Text('show License'),
           ),

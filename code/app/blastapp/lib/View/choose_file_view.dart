@@ -54,23 +54,50 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                         title: const Text("Choose a file"),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Tooltip(
-                              message: 'go up one directory',
-                              textStyle: _widgetFactory.textTooltip.labelSmall,
-                              child: IconButton(
-                                  onPressed: () {
-                                    vm.upDirectoryCommand();
-                                  },
-                                  icon: Icon(
-                                    Icons.drive_folder_upload,
-                                    color: _widgetFactory.theme.colorScheme.tertiary,
-                                    size: 48,
-                                  ))),
-                          Text(
-                            'current path: ',
-                            style: _widgetFactory.textTheme.bodyLarge,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: ElevatedButton.icon(
+                                onPressed: () {
+                                  vm.upDirectoryCommand();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _widgetFactory.theme.colorScheme.primary,
+                                  foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                ),
+                                icon: Icon(
+                                  Icons.drive_folder_upload,
+                                  size: 24,
+                                ),
+                                label: Text('go up')),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12, right: 12),
+                            child: FutureBuilder<String>(
+                                future: vm.currentPath,
+                                builder: (context, currentPath) {
+                                  return Tooltip(
+                                      message: 'copy current path to clipboard',
+                                      textStyle: _widgetFactory.textTooltip.labelSmall,
+                                      child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                content: Text("current path copied to clipboard!",
+                                                    style: _widgetFactory.textTooltip.labelSmall)));
+                                          },
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: _widgetFactory.theme.colorScheme.primary,
+                                            foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                          ),
+                                          icon: Icon(
+                                            Icons.copy,
+                                            size: 20,
+                                            color: _widgetFactory.theme.colorScheme.onPrimary,
+                                          ),
+                                          label: Text('copy full path')));
+                                }),
                           ),
                           FutureBuilder<String>(
                             future: vm.currentPath,
@@ -81,21 +108,6 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                               overflow: TextOverflow.ellipsis,
                             )),
                           ),
-                          FutureBuilder<String>(
-                              future: vm.currentPath,
-                              builder: (context, currentPath) {
-                                return Tooltip(
-                                    message: 'copy current path to clipboard',
-                                    textStyle: _widgetFactory.textTooltip.labelSmall,
-                                    child: IconButton(
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                              content: Text("current path copied to clipboard!",
-                                                  style: _widgetFactory.textTooltip.labelSmall)));
-                                        },
-                                        icon: const Icon(Icons.copy)));
-                              }),
                         ],
                       ),
                       FutureBuilder<List<CloudObject>>(

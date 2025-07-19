@@ -13,8 +13,7 @@ import 'package:humanizer/humanizer.dart';
 class SplashViewModel extends ChangeNotifier {
   // SplashViewModel singleton implementation begin
   SplashViewModel._privateConstructor();
-  static final SplashViewModel _instance =
-      SplashViewModel._privateConstructor();
+  static final SplashViewModel _instance = SplashViewModel._privateConstructor();
   factory SplashViewModel() {
     return _instance;
   }
@@ -42,8 +41,8 @@ class SplashViewModel extends ChangeNotifier {
     return await SettingService().getCloudStorageById(id);
   }
 
-  Future<Future<Object?>> showEula() async {
-    return context!.router.push(const EulaRoute());
+  Future<Object?> showEula() async {
+    return await context!.router.push(const EulaRoute());
   }
 
   Future<void> goToChooseStorage() async {
@@ -51,32 +50,27 @@ class SplashViewModel extends ChangeNotifier {
 
     final myContext = context!;
 
-    var isStorageSelected =
-        await myContext.router.push(const ChooseStorageRoute());
+    var isStorageSelected = await myContext.router.push(const ChooseStorageRoute());
     if (isStorageSelected != true) {
       return;
     }
 
     if (!myContext.mounted) return;
-    FileSelectionResult? isFileSelected = await myContext.router
-        .push<FileSelectionResult>(const ChooseFileRoute());
-    if (isFileSelected != FileSelectionResult.newFile &&
-        isFileSelected != FileSelectionResult.existingFile) {
+    FileSelectionResult? isFileSelected = await myContext.router.push<FileSelectionResult>(const ChooseFileRoute());
+    if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
       return;
     }
 
     if (isFileSelected == FileSelectionResult.newFile) {
       if (!myContext.mounted) return;
-      var isFileCreated =
-          await myContext.router.push(const CreatePasswordRoute());
+      var isFileCreated = await myContext.router.push(const CreatePasswordRoute());
 
       if (isFileCreated != true) {
         return;
       }
     } else if (isFileSelected == FileSelectionResult.existingFile) {
       if (!myContext.mounted) return;
-      var isFileDecrypted =
-          await myContext.router.push(const TypePasswordRoute());
+      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
       if (isFileDecrypted != true) {
         return;
       }
@@ -99,13 +93,10 @@ class SplashViewModel extends ChangeNotifier {
 
     try {
       CurrentFileService().reset();
-      CurrentFileService().cloud =
-          await SettingService().getCloudStorageById(file.cloudId);
+      CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
 
-      final myFile = await CurrentFileService()
-          .cloud!
-          .getFile(CurrentFileService().currentFileInfo!.fileUrl);
+      final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
 
       CurrentFileService().currentFileEncrypted = myFile.data;
@@ -114,8 +105,7 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
 
       if (!myContext.mounted) return;
-      var isFileDecrypted =
-          await myContext.router.push(const TypePasswordRoute());
+      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
       if (isFileDecrypted == true) {
         _addCurrentFileToRecent();
 
@@ -142,8 +132,7 @@ class SplashViewModel extends ChangeNotifier {
   }
 
   Future<void> removeFromRecent(BlastFile file) async {
-    CurrentFileService().cloud =
-        await SettingService().getCloudStorageById(file.cloudId);
+    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
     await CurrentFileService().cloud!.logOut();
 
     SettingService().recentFiles.list.remove(file);
@@ -159,8 +148,7 @@ class SplashViewModel extends ChangeNotifier {
     };
 
     var currentTheme = await SettingService().appTheme;
-    SettingService()
-        .setAppTheme(themeSwitcher[currentTheme] ?? ThemeMode.system);
+    SettingService().setAppTheme(themeSwitcher[currentTheme] ?? ThemeMode.system);
 
     return SettingService().appTheme;
   }
@@ -186,8 +174,7 @@ class SplashViewModel extends ChangeNotifier {
     final duration = Duration(minutes: durationInt);
 
     // navigate back up to the splash screen
-    context?.router
-        .popUntil((route) => route.settings.name == SplashRoute.name);
+    context?.router.popUntil((route) => route.settings.name == SplashRoute.name);
 
     showDialog(
       context: context!,

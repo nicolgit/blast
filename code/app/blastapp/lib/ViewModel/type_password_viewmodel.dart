@@ -155,7 +155,7 @@ class TypePasswordViewModel extends ChangeNotifier {
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Do not ask whaanymore'),
+                    child: const Text('Do not ask anymore'),
                   ),
                   FilledButton.tonal(
                     style: FilledButton.styleFrom(
@@ -175,8 +175,14 @@ class TypePasswordViewModel extends ChangeNotifier {
                         await storageFile.write(password);
                         SettingService().setBiometricAuthEnabled(true);
                       } catch (e) {
+                        // Don't show error message if user canceled the biometric authentication
+                        if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
+                          // User canceled, silently continue
+                        } else {
+                          await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
+                        }
+
                         SettingService().setBiometricAuthEnabled(false);
-                        await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
                       }
 
                       if (context.mounted) {
@@ -226,7 +232,13 @@ class TypePasswordViewModel extends ChangeNotifier {
       }
     } catch (e) {
       await SettingService().setBiometricAuthEnabled(false);
-      await _showErrorMessage('Biometric authentication error: ${e.toString()}');
+
+      // Don't show error message if user canceled the biometric authentication
+      if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
+        // User canceled, silently continue
+      } else {
+        await _showErrorMessage('Biometric authentication error: ${e.toString()}');
+      }
     }
 
     return false;

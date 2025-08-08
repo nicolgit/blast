@@ -78,7 +78,7 @@ class BlastCard {
     notes = card.notes;
     isFavorite = card.isFavorite;
     lastUpdateDateTime = card.lastUpdateDateTime;
-    //lastOpenedDateTime = card.lastOpenedDateTime;
+
     usedCounter = card.usedCounter;
     tags = List.from(card.tags);
     rows = card.rows.map((row) => BlastAttribute()..copyFrom(row)).toList();

@@ -8,6 +8,12 @@ class BlastAttribute {
   BlastAttribute();
   BlastAttribute.withParams(this.name, this.value, this.type);
 
+  void copyFrom(BlastAttribute attribute) {
+    name = attribute.name;
+    value = attribute.value;
+    type = attribute.type;
+  }
+
   String name = "";
   String value = "";
   BlastAttributeType type = BlastAttributeType.typeString;

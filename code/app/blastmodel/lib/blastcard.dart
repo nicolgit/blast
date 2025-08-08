@@ -81,7 +81,7 @@ class BlastCard {
     //lastOpenedDateTime = card.lastOpenedDateTime;
     usedCounter = card.usedCounter;
     tags = List.from(card.tags);
-    rows = List.from(card.rows);
+    rows = card.rows.map((row) => BlastAttribute()..copyFrom(row)).toList();
   }
 
   bool _searchForWordsInString(List<String> words, String? text, SearchOperator searchOperator) {

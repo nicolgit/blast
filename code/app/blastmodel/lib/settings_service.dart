@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-enum QrCodeViewStyle { text, qrcode, barcode }
+enum QrCodeViewStyle { text, code, qrcode, barcode }
 
 class SettingService {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();

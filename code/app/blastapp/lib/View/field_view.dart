@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/field_viewmodel.dart';
+import 'package:blastapp/blast_theme.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,11 @@ class FieldView extends StatefulWidget {
   State<StatefulWidget> createState() => _FieldViewState();
 }
 
+late ThemeData _theme;
+
 class _FieldViewState extends State<FieldView> {
+  int _selectedCharacterIndex = -1; // Track which character was tapped
+
   @override
   Widget build(BuildContext context) {
     final field = widget.value; // this is the card passed in from the CardsBrowserView
@@ -29,6 +34,8 @@ class _FieldViewState extends State<FieldView> {
   }
 
   Widget _buildScaffold(BuildContext context, FieldViewModel vm) {
+    _theme = BlastTheme.light;
+
     return Container(
         color: Colors.white,
         child: SafeArea(
@@ -52,13 +59,28 @@ class _FieldViewState extends State<FieldView> {
               future: vm.getCurrentQrCodeViewStyle(),
               builder: (context, qrCodeStyle) {
                 return Theme(
-                    data: ThemeData.light(),
+                    data: ThemeData.light().copyWith(
+                      segmentedButtonTheme: SegmentedButtonThemeData(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                            (Set<WidgetState> states) {
+                              if (states.contains(WidgetState.selected)) {
+                                return _theme.colorScheme.primaryContainer;
+                              }
+                              return null; // Use default for unselected
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                     child: SegmentedButton<QrCodeViewStyle>(
                         segments: const <ButtonSegment<QrCodeViewStyle>>[
                           ButtonSegment<QrCodeViewStyle>(
                               value: QrCodeViewStyle.text, label: Text('text'), icon: Icon(Icons.text_fields)),
                           ButtonSegment<QrCodeViewStyle>(
-                              value: QrCodeViewStyle.qrcode, label: Text('qrcode'), icon: Icon(Icons.qr_code)),
+                              value: QrCodeViewStyle.code, label: Text('code'), icon: Icon(Icons.code_sharp)),
+                          ButtonSegment<QrCodeViewStyle>(
+                              value: QrCodeViewStyle.qrcode, label: Text('qr'), icon: Icon(Icons.qr_code)),
                           ButtonSegment<QrCodeViewStyle>(
                               value: QrCodeViewStyle.barcode, label: Text('bar'), icon: Icon(Icons.barcode_reader)),
                         ],
@@ -84,11 +106,10 @@ class _FieldViewState extends State<FieldView> {
 
                             switch (qr) {
                               case QrCodeViewStyle.text:
-                                displayWidget = Text(vm.currentField,
-                                    style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 99,
-                                    overflow: TextOverflow.ellipsis);
+                                displayWidget = _buildHighlightableText(vm.currentField);
+                                break;
+                              case QrCodeViewStyle.code:
+                                displayWidget = _buildCharacterGrid(vm.currentField);
                                 break;
                               case QrCodeViewStyle.barcode:
                                 displayWidget = ConstrainedBox(
@@ -100,19 +121,175 @@ class _FieldViewState extends State<FieldView> {
                                     ));
                                 break;
                               case QrCodeViewStyle.qrcode:
-                                displayWidget = AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: QrImageView(
-                                      data: vm.currentField,
-                                      version: QrVersions.auto,
-                                      embeddedImage: const AssetImage('assets/general/app-icon.png'),
-                                      size: 1000.0,
-                                    ));
+                                displayWidget = Container(
+                                  margin: const EdgeInsets.all(64),
+                                  child: AspectRatio(
+                                      aspectRatio: 1.0,
+                                      child: QrImageView(
+                                        data: vm.currentField,
+                                        version: QrVersions.auto,
+                                        embeddedImage: const AssetImage('assets/general/app-icon.png'),
+                                        size: 1000.0,
+                                      )),
+                                );
                                 break;
                             }
 
                             return displayWidget;
                           })))),
         ])))));
+  }
+
+  Widget _buildCharacterGrid(String text) {
+    const double charSize = 48.0;
+    const double charSpacing = 4.0;
+    const double horizontalPadding = 48.0; // Total horizontal padding from parent widgets
+
+    // Calculate maxCharsPerRow based on screen width
+    final screenWidth = MediaQuery.of(context).size.width;
+    final availableWidth = screenWidth - horizontalPadding;
+    final charWithSpacing = charSize + charSpacing;
+    final maxCharsPerRow = (availableWidth / charWithSpacing).floor().clamp(1, 30);
+
+    List<Widget> rows = [];
+    int index = 0;
+
+    while (index < text.length) {
+      List<Widget> rowChildren = [];
+      int charsInRow = 0;
+
+      // Build characters for current row
+      while (index < text.length && charsInRow < maxCharsPerRow) {
+        String char = text[index];
+        final currentIndex = index; // Capture current index for closure
+
+        rowChildren.add(
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                // If tapping on the last selected character, remove highlight
+                if (_selectedCharacterIndex == currentIndex) {
+                  _selectedCharacterIndex = -1;
+                } else {
+                  _selectedCharacterIndex = currentIndex;
+                }
+              });
+            },
+            child: Container(
+              width: charSize,
+              height: charSize,
+              margin: const EdgeInsets.all(charSpacing / 2),
+              decoration: BoxDecoration(
+                color: _selectedCharacterIndex >= 0 && currentIndex <= _selectedCharacterIndex
+                    ? _theme.colorScheme.primaryContainer
+                    : Colors.transparent,
+                border: Border.all(
+                  color: Colors.grey.shade400,
+                  width: 1.0,
+                  style: BorderStyle.solid,
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Center(
+                child: Text(
+                  char,
+                  style: TextStyle(
+                    fontSize: charSize * 0.6, // Calculate font size as 60% of char box size
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'monospace',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        index++;
+        charsInRow++;
+      }
+      // Create row
+      rows.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: rowChildren,
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: rows,
+      ),
+    );
+  }
+
+  Widget _buildHighlightableText(String text) {
+    return GestureDetector(
+      onTapDown: (TapDownDetails details) {
+        // Get the tap position relative to the text
+        final RenderBox renderBox = context.findRenderObject() as RenderBox;
+        final localPosition = renderBox.globalToLocal(details.globalPosition);
+
+        // Calculate which character was tapped
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: text,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'monospace',
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        );
+        textPainter.layout();
+
+        final textPosition = textPainter.getPositionForOffset(localPosition);
+        final tappedIndex = textPosition.offset;
+
+        setState(() {
+          // If tapping on the last selected character, remove highlight
+          if (_selectedCharacterIndex == tappedIndex) {
+            _selectedCharacterIndex = -1;
+          } else {
+            _selectedCharacterIndex = tappedIndex.clamp(0, text.length - 1);
+          }
+        });
+      },
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: _buildHighlightedTextSpans(text),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'monospace',
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<TextSpan> _buildHighlightedTextSpans(String text) {
+    List<TextSpan> spans = [];
+
+    for (int i = 0; i < text.length; i++) {
+      final isHighlighted = _selectedCharacterIndex >= 0 && i <= _selectedCharacterIndex;
+
+      spans.add(
+        TextSpan(
+          text: text[i],
+          style: TextStyle(
+            backgroundColor: isHighlighted ? _theme.colorScheme.primaryContainer : Colors.transparent,
+            color: Colors.black,
+          ),
+        ),
+      );
+    }
+
+    return spans;
   }
 }

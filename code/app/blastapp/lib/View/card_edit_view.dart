@@ -20,8 +20,6 @@ class CardEditView extends StatefulWidget {
   State<StatefulWidget> createState() => _CardEditViewState();
 }
 
-enum FocusOn { title, lastRow, lastRowValue }
-
 class _CardEditViewState extends State<CardEditView> {
   FocusOn _focusOn = FocusOn.title;
 
@@ -102,7 +100,7 @@ class _CardEditViewState extends State<CardEditView> {
                       builder: (context, snapshot) {
                         return Expanded(
                           child: Container(
-                            child: _buildFieldList(snapshot.data != null ? snapshot.data! : [], vm),
+                            child: _buildAttributeList(snapshot.data != null ? snapshot.data! : [], vm),
                           ),
                         );
                       },
@@ -112,83 +110,20 @@ class _CardEditViewState extends State<CardEditView> {
                 )))));
   }
 
-  ReorderableListView _buildFieldList(List<BlastAttribute> rows, CardEditViewModel vm) {
+  ReorderableListView _buildAttributeList(List<BlastAttribute> rows, CardEditViewModel vm) {
     var myList = ReorderableListView(
         onReorder: (oldIndex, newIndex) => vm.moveRow(oldIndex, newIndex),
         buildDefaultDragHandles: false,
         children: [
           for (int i = 0; i < rows.length; i++)
-            ListTile(
-              key: ValueKey(i),
-              title: Container(
-                decoration: BoxDecoration(
-                    color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: const BorderRadius.all(Radius.circular(6))),
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          "$i",
-                          style: _widgetFactory.textTheme.labelSmall,
-                        ),
-                        const SizedBox(width: 3),
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            children: <Widget>[
-                              TextField(
-                                textInputAction: TextInputAction.next,
-                                controller: TextEditingController()..text = rows[i].name,
-                                onChanged: (value) => vm.updateAttributeName(i, value),
-                                autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRow),
-                                style: _widgetFactory.textTheme.labelMedium,
-                                decoration: _widgetFactory.blastTextFieldDecoration(
-                                    'Attribute name', 'Choose the attribute name'),
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 3),
-                        _iconTypeButton(vm, i),
-                        IconButton(
-                          onPressed: () {
-                            vm.deleteAttribute(i);
-                          },
-                          icon: const Icon(Icons.delete),
-                          tooltip: "delete",
-                        ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: rows[i].type != BlastAttributeType.typeHeader,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: TextField(
-                          textInputAction: TextInputAction.next,
-                          controller: TextEditingController()..text = rows[i].value,
-                          onChanged: (value) => vm.updateAttributeValue(i, value),
-                          autofocus: (i == rows.length - 1) && (_focusOn == FocusOn.lastRowValue),
-                          style: _widgetFactory.textTheme.labelMedium,
-                          decoration:
-                              _widgetFactory.blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              trailing: ReorderableDragStartListener(
-                index: i,
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
-                      color: _widgetFactory.theme.colorScheme.surfaceContainer),
-                  padding: EdgeInsets.all(1.0),
-                  child: Icon(Icons.drag_handle),
-                ),
-              ),
+            _widgetFactory.buildAttributeRowEdit(
+              rows,
+              i,
+              focusOn: _focusOn,
+              onNameChanged: (value) => vm.updateAttributeName(i, value),
+              onValueChanged: (value) => vm.updateAttributeValue(i, value),
+              onDelete: () => vm.deleteAttribute(i),
+              onTypeSwap: () => vm.swapType(i),
             ),
         ]);
 
@@ -352,29 +287,6 @@ class _CardEditViewState extends State<CardEditView> {
           padding: EdgeInsets.symmetric(horizontal: 1.0, vertical: 1.0),
         )));
     return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
-  }
-
-  _iconTypeButton(CardEditViewModel vm, int index) {
-    var icon = const Icon(Icons.error);
-
-    switch (vm.currentCard.rows[index].type) {
-      case BlastAttributeType.typeString:
-        icon = const Icon(Icons.description);
-      case BlastAttributeType.typeHeader:
-        icon = const Icon(Icons.text_increase);
-      case BlastAttributeType.typePassword:
-        icon = const Icon(Icons.lock);
-      case BlastAttributeType.typeURL:
-        icon = const Icon(Icons.link);
-    }
-
-    return IconButton(
-      onPressed: () {
-        vm.swapType(index);
-      },
-      icon: icon,
-      tooltip: "${vm.currentCard.rows[index].type.description}\n tap to change",
-    );
   }
 
   Widget _showBottomToolbar(CardEditViewModel vm) {

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastattribute.dart';
-import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:humanizer/humanizer.dart';
@@ -21,12 +20,14 @@ class CardView extends StatefulWidget {
 class _CardViewState extends State<CardView> {
   @override
   Widget build(BuildContext context) {
-    final card = widget.card; // this is the card passed in from the CardsBrowserView
+    final card =
+        widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
       create: (context) => CardViewModel(context, card),
       child: Consumer<CardViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -46,7 +47,9 @@ class _CardViewState extends State<CardView> {
             body: Center(
                 child: Column(children: [
               AppBar(
-                title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
+                title: Text(vm.currentCard.title != null
+                    ? vm.currentCard.title!
+                    : "No Title"),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -76,7 +79,9 @@ class _CardViewState extends State<CardView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('file changed, click',
-                                style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                                style: TextStyle(
+                                    color: _widgetFactory
+                                        .theme.colorScheme.onError)),
                             Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: FilledButton(
@@ -84,14 +89,19 @@ class _CardViewState extends State<CardView> {
                                   onPressed: () async {
                                     if (await vm.saveCommand()) {
                                       if (context.mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text("file saved successfully!"),
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content:
+                                              Text("file saved successfully!"),
                                         ));
                                       }
                                     }
                                   },
                                 )),
-                            Text('to save', style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
+                            Text('to save',
+                                style: TextStyle(
+                                    color: _widgetFactory
+                                        .theme.colorScheme.onError)),
                           ],
                         ),
                       ),
@@ -106,14 +116,20 @@ class _CardViewState extends State<CardView> {
                               Icons.star,
                               color: Colors.amber,
                             )
-                          : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
+                          : Icon(Icons.star_border,
+                              color: _widgetFactory.theme.colorScheme.primary),
                       tooltip: "toggle favorite",
                       onPressed: () {
                         vm.toggleFavorite();
                       }),
                   Center(
-                      child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                          textAlign: TextAlign.center, style: _widgetFactory.textTheme.titleLarge)),
+                      child: Text(
+                          vm.currentCard.title != null
+                              ? vm.currentCard.title!
+                              : "",
+                          textAlign: TextAlign.center,
+                          style: _widgetFactory.textTheme.titleLarge!
+                              .copyWith(fontWeight: FontWeight.bold))),
                 ],
               ),
               Text(
@@ -135,7 +151,8 @@ class _CardViewState extends State<CardView> {
             ]))));
   }
 
-  ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
+  ListView _buildAttributesList(
+      List<BlastAttribute> cardsList, CardViewModel vm) {
     var myList = ListView.builder(
       itemCount: cardsList.length + 1,
       itemBuilder: (context, index) {
@@ -143,152 +160,15 @@ class _CardViewState extends State<CardView> {
           return _showNotes(vm.currentCard.notes!, vm);
         }
 
-        String name = cardsList[index].name;
-        String value = cardsList[index].value;
-        final type = cardsList[index].type;
-
-        switch (type) {
-          case BlastAttributeType.typeHeader:
-            return ListTile(
-              title: Container(
-                padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
-                child: Text(name,
-                    style: _widgetFactory.textTheme.headlineMedium!
-                        .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
-              ),
-              onTap: () async {},
-            );
-          case BlastAttributeType.typePassword:
-            return Padding(
-                padding: EdgeInsets.only(left: 12, right: 12),
-                child: Card(
-                    child: GestureDetector(
-                        onDoubleTap: () {
-                          // Handle double-tap event here
-                          vm.copyToClipboard(value);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("$name copied to clipboard!"),
-                          ));
-                        },
-                        child: ListTile(
-                          leading: const Icon(Icons.lock),
-                          title: Text(vm.isPasswordRowVisible(index) ? value : "***********",
-                              style: _widgetFactory.textTheme.titleMedium!
-                                  .copyWith(color: _widgetFactory.theme.colorScheme.error)),
-                          subtitle: Text(
-                            name,
-                            style: _widgetFactory.textTheme.labelSmall,
-                          ),
-                          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Visibility(
-                              visible: !vm.isPasswordRowVisible(index),
-                              child: IconButton(
-                                onPressed: () {
-                                  vm.toggleShowPassword(index);
-                                },
-                                icon: const Icon(Icons.visibility_off),
-                                tooltip: 'hide',
-                              ),
-                            ),
-                            Visibility(
-                              visible: vm.isPasswordRowVisible(index),
-                              child: IconButton(
-                                onPressed: () {
-                                  vm.toggleShowPassword(index);
-                                },
-                                icon: const Icon(Icons.visibility),
-                                tooltip: 'show',
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  vm.showFieldView(value);
-                                },
-                                icon: const Icon(Icons.qr_code),
-                                tooltip: 'show qr code'),
-                          ]),
-                          onTap: () async {
-                            // toast notification warning
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
-                          },
-                        ))));
-          case BlastAttributeType.typeURL:
-            return Padding(
-                padding: EdgeInsets.only(left: 12, right: 12),
-                child: GestureDetector(
-                    onDoubleTap: () {
-                      // Handle double-tap event here
-                      vm.copyToClipboard(value);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("$name copied to clipboard!"),
-                      ));
-                    },
-                    child: Card(
-                        child: ListTile(
-                      leading: const Icon(Icons.link),
-                      title: InkWell(
-                        onTap: () {
-                          vm.openUrl(value);
-                        },
-                        child: Text(value,
-                            style: const TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.blue,
-                                decorationColor: Colors.blue)),
-                      ),
-                      subtitle: Text(
-                        name,
-                        style: _widgetFactory.textTheme.labelSmall,
-                      ),
-                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        IconButton(
-                            onPressed: () {
-                              vm.showFieldView(value);
-                            },
-                            icon: const Icon(Icons.qr_code),
-                            tooltip: 'show qr code'),
-                      ]),
-                      onTap: () async {
-                        // toast notification warning
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
-                      },
-                    ))));
-          case BlastAttributeType.typeString:
-            return Padding(
-                padding: EdgeInsets.only(left: 12, right: 12),
-                child: GestureDetector(
-                    onDoubleTap: () {
-                      // Handle double-tap event here
-                      vm.copyToClipboard(value);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("$name copied to clipboard!"),
-                      ));
-                    },
-                    child: Card(
-                        child: ListTile(
-                      leading: const Icon(Icons.description),
-                      title: Text(value, style: _widgetFactory.textTheme.titleMedium),
-                      subtitle: Text(
-                        name,
-                        style: _widgetFactory.textTheme.labelSmall,
-                      ),
-                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        IconButton(
-                            onPressed: () {
-                              vm.showFieldView(value);
-                            },
-                            icon: const Icon(Icons.qr_code),
-                            tooltip: 'show qr code'),
-                      ]),
-                      onTap: () async {
-                        // toast notification warning
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
-                      },
-                    ))));
-        }
+        return _widgetFactory.buildAttributeRow(
+            context,
+            cardsList[index],
+            index,
+            vm.toggleShowPassword,
+            vm.isPasswordRowVisible,
+            vm.copyToClipboard,
+            vm.showFieldView,
+            vm.openUrl);
       },
     );
 
@@ -322,12 +202,15 @@ class _CardViewState extends State<CardView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                    Text("Notes",
+                        style: _widgetFactory.textTheme.bodyMedium!
+                            .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 24),
                     Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: SelectableText(notes,
-                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic))),
+                            style: _widgetFactory.textTheme.bodyMedium!
+                                .copyWith(fontStyle: FontStyle.italic))),
                   ],
                 ))));
   }

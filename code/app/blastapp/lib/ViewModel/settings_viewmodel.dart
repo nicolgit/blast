@@ -95,4 +95,13 @@ class SettingsViewModel extends ChangeNotifier {
       QrCodeViewStyleView("  Code  ", QrCodeViewStyle.code, Icons.code),
     ];
   }
+
+  Future<bool> get askForBiometricAuth async {
+    return await _settingService.askForBiometricAuth;
+  }
+
+  Future<void> setAskForBiometricAuth(bool value) async {
+    await _settingService.setAskForBiometricAuth(value);
+    notifyListeners();
+  }
 }

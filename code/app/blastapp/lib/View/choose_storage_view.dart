@@ -30,29 +30,28 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
     _theme = Theme.of(context);
     _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
-    return 
-    Container( 
-      color: _theme.colorScheme.surface,
-      child: SafeArea(child:
-    Scaffold(
-      backgroundColor: _theme.colorScheme.surface,
-      body: Center(
-        child: Column(
-          children: [
-            AppBar(
-              title: const Text("Choose the storage for your Blast file"),
+    return Container(
+        color: _theme.colorScheme.surface,
+        child: SafeArea(
+            child: Scaffold(
+          backgroundColor: _theme.colorScheme.surface,
+          body: Center(
+            child: Column(
+              children: [
+                AppBar(
+                  title: const Text("Choose the storage for your Blast file"),
+                ),
+                FutureBuilder<List<Cloud>>(
+                  future: vm.supportedClouds(),
+                  builder: (context, cloudList) {
+                    return Container(
+                        constraints: BoxConstraints(maxWidth: 600), child: _buildCloudList(cloudList.data ?? [], vm));
+                  },
+                ),
+              ],
             ),
-            FutureBuilder<List<Cloud>>(
-              future: vm.supportedClouds(),
-              builder: (context, cloudList) {
-                return Container(
-                    constraints: BoxConstraints(maxWidth: 600), child: _buildCloudList(cloudList.data ?? [], vm));
-              },
-            ),
-          ],
-        ),
-      ),
-    )));
+          ),
+        )));
   }
 
   Column _buildCloudList(List<Cloud> cloudList, ChooseStorageViewModel vm) {
@@ -60,7 +59,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
       children: [
         for (Cloud cloud in cloudList)
           Padding(
-            padding: const EdgeInsets.all(6.0),
+            padding: const EdgeInsets.fromLTRB(24, 6, 24, 6),
             child: Material(
               borderRadius: BorderRadius.circular(6),
               elevation: 1,

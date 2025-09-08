@@ -46,26 +46,25 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   Future<bool> isFormReadyToConfirm() async {
-    return await passwordsMatch() && await isPasswordsNotEmpty() && await isFilenameNotEmpty();
+    return await passwordsMatch() &&
+        await isPasswordsNotEmpty() &&
+        await isFilenameNotEmpty();
   }
 
-  acceptPassword() async {
+  Future<void> acceptPassword() async {
     await _createFile();
 
     if (!context.mounted) return;
     context.router.maybePop(true);
   }
 
-  acceptAndImport() async {
+  Future<void> acceptAndImport() async {
     await _createFile();
 
     if (!context.mounted) return;
-    context.router.push(const ImporterRoute()).then((value) 
-      => {
-        if (context.mounted) {
-          context.router.maybePop(true)
-        }
-      });
+    context.router.push(const ImporterRoute()).then((value) => {
+          if (context.mounted) {context.router.maybePop(true)}
+        });
   }
 
   Future<bool> isPasswordsNotEmpty() async {
@@ -76,7 +75,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
     return filename.isNotEmpty;
   }
 
-  _createFile() async {
+  Future<void> _createFile() async {
     if (filename.endsWith(".blast")) {
       filename = filename.substring(0, filename.length - 6);
     }
@@ -91,13 +90,16 @@ class CreatePasswordViewModel extends ChangeNotifier {
 
     CurrentFileService().newPassword(password);
     CurrentFileService().currentFileDocument = BlastDocument();
-    CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
-    CurrentFileService().currentFileEncrypted =
-        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
+    CurrentFileService().currentFileJsonString =
+        CurrentFileService().currentFileDocument.toString();
+    CurrentFileService().currentFileEncrypted = CurrentFileService()
+        .encodeFile(CurrentFileService().currentFileJsonString!);
 
-    final CloudFile cf = await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+    final CloudFile cf = await CurrentFileService()
+        .cloud!
+        .createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
 
-    CurrentFileService().currentFileInfo!.lastModified =cf.lastModified;    
+    CurrentFileService().currentFileInfo!.lastModified = cf.lastModified;
     file.fileUrl = cf.id;
 
     SettingService().addRecentFile(file);

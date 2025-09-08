@@ -14,15 +14,16 @@ class CardsBrowserViewModel extends ChangeNotifier {
   List<BlastCard> cardsView = [];
   BlastCard? selectedCard;
 
-  SortType sortType = SortType.none;
+  SortType sortType = SortType.recentUsed;
   String searchText = "";
   SearchOperator searchOperator = SearchOperator.and;
   SearchWhere searchWhere = SearchWhere.everywhere;
+  bool favoritesOnly = false;
 
   CardsBrowserViewModel(this.context);
 
   Future<List<BlastCard>>? getCards() async {
-    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere);
+    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }
 
   Future selectCard(BlastCard selectedCard) async {
@@ -94,7 +95,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     await context.router.push(CardEditRoute());
   }
 
-  deleteCard(BlastCard card) {
+  void deleteCard(BlastCard card) {
     fileService.currentFileDocument!.cards.remove(card);
     fileService.currentFileDocument!.isChanged = true;
     notifyListeners();
@@ -142,9 +143,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
     ));
   }
 
-  clearSearchTextCommand() {
+  void clearSearchTextCommand() {
     searchText = "";
-    sortType = SortType.none;
+    sortType = SortType.recentUsed;
     searchOperator = SearchOperator.and;
     searchWhere = SearchWhere.everywhere;
     notifyListeners();

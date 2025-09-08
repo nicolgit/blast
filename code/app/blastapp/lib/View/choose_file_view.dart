@@ -33,85 +33,95 @@ class _ChooseFileViewState extends State<ChooseFileView> {
   Widget _buildScaffold(BuildContext context, ChooseFileViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
 
-    return 
-    Container( 
-      color: _widgetFactory.theme.colorScheme.surface,
-      child:
-    SafeArea(child:
-    Scaffold(
-        backgroundColor: _widgetFactory.theme.colorScheme.surface,
-        floatingActionButton: Tooltip(
-            message: 'create a new file',
-            textStyle: _widgetFactory.textTooltip.labelSmall,
-            child: FloatingActionButton(
-              onPressed: () {
-                vm.newFileCommand();
-              },
-              child: const Icon(Icons.note_add),
-            )),
-        body: Center(
-          child: Column(
-            children: [
-              AppBar(
-                title: const Text("Choose a file"),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Tooltip(
-                      message: 'go up one directory',
-                      textStyle: _widgetFactory.textTooltip.labelSmall,
-                      child: IconButton(
-                          onPressed: () {
-                            vm.upDirectoryCommand();
-                          },
-                          icon: Icon(
-                            Icons.drive_folder_upload,
-                            color: _widgetFactory.theme.colorScheme.tertiary,
-                            size: 48,
-                          ))),
-                  Text(
-                    'current path: ',
-                    style: _widgetFactory.textTheme.bodyLarge,
-                  ),
-                  FutureBuilder<String>(
-                    future: vm.currentPath,
-                    builder: (context, currentPath) => Flexible(
-                        child: Text(
-                      currentPath.data ?? "",
-                      style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
+    return Container(
+        color: _widgetFactory.theme.colorScheme.surface,
+        child: SafeArea(
+            child: Scaffold(
+                backgroundColor: _widgetFactory.theme.colorScheme.surface,
+                floatingActionButton: Tooltip(
+                    message: 'create a new file',
+                    textStyle: _widgetFactory.textTooltip.labelSmall,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        vm.newFileCommand();
+                      },
+                      child: const Icon(Icons.note_add),
                     )),
-                  ),
-                  FutureBuilder<String>(
-                      future: vm.currentPath,
-                      builder: (context, currentPath) {
-                        return Tooltip(
-                            message: 'copy current path to clipboard',
-                            textStyle: _widgetFactory.textTooltip.labelSmall,
-                            child: IconButton(
-                                onPressed: () {
-                                  Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text("current path copied to clipboard!", style: _widgetFactory.textTooltip.labelSmall)));
-                                },
-                                icon: const Icon(Icons.copy)));
-                      }),
-                ],
-              ),
-              FutureBuilder<List<CloudObject>>(
-                  future: vm.getFiles(),
-                  builder: (context, listFiles) {
-                    return Expanded(
-                      child: Container(
-                        child: _buildfileList(listFiles.data ?? [], vm),
+                body: Center(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        title: const Text("Choose a file"),
                       ),
-                    );
-                  }),
-            ],
-          ),
-        ))));
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: ElevatedButton.icon(
+                                onPressed: () {
+                                  vm.upDirectoryCommand();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _widgetFactory.theme.colorScheme.primary,
+                                  foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                ),
+                                icon: Icon(
+                                  Icons.drive_folder_upload,
+                                  size: 24,
+                                ),
+                                label: Text('go up')),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12, right: 12),
+                            child: FutureBuilder<String>(
+                                future: vm.currentPath,
+                                builder: (context, currentPath) {
+                                  return Tooltip(
+                                      message: 'copy current path to clipboard',
+                                      textStyle: _widgetFactory.textTooltip.labelSmall,
+                                      child: ElevatedButton.icon(
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                content: Text("current path copied to clipboard!",
+                                                    style: _widgetFactory.textTooltip.labelSmall)));
+                                          },
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: _widgetFactory.theme.colorScheme.primary,
+                                            foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                          ),
+                                          icon: Icon(
+                                            Icons.copy,
+                                            size: 20,
+                                            color: _widgetFactory.theme.colorScheme.onPrimary,
+                                          ),
+                                          label: Text('copy full path')));
+                                }),
+                          ),
+                          FutureBuilder<String>(
+                            future: vm.currentPath,
+                            builder: (context, currentPath) => Flexible(
+                                child: Text(
+                              currentPath.data ?? "",
+                              style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                          ),
+                        ],
+                      ),
+                      FutureBuilder<List<CloudObject>>(
+                          future: vm.getFiles(),
+                          builder: (context, listFiles) {
+                            return Expanded(
+                              child: Container(
+                                child: _buildfileList(listFiles.data ?? [], vm),
+                              ),
+                            );
+                          }),
+                    ],
+                  ),
+                ))));
   }
 
   Widget _buildfileList(List<CloudObject> listFiles, ChooseFileViewModel vm) {
@@ -143,7 +153,7 @@ class _ChooseFileViewState extends State<ChooseFileView> {
         }
 
         return Padding(
-            padding: const EdgeInsets.all(6.0),
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
             child: Material(
                 borderRadius: BorderRadius.circular(6),
                 elevation: 1,
@@ -153,17 +163,8 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                 type: MaterialType.card,
                 child: ListTile(
                   leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
-                  title: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          Text(path),
-                        ],
-                      ),
-                    ],
-                  ),
+                  title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(path),
                   onTap: () async {
                     await vm.selectItem(listFiles[index]).catchError((error) {
                       String errorMessage = "unable to open selected file, reason: ${error.toString()}";

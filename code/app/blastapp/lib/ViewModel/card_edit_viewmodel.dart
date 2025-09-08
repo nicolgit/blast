@@ -57,12 +57,12 @@ class CardEditViewModel extends ChangeNotifier {
     }
   }
 
-  updateAttributeValue(int index, String newValue) {
+  void updateAttributeValue(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].value = newValue;
   }
 
-  updateAttributeName(int index, String newValue) {
+  void updateAttributeName(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].name = newValue;
   }
@@ -74,7 +74,7 @@ class CardEditViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteAttribute(int index) {
+  void deleteAttribute(int index) {
     isChanged = true;
     currentCard.rows.removeAt(index);
 
@@ -124,7 +124,7 @@ class CardEditViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  deleteCard() {
+  void deleteCard() {
     CurrentFileService().currentFileDocument!.cards.remove(_sourceCard);
     CurrentFileService().currentFileDocument!.isChanged = true;
     context.router.maybePop();

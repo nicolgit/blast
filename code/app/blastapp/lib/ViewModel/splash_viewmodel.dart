@@ -41,11 +41,11 @@ class SplashViewModel extends ChangeNotifier {
     return await SettingService().getCloudStorageById(id);
   }
 
-  showEula() async {
-    return context!.router.push(const EulaRoute());
+  Future<Object?> showEula() async {
+    return await context!.router.push(const EulaRoute());
   }
 
-  goToChooseStorage() async {
+  Future<void> goToChooseStorage() async {
     CurrentFileService().reset();
 
     final myContext = context!;
@@ -85,7 +85,7 @@ class SplashViewModel extends ChangeNotifier {
     await myContext.router.push(const CardsBrowserRoute());
   }
 
-  goToRecentFile(BlastFile file) async {
+  Future<void> goToRecentFile(BlastFile file) async {
     isLoading = true;
     notifyListeners();
 
@@ -131,7 +131,7 @@ class SplashViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeFromRecent(BlastFile file) async {
+  Future<void> removeFromRecent(BlastFile file) async {
     CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
     await CurrentFileService().cloud!.logOut();
 

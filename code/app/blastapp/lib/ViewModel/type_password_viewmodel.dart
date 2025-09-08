@@ -19,6 +19,29 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   TypePasswordViewModel();
 
+  // Helper method to show error message dialog
+  Future<void> _showErrorMessage(String message) async {
+    if (context.mounted) {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
   String get cloudIcon => 'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
   PasswordType passwordType = PasswordType.password;
@@ -39,13 +62,13 @@ class TypePasswordViewModel extends ChangeNotifier {
     return passwordType;
   }
 
-  setPassword(String value) {
+  void setPassword(String value) {
     password = value;
     errorMessage = '';
     notifyListeners();
   }
 
-  setRecoveryKey(String value) {
+  void setRecoveryKey(String value) {
     recoveryKey = value;
     errorMessage = '';
     notifyListeners();
@@ -83,15 +106,19 @@ class TypePasswordViewModel extends ChangeNotifier {
       isOk = true;
     } on BlastWrongPasswordException {
       errorMessage = 'wrong password - please try again';
+      await _showErrorMessage(errorMessage);
       isOk = false;
     } on BlastUnknownFileVersionException {
       errorMessage = 'unknown file version - unable to open your file';
+      await _showErrorMessage(errorMessage);
       isOk = false;
     } on FormatException {
       errorMessage = 'file format exception - unable to open your file';
+      await _showErrorMessage(errorMessage);
       isOk = false;
     } catch (e) {
       errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
+      await _showErrorMessage(errorMessage);
       isOk = false;
     }
 
@@ -103,14 +130,17 @@ class TypePasswordViewModel extends ChangeNotifier {
         final response = await BiometricStorage().canAuthenticate();
 
         // biometric authentication support (no web)
-        if (!kIsWeb && biometricAuthIntegration && response == CanAuthenticateResponse.success) {
+        if (!kIsWeb &&
+            biometricAuthIntegration &&
+            response == CanAuthenticateResponse.success &&
+            await SettingService().askForBiometricAuth) {
           if (!context.mounted) return false;
 
           var theme = Theme.of(context);
           var textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
 
           // show alert dialog
-          showDialog(
+          await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
@@ -119,12 +149,25 @@ class TypePasswordViewModel extends ChangeNotifier {
                     Text('Do you want to enable biometric authentication for this file?', style: textTheme.labelMedium),
                 actions: <Widget>[
                   TextButton(
+                    onPressed: () async {
+                      await SettingService().setAskForBiometricAuth(false);
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Do not ask anymore'),
+                  ),
+                  FilledButton.tonal(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: theme.colorScheme.errorContainer,
+                      foregroundColor: theme.colorScheme.onErrorContainer,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: const Text('No'),
                   ),
-                  TextButton(
+                  FilledButton(
                     onPressed: () async {
                       try {
                         final storageFile = await BiometricStorage().getStorage('blastvault');
@@ -132,6 +175,13 @@ class TypePasswordViewModel extends ChangeNotifier {
                         await storageFile.write(password);
                         SettingService().setBiometricAuthEnabled(true);
                       } catch (e) {
+                        // Don't show error message if user canceled the biometric authentication
+                        if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
+                          // User canceled, silently continue
+                        } else {
+                          await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
+                        }
+
                         SettingService().setBiometricAuthEnabled(false);
                       }
 
@@ -159,6 +209,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
   Future<bool> useBiometricAuth() async {
     if (kIsWeb) return false;
+    if (await SettingService().askForBiometricAuth == false) return false;
     if (await SettingService().biometricAuthEnabled == false) return false;
 
     try {
@@ -177,10 +228,17 @@ class TypePasswordViewModel extends ChangeNotifier {
             await SettingService().setBiometricAuthEnabled(false);
             return false;
           }
-        }
+        } else {}
       }
     } catch (e) {
       await SettingService().setBiometricAuthEnabled(false);
+
+      // Don't show error message if user canceled the biometric authentication
+      if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
+        // User canceled, silently continue
+      } else {
+        await _showErrorMessage('Biometric authentication error: ${e.toString()}');
+      }
     }
 
     return false;

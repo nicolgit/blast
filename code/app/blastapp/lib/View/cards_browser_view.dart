@@ -4,6 +4,7 @@ import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -226,14 +227,22 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
+    List<String> searchTerms = vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
+    if (cardsList.isEmpty) {
+      return Center(
+        child: Text(
+          'No cards found. Press the + button to add a new card.',
+          style: _widgetFactory.textTheme.labelMedium,
+        ),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 800.0,
-            childAspectRatio: 3.0,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
+            maxCrossAxisExtent: 600.0,
+            mainAxisExtent: 180.0,
           ),
           padding: const EdgeInsets.all(8.0),
           itemCount: cardsList.length,
@@ -244,10 +253,17 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 vm.refreshCardListCommand();
               }),
               onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
+              onFavoritePressed: (card) {
+                card.isFavorite = !card.isFavorite;
+                card.lastUpdateDateTime = DateTime.now();
+                CurrentFileService().currentFileDocument!.isChanged = true;
+                vm.refreshCardListCommand();
+              },
               onTap: (card) => vm.selectCard(card).then((value) {
                 vm.refreshCardListCommand();
               }),
               isSelected: vm.selectedCard != null ? vm.selectedCard!.id == cardsList[index].id : false,
+              textToHighlight: searchTerms,
             );
           },
         );
@@ -259,8 +275,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     required BlastCard card,
     required Function(BlastCard) onEditPressed,
     required Function(BlastCard) onDeletePressed,
+    required Function(BlastCard) onFavoritePressed,
     required Function(BlastCard) onTap,
     required bool isSelected,
+    required List<String> textToHighlight,
   }) {
     String name = card.title != null ? card.title! : '';
     bool isFavorite = card.isFavorite;
@@ -276,25 +294,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   tileColor: _theme.colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.edit,
-                        ),
-                        onPressed: () {
-                          onEditPressed(card);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
-                        onPressed: () {
-                          onDeletePressed(card);
-                        },
-                      ),
-                    ],
-                  ),
                   title: Row(children: [
                     Visibility(
                       visible: isFavorite,
@@ -304,17 +303,13 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ),
                     ),
                     Expanded(
-                        child: Text(name,
-                            overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)))
+                        child:
+                            _buildHighlightedText(name, textToHighlight, const TextStyle(fontWeight: FontWeight.bold)))
                   ]),
-                  subtitle: Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}')),
-                    ],
+                  subtitle: Text(
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}',
                   ),
                   selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
                   selected: isSelected,
@@ -327,7 +322,43 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 decoration: BoxDecoration(
                     color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))),
-                child: Container(padding: const EdgeInsets.all(6), child: _buildTagsRow(card.tags)),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    children: [
+                      Expanded(child: _buildTagsRow(card.tags)),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.star : Icons.star_border,
+                              color: isFavorite ? Colors.amber : _widgetFactory.theme.colorScheme.secondary,
+                            ),
+                            onPressed: () {
+                              onFavoritePressed(card);
+                            },
+                            tooltip: isFavorite ? "remove from favorites" : "add to favorites",
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.edit, color: _widgetFactory.theme.colorScheme.secondary),
+                            onPressed: () {
+                              onEditPressed(card);
+                            },
+                            tooltip: "edit",
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
+                            onPressed: () {
+                              onDeletePressed(card);
+                            },
+                            tooltip: "delete",
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ])));
   }
@@ -391,54 +422,99 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Wrap(alignment: WrapAlignment.center, spacing: 6.0, runSpacing: 6.0, children: [
-                        SegmentedButton<SearchOperator>(
-                          segments: const <ButtonSegment<SearchOperator>>[
-                            ButtonSegment<SearchOperator>(
-                                value: SearchOperator.and,
-                                label: Text('and'),
-                                icon: Icon((Icons.radio_button_unchecked))),
-                            ButtonSegment<SearchOperator>(
-                                value: SearchOperator.or, label: Text('or'), icon: Icon(Icons.radio_button_unchecked)),
-                          ],
-                          selected: <SearchOperator>{vm.searchOperator},
-                          onSelectionChanged: (Set<SearchOperator> newSelection) {
-                            setModalState(() {
-                              vm.searchOperator = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'toggle favorites only',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  vm.favoritesOnly ? _theme.colorScheme.secondaryContainer : _theme.colorScheme.surface,
+                              border: Border.all(
+                                color: _theme.colorScheme.outline,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20.0),
+                                onTap: () {
+                                  setModalState(() {
+                                    vm.favoritesOnly = !vm.favoritesOnly;
+                                    vm.refreshCardListCommand();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: vm.favoritesOnly
+                                        ? _theme.colorScheme.onSecondaryContainer
+                                        : _theme.colorScheme.onSurface,
+                                    size: 18.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        SegmentedButton<SearchWhere>(
-                          segments: const <ButtonSegment<SearchWhere>>[
-                            ButtonSegment<SearchWhere>(
-                                value: SearchWhere.title, label: Text('title only'), icon: Icon((Icons.abc))),
-                            ButtonSegment<SearchWhere>(
-                                value: SearchWhere.everywhere, label: Text('everywhere'), icon: Icon((Icons.abc))),
-                          ],
-                          selected: <SearchWhere>{vm.searchWhere},
-                          onSelectionChanged: (Set<SearchWhere> newSelection) {
-                            setModalState(() {
-                              vm.searchWhere = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'search operator',
+                          child: SegmentedButton<SearchOperator>(
+                            segments: const <ButtonSegment<SearchOperator>>[
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.and,
+                                  label: Text('and'),
+                                  icon: Icon((Icons.radio_button_unchecked))),
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.or,
+                                  label: Text('or'),
+                                  icon: Icon(Icons.radio_button_unchecked)),
+                            ],
+                            selected: <SearchOperator>{vm.searchOperator},
+                            onSelectionChanged: (Set<SearchOperator> newSelection) {
+                              setModalState(() {
+                                vm.searchOperator = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
                         ),
-                        SegmentedButton<SortType>(
-                          segments: const <ButtonSegment<SortType>>[
-                            ButtonSegment<SortType>(value: SortType.none, label: Text('all'), icon: Icon(Icons.abc)),
-                            ButtonSegment<SortType>(value: SortType.star, label: Text('star'), icon: Icon(Icons.star)),
-                            ButtonSegment<SortType>(
-                                value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
-                            ButtonSegment<SortType>(
-                                value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
-                          ],
-                          selected: <SortType>{vm.sortType},
-                          onSelectionChanged: (Set<SortType> newSelection) {
-                            setModalState(() {
-                              vm.sortType = newSelection.first;
-                              vm.refreshCardListCommand();
-                            });
-                          },
+                        Tooltip(
+                          message: 'search scope',
+                          child: SegmentedButton<SearchWhere>(
+                            segments: const <ButtonSegment<SearchWhere>>[
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.title, label: Text('title'), icon: Icon(Icons.subject)),
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.everywhere, label: Text('all'), icon: Icon(Icons.all_inclusive)),
+                            ],
+                            selected: <SearchWhere>{vm.searchWhere},
+                            onSelectionChanged: (Set<SearchWhere> newSelection) {
+                              setModalState(() {
+                                vm.searchWhere = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'sort type',
+                          child: SegmentedButton<SortType>(
+                            segments: const <ButtonSegment<SortType>>[
+                              ButtonSegment<SortType>(
+                                  value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
+                              ButtonSegment<SortType>(
+                                  value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
+                            ],
+                            selected: <SortType>{vm.sortType},
+                            onSelectionChanged: (Set<SortType> newSelection) {
+                              setModalState(() {
+                                vm.sortType = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
                         ),
                       ])),
                   Padding(
@@ -567,5 +643,69 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ),
       ],
     ));
+  }
+
+  Widget _buildHighlightedText(String text, List<String> textToHighlight, TextStyle? style) {
+    if (textToHighlight.isEmpty) {
+      return Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        style: style,
+      );
+    }
+
+    List<TextSpan> spans = [];
+    String remainingText = text;
+
+    // Ensure the base style has proper color
+    TextStyle baseStyle = style?.copyWith(
+          color: style.color ?? _theme.colorScheme.onSurface,
+        ) ??
+        TextStyle(color: _theme.colorScheme.onSurface);
+
+    while (remainingText.isNotEmpty) {
+      String? foundTerm;
+      int foundIndex = -1;
+
+      // Find the first occurrence of any highlight term
+      for (String term in textToHighlight) {
+        int index = remainingText.toLowerCase().indexOf(term.toLowerCase());
+        if (index != -1 && (foundIndex == -1 || index < foundIndex)) {
+          foundIndex = index;
+          foundTerm = term;
+        }
+      }
+
+      if (foundIndex == -1) {
+        // No more terms to highlight, add the rest as normal text
+        spans.add(TextSpan(text: remainingText, style: baseStyle));
+        break;
+      } else {
+        // Add text before the highlighted term
+        if (foundIndex > 0) {
+          spans.add(TextSpan(text: remainingText.substring(0, foundIndex), style: baseStyle));
+        }
+
+        // Add the highlighted term
+        String actualTerm = remainingText.substring(foundIndex, foundIndex + foundTerm!.length);
+        spans.add(TextSpan(
+          text: actualTerm,
+          style: baseStyle.copyWith(
+            backgroundColor: _theme.colorScheme.secondary,
+            color: _theme.colorScheme.onSecondary,
+          ),
+        ));
+
+        // Continue with the remaining text
+        remainingText = remainingText.substring(foundIndex + foundTerm.length);
+      }
+    }
+
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      text: TextSpan(children: spans),
+    );
   }
 }

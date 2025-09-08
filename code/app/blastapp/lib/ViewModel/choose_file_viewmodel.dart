@@ -23,6 +23,27 @@ class ChooseFileViewModel extends ChangeNotifier {
       try {
         isLoading = true;
         files = await currentFileService.cloud!.getFiles(await currentPath);
+
+        // Sort files alphabetically by name, with directories first, then .blast files
+        files.sort((a, b) {
+          // If one is directory and other is not, directory comes first
+          if (a.isDirectory && !b.isDirectory) return -1;
+          if (!a.isDirectory && b.isDirectory) return 1;
+
+          // If both are files (not directories), prioritize .blast files
+          if (!a.isDirectory && !b.isDirectory) {
+            bool aIsBlast = a.name.toLowerCase().endsWith('.blast');
+            bool bIsBlast = b.name.toLowerCase().endsWith('.blast');
+
+            // If one is .blast and other is not, .blast comes first
+            if (aIsBlast && !bIsBlast) return -1;
+            if (!aIsBlast && bIsBlast) return 1;
+          }
+
+          // If both are same type (both directories, both .blast files, or both other files), sort alphabetically
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        });
+
         isLoading = false;
       } catch (e) {
         if (context.mounted) {
@@ -57,14 +78,16 @@ class ChooseFileViewModel extends ChangeNotifier {
             fileUrl: object.url,
             jsonCredentials: currentFileService.cloud!.cachedCredentials);
 
-        final cloudFile = await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
-        currentFileService.currentFileInfo!.lastModified = cloudFile.lastModified;
+        final cloudFile = await currentFileService.cloud!
+            .getFile(currentFileService.currentFileInfo!.fileUrl);
+        currentFileService.currentFileInfo!.lastModified =
+            cloudFile.lastModified;
 
         currentFileService.currentFileEncrypted = cloudFile.data;
-            
 
         // check if the file is a valid blast file
-        currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
+        currentFileService
+            .getFileVersion(currentFileService.currentFileEncrypted!);
 
         if (!context.mounted) return;
         context.router.maybePop(FileSelectionResult.existingFile);
@@ -75,12 +98,13 @@ class ChooseFileViewModel extends ChangeNotifier {
     }
   }
 
-  newFileCommand() async {
+  Future<Future<bool>> newFileCommand() async {
     return context.router.maybePop(FileSelectionResult.newFile);
   }
 
-  upDirectoryCommand() async {
-    currentPath = Future.value(currentFileService.cloud!.goToParentDirectory(await currentPath));
+  Future<void> upDirectoryCommand() async {
+    currentPath = Future.value(
+        currentFileService.cloud!.goToParentDirectory(await currentPath));
     _cachedFiles = null;
     notifyListeners();
   }

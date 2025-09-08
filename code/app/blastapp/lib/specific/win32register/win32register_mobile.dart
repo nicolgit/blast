@@ -11,15 +11,13 @@ class Win32RegisterMobile extends Win32Register {
     String appPath = Platform.resolvedExecutable;
 
     String protocolRegKey = 'Software\\Classes\\$scheme';
-    RegistryValue protocolRegValue = const RegistryValue(
+    const RegistryValue protocolRegValue = RegistryValue.string(
       'URL Protocol',
-      RegistryValueType.string,
       '',
     );
     String protocolCmdRegKey = 'shell\\open\\command';
-    RegistryValue protocolCmdRegValue = RegistryValue(
+    RegistryValue protocolCmdRegValue = RegistryValue.string(
       '',
-      RegistryValueType.string,
       '"$appPath" "%1"',
     );
 

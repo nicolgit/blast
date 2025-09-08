@@ -115,12 +115,14 @@ class OneDriveCloud extends Cloud {
 
   @override
   Future<String> goToParentDirectory(String currentPath) async {
-    if (currentPath == ('${await rootpath}:')) {
+    var rootpath = await this.rootpath;
+
+    if (currentPath == rootpath) {
       return rootpath;
     }
 
     var newPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-    if (newPath == ('${await rootpath}:')) {
+    if (newPath == rootpath || newPath == '$rootpath:') {
       return rootpath;
     }
 

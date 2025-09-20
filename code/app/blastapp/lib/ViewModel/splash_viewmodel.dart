@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:biometric_storage/biometric_storage.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/blastbiometricstorage.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
@@ -95,6 +99,25 @@ class SplashViewModel extends ChangeNotifier {
       CurrentFileService().reset();
       CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
+
+      try {
+        if (await SettingService().biometricAuthEnabled) {
+          final storageFile =
+              await BiometricStorage().getStorage('blastvault', promptInfo: BiometricHelper.getPromptInfo());
+
+          final jsonData = await storageFile.read();
+
+          if (jsonData != null) {
+            BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
+            CurrentFileService().cloud!.cachedCredentials = data.cloudCredentials ?? '';
+          }
+        } else {
+          await SettingService().setBiometricAuthEnabled(false);
+        }
+      } catch (e) {
+        print("error reading biometric storage: $e");
+        await SettingService().setBiometricAuthEnabled(false);
+      }
 
       final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;

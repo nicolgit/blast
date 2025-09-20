@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/blastbiometricstorage.dart';
@@ -171,7 +172,8 @@ class TypePasswordViewModel extends ChangeNotifier {
                   FilledButton(
                     onPressed: () async {
                       try {
-                        final storageFile = await BiometricStorage().getStorage('blastvault');
+                        final storageFile = await BiometricStorage()
+                            .getStorage('blastvault', promptInfo: BiometricHelper.getPromptInfo());
 
                         BlastBiometricStorageData biometricData = BlastBiometricStorageData(
                           password: password,
@@ -225,7 +227,8 @@ class TypePasswordViewModel extends ChangeNotifier {
         if (response == CanAuthenticateResponse.success) {
           if (!context.mounted) return false;
 
-          final storageFile = await BiometricStorage().getStorage('blastvault');
+          final storageFile =
+              await BiometricStorage().getStorage('blastvault', promptInfo: BiometricHelper.getPromptInfo());
 
           final jsonData = await storageFile.read();
 

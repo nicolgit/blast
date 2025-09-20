@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/blastbiometricstorage.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/foundation.dart';
@@ -172,7 +173,13 @@ class TypePasswordViewModel extends ChangeNotifier {
                       try {
                         final storageFile = await BiometricStorage().getStorage('blastvault');
 
-                        await storageFile.write(password);
+                        BlastBiometricStorageData biometricData = BlastBiometricStorageData(
+                          password: password,
+                          cloudCredentials: CurrentFileService().currentFileInfo!.jsonCredentials ?? '',
+                        );
+
+                        await storageFile.write(jsonEncode(biometricData));
+
                         SettingService().setBiometricAuthEnabled(true);
                       } catch (e) {
                         // Don't show error message if user canceled the biometric authentication
@@ -219,8 +226,15 @@ class TypePasswordViewModel extends ChangeNotifier {
           if (!context.mounted) return false;
 
           final storageFile = await BiometricStorage().getStorage('blastvault');
-          final passwordValue = await storageFile.read();
-          password = passwordValue!;
+
+          final jsonData = await storageFile.read();
+
+          password = '';
+          if (jsonData != null) {
+            BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
+
+            password = data.password;
+          }
 
           if (await checkPassword(false)) {
             return true;

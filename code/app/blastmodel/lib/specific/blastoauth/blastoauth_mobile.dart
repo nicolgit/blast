@@ -36,6 +36,7 @@ class BlastOAuthMobile extends BlastOAuth {
     // Once the user is redirected to `redirectUrl`, pass the query parameters to
     // the AuthorizationCodeGrant. It will validate them and extract the
     // authorization code to create a new Client.
+
     var client = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
 
     cachedCredentials = client.credentials.toJson();

@@ -116,6 +116,7 @@ class SplashViewModel extends ChangeNotifier {
         myContext.router.push(const CardsBrowserRoute());
       }
     } catch (e) {
+      SettingService().setBiometricAuthEnabled(false);
       print(e);
     } finally {
       isLoading = false;

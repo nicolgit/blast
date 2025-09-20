@@ -12,9 +12,14 @@ class BlastOAuthMobile extends BlastOAuth {
 
   @override
   Future<oauth2.Client> createClient() async {
-    if (cachedCredentials != null) {
-      var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
-      return oauth2.Client(credentials, identifier: applicationId);
+    try {
+      if (cachedCredentials != null) {
+        var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
+        return oauth2.Client(credentials, identifier: applicationId);
+      }
+    } catch (e) {
+      // unable to reuse the cached credential
+      print(e);
     }
 
     var grant = oauth2.AuthorizationCodeGrant(applicationId, authorizationEndpoint, tokenEndpoint);

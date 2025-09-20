@@ -106,7 +106,7 @@ class _FieldViewState extends State<FieldView> {
 
                             switch (qr) {
                               case QrCodeViewStyle.text:
-                                displayWidget = _buildHighlightableText(vm.currentField);
+                                displayWidget = _buildText(vm.currentField);
                                 break;
                               case QrCodeViewStyle.code:
                                 displayWidget = _buildCharacterGrid(vm.currentField);
@@ -138,6 +138,19 @@ class _FieldViewState extends State<FieldView> {
                             return displayWidget;
                           })))),
         ])))));
+  }
+
+  Color _getCharacterColor(String char) {
+    bool isLetter = RegExp(r'\p{L}', unicode: true).hasMatch(char);
+    bool isNumber = RegExp(r'[0-9]').hasMatch(char);
+
+    if (isLetter) {
+      return Colors.black;
+    } else if (isNumber) {
+      return _theme.colorScheme.error;
+    } else {
+      return Colors.green;
+    }
   }
 
   Widget _buildCharacterGrid(String text) {
@@ -197,6 +210,7 @@ class _FieldViewState extends State<FieldView> {
                     fontSize: charSize * 0.6, // Calculate font size as 60% of char box size
                     fontWeight: FontWeight.bold,
                     fontFamily: 'monospace',
+                    color: _getCharacterColor(char),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -225,71 +239,28 @@ class _FieldViewState extends State<FieldView> {
     );
   }
 
-  Widget _buildHighlightableText(String text) {
-    return GestureDetector(
-      onTapDown: (TapDownDetails details) {
-        // Get the tap position relative to the text
-        final RenderBox renderBox = context.findRenderObject() as RenderBox;
-        final localPosition = renderBox.globalToLocal(details.globalPosition);
-
-        // Calculate which character was tapped
-        final textPainter = TextPainter(
-          text: TextSpan(
-            text: text,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'monospace',
-            ),
-          ),
-          textDirection: TextDirection.ltr,
-        );
-        textPainter.layout();
-
-        final textPosition = textPainter.getPositionForOffset(localPosition);
-        final tappedIndex = textPosition.offset;
-
-        setState(() {
-          // If tapping on the last selected character, remove highlight
-          if (_selectedCharacterIndex == tappedIndex) {
-            _selectedCharacterIndex = -1;
-          } else {
-            _selectedCharacterIndex = tappedIndex.clamp(0, text.length - 1);
-          }
-        });
-      },
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: _buildHighlightedTextSpans(text),
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'monospace',
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<TextSpan> _buildHighlightedTextSpans(String text) {
+  Widget _buildText(String text) {
     List<TextSpan> spans = [];
 
     for (int i = 0; i < text.length; i++) {
-      final isHighlighted = _selectedCharacterIndex >= 0 && i <= _selectedCharacterIndex;
+      String char = text[i];
 
       spans.add(
         TextSpan(
-          text: text[i],
+          text: char,
           style: TextStyle(
-            backgroundColor: isHighlighted ? _theme.colorScheme.primaryContainer : Colors.transparent,
-            color: Colors.black,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'monospace',
+            color: _getCharacterColor(char),
           ),
         ),
       );
     }
 
-    return spans;
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(children: spans),
+    );
   }
 }

@@ -175,7 +175,7 @@ class TypePasswordViewModel extends ChangeNotifier {
 
                         BlastBiometricStorageData biometricData = BlastBiometricStorageData(
                           password: password,
-                          cloudCredentials: CurrentFileService().currentFileInfo!.jsonCredentials ?? '',
+                          cloudCredentials: CurrentFileService().cloud!.cachedCredentials,
                         );
 
                         await storageFile.write(jsonEncode(biometricData));

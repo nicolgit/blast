@@ -48,6 +48,16 @@ class OneDriveCloud extends Cloud {
   Future<String> get rootpath => Future.value('/drive/root');
 
   @override
+  String? get cachedCredentials {
+    return _oauth.cachedCredentials;
+  }
+
+  @override
+  set cachedCredentials(String? value) {
+    _oauth.cachedCredentials = value;
+  }
+
+  @override
   Future<List<CloudObject>> getFiles(String path) async {
     List<CloudObject> files = List.empty(growable: true);
 
@@ -167,6 +177,7 @@ class OneDriveCloud extends Cloud {
     }
 
     var client = await _oauth.createClient();
+
     var response =
         await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
 

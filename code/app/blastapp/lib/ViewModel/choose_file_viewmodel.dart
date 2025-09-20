@@ -73,21 +73,18 @@ class ChooseFileViewModel extends ChangeNotifier {
         notifyListeners();
 
         currentFileService.currentFileInfo = BlastFile(
-            cloudId: currentFileService.cloud!.id,
-            fileName: object.name,
-            fileUrl: object.url,
-            jsonCredentials: currentFileService.cloud!.cachedCredentials);
+          cloudId: currentFileService.cloud!.id,
+          fileName: object.name,
+          fileUrl: object.url,
+        );
 
-        final cloudFile = await currentFileService.cloud!
-            .getFile(currentFileService.currentFileInfo!.fileUrl);
-        currentFileService.currentFileInfo!.lastModified =
-            cloudFile.lastModified;
+        final cloudFile = await currentFileService.cloud!.getFile(currentFileService.currentFileInfo!.fileUrl);
+        currentFileService.currentFileInfo!.lastModified = cloudFile.lastModified;
 
         currentFileService.currentFileEncrypted = cloudFile.data;
 
         // check if the file is a valid blast file
-        currentFileService
-            .getFileVersion(currentFileService.currentFileEncrypted!);
+        currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
 
         if (!context.mounted) return;
         context.router.maybePop(FileSelectionResult.existingFile);
@@ -103,8 +100,7 @@ class ChooseFileViewModel extends ChangeNotifier {
   }
 
   Future<void> upDirectoryCommand() async {
-    currentPath = Future.value(
-        currentFileService.cloud!.goToParentDirectory(await currentPath));
+    currentPath = Future.value(currentFileService.cloud!.goToParentDirectory(await currentPath));
     _cachedFiles = null;
     notifyListeners();
   }

@@ -46,9 +46,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   Future<bool> isFormReadyToConfirm() async {
-    return await passwordsMatch() &&
-        await isPasswordsNotEmpty() &&
-        await isFilenameNotEmpty();
+    return await passwordsMatch() && await isPasswordsNotEmpty() && await isFilenameNotEmpty();
   }
 
   Future<void> acceptPassword() async {
@@ -81,23 +79,21 @@ class CreatePasswordViewModel extends ChangeNotifier {
     }
 
     final file = BlastFile(
-        cloudId: CurrentFileService().cloud!.id,
-        fileName: "$filename.blast",
-        fileUrl: "${await CurrentFileService().cloud!.rootpath}$filename.blast",
-        jsonCredentials: '');
+      cloudId: CurrentFileService().cloud!.id,
+      fileName: "$filename.blast",
+      fileUrl: "${await CurrentFileService().cloud!.rootpath}$filename.blast",
+    );
 
     CurrentFileService().currentFileInfo = file;
 
     CurrentFileService().newPassword(password);
     CurrentFileService().currentFileDocument = BlastDocument();
-    CurrentFileService().currentFileJsonString =
-        CurrentFileService().currentFileDocument.toString();
-    CurrentFileService().currentFileEncrypted = CurrentFileService()
-        .encodeFile(CurrentFileService().currentFileJsonString!);
+    CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
+    CurrentFileService().currentFileEncrypted =
+        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
 
-    final CloudFile cf = await CurrentFileService()
-        .cloud!
-        .createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
+    final CloudFile cf =
+        await CurrentFileService().cloud!.createFile(file.fileUrl, CurrentFileService().currentFileEncrypted!);
 
     CurrentFileService().currentFileInfo!.lastModified = cf.lastModified;
     file.fileUrl = cf.id;

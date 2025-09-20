@@ -5,9 +5,9 @@ part 'blastbiometricstorage.g.dart';
 @JsonSerializable(fieldRename: FieldRename.pascal, explicitToJson: true)
 class BlastBiometricStorageData {
   String password;
-  String cloudCredentials;
+  String? cloudCredentials;
 
-  BlastBiometricStorageData({required this.password, required this.cloudCredentials});
+  BlastBiometricStorageData({required this.password, this.cloudCredentials});
 
   @override
   String toString() {

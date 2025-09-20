@@ -5,8 +5,10 @@ abstract class Cloud {
   String get id;
   String get name;
   String get description;
-  String? cachedCredentials;
   Future<String> get rootpath;
+
+  String? get cachedCredentials;
+  set cachedCredentials(String? value);
 
   Future<List<CloudObject>> getFiles(String path);
   Future<CloudFile> createFile(String path, Uint8List bytes);

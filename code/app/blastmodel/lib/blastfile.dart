@@ -10,9 +10,8 @@ class BlastFile {
   String fileName;
   String fileUrl;
   DateTime? lastModified;
-  String? jsonCredentials;
 
-  BlastFile({required this.cloudId, required this.fileName, required this.fileUrl, required this.jsonCredentials});
+  BlastFile({required this.cloudId, required this.fileName, required this.fileUrl});
 
   @override
   String toString() {

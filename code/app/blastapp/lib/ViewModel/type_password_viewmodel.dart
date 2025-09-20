@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
-import 'package:blastmodel/blastbiometricstorage.dart';
 import 'package:blastmodel/exceptions.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/foundation.dart';
@@ -172,17 +171,7 @@ class TypePasswordViewModel extends ChangeNotifier {
                   FilledButton(
                     onPressed: () async {
                       try {
-                        final storageFile = await BiometricStorage()
-                            .getStorage('blastvault', promptInfo: BiometricHelper.getPromptInfo());
-
-                        BlastBiometricStorageData biometricData = BlastBiometricStorageData(
-                          password: password,
-                          cloudCredentials: CurrentFileService().cloud!.cachedCredentials,
-                        );
-
-                        await storageFile.write(jsonEncode(biometricData));
-
-                        SettingService().setBiometricAuthEnabled(true);
+                        await BiometricHelper.saveData(password);
                       } catch (e) {
                         // Don't show error message if user canceled the biometric authentication
                         if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
@@ -190,8 +179,6 @@ class TypePasswordViewModel extends ChangeNotifier {
                         } else {
                           await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
                         }
-
-                        SettingService().setBiometricAuthEnabled(false);
                       }
 
                       if (context.mounted) {
@@ -227,15 +214,10 @@ class TypePasswordViewModel extends ChangeNotifier {
         if (response == CanAuthenticateResponse.success) {
           if (!context.mounted) return false;
 
-          final storageFile =
-              await BiometricStorage().getStorage('blastvault', promptInfo: BiometricHelper.getPromptInfo());
-
-          final jsonData = await storageFile.read();
+          final data = await BiometricHelper.readData();
 
           password = '';
-          if (jsonData != null) {
-            BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
-
+          if (data != null) {
             password = data.password;
           }
 

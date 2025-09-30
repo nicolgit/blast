@@ -189,10 +189,7 @@ class OneDriveCloud extends Cloud {
     }
 
     final fileId = jsonResponse['id'];
-
-    final CloudFileInfo cfi = await getFileInfo(id);
-
-    final CloudFile cf = CloudFile(data: bytes, lastModified: cfi.lastModified, id: fileId);
+    final CloudFile cf = CloudFile(data: bytes, lastModified: DateTime.now(), id: fileId);
     return cf;
   }
 

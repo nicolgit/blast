@@ -1,5 +1,5 @@
 PODS:
-  - app_links (1.0.0):
+  - app_links (6.4.1):
     - FlutterMacOS
   - biometric_storage (0.0.1):
     - FlutterMacOS
@@ -61,7 +61,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 86a57d95d4dec830373b8c85c21d1c59a4a5dc21
+  app_links: c3185399a5cabc2e610ee5ad52fb7269b84ff869
   biometric_storage: 43caa6e7ef00e8e19c074216e7e1786dacda9e76
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4

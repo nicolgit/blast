@@ -101,7 +101,6 @@ class SplashViewModel extends ChangeNotifier {
 
       final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
-
       CurrentFileService().currentFileEncrypted = myFile.data;
 
       isLoading = false;

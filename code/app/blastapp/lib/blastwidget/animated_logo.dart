@@ -77,11 +77,12 @@ class _AnimatedLogoState extends State<AnimatedLogo> with TickerProviderStateMix
           scale: _logoAnimation.value,
           child: Transform.rotate(
             angle: _rotationAnimation.value, // 20 degrees left and right
-            child: widget.image ?? Image(
-              image: AssetImage(widget.assetPath ?? 'assets/general/icon-v01.png'),
-              width: widget.width,
-              height: widget.height,
-            ),
+            child: widget.image ??
+                Image(
+                  image: AssetImage(widget.assetPath ?? 'assets/general/icon-v01.png'),
+                  width: widget.width,
+                  height: widget.height,
+                ),
           ),
         );
       },

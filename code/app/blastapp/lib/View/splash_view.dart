@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_viewmodel.dart';
 import 'package:blastapp/main.dart';
+import 'package:blastapp/blastwidget/animated_logo.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/secrets.dart';
@@ -17,61 +18,18 @@ class SplashView extends StatefulWidget {
   State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
+class _SplashViewState extends State<SplashView> {
   final viewModel = SplashViewModel();
-  late AnimationController _logoAnimationController;
-  late AnimationController _rotationAnimationController;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _rotationAnimation;
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize the logo scale animation
-    _logoAnimationController = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    );
-
-    _logoAnimation = Tween<double>(
-      begin: 0.95,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _logoAnimationController,
-      curve: Curves.easeInOut,
-    ));
-
-    // Initialize the rotation animation (20 degrees = ~0.349 radians)
-    _rotationAnimationController = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    );
-
-    _rotationAnimation = Tween<double>(
-      begin: -0.349, // -20 degrees in radians
-      end: 0.349, // +20 degrees in radians
-    ).animate(CurvedAnimation(
-      parent: _rotationAnimationController,
-      curve: Curves.easeInOut,
-    ));
-
-    // Start both animations
-    _logoAnimationController.repeat(reverse: true);
-    _rotationAnimationController.repeat(reverse: true);
 
     // open the most recent file on first load
     viewModel.context = context;
     viewModel.openMostRecentFile();
 
     viewModel.isInitializing = false;
-  }
-
-  @override
-  void dispose() {
-    _logoAnimationController.dispose();
-    _rotationAnimationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -134,21 +92,9 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         child: Center(
             child: Column(
       children: [
-        AnimatedBuilder(
-          animation: Listenable.merge([_logoAnimation, _rotationAnimation]),
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _logoAnimation.value,
-              child: Transform.rotate(
-                angle: _rotationAnimation.value, // 20 degrees left and right
-                child: const Image(
-                  image: AssetImage('assets/general/icon-v01.png'),
-                  width: 120,
-                  height: 120,
-                ),
-              ),
-            );
-          },
+        const AnimatedLogo(
+          width: 120,
+          height: 120,
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),

@@ -6,6 +6,7 @@ import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -159,11 +160,45 @@ class _SplashViewState extends State<SplashView> {
     )));
   }
 
-  ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
+  Widget _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
     if (vm.isLoading) {
       context.loaderOverlay.show();
     } else {
       context.loaderOverlay.hide();
+    }
+
+    // Check if files list is empty or null
+    if (files.isEmpty) {
+      return Container(
+        height: 200,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/general/empty-list.json',
+              width: 120,
+              height: 120,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No recent files',
+              style: _textTheme.titleMedium?.copyWith(
+                color: _theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Create or select a file to get started',
+              style: _textTheme.bodySmall?.copyWith(
+                color: _theme.colorScheme.onSurface.withOpacity(0.5),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
 
     var myList = ListView.builder(

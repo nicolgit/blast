@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:humanizer/humanizer.dart';
+import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class CardsBrowserView extends StatefulWidget {
@@ -230,9 +231,34 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     List<String> searchTerms = vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
     if (cardsList.isEmpty) {
       return Center(
-        child: Text(
-          'No cards found. Press the + button to add a new card.',
-          style: _widgetFactory.textTheme.labelMedium,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Lottie.asset(
+                'assets/general/man-walking.json',
+                repeat: true,
+                reverse: false,
+                animate: true,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'This app is sad without cards, create a card now!',
+              style: _widgetFactory.textTheme.labelMedium,
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () {
+                vm.addCard().then((value) {
+                  vm.refreshCardListCommand();
+                });
+              },
+              child: const Text('Create Card'),
+            ),
+          ],
         ),
       );
     }

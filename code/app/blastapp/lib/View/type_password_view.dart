@@ -76,17 +76,12 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                         title: Text("file: ${vm.fileName}"),
                       ),
                       const SizedBox(height: 12.0),
-                      // Animated app logo
-                      const AnimatedLogo(
-                        width: 80,
-                        height: 80,
-                      ),
-                      const SizedBox(height: 12.0),
                       // Animated cloud storage icon
                       AnimatedLogo(
-                        width: 128,
-                        height: 128,
-                        image: Image.asset(vm.cloudIcon, width: 128, height: 128),
+                        width: 90,
+                        height: 90,
+                        assetPath: vm.cloudIcon,
+                        oscillation: false,
                       ),
                       Text('type the master password or the recovery key to continue', style: _textTheme.labelMedium),
                       const SizedBox(height: 12.0),
@@ -94,7 +89,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                         future: vm.isPasswordValid(),
                         builder: (context, isPasswordValid) {
                           return Icon(isPasswordValid.data ?? false ? Icons.lock_open : Icons.lock,
-                              color: _theme.colorScheme.primary, size: 48.0);
+                              color: _theme.colorScheme.primary, size: 36.0);
                         },
                       ),
                       const SizedBox(height: 12.0),

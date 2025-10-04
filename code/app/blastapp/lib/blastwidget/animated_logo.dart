@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class AnimatedLogo extends StatefulWidget {
   final double width;
   final double height;
-  final String? assetPath;
-  final Image? image;
+  final String assetPath;
+  final bool oscillation;
 
   const AnimatedLogo({
     super.key,
     this.width = 120,
     this.height = 120,
-    this.assetPath,
-    this.image,
+    required this.assetPath,
+    required this.oscillation,
   });
 
   @override
@@ -58,7 +58,9 @@ class _AnimatedLogoState extends State<AnimatedLogo> with TickerProviderStateMix
 
     // Start both animations
     _logoAnimationController.repeat(reverse: true);
-    _rotationAnimationController.repeat(reverse: true);
+    if (widget.oscillation) {
+      _rotationAnimationController.repeat(reverse: true);
+    }
   }
 
   @override
@@ -76,13 +78,12 @@ class _AnimatedLogoState extends State<AnimatedLogo> with TickerProviderStateMix
         return Transform.scale(
           scale: _logoAnimation.value,
           child: Transform.rotate(
-            angle: _rotationAnimation.value, // 20 degrees left and right
-            child: widget.image ??
-                Image(
-                  image: AssetImage(widget.assetPath ?? 'assets/general/icon-v01.png'),
-                  width: widget.width,
-                  height: widget.height,
-                ),
+            angle: widget.oscillation ? _rotationAnimation.value : 0.0, // 20 degrees left and right
+            child: Image(
+              image: AssetImage(widget.assetPath),
+              width: widget.width,
+              height: widget.height,
+            ),
           ),
         );
       },

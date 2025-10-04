@@ -92,10 +92,14 @@ class _SplashViewState extends State<SplashView> {
         child: Center(
             child: Column(
       children: [
+        const SizedBox(height: 24.0),
         const AnimatedLogo(
           width: 120,
           height: 120,
+          assetPath: 'assets/general/app-icon.png',
+          oscillation: true,
         ),
+        const SizedBox(height: 12.0),
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Column(children: [

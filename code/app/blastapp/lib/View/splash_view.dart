@@ -104,8 +104,12 @@ class _SplashViewState extends State<SplashView> {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Column(children: [
             Text(
+              "⭐️ BLAST ⭐️",
+              style: _textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
               "your passwords, safe and sound.",
-              style: _textTheme.labelLarge,
+              style: _textTheme.labelSmall,
             ),
             Text(
               "build ${Secrets.buildNumber}",
@@ -134,7 +138,7 @@ class _SplashViewState extends State<SplashView> {
                     onPressed: () {
                       vm.goToChooseStorage().then((value) => vm.refresh());
                     },
-                    child: const Text('create or select another file'),
+                    child: const Text('create or select an existing file'),
                   ),
                 );
               }),
@@ -192,16 +196,11 @@ class _SplashViewState extends State<SplashView> {
             const SizedBox(height: 16),
             Text(
               'No recent files',
-              style: _textTheme.titleMedium?.copyWith(
-                color: _theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
+              style: _textTheme.titleMedium,
             ),
-            const SizedBox(height: 8),
             Text(
-              'Create or select a file to get started',
-              style: _textTheme.bodySmall?.copyWith(
-                color: _theme.colorScheme.onSurface.withOpacity(0.5),
-              ),
+              'Create or select an existing file to get started',
+              style: _textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
           ],

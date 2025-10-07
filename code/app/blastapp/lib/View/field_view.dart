@@ -92,6 +92,28 @@ class _FieldViewState extends State<FieldView> {
                         }));
               }),
           const SizedBox(height: 12),
+          SegmentedButton<String>(
+            segments: [
+              ButtonSegment<String>(
+                value: 'copy',
+                label: const Text('copy to clipboard'),
+                icon: const Icon(Icons.copy),
+              ),
+            ],
+            selected: const <String>{},
+            emptySelectionAllowed: true,
+            onSelectionChanged: (Set<String> newSelection) {
+              // Always copy when clicked, regardless of selection state
+              vm.copyToClipboard();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Copied to clipboard!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
           Flexible(
               fit: FlexFit.loose,
               child: Padding(

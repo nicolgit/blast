@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FieldViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -25,5 +26,9 @@ class FieldViewModel extends ChangeNotifier {
     qrCodeViewStyle = newValue;
 
     notifyListeners();
+  }
+
+  void copyToClipboard() {
+    Clipboard.setData(ClipboardData(text: currentField));
   }
 }

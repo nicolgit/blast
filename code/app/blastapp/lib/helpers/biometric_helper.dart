@@ -48,7 +48,7 @@ class BiometricHelper {
 
       BlastBiometricStorageData biometricData = BlastBiometricStorageData(
         password: password,
-        cloudCredentials: CurrentFileService().cloud!.cachedCredentials,
+        cloudCredentials: CurrentFileService().cloud!.cachedCredentials ?? '',
       );
 
       await storageFile.write(jsonEncode(biometricData));

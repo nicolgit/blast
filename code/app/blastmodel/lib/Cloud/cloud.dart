@@ -7,6 +7,7 @@ abstract class Cloud {
   String get description;
   Future<String> get rootpath;
 
+  bool get hasCachedCredentials;
   String? get cachedCredentials;
   set cachedCredentials(String? value);
 

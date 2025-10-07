@@ -203,5 +203,8 @@ class LoremCloud extends Cloud {
   }
 
   @override
+  bool get hasCachedCredentials => false;
+
+  @override
   String? cachedCredentials;
 }

@@ -97,5 +97,8 @@ class FileSystemCloud extends Cloud {
   }
 
   @override
+  bool get hasCachedCredentials => false;
+
+  @override
   String? cachedCredentials;
 }

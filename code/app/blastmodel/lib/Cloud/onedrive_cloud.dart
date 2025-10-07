@@ -48,6 +48,9 @@ class OneDriveCloud extends Cloud {
   Future<String> get rootpath => Future.value('/drive/root');
 
   @override
+  bool get hasCachedCredentials => true;
+
+  @override
   String? get cachedCredentials {
     return _oauth.cachedCredentials;
   }

@@ -97,7 +97,9 @@ class SplashViewModel extends ChangeNotifier {
       CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
 
-      await BiometricHelper.readData();
+      if (CurrentFileService().cloud!.hasCachedCredentials) {
+        await BiometricHelper.readData();
+      }
 
       final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;

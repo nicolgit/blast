@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
@@ -106,6 +107,19 @@ class _CardEditViewState extends State<CardEditView> {
                       },
                     ),
                     _showBottomToolbar(vm),
+                    FileChangedBanner(
+                      isFileChangedFuture: vm.isFileChangedAsync(),
+                      onSavePressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          vm.saveCommand();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text("file saved successfully!"),
+                            ));
+                          }
+                        }
+                      },
+                    ),
                   ],
                 )))));
   }

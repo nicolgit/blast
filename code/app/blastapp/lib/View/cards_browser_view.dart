@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -163,39 +164,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                           ),
                         ],
                       ),
-                      FutureBuilder<bool>(
-                          future: vm.isFileChangedAsync(),
-                          builder: (context, isFileChanged) {
-                            return Visibility(
-                              visible: isFileChanged.data ?? false,
-                              child: Container(
-                                width: double.infinity,
-                                color: _widgetFactory.theme.colorScheme.error,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('file changed, click',
-                                        style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
-                                    Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: FilledButton(
-                                          child: const Text('here'),
-                                          onPressed: () async {
-                                            if (await vm.saveCommand()) {
-                                              if (context.mounted) {
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                  content: Text("file saved successfully!"),
-                                                ));
-                                              }
-                                            }
-                                          },
-                                        )),
-                                    Text('to save', style: TextStyle(color: _widgetFactory.theme.colorScheme.onError)),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
                       FutureBuilder<List<BlastCard>>(
                           future: vm.getCards(),
                           builder: (context, cardsList) {
@@ -206,6 +174,18 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                               ),
                             );
                           }),
+                      FileChangedBanner(
+                        isFileChangedFuture: vm.isFileChangedAsync(),
+                        onSavePressed: () async {
+                          if (await vm.saveCommand()) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text("file saved successfully!"),
+                              ));
+                            }
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),

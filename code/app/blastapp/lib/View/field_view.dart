@@ -20,6 +20,7 @@ late ThemeData _theme;
 
 class _FieldViewState extends State<FieldView> {
   int _selectedCharacterIndex = -1; // Track which character was tapped
+  bool _copyButtonSelected = false; // Track if copy button is selected
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +101,14 @@ class _FieldViewState extends State<FieldView> {
                 icon: const Icon(Icons.copy),
               ),
             ],
-            selected: const <String>{},
+            selected: _copyButtonSelected ? {'copy'} : <String>{},
             emptySelectionAllowed: true,
             onSelectionChanged: (Set<String> newSelection) {
-              // Always copy when clicked, regardless of selection state
+              // Always copy when clicked, and keep button selected
               vm.copyToClipboard();
+              setState(() {
+                _copyButtonSelected = true;
+              });
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Copied to clipboard!'),

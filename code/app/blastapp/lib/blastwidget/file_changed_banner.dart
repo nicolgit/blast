@@ -26,14 +26,18 @@ class FileChangedBanner extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('file changed, click', style: TextStyle(color: widgetFactory.theme.colorScheme.onError)),
+                Text('file changed, click',
+                    style:
+                        widgetFactory.textTheme.labelSmall!.copyWith(color: widgetFactory.theme.colorScheme.onError)),
                 Padding(
-                    padding: const EdgeInsets.all(6.0),
+                    padding: const EdgeInsets.all(3.0),
                     child: FilledButton(
                       onPressed: onSavePressed,
-                      child: const Text('here'),
+                      child: Text('here', style: widgetFactory.textTheme.labelSmall),
                     )),
-                Text('to save', style: TextStyle(color: widgetFactory.theme.colorScheme.onError)),
+                Text('to save',
+                    style:
+                        widgetFactory.textTheme.labelSmall!.copyWith(color: widgetFactory.theme.colorScheme.onError)),
               ],
             ),
           ),

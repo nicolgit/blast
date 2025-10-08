@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,12 @@ class CardView extends StatefulWidget {
 class _CardViewState extends State<CardView> {
   @override
   Widget build(BuildContext context) {
-    final card =
-        widget.card; // this is the card passed in from the CardsBrowserView
+    final card = widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
       create: (context) => CardViewModel(context, card),
       child: Consumer<CardViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -47,9 +46,7 @@ class _CardViewState extends State<CardView> {
             body: Center(
                 child: Column(children: [
               AppBar(
-                title: Text(vm.currentCard.title != null
-                    ? vm.currentCard.title!
-                    : "No Title"),
+                title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -67,46 +64,6 @@ class _CardViewState extends State<CardView> {
                   ),
                 ],
               ),
-              FutureBuilder<bool>(
-                  future: vm.isFileChangedAsync(),
-                  builder: (context, isFileChanged) {
-                    return Visibility(
-                      visible: isFileChanged.data ?? false,
-                      child: Container(
-                        width: double.infinity,
-                        color: _widgetFactory.theme.colorScheme.error,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('file changed, click',
-                                style: TextStyle(
-                                    color: _widgetFactory
-                                        .theme.colorScheme.onError)),
-                            Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: FilledButton(
-                                  child: const Text('here'),
-                                  onPressed: () async {
-                                    if (await vm.saveCommand()) {
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                          content:
-                                              Text("file saved successfully!"),
-                                        ));
-                                      }
-                                    }
-                                  },
-                                )),
-                            Text('to save',
-                                style: TextStyle(
-                                    color: _widgetFactory
-                                        .theme.colorScheme.onError)),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -116,20 +73,15 @@ class _CardViewState extends State<CardView> {
                               Icons.star,
                               color: Colors.amber,
                             )
-                          : Icon(Icons.star_border,
-                              color: _widgetFactory.theme.colorScheme.primary),
+                          : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
                       tooltip: "toggle favorite",
                       onPressed: () {
                         vm.toggleFavorite();
                       }),
                   Center(
-                      child: Text(
-                          vm.currentCard.title != null
-                              ? vm.currentCard.title!
-                              : "",
+                      child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
                           textAlign: TextAlign.center,
-                          style: _widgetFactory.textTheme.titleLarge!
-                              .copyWith(fontWeight: FontWeight.bold))),
+                          style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
                 ],
               ),
               Text(
@@ -148,11 +100,22 @@ class _CardViewState extends State<CardView> {
                       ),
                     );
                   }),
+              FileChangedBanner(
+                isFileChangedFuture: vm.isFileChangedAsync(),
+                onSavePressed: () async {
+                  if (await vm.saveCommand()) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("file saved successfully!"),
+                      ));
+                    }
+                  }
+                },
+              ),
             ]))));
   }
 
-  ListView _buildAttributesList(
-      List<BlastAttribute> cardsList, CardViewModel vm) {
+  ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
     var myList = ListView.builder(
       itemCount: cardsList.length + 1,
       itemBuilder: (context, index) {
@@ -160,15 +123,8 @@ class _CardViewState extends State<CardView> {
           return _showNotes(vm.currentCard.notes!, vm);
         }
 
-        return _widgetFactory.buildAttributeRow(
-            context,
-            cardsList[index],
-            index,
-            vm.toggleShowPassword,
-            vm.isPasswordRowVisible,
-            vm.copyToClipboard,
-            vm.showFieldView,
-            vm.openUrl);
+        return _widgetFactory.buildAttributeRow(context, cardsList[index], index, vm.toggleShowPassword,
+            vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl);
       },
     );
 
@@ -202,15 +158,12 @@ class _CardViewState extends State<CardView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Notes",
-                        style: _widgetFactory.textTheme.bodyMedium!
-                            .copyWith(fontWeight: FontWeight.bold)),
+                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 24),
                     Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: SelectableText(notes,
-                            style: _widgetFactory.textTheme.bodyMedium!
-                                .copyWith(fontStyle: FontStyle.italic))),
+                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic))),
                   ],
                 ))));
   }

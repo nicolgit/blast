@@ -117,7 +117,7 @@ class CardFileInfoViewModel extends ChangeNotifier {
     final hexKey = data.map((e) => e.toRadixString(16).padLeft(2, '0')).join();
 
     // add a - every 8 characters
-    var hexKeyWithDashes = hexKey.replaceAllMapped(RegExp(r".{8}"), (match) => '${match.group(0)}-');
+    var hexKeyWithDashes = hexKey.replaceAllMapped(RegExp(r".{8}"), (match) => '${match.group(0)} - ');
 
     // remove last char '-' from string
     hexKeyWithDashes = hexKeyWithDashes.substring(0, hexKeyWithDashes.length - 1);

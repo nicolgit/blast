@@ -33,7 +33,7 @@ class FileChangedBanner extends StatelessWidget {
                     padding: const EdgeInsets.all(3.0),
                     child: FilledButton(
                       onPressed: onSavePressed,
-                      child: Text('here', style: widgetFactory.textTheme.labelSmall),
+                      child: Text('here', style: widgetFactory.textTheme.labelSmall!.copyWith(color: widgetFactory.theme.colorScheme.onPrimary)),
                     )),
                 Text('to save',
                     style:

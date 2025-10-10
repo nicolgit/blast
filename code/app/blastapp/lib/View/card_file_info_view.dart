@@ -53,24 +53,27 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
               SelectableText(vm.getRecoveryKey(),
                   style: _widgetFactory.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center),
-              IconButton(
-                onPressed: () {
-                  vm.copyToClipboard();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Recovery key copied to clipboard!"),
-                  ));
-                },
-                icon: Icon(Icons.copy, color: _widgetFactory.theme.colorScheme.tertiary),
-                tooltip: 'copy to clipboard',
-              ),
-              FilledButton(
-                onPressed: () {
-                  vm.copyToClipboard();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Recovery key copied to clipboard!"),
-                  ));
-                },
-                child: const Text('copy to clipboard'),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      vm.copyToClipboard();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Recovery key copied to clipboard!"),
+                      ));
+                    },
+                    child: const Text('copy to clipboard'),
+                  ),
+                  const SizedBox(width: 16),
+                  FilledButton(
+                    onPressed: () async {
+                      await vm.printRecoveryKey();
+                    },
+                    child: const Text('print'),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               Container(

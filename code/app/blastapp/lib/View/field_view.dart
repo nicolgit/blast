@@ -93,29 +93,45 @@ class _FieldViewState extends State<FieldView> {
                         }));
               }),
           const SizedBox(height: 12),
-          SegmentedButton<String>(
-            segments: [
-              ButtonSegment<String>(
-                value: 'copy',
-                label: const Text('copy to clipboard'),
-                icon: const Icon(Icons.copy),
-              ),
-            ],
-            selected: _copyButtonSelected ? {'copy'} : <String>{},
-            emptySelectionAllowed: true,
-            onSelectionChanged: (Set<String> newSelection) {
-              // Always copy when clicked, and keep button selected
-              vm.copyToClipboard();
-              setState(() {
-                _copyButtonSelected = true;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Copied to clipboard!'),
-                  duration: Duration(seconds: 2),
+          Theme(
+            data: ThemeData.light().copyWith(
+              segmentedButtonTheme: SegmentedButtonThemeData(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return _theme.colorScheme.primaryContainer;
+                      }
+                      return null; // Use default for unselected
+                    },
+                  ),
                 ),
-              );
-            },
+              ),
+            ),
+            child: SegmentedButton<String>(
+              segments: [
+                ButtonSegment<String>(
+                  value: 'copy',
+                  label: const Text('copy to clipboard'),
+                  icon: const Icon(Icons.copy),
+                ),
+              ],
+              selected: _copyButtonSelected ? {'copy'} : <String>{},
+              emptySelectionAllowed: true,
+              onSelectionChanged: (Set<String> newSelection) {
+                // Always copy when clicked, and keep button selected
+                vm.copyToClipboard();
+                setState(() {
+                  _copyButtonSelected = true;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Copied to clipboard!'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
           ),
           const SizedBox(height: 12),
           Flexible(

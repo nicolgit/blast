@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/Cloud/dropbox_cloud.dart';
 import 'package:blastmodel/Cloud/lorem_cloud.dart';
 import 'package:blastmodel/Cloud/filesystem_cloud.dart';
 import 'package:blastmodel/Cloud/onedrive_cloud.dart';
@@ -27,6 +28,7 @@ class SettingService {
 
   SettingService._internal() {
     // init cloud storages list
+    cloudStorages.add(DropboxCloud());
     cloudStorages.add(OneDriveCloud());
     if (kIsWeb) {
       // nothing to do

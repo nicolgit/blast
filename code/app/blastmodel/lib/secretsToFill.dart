@@ -12,8 +12,6 @@ class SecretsToFill {
   static const String oneDriveApplicationId = 'ONEDRIVE_APPLICATION_ID';
   static const String dropboxApplicationId = 'DROPBOX_APPPLICATION_ID';
 
-  static const String dropboxtestAccessToken = 'DROPBOX_TEST';
-
   static const String buildNumber = 'BUILD_NUMBER';
   // Add more secret variables here
 }

@@ -93,7 +93,7 @@ class DropboxCloud extends Cloud {
           name: entry['name'],
           path: entry['path_lower'],
           isDirectory: entry['.tag'] == 'folder',
-          url: entry['.tag'] == 'file' ? entry['id'] : entry['path_lower'],
+          url: entry['.tag'] == 'file' ? entry['path_lower'] : entry['path_lower'],
           lastModified: entry['.tag'] == 'file' && entry['client_modified'] != null
               ? DateTime.parse(entry['client_modified'])
               : DateTime.now(),

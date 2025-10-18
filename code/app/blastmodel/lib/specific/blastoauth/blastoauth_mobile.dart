@@ -84,10 +84,9 @@ class BlastOAuthMobile extends BlastOAuth {
   @override
   Future<bool> logout() async {
     cachedCredentials = null;
-    final logoffUrl = Uri.parse(
-        'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
+    final url = Uri.parse(logoutUrl.replaceAll('REDIRECT_URI', redirectUri.toString()));
 
-    await _redirect(logoffUrl);
+    await _redirect(url);
     var retValue = await _listenLogout(redirectUri);
 
     return retValue;

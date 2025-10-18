@@ -33,7 +33,8 @@ class OneDriveCloud extends Cloud {
         authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
         tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
         redirectUri: redirectUri,
-        scopes: ['openid', 'profile', 'Files.ReadWrite', 'offline_access']);
+        scopes: ['openid', 'profile', 'Files.ReadWrite', 'offline_access'],
+        logoutUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=REDIRECT_URI');
   }
 
   late BlastOAuth _oauth;

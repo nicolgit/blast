@@ -4,7 +4,6 @@ import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:blastmodel/specific/blastoauth/blastoauth.dart';
 import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart'
@@ -35,7 +34,8 @@ class DropboxCloud extends Cloud {
         authorizationEndpoint: Uri.parse('https://www.dropbox.com/oauth2/authorize'),
         tokenEndpoint: Uri.parse('https://api.dropboxapi.com/oauth2/token'),
         redirectUri: redirectUri,
-        scopes: ['files.content.read', 'files.content.write', 'files.metadata.read']);
+        scopes: ['files.content.read', 'files.content.write', 'files.metadata.read'],
+        logoutUrl: 'https://www.dropbox.com/logout?post_logout_redirect_uri=REDIRECT_URI');
   }
   @override
   String get id => "DROPBOX";
@@ -125,10 +125,11 @@ class DropboxCloud extends Cloud {
       path = '/$path';
     }
 
-    final response = await http.post(
+    final client = await _oauth.createClient();
+
+    final response = await client.post(
       Uri.parse('https://content.dropboxapi.com/2/files/upload'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Content-Type': 'application/octet-stream',
         'Dropbox-API-Arg': jsonEncode({
           'path': path,
@@ -164,12 +165,13 @@ class DropboxCloud extends Cloud {
 
   @override
   Future<CloudFile> getFile(String id) async {
+    final client = await _oauth.createClient();
+
     // First get file metadata to retrieve modification date
     // https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
-    final metadataResponse = await http.post(
+    final metadataResponse = await client.post(
       Uri.parse('https://api.dropboxapi.com/2/files/get_metadata'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -190,10 +192,9 @@ class DropboxCloud extends Cloud {
 
     // Download file content
     // https://www.dropbox.com/developers/documentation/http/documentation#files-download
-    final downloadResponse = await http.post(
+    final downloadResponse = await client.post(
       Uri.parse('https://content.dropboxapi.com/2/files/download'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Dropbox-API-Arg': jsonEncode({
           'path': id.startsWith('/') ? id : '/$id',
         }),
@@ -219,12 +220,13 @@ class DropboxCloud extends Cloud {
 
   @override
   Future<CloudFileInfo> getFileInfo(String id) async {
+    final client = await _oauth.createClient();
+
     // Get file metadata using Dropbox API
     // https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
-    final response = await http.post(
+    final response = await client.post(
       Uri.parse('https://api.dropboxapi.com/2/files/get_metadata'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -260,11 +262,12 @@ class DropboxCloud extends Cloud {
     // Dropbox API v2 endpoint for uploading/updating files
     // https://www.dropbox.com/developers/documentation/http/documentation#files-upload
 
+    final client = await _oauth.createClient();
+
     // Use 'overwrite' mode to update existing file
-    final response = await http.post(
+    final response = await client.post(
       Uri.parse('https://content.dropboxapi.com/2/files/upload'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Content-Type': 'application/octet-stream',
         'Dropbox-API-Arg': jsonEncode({
           'path': id.startsWith('/') ? id : '/$id',
@@ -331,7 +334,7 @@ class DropboxCloud extends Cloud {
   }
 
   @override
-  Future<bool> logOut() {
-    throw UnimplementedError();
+  Future<bool> logOut() async {
+    return await _oauth.logout();
   }
 }

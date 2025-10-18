@@ -68,12 +68,9 @@ class BlastOAuthWeb extends BlastOAuth {
   @override
   Future<bool> logout() async {
     cachedCredentials = null;
-    final logoffUrl = Uri.parse(
-        'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
+    final url = Uri.parse(logoutUrl.replaceAll('REDIRECT_URI', redirectUri.toString()));
 
-    await _redirect(logoffUrl);
-    //var responseUrl = await _listen(redirectUri);
-
+    await _redirect(url);
     return true;
   }
 }

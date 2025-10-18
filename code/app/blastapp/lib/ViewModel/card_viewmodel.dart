@@ -104,7 +104,7 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void showFieldView(String value) async {
-    _blastDocumentChanged();
+    _markCardAsUsed();
     notifyListeners();
 
     await context.router.push(FieldRoute(value: value));

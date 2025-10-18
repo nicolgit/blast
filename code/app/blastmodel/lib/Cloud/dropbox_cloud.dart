@@ -69,10 +69,11 @@ class DropboxCloud extends Cloud {
     // Dropbox API v2 endpoint for listing folder contents
     // https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder
 
-    final response = await http.post(
+    final client = await _oauth.createClient();
+
+    final response = await client.post(
       Uri.parse('https://api.dropboxapi.com/2/files/list_folder'),
       headers: {
-        'Authorization': 'Bearer ${Secrets.dropboxtestAccessToken}',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({

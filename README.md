@@ -52,9 +52,9 @@ Not all cloud storage are implemented and tested on all platforms yet. In the fo
 
 | storage             | android | ios | linux | mac | web | windows |
 |---------------------|---------|-----|-------|-----|-----|---------|
-| local file system   |         |     | 👍    | 👍  |     | 👍      |
-| OneDrive            |         |     | 👍    | 👍  | 👍   | 👍      |
-| DropBox             |         |     |       |     |     |         |
+| local file system   | 👍       | 👍  | 👍    | 👍  |     | 👍      |
+| OneDrive            | 👍       | 👍  | 👍    | 👍  | 👍   | 👍      |
+| DropBox             | 👍      | 👍   | 👍    | 👍  | 👍   | 👍       |
 | Azure Storage       |         |     |       |     |     |         |
 | AWS S3              |         |     |       |     |     |         |
 | Google Drive        |         |     |       |     |     |         |

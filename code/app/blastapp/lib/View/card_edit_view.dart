@@ -151,12 +151,13 @@ class _CardEditViewState extends State<CardEditView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('notes'),
+            title: Text('notes (markdown is ok)', style: _widgetFactory.textTheme.headlineSmall),
             content: TextField(
               controller: TextEditingController()..text = valueText,
               keyboardType: TextInputType.multiline,
               minLines: 4,
               maxLines: null,
+              style: _widgetFactory.textTheme.bodyMedium,
               onChanged: (value) {
                 setState(() {
                   valueText = value;
@@ -358,7 +359,10 @@ class _CardEditViewState extends State<CardEditView> {
             ),
             Expanded(
                 child: Text(vm.currentCard.notes ?? "",
-                    overflow: TextOverflow.ellipsis, maxLines: 1, style: _widgetFactory.textTheme.labelMedium)),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: _widgetFactory.textTheme.labelMedium!
+                        .copyWith(color: _widgetFactory.theme.colorScheme.onSurface))),
           ],
         ),
       ]),

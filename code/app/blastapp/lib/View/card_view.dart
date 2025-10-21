@@ -5,6 +5,8 @@ import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:humanizer/humanizer.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; //for date formate locale
@@ -153,17 +155,46 @@ class _CardViewState extends State<CardView> {
                 constraints: const BoxConstraints(maxWidth: 600, minWidth: 300),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                  color: _widgetFactory.theme.colorScheme.secondaryContainer,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Notes", style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Notes (some markdown is ok)",
+                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: Icon(Icons.copy, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+                          tooltip: 'Copy notes to clipboard',
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: notes));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Notes copied to clipboard!"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 24),
                     Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: SelectableText(notes,
-                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic))),
+                        child: MarkdownBody(
+                          data: notes,
+                          selectable: true,
+                          styleSheet: MarkdownStyleSheet.fromTheme(_widgetFactory.theme).copyWith(
+                              p: _widgetFactory.textTheme.bodyMedium,
+                              h1: _widgetFactory.textTheme.bodyLarge,
+                              h2: _widgetFactory.textTheme.bodyMedium,
+                              h3: _widgetFactory.textTheme.bodyMedium,
+                              tableBody: _widgetFactory.textTheme.bodyMedium,
+                              listBullet: _widgetFactory.textTheme.bodyMedium),
+                        )),
                   ],
                 ))));
   }

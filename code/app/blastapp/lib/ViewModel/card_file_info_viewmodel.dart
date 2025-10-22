@@ -45,7 +45,7 @@ class CardFileInfoViewModel extends ChangeNotifier {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
-                'BLAST File Recovery Key',
+                'BLAST File Master Key',
                 style: pw.TextStyle(
                   fontSize: 24,
                   fontWeight: pw.FontWeight.bold,
@@ -79,7 +79,7 @@ class CardFileInfoViewModel extends ChangeNotifier {
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                'This recovery key allows anyone who possesses it to access this encrypted file.',
+                'This master key allows anyone who possesses it to access this encrypted file.',
               ),
               pw.SizedBox(height: 5),
               pw.Text(

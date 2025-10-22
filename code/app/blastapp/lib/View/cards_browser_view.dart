@@ -622,7 +622,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ),
         ListTile(
           leading: const Icon(Icons.security),
-          title: const Text('export master key'),
+          title: const Text('show master key'),
           onTap: () {
             Navigator.pop(context); // close drawer
 

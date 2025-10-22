@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:markdown_widget/markdown_widget.dart';
 import 'package:humanizer/humanizer.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; //for date formate locale
@@ -182,7 +182,13 @@ class _CardViewState extends State<CardView> {
                     const SizedBox(height: 24),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: MarkdownGenerator().buildWidgets(data),
+                      child: BlastMarkdownText(
+                        text: notes,
+                        style: _widgetFactory.textTheme.bodyMedium,
+                        styleHeader: _widgetFactory.textTheme.titleMedium!.copyWith(
+                          color: _widgetFactory.theme.colorScheme.error,
+                        ),
+                      ),
                     ),
                   ],
                 ))));

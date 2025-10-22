@@ -151,7 +151,7 @@ class _CardEditViewState extends State<CardEditView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('notes (markdown is ok)', style: _widgetFactory.textTheme.headlineSmall),
+            title: Text('notes (some markdown is ok)', style: _widgetFactory.textTheme.headlineSmall),
             content: TextField(
               controller: TextEditingController()..text = valueText,
               keyboardType: TextInputType.multiline,

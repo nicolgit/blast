@@ -92,14 +92,10 @@ class BlastWidgetFactory {
                   flex: 1,
                   child: Column(
                     children: <Widget>[
-                      TextField(
+                      TextFormField(
+                        key: ValueKey('name_$i'),
+                        initialValue: rows[i].name,
                         textInputAction: TextInputAction.next,
-                        controller: TextEditingController.fromValue(
-                          TextEditingValue(
-                            text: rows[i].name,
-                            selection: TextSelection.collapsed(offset: rows[i].name.length),
-                          ),
-                        ),
                         onChanged: onNameChanged,
                         autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRow),
                         style: textTheme.labelMedium,
@@ -121,14 +117,10 @@ class BlastWidgetFactory {
               visible: rows[i].type != BlastAttributeType.typeHeader,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: TextField(
+                child: TextFormField(
+                  key: ValueKey('value_$i'),
+                  initialValue: rows[i].value,
                   textInputAction: TextInputAction.next,
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: rows[i].value,
-                      selection: TextSelection.collapsed(offset: rows[i].value.length),
-                    ),
-                  ),
                   onChanged: onValueChanged,
                   autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRowValue),
                   style: textTheme.labelMedium,

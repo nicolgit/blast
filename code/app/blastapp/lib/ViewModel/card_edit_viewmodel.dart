@@ -31,7 +31,7 @@ class CardEditViewModel extends ChangeNotifier {
     context.router.maybePop();
   }
 
-  void saveCommand() async {
+  void saveCommand({required bool saveAndExit}) async {
     if (_sourceCard == null) {
       CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
     } else {
@@ -43,12 +43,16 @@ class CardEditViewModel extends ChangeNotifier {
 
     if (await _settingsService.autoSave) {
       CurrentFileService().saveFile(false);
+      CurrentFileService().currentFileDocument!.isChanged = false;
+      isChanged = false;
     }
 
     notifyListeners(); // Refresh UI to hide FileChangedBanner after save
 
-    if (!context.mounted) return;
-    context.router.maybePop();
+    if (saveAndExit) {
+      if (!context.mounted) return;
+      context.router.maybePop();
+    }
   }
 
   void updateTitle(String value) {

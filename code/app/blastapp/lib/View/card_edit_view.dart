@@ -66,7 +66,7 @@ class _CardEditViewState extends State<CardEditView> {
                           tooltip: 'Save',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              vm.saveCommand();
+                              vm.saveCommand(saveAndExit: true);
                             }
                           },
                         ),
@@ -111,7 +111,7 @@ class _CardEditViewState extends State<CardEditView> {
                       isFileChangedFuture: vm.isFileChangedAsync(),
                       onSavePressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          vm.saveCommand();
+                          vm.saveCommand(saveAndExit: false);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("file saved successfully!"),
@@ -225,7 +225,7 @@ class _CardEditViewState extends State<CardEditView> {
             TextButton(
                 child: const Text('Yes'),
                 onPressed: () => {
-                      vm.saveCommand(),
+                      vm.saveCommand(saveAndExit: true),
                       Navigator.pop(context),
                     }),
           ],

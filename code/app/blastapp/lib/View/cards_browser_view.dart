@@ -10,6 +10,7 @@ import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:humanizer/humanizer.dart';
 import 'package:lottie/lottie.dart';
@@ -65,10 +66,15 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.question_mark),
-                        onPressed: () {},
-                      ),
+                      Tooltip(
+                          message: 'Generate password',
+                          child: TextButton.icon(
+                            label: const Text('Generate password'),
+                            icon: const Icon(Icons.password, size: 24.0),
+                            onPressed: () {
+                              vm.goToPasswordGenerator();
+                            },
+                          )),
                       Tooltip(
                         message: 'press SPACE or ENTER to search',
                         child: TextButton.icon(
@@ -82,10 +88,15 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                           label: const Text('Search'),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.question_mark),
-                        onPressed: () {},
-                      ),
+                      Tooltip(
+                          message: 'open settings',
+                          child: TextButton.icon(
+                            label: const Text('Settings'),
+                            icon: const Icon(Icons.settings, size: 24.0),
+                            onPressed: () {
+                              vm.goToSettings();
+                            },
+                          )),
                     ],
                   ),
                 ),

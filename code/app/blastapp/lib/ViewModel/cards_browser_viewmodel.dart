@@ -191,4 +191,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
     if (!context.mounted) return;
     context.router.push(const SettingsRoute());
   }
+
+  void goToPasswordGenerator() {
+    if (!context.mounted) return;
+    context.router.push(const PasswordGeneratorRoute());
+  }
 }

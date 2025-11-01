@@ -67,28 +67,45 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                           ),
                         ),
                       ),
-                      child: SegmentedButton<GeneratorTypes>(
-                        segments: const <ButtonSegment<GeneratorTypes>>[
-                          ButtonSegment<GeneratorTypes>(
-                            value: GeneratorTypes.guid,
-                            label: Text('GUID'),
-                            icon: Icon(Icons.fingerprint),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: SegmentedButton<GeneratorTypes>(
+                          style: ButtonStyle(
+                            padding: WidgetStateProperty.all(
+                              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            ),
+                            textStyle: WidgetStateProperty.all(
+                              const TextStyle(fontSize: 12),
+                            ),
                           ),
-                          ButtonSegment<GeneratorTypes>(
-                            value: GeneratorTypes.text,
-                            label: Text('Text'),
-                            icon: Icon(Icons.text_fields),
-                          ),
-                          ButtonSegment<GeneratorTypes>(
-                            value: GeneratorTypes.numeric,
-                            label: Text('Numeric'),
-                            icon: Icon(Icons.pin),
-                          ),
-                        ],
-                        selected: <GeneratorTypes>{vm.generatorType},
-                        onSelectionChanged: (Set<GeneratorTypes> newSelection) {
-                          vm.setGeneratorType(newSelection.first);
-                        },
+                          segments: const <ButtonSegment<GeneratorTypes>>[
+                            ButtonSegment<GeneratorTypes>(
+                              value: GeneratorTypes.guid,
+                              label: Text('GUID'),
+                              icon: Icon(Icons.fingerprint, size: 18),
+                            ),
+                            ButtonSegment<GeneratorTypes>(
+                              value: GeneratorTypes.text,
+                              label: Text('Text'),
+                              icon: Icon(Icons.text_fields, size: 18),
+                            ),
+                            ButtonSegment<GeneratorTypes>(
+                              value: GeneratorTypes.numeric,
+                              label: Text('Num'),
+                              icon: Icon(Icons.pin, size: 18),
+                            ),
+                            ButtonSegment<GeneratorTypes>(
+                              value: GeneratorTypes.wikiword,
+                              label: Text('Wiki✨'),
+                              icon: Icon(Icons.auto_awesome, size: 18),
+                            ),
+                          ],
+                          selected: <GeneratorTypes>{vm.generatorType},
+                          onSelectionChanged: (Set<GeneratorTypes> newSelection) {
+                            vm.setGeneratorType(newSelection.first);
+                          },
+                          showSelectedIcon: false,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -127,6 +144,90 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                       ),
                       const SizedBox(height: 12),
                     ],
+                    if (vm.generatorType == GeneratorTypes.wikiword) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Text(
+                                'words',
+                                style: _theme.textTheme.titleMedium,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SegmentedButton<int>(
+                              segments: const <ButtonSegment<int>>[
+                                ButtonSegment<int>(
+                                  value: 1,
+                                  label: Text('1'),
+                                ),
+                                ButtonSegment<int>(
+                                  value: 2,
+                                  label: Text('2'),
+                                ),
+                                ButtonSegment<int>(
+                                  value: 3,
+                                  label: Text('3'),
+                                ),
+                                ButtonSegment<int>(
+                                  value: 4,
+                                  label: Text('4'),
+                                ),
+                              ],
+                              selected: <int>{vm.wordCount},
+                              onSelectionChanged: (Set<int> newSelection) {
+                                vm.setWordCount(newSelection.first);
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: Text(
+                                'language',
+                                style: _theme.textTheme.titleMedium,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SegmentedButton<String>(
+                              style: ButtonStyle(
+                                padding: WidgetStateProperty.all(
+                                  const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                ),
+                                textStyle: WidgetStateProperty.all(
+                                  const TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              segments: vm.availableLanguages.keys.map((languageCode) {
+                                // Map language codes to flag emoticons
+                                const flagMap = {
+                                  'en': '🇺🇸', // English -> US flag
+                                  'it': '🇮🇹', // Italian -> Italy flag
+                                  'fr': '🇫🇷', // French -> France flag
+                                  'de': '🇩🇪', // German -> Germany flag
+                                  'es': '🇪🇸', // Spanish -> Spain flag
+                                  'pt': '🇵🇹', // Portuguese -> Portugal flag
+                                  'nl': '🇳🇱', // Dutch -> Netherlands flag
+                                };
+
+                                return ButtonSegment<String>(
+                                  value: languageCode,
+                                  label: Tooltip(
+                                    message: vm.availableLanguages[languageCode] ?? languageCode,
+                                    child: Text(flagMap[languageCode] ?? '🏳️'),
+                                  ),
+                                );
+                              }).toList(),
+                              selected: <String>{vm.selectedLanguage},
+                              onSelectionChanged: (Set<String> newSelection) {
+                                vm.setSelectedLanguage(newSelection.first);
+                              },
+                              showSelectedIcon: false,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.all(16),
@@ -143,10 +244,11 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                     color: _theme.colorScheme.surfaceContainerHighest,
                                   ),
                                   child: TextField(
-                                    readOnly: true,
                                     controller: TextEditingController(text: vm.password),
+                                    maxLines: null,
+                                    minLines: 2,
                                     style: const TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: 1.2,
                                     ),
@@ -160,32 +262,81 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: vm.isRunning ? vm.stopGenerator : vm.startGenerator,
-                                  icon: Icon(vm.isRunning ? Icons.stop : Icons.play_arrow),
-                                  label: Text(vm.isRunning ? 'Stop' : 'Start'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: vm.isRunning
-                                        ? _theme.colorScheme.errorContainer
-                                        : _theme.colorScheme.primaryContainer,
-                                    foregroundColor: vm.isRunning
-                                        ? _theme.colorScheme.onErrorContainer
-                                        : _theme.colorScheme.onPrimaryContainer,
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Determine if we should use a single row or wrap for better mobile layout
+                                bool useWrap = constraints.maxWidth < 400;
+
+                                List<Widget> buttons = [
+                                  Flexible(
+                                    child: ElevatedButton.icon(
+                                      onPressed: vm.isRunning ? vm.stopGenerator : vm.startGenerator,
+                                      icon: Icon(
+                                        vm.isRunning ? Icons.stop : Icons.play_arrow,
+                                        size: 20,
+                                      ),
+                                      label: Text(vm.isRunning ? 'Stop' : 'Start'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: vm.isRunning
+                                            ? _theme.colorScheme.errorContainer
+                                            : _theme.colorScheme.primaryContainer,
+                                        foregroundColor: vm.isRunning
+                                            ? _theme.colorScheme.onErrorContainer
+                                            : _theme.colorScheme.onPrimaryContainer,
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                        minimumSize: const Size(100, 44),
+                                        textStyle: const TextStyle(fontSize: 14),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: vm.copyToClipboard,
-                                  icon: const Icon(Icons.copy),
-                                  label: const Text('Copy'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: _theme.colorScheme.secondaryContainer,
-                                    foregroundColor: _theme.colorScheme.onSecondaryContainer,
+                                  if (!vm.isRunning) ...[
+                                    const SizedBox(width: 8, height: 8),
+                                    Flexible(
+                                      child: ElevatedButton.icon(
+                                        onPressed: vm.refreshPassword,
+                                        icon: const Icon(Icons.refresh, size: 20),
+                                        label: const Text('Refresh'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _theme.colorScheme.surfaceContainerHighest,
+                                          foregroundColor: _theme.colorScheme.onSurface,
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          minimumSize: const Size(100, 44),
+                                          textStyle: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  const SizedBox(width: 8, height: 8),
+                                  Flexible(
+                                    child: ElevatedButton.icon(
+                                      onPressed: vm.copyToClipboard,
+                                      icon: const Icon(Icons.copy, size: 20),
+                                      label: const Text('Copy'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _theme.colorScheme.secondaryContainer,
+                                        foregroundColor: _theme.colorScheme.onSecondaryContainer,
+                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                        minimumSize: const Size(100, 44),
+                                        textStyle: const TextStyle(fontSize: 14),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ];
+
+                                if (useWrap) {
+                                  return Wrap(
+                                    alignment: WrapAlignment.center,
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: buttons,
+                                  );
+                                } else {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: buttons,
+                                  );
+                                }
+                              },
                             ),
                             const SizedBox(height: 16),
                           ],

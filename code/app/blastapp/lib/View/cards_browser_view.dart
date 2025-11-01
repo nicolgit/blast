@@ -63,41 +63,81 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             child: Scaffold(
                 backgroundColor: _widgetFactory.viewBackgroundColor(),
                 bottomNavigationBar: BottomAppBar(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Tooltip(
-                          message: 'Generate password',
-                          child: TextButton.icon(
-                            label: const Text('Generate password'),
-                            icon: const Icon(Icons.password, size: 24.0),
-                            onPressed: () {
-                              vm.goToPasswordGenerator();
-                            },
-                          )),
-                      Tooltip(
-                        message: 'press SPACE or ENTER to search',
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showModalBottomSheet(context, vm);
-                          },
-                          icon: const Icon(
-                            Icons.search,
-                            size: 24.0,
+                  height: 80,
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      // Use icon-only buttons for small screens, full buttons for larger screens
+                      bool useCompactLayout = constraints.maxWidth < 600;
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Tooltip(
+                              message: 'Generate password',
+                              child: useCompactLayout
+                                  ? _buildMobileBottomButton(
+                                      icon: Icons.password,
+                                      label: 'Generate',
+                                      onPressed: () => vm.goToPasswordGenerator(),
+                                    )
+                                  : TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                        minimumSize: const Size(0, 48),
+                                      ),
+                                      label: const Text('Generate password'),
+                                      icon: const Icon(Icons.password, size: 24.0),
+                                      onPressed: () => vm.goToPasswordGenerator(),
+                                    ),
+                            ),
                           ),
-                          label: const Text('Search'),
-                        ),
-                      ),
-                      Tooltip(
-                          message: 'open settings',
-                          child: TextButton.icon(
-                            label: const Text('Settings'),
-                            icon: const Icon(Icons.settings, size: 24.0),
-                            onPressed: () {
-                              vm.goToSettings();
-                            },
-                          )),
-                    ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Tooltip(
+                              message: 'Press SPACE or ENTER to search',
+                              child: useCompactLayout
+                                  ? _buildMobileBottomButton(
+                                      icon: Icons.search,
+                                      label: 'Search',
+                                      onPressed: () => _showModalBottomSheet(context, vm),
+                                    )
+                                  : TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                        minimumSize: const Size(0, 48),
+                                      ),
+                                      onPressed: () => _showModalBottomSheet(context, vm),
+                                      icon: const Icon(Icons.search, size: 24.0),
+                                      label: const Text('Search'),
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Tooltip(
+                              message: 'Open settings',
+                              child: useCompactLayout
+                                  ? _buildMobileBottomButton(
+                                      icon: Icons.settings,
+                                      label: 'Settings',
+                                      onPressed: () => vm.goToSettings(),
+                                    )
+                                  : TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                        minimumSize: const Size(0, 48),
+                                      ),
+                                      label: const Text('Settings'),
+                                      icon: const Icon(Icons.settings, size: 24.0),
+                                      onPressed: () => vm.goToSettings(),
+                                    ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 body: Center(
@@ -216,6 +256,41 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   void dispose() {
     _focusNode.dispose();
     super.dispose();
+  }
+
+  /// Builds a mobile-optimized bottom button with icon and compact label
+  Widget _buildMobileBottomButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 24.0,
+              color: _theme.colorScheme.primary,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: _textTheme.labelSmall?.copyWith(
+                color: _theme.colorScheme.primary,
+                fontSize: 11,
+              ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {

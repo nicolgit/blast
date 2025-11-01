@@ -5,6 +5,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
+import 'package:blastapp/blast_router.dart';
 
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
@@ -161,5 +162,9 @@ class CardEditViewModel extends ChangeNotifier {
     isChanged = true;
     CurrentFileService().currentFileDocument!.isChanged = true;
     notifyListeners();
+  }
+
+  void openPasswordGenerator() {
+    context.router.push(const PasswordGeneratorRoute());
   }
 }

@@ -72,6 +72,7 @@ class BlastWidgetFactory {
     required Function(String) onValueChanged,
     required VoidCallback onDelete,
     required VoidCallback onTypeSwap,
+    required VoidCallback onGeneratePassword,
   }) {
     return ListTile(
       key: ValueKey(i),
@@ -117,14 +118,32 @@ class BlastWidgetFactory {
               visible: rows[i].type != BlastAttributeType.typeHeader,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: TextFormField(
-                  key: ValueKey('value_$i'),
-                  initialValue: rows[i].value,
-                  textInputAction: TextInputAction.next,
-                  onChanged: onValueChanged,
-                  autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRowValue),
-                  style: textTheme.labelMedium,
-                  decoration: blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        key: ValueKey('value_$i'),
+                        initialValue: rows[i].value,
+                        textInputAction: TextInputAction.next,
+                        onChanged: onValueChanged,
+                        autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRowValue),
+                        style: textTheme.labelMedium,
+                        decoration: blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
+                      ),
+                    ),
+                    if (rows[i].type == BlastAttributeType.typePassword) ...[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: onGeneratePassword,
+                        icon: const Icon(Icons.auto_awesome),
+                        tooltip: 'Generate password',
+                        style: IconButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primaryContainer,
+                          foregroundColor: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),

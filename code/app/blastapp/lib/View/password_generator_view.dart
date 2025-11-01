@@ -235,29 +235,47 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                           children: [
                             Expanded(
                               child: Center(
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: _theme.colorScheme.outline),
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: _theme.colorScheme.surfaceContainerHighest,
-                                  ),
-                                  child: TextField(
-                                    controller: TextEditingController(text: vm.password),
-                                    maxLines: null,
-                                    minLines: 2,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 1.2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: _theme.colorScheme.outline),
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: _theme.colorScheme.surfaceContainerHighest,
+                                      ),
+                                      child: TextField(
+                                        controller: TextEditingController(text: vm.password),
+                                        maxLines: null,
+                                        minLines: 2,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 1.2,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
                                     ),
-                                    textAlign: TextAlign.center,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.zero,
+                                    const SizedBox(height: 12),
+                                    ElevatedButton.icon(
+                                      onPressed: vm.copyToClipboard,
+                                      icon: const Icon(Icons.copy, size: 20),
+                                      label: const Text('Copy to Clipboard'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: _theme.colorScheme.secondaryContainer,
+                                        foregroundColor: _theme.colorScheme.onSecondaryContainer,
+                                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                        minimumSize: const Size(180, 44),
+                                        textStyle: const TextStyle(fontSize: 16),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -306,21 +324,6 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                       ),
                                     ),
                                   ],
-                                  const SizedBox(width: 8, height: 8),
-                                  Flexible(
-                                    child: ElevatedButton.icon(
-                                      onPressed: vm.copyToClipboard,
-                                      icon: const Icon(Icons.copy, size: 20),
-                                      label: const Text('Copy'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: _theme.colorScheme.secondaryContainer,
-                                        foregroundColor: _theme.colorScheme.onSecondaryContainer,
-                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                        minimumSize: const Size(100, 44),
-                                        textStyle: const TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ),
                                 ];
 
                                 if (useWrap) {

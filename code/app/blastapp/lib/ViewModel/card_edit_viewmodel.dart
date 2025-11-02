@@ -164,7 +164,12 @@ class CardEditViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void openPasswordGenerator() {
-    context.router.push(const PasswordGeneratorRoute());
+  Future<void> openPasswordGenerator(int fieldIndex) async {
+    final String? generatedPassword =
+        await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
+
+    if (generatedPassword != null && generatedPassword.isNotEmpty) {
+      updateAttributeValue(fieldIndex, generatedPassword);
+    }
   }
 }

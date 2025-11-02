@@ -138,7 +138,7 @@ class _CardEditViewState extends State<CardEditView> {
               onValueChanged: (value) => vm.updateAttributeValue(i, value),
               onDelete: () => vm.deleteAttribute(i),
               onTypeSwap: () => vm.swapType(i),
-              onGeneratePassword: () => vm.openPasswordGenerator(),
+              onGeneratePassword: () => vm.openPasswordGenerator(i),
             ),
         ]);
 

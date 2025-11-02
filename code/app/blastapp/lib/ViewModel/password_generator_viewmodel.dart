@@ -442,6 +442,11 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     context.router.maybePop();
   }
 
+  void usePasswordCommand() {
+    _stopBackgroundProcess();
+    context.router.maybePop(_password);
+  }
+
   @override
   void dispose() {
     _stopBackgroundProcess();

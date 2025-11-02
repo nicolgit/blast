@@ -5,7 +5,14 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class PasswordGeneratorView extends StatefulWidget {
-  const PasswordGeneratorView({super.key});
+  final bool allowCopyToClipboard;
+  final bool returnsValue;
+
+  const PasswordGeneratorView({
+    super.key,
+    required this.allowCopyToClipboard,
+    required this.returnsValue,
+  });
 
   @override
   State<PasswordGeneratorView> createState() => _PasswordGeneratorViewState();
@@ -263,18 +270,38 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                       ),
                                     ),
                                     const SizedBox(height: 12),
-                                    ElevatedButton.icon(
-                                      onPressed: vm.copyToClipboard,
-                                      icon: const Icon(Icons.copy, size: 20),
-                                      label: const Text('Copy to Clipboard'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: _theme.colorScheme.secondaryContainer,
-                                        foregroundColor: _theme.colorScheme.onSecondaryContainer,
-                                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                        minimumSize: const Size(180, 44),
-                                        textStyle: const TextStyle(fontSize: 16),
+                                    if (widget.returnsValue || widget.allowCopyToClipboard)
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          if (widget.returnsValue)
+                                            ElevatedButton.icon(
+                                              onPressed: vm.usePasswordCommand,
+                                              icon: const Icon(Icons.check, size: 20),
+                                              label: const Text('Use Password'),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: _theme.colorScheme.primaryContainer,
+                                                foregroundColor: _theme.colorScheme.onPrimaryContainer,
+                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                                minimumSize: const Size(180, 44),
+                                                textStyle: const TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          if (widget.allowCopyToClipboard)
+                                            ElevatedButton.icon(
+                                              onPressed: vm.copyToClipboard,
+                                              icon: const Icon(Icons.copy, size: 20),
+                                              label: const Text('Copy to Clipboard'),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: _theme.colorScheme.secondaryContainer,
+                                                foregroundColor: _theme.colorScheme.onSecondaryContainer,
+                                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                                minimumSize: const Size(180, 44),
+                                                textStyle: const TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),

@@ -274,18 +274,67 @@ class ImporterRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [PasswordGeneratorView]
-class PasswordGeneratorRoute extends PageRouteInfo<void> {
-  const PasswordGeneratorRoute({List<PageRouteInfo>? children})
-      : super(PasswordGeneratorRoute.name, initialChildren: children);
+class PasswordGeneratorRoute extends PageRouteInfo<PasswordGeneratorRouteArgs> {
+  PasswordGeneratorRoute({
+    Key? key,
+    required bool allowCopyToClipboard,
+    required bool returnsValue,
+    List<PageRouteInfo>? children,
+  }) : super(
+          PasswordGeneratorRoute.name,
+          args: PasswordGeneratorRouteArgs(
+            key: key,
+            allowCopyToClipboard: allowCopyToClipboard,
+            returnsValue: returnsValue,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'PasswordGeneratorRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const PasswordGeneratorView();
+      final args = data.argsAs<PasswordGeneratorRouteArgs>();
+      return PasswordGeneratorView(
+        key: args.key,
+        allowCopyToClipboard: args.allowCopyToClipboard,
+        returnsValue: args.returnsValue,
+      );
     },
   );
+}
+
+class PasswordGeneratorRouteArgs {
+  const PasswordGeneratorRouteArgs({
+    this.key,
+    required this.allowCopyToClipboard,
+    required this.returnsValue,
+  });
+
+  final Key? key;
+
+  final bool allowCopyToClipboard;
+
+  final bool returnsValue;
+
+  @override
+  String toString() {
+    return 'PasswordGeneratorRouteArgs{key: $key, allowCopyToClipboard: $allowCopyToClipboard, returnsValue: $returnsValue}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PasswordGeneratorRouteArgs) return false;
+    return key == other.key &&
+        allowCopyToClipboard == other.allowCopyToClipboard &&
+        returnsValue == other.returnsValue;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ allowCopyToClipboard.hashCode ^ returnsValue.hashCode;
 }
 
 /// generated route for

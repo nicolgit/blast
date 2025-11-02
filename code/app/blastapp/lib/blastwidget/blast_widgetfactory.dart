@@ -72,7 +72,7 @@ class BlastWidgetFactory {
     required Function(String) onValueChanged,
     required VoidCallback onDelete,
     required VoidCallback onTypeSwap,
-    required VoidCallback onGeneratePassword,
+    required Function() onGeneratePassword,
   }) {
     return ListTile(
       key: ValueKey(i),
@@ -135,12 +135,8 @@ class BlastWidgetFactory {
                       const SizedBox(width: 8),
                       IconButton(
                         onPressed: onGeneratePassword,
-                        icon: const Icon(Icons.auto_awesome),
+                        icon: const Icon(Icons.auto_fix_high),
                         tooltip: 'Generate password',
-                        style: IconButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                          foregroundColor: theme.colorScheme.onPrimaryContainer,
-                        ),
                       ),
                     ],
                   ],

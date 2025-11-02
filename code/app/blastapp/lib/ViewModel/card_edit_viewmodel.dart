@@ -166,7 +166,7 @@ class CardEditViewModel extends ChangeNotifier {
 
   Future<void> openPasswordGenerator(int fieldIndex) async {
     final String? generatedPassword =
-        await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
+        await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: true, returnsValue: false));
 
     if (generatedPassword != null && generatedPassword.isNotEmpty) {
       updateAttributeValue(fieldIndex, generatedPassword);

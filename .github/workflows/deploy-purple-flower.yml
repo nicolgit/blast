@@ -25,7 +25,7 @@ jobs:
           cp secretsToFill.dart secrets.dart
           sed -i 's/class SecretsToFill/class Secrets/g' secrets.dart
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
-          sed -i 's/DROPBOX_APPPLICATION_ID/${{ secrets.DROPBOX_APPPLICATION_ID }}/g' secrets.dart
+          sed -i 's/DROPBOX_APPLICATION_ID/${{ secrets.DROPBOX_APPLICATION_ID }}/g' secrets.dart
           sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
           cat secrets.dart
 
@@ -72,6 +72,7 @@ jobs:
           label: latest build
           message: ${{ env.MYBUILD }}
   
+
 
 
 

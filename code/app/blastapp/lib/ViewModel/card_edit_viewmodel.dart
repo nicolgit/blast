@@ -10,7 +10,7 @@ import 'package:blastapp/blast_router.dart';
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
   bool isChanged = false;
-  final BlastCard? _sourceCard;
+  BlastCard? _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
 
@@ -35,6 +35,7 @@ class CardEditViewModel extends ChangeNotifier {
   void saveCommand({required bool saveAndExit}) async {
     if (_sourceCard == null) {
       CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
+      _sourceCard = CurrentFileService().currentFileDocument!.cards[0];
     } else {
       _sourceCard?.copyFrom(currentCard);
       _sourceCard?.lastUpdateDateTime = DateTime.now();

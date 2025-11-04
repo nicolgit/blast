@@ -15,10 +15,10 @@ enum GeneratorTypes {
 
 class PasswordGeneratorViewModel extends ChangeNotifier {
   final BuildContext context;
-  GeneratorTypes _generatorType = GeneratorTypes.guid; // Default to GUID
+  GeneratorTypes _generatorType = GeneratorTypes.wikiword; // Default to WikiWord
   bool _isRunning = false;
   Timer? _backgroundTimer;
-  String _password = 'Generated password will appear here';
+  String _password = '';
   int _textLength = 10;
   int _wordCount = 2; // Default to 2 words
   List<String> _words = []; // Will be populated from API

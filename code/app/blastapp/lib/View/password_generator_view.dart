@@ -47,7 +47,7 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                 body: Center(
                   child: Column(children: [
                     AppBar(
-                      title: const Text("Password Generator"),
+                      title: const Text("random password generator"),
                       actions: [
                         IconButton(
                           icon: const Icon(Icons.close),
@@ -87,9 +87,9 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                           ),
                           segments: const <ButtonSegment<GeneratorTypes>>[
                             ButtonSegment<GeneratorTypes>(
-                              value: GeneratorTypes.guid,
-                              label: Text('GUID'),
-                              icon: Icon(Icons.fingerprint, size: 18),
+                              value: GeneratorTypes.wikiword,
+                              label: Text('Words'),
+                              icon: Icon(Icons.auto_awesome, size: 18),
                             ),
                             ButtonSegment<GeneratorTypes>(
                               value: GeneratorTypes.text,
@@ -102,9 +102,9 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                               icon: Icon(Icons.pin, size: 18),
                             ),
                             ButtonSegment<GeneratorTypes>(
-                              value: GeneratorTypes.wikiword,
-                              label: Text('Wiki✨'),
-                              icon: Icon(Icons.auto_awesome, size: 18),
+                              value: GeneratorTypes.guid,
+                              label: Text('GUID'),
+                              icon: Icon(Icons.fingerprint, size: 18),
                             ),
                           ],
                           selected: <GeneratorTypes>{vm.generatorType},
@@ -245,28 +245,20 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: _theme.colorScheme.outline),
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: _theme.colorScheme.surfaceContainerHighest,
+                                    TextField(
+                                      controller: TextEditingController(text: vm.password),
+                                      maxLines: null,
+                                      minLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 1.2,
+                                        color: _theme.colorScheme.onSurface,
                                       ),
-                                      child: TextField(
-                                        controller: TextEditingController(text: vm.password),
-                                        maxLines: null,
-                                        minLines: 2,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 1.2,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.zero,
-                                        ),
+                                      textAlign: TextAlign.center,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
                                       ),
                                     ),
                                     const SizedBox(height: 12),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
-
-enum FocusOn { title, lastRow, lastRowValue }
+import 'blast_attribute_edit.dart';
 
 class BlastWidgetFactory {
   late ThemeData theme;
@@ -64,7 +63,7 @@ class BlastWidgetFactory {
         suffixIcon: onPressed != null ? IconButton(icon: const Icon(Icons.clear), onPressed: onPressed) : null);
   }
 
-  ListTile buildAttributeRowEdit(
+  Widget buildAttributeRowEdit(
     List<BlastAttribute> rows,
     int i, {
     required FocusOn focusOn,
@@ -72,89 +71,19 @@ class BlastWidgetFactory {
     required Function(String) onValueChanged,
     required VoidCallback onDelete,
     required VoidCallback onTypeSwap,
-    required Function() onGeneratePassword,
   }) {
-    return ListTile(
-      key: ValueKey(i),
-      title: Container(
-        decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest, borderRadius: const BorderRadius.all(Radius.circular(6))),
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: <Widget>[
-                Text(
-                  "$i",
-                  style: textTheme.labelSmall,
-                ),
-                const SizedBox(width: 3),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    children: <Widget>[
-                      TextFormField(
-                        key: ValueKey('name_$i'),
-                        initialValue: rows[i].name,
-                        textInputAction: TextInputAction.next,
-                        onChanged: onNameChanged,
-                        autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRow),
-                        style: textTheme.labelMedium,
-                        decoration: blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 3),
-                buildIconTypeButton(rows[i].type, onTypeSwap),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete),
-                  tooltip: "delete",
-                ),
-              ],
-            ),
-            Visibility(
-              visible: rows[i].type != BlastAttributeType.typeHeader,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        key: ValueKey('value_$i'),
-                        initialValue: rows[i].value,
-                        textInputAction: TextInputAction.next,
-                        onChanged: onValueChanged,
-                        autofocus: (i == rows.length - 1) && (focusOn == FocusOn.lastRowValue),
-                        style: textTheme.labelMedium,
-                        decoration: blastTextFieldDecoration('Attribute value', 'Choose the attribute value'),
-                      ),
-                    ),
-                    if (rows[i].type == BlastAttributeType.typePassword) ...[
-                      const SizedBox(width: 8),
-                      IconButton(
-                        onPressed: onGeneratePassword,
-                        icon: const Icon(Icons.auto_fix_high),
-                        tooltip: 'Generate password',
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      trailing: ReorderableDragStartListener(
-        index: i,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(6)), color: theme.colorScheme.surfaceContainer),
-          padding: EdgeInsets.all(1.0),
-          child: Icon(Icons.drag_handle),
-        ),
-      ),
+    return BlastAttributeEdit(
+      rows: rows,
+      index: i,
+      focusOn: focusOn,
+      onNameChanged: onNameChanged,
+      onValueChanged: onValueChanged,
+      onDelete: onDelete,
+      onTypeSwap: onTypeSwap,
+      blastTextFieldDecoration: blastTextFieldDecoration,
+      buildIconTypeButton: buildIconTypeButton,
+      theme: theme,
+      textTheme: textTheme,
     );
   }
 

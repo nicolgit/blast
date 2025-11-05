@@ -12,9 +12,14 @@ class BlastOAuthMobile extends BlastOAuth {
 
   @override
   Future<oauth2.Client> createClient() async {
-    if (cachedCredentials != null) {
-      var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
-      return oauth2.Client(credentials, identifier: applicationId);
+    try {
+      if (cachedCredentials != null) {
+        var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
+        return oauth2.Client(credentials, identifier: applicationId);
+      }
+    } catch (e) {
+      // unable to reuse the cached credential
+      print(e);
     }
 
     var grant = oauth2.AuthorizationCodeGrant(applicationId, authorizationEndpoint, tokenEndpoint);
@@ -36,6 +41,7 @@ class BlastOAuthMobile extends BlastOAuth {
     // Once the user is redirected to `redirectUrl`, pass the query parameters to
     // the AuthorizationCodeGrant. It will validate them and extract the
     // authorization code to create a new Client.
+
     var client = await grant.handleAuthorizationResponse(responseUrl.queryParameters);
 
     cachedCredentials = client.credentials.toJson();
@@ -78,10 +84,9 @@ class BlastOAuthMobile extends BlastOAuth {
   @override
   Future<bool> logout() async {
     cachedCredentials = null;
-    final logoffUrl = Uri.parse(
-        'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${redirectUri.toString()}');
+    final url = Uri.parse(logoutUrl.replaceAll('REDIRECT_URI', redirectUri.toString()));
 
-    await _redirect(logoffUrl);
+    await _redirect(url);
     var retValue = await _listenLogout(redirectUri);
 
     return retValue;

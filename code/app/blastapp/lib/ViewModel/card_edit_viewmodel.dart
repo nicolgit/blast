@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
   bool isChanged = false;
-  final BlastCard? _sourceCard;
+  BlastCard? _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
 
@@ -23,13 +23,18 @@ class CardEditViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> isFileChangedAsync() {
+    return Future.value(CurrentFileService().currentFileDocument?.isChanged ?? false);
+  }
+
   void cancelCommand() {
     context.router.maybePop();
   }
 
-  void saveCommand() async {
+  void saveCommand({required bool saveAndExit}) async {
     if (_sourceCard == null) {
       CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
+      _sourceCard = CurrentFileService().currentFileDocument!.cards[0];
     } else {
       _sourceCard?.copyFrom(currentCard);
       _sourceCard?.lastUpdateDateTime = DateTime.now();
@@ -39,37 +44,52 @@ class CardEditViewModel extends ChangeNotifier {
 
     if (await _settingsService.autoSave) {
       CurrentFileService().saveFile(false);
+      CurrentFileService().currentFileDocument!.isChanged = false;
+      isChanged = false;
     }
 
-    if (!context.mounted) return;
-    context.router.maybePop();
+    notifyListeners(); // Refresh UI to hide FileChangedBanner after save
+
+    if (saveAndExit) {
+      if (!context.mounted) return;
+      context.router.maybePop();
+    }
   }
 
   void updateTitle(String value) {
     isChanged = true;
     currentCard.title = value;
+    CurrentFileService().currentFileDocument!.isChanged = true;
+    notifyListeners();
   }
 
   void updateNotes(String value) {
     if (value != currentCard.notes) {
       isChanged = true;
       currentCard.notes = value;
+      CurrentFileService().currentFileDocument!.isChanged = true;
+      notifyListeners();
     }
   }
 
   void updateAttributeValue(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].value = newValue;
+    CurrentFileService().currentFileDocument!.isChanged = true;
+    notifyListeners();
   }
 
   void updateAttributeName(int index, String newValue) {
     isChanged = true;
     currentCard.rows[index].name = newValue;
+    CurrentFileService().currentFileDocument!.isChanged = true;
+    notifyListeners();
   }
 
   void updateTags(List<String> values) {
     isChanged = true;
     currentCard.tags = values.map((tag) => tag.toString()).toList();
+    CurrentFileService().currentFileDocument!.isChanged = true;
 
     notifyListeners();
   }
@@ -77,6 +97,7 @@ class CardEditViewModel extends ChangeNotifier {
   void deleteAttribute(int index) {
     isChanged = true;
     currentCard.rows.removeAt(index);
+    CurrentFileService().currentFileDocument!.isChanged = true;
 
     notifyListeners();
   }
@@ -103,6 +124,7 @@ class CardEditViewModel extends ChangeNotifier {
     }
 
     currentCard.rows.add(newAttribute);
+    CurrentFileService().currentFileDocument!.isChanged = true;
 
     notifyListeners();
   }
@@ -121,6 +143,7 @@ class CardEditViewModel extends ChangeNotifier {
         currentCard.rows[index].type = BlastAttributeType.typeHeader;
     }
 
+    CurrentFileService().currentFileDocument!.isChanged = true;
     notifyListeners();
   }
 
@@ -137,6 +160,7 @@ class CardEditViewModel extends ChangeNotifier {
     currentCard.rows.insert(newIndex, oldItem);
 
     isChanged = true;
+    CurrentFileService().currentFileDocument!.isChanged = true;
     notifyListeners();
   }
 }

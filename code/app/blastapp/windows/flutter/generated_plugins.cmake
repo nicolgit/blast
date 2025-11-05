@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   flutter_platform_alert
   flutter_window_close
+  printing
   screen_retriever_windows
   url_launcher_windows
   window_manager

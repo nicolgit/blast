@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
-
-enum FocusOn { title, lastRow, lastRowValue }
+import 'blast_attribute_edit.dart';
 
 class BlastWidgetFactory {
   late ThemeData theme;
@@ -13,19 +12,15 @@ class BlastWidgetFactory {
   BlastWidgetFactory(BuildContext context) {
     theme = Theme.of(context);
     textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
-    textTooltip =
-        theme.textTheme.apply(bodyColor: theme.colorScheme.onInverseSurface);
-    _textThemeHint = textTheme.bodySmall!
-        .copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5));
+    textTooltip = theme.textTheme.apply(bodyColor: theme.colorScheme.onInverseSurface);
+    _textThemeHint = textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.5));
   }
 
   Widget blastTag(String tag) => Padding(
       // ignore: prefer_const_constructors
       padding: const EdgeInsets.only(right: 3, left: 3),
       child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              color: theme.colorScheme.primary),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: theme.colorScheme.primary),
           child: Text("   $tag   ",
               style: textTheme.labelSmall!.copyWith(
                 color: theme.colorScheme.onPrimary,
@@ -54,25 +49,21 @@ class BlastWidgetFactory {
       backgroundColor: bgColor,
       child: Text(
         iconText,
-        style:
-            textTheme.labelSmall!.copyWith(color: theme.colorScheme.onPrimary),
+        style: textTheme.labelSmall!.copyWith(color: theme.colorScheme.onPrimary),
       ),
     );
   }
 
-  InputDecoration blastTextFieldDecoration(String label, String hintText,
-      {void Function()? onPressed}) {
+  InputDecoration blastTextFieldDecoration(String label, String hintText, {void Function()? onPressed}) {
     return InputDecoration(
         border: const OutlineInputBorder(),
         labelText: label,
         hintText: hintText,
         hintStyle: _textThemeHint,
-        suffixIcon: onPressed != null
-            ? IconButton(icon: const Icon(Icons.clear), onPressed: onPressed)
-            : null);
+        suffixIcon: onPressed != null ? IconButton(icon: const Icon(Icons.clear), onPressed: onPressed) : null);
   }
 
-  ListTile buildAttributeRowEdit(
+  Widget buildAttributeRowEdit(
     List<BlastAttribute> rows,
     int i, {
     required FocusOn focusOn,
@@ -81,83 +72,22 @@ class BlastWidgetFactory {
     required VoidCallback onDelete,
     required VoidCallback onTypeSwap,
   }) {
-    return ListTile(
-      key: ValueKey(i),
-      title: Container(
-        decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: const BorderRadius.all(Radius.circular(6))),
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: <Widget>[
-                Text(
-                  "$i",
-                  style: textTheme.labelSmall,
-                ),
-                const SizedBox(width: 3),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        textInputAction: TextInputAction.next,
-                        controller: TextEditingController()
-                          ..text = rows[i].name,
-                        onChanged: onNameChanged,
-                        autofocus: (i == rows.length - 1) &&
-                            (focusOn == FocusOn.lastRow),
-                        style: textTheme.labelMedium,
-                        decoration: blastTextFieldDecoration(
-                            'Attribute name', 'Choose the attribute name'),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 3),
-                buildIconTypeButton(rows[i].type, onTypeSwap),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete),
-                  tooltip: "delete",
-                ),
-              ],
-            ),
-            Visibility(
-              visible: rows[i].type != BlastAttributeType.typeHeader,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  controller: TextEditingController()..text = rows[i].value,
-                  onChanged: onValueChanged,
-                  autofocus: (i == rows.length - 1) &&
-                      (focusOn == FocusOn.lastRowValue),
-                  style: textTheme.labelMedium,
-                  decoration: blastTextFieldDecoration(
-                      'Attribute value', 'Choose the attribute value'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      trailing: ReorderableDragStartListener(
-        index: i,
-        child: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              color: theme.colorScheme.surfaceContainer),
-          padding: EdgeInsets.all(1.0),
-          child: Icon(Icons.drag_handle),
-        ),
-      ),
+    return BlastAttributeEdit(
+      rows: rows,
+      index: i,
+      focusOn: focusOn,
+      onNameChanged: onNameChanged,
+      onValueChanged: onValueChanged,
+      onDelete: onDelete,
+      onTypeSwap: onTypeSwap,
+      blastTextFieldDecoration: blastTextFieldDecoration,
+      buildIconTypeButton: buildIconTypeButton,
+      theme: theme,
+      textTheme: textTheme,
     );
   }
 
-  IconButton buildIconTypeButton(
-      BlastAttributeType type, VoidCallback onTypeSwap) {
+  IconButton buildIconTypeButton(BlastAttributeType type, VoidCallback onTypeSwap) {
     var icon = const Icon(Icons.error);
 
     switch (type) {
@@ -197,9 +127,8 @@ class BlastWidgetFactory {
           title: Container(
             padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
             child: Text(name,
-                style: textTheme.titleLarge!.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold)),
+                style: textTheme.titleLarge!
+                    .copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
           ),
           onTap: () async {},
         );
@@ -217,10 +146,8 @@ class BlastWidgetFactory {
                     },
                     child: ListTile(
                       leading: const Icon(Icons.lock),
-                      title: Text(
-                          isPasswordRowVisible(index) ? value : "***********",
-                          style: textTheme.titleMedium!
-                              .copyWith(color: theme.colorScheme.error)),
+                      title: Text(isPasswordRowVisible(index) ? value : "***********",
+                          style: textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
                       subtitle: Text(
                         name,
                         style: textTheme.labelSmall,
@@ -255,9 +182,8 @@ class BlastWidgetFactory {
                       ]),
                       onTap: () async {
                         // toast notification warning
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content:
-                                Text("double tap to copy $name to clipboard")));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
                       },
                     ))));
       case BlastAttributeType.typeURL:
@@ -280,9 +206,7 @@ class BlastWidgetFactory {
                     },
                     child: Text(value,
                         style: const TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: Colors.blue,
-                            decorationColor: Colors.blue)),
+                            decoration: TextDecoration.underline, color: Colors.blue, decorationColor: Colors.blue)),
                   ),
                   subtitle: Text(
                     name,
@@ -298,9 +222,8 @@ class BlastWidgetFactory {
                   ]),
                   onTap: () async {
                     // toast notification warning
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text("double tap to copy $name to clipboard")));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
                   },
                 ))));
       case BlastAttributeType.typeString:
@@ -332,9 +255,8 @@ class BlastWidgetFactory {
                   ]),
                   onTap: () async {
                     // toast notification warning
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text("double tap to copy $name to clipboard")));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
                   },
                 ))));
     }

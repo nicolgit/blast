@@ -90,6 +90,8 @@ class CardViewModel extends ChangeNotifier {
 
   void toggleFavorite() async {
     currentCard.isFavorite = !currentCard.isFavorite;
+    CurrentFileService().currentFileDocument?.isChanged = true;
+
     notifyListeners();
 
     if (await _settingsService.autoSave) {
@@ -102,7 +104,7 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void showFieldView(String value) async {
-    _blastDocumentChanged();
+    _markCardAsUsed();
     notifyListeners();
 
     await context.router.push(FieldRoute(value: value));

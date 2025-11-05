@@ -11,18 +11,21 @@ abstract class BlastOAuth {
   late Uri tokenEndpoint;
   late Uri redirectUri;
   late Iterable<String> scopes;
+  late String logoutUrl;
 
   BlastOAuth initialize(
       {required String applicationId,
       required Uri authorizationEndpoint,
       required Uri tokenEndpoint,
       required Uri redirectUri,
-      required Iterable<String> scopes}) {
+      required Iterable<String> scopes,
+      required String logoutUrl}) {
     this.applicationId = applicationId;
     this.authorizationEndpoint = authorizationEndpoint;
     this.tokenEndpoint = tokenEndpoint;
     this.redirectUri = redirectUri;
     this.scopes = scopes;
+    this.logoutUrl = logoutUrl;
 
     return this;
   }

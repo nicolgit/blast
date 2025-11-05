@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/type_password_viewmodel.dart';
+import 'package:blastapp/blastwidget/animated_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -75,14 +76,20 @@ class _TypePasswordViewState extends State<TypePasswordView> {
                         title: Text("file: ${vm.fileName}"),
                       ),
                       const SizedBox(height: 12.0),
-                      Image.asset(vm.cloudIcon, width: 128, height: 128),
+                      // Animated cloud storage icon
+                      AnimatedLogo(
+                        width: 90,
+                        height: 90,
+                        assetPath: vm.cloudIcon,
+                        oscillation: false,
+                      ),
                       Text('type the master password or the recovery key to continue', style: _textTheme.labelMedium),
                       const SizedBox(height: 12.0),
                       FutureBuilder<bool>(
                         future: vm.isPasswordValid(),
                         builder: (context, isPasswordValid) {
                           return Icon(isPasswordValid.data ?? false ? Icons.lock_open : Icons.lock,
-                              color: _theme.colorScheme.primary, size: 48.0);
+                              color: _theme.colorScheme.primary, size: 36.0);
                         },
                       ),
                       const SizedBox(height: 12.0),

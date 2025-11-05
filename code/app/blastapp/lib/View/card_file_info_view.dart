@@ -34,7 +34,7 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
             child: Center(
                 child: Column(children: [
           AppBar(
-            title: const Text("Card File Info: Recovery Key"),
+            title: const Text("Card File Info: Master Key"),
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),
@@ -48,35 +48,39 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
           Padding(
             padding: const EdgeInsets.all(24),
             child: Column(children: [
-              Text("Recovery Key", style: _widgetFactory.textTheme.titleMedium),
+              Text("Master Key", style: _widgetFactory.textTheme.titleMedium),
               const SizedBox(height: 24),
-                SelectableText(vm.getRecoveryKey(),
-                  style: _widgetFactory.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-              IconButton(
-                onPressed: () {
-                  vm.copyToClipboard();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Recovery key copied to clipboard!"),
-                  ));
-                },
-                icon: Icon(Icons.copy, color: _widgetFactory.theme.colorScheme.tertiary),
-                tooltip: 'copy to clipboard',
-              ),
-              FilledButton(
-                onPressed: () {
-                  vm.copyToClipboard();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Recovery key copied to clipboard!"),
-                  ));
-                },
-                child: const Text('copy to clipboard'),
+              SelectableText(vm.getRecoveryKey(),
+                  style: _widgetFactory.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      vm.copyToClipboard();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Master key copied to clipboard!"),
+                      ));
+                    },
+                    child: const Text('copy to clipboard'),
+                  ),
+                  const SizedBox(width: 16),
+                  FilledButton(
+                    onPressed: () async {
+                      await vm.printRecoveryKey();
+                    },
+                    child: const Text('print'),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               Container(
                   constraints: BoxConstraints(maxWidth: 600),
                   child: Column(children: [
                     Text(
-                        "This recovery key allows anyone who possesses it to access this encrypted file. It can be used as an alternative to the password if the password is forgotten.",
+                        "This master key allows anyone who possesses it to access this encrypted file. It can be used as an alternative to the password if the password is forgotten.",
                         style: _widgetFactory.textTheme.titleSmall),
                     const SizedBox(height: 12),
                     Text(
@@ -92,8 +96,8 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
                       child: const Text('continue'),
                     ),
                     const SizedBox(height: 12),
-                    Text ("last update: ${vm.fileService.currentFileInfo?.lastModified}", style: _widgetFactory.textTheme.titleSmall),
-              
+                    Text("last update: ${vm.fileService.currentFileInfo?.lastModified}",
+                        style: _widgetFactory.textTheme.titleSmall),
                   ]))
             ]),
           ),

@@ -91,7 +91,8 @@ class SettingsViewModel extends ChangeNotifier {
     return [
       QrCodeViewStyleView("  QR code  ", QrCodeViewStyle.qrcode, Icons.qr_code),
       QrCodeViewStyleView("  Barcode  ", QrCodeViewStyle.barcode, Icons.barcode_reader),
-      QrCodeViewStyleView("  Text  ", QrCodeViewStyle.text, Icons.text_fields)
+      QrCodeViewStyleView("  Text  ", QrCodeViewStyle.text, Icons.text_fields),
+      QrCodeViewStyleView("  Code  ", QrCodeViewStyle.code, Icons.code),
     ];
   }
 

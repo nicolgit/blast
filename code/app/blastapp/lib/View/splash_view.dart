@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/splash_viewmodel.dart';
 import 'package:blastapp/main.dart';
+import 'package:blastapp/blastwidget/animated_logo.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
@@ -90,13 +92,24 @@ class _SplashViewState extends State<SplashView> {
         child: Center(
             child: Column(
       children: [
-        const Image(image: AssetImage('assets/general/icon-v01.png')),
+        const SizedBox(height: 24.0),
+        const AnimatedLogo(
+          width: 120,
+          height: 120,
+          assetPath: 'assets/general/app-icon.png',
+          oscillation: true,
+        ),
+        const SizedBox(height: 12.0),
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Column(children: [
             Text(
+              "⭐️ BLAST ⭐️",
+              style: _textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
               "your passwords, safe and sound.",
-              style: _textTheme.labelLarge,
+              style: _textTheme.labelSmall,
             ),
             Text(
               "build ${Secrets.buildNumber}",
@@ -125,7 +138,7 @@ class _SplashViewState extends State<SplashView> {
                     onPressed: () {
                       vm.goToChooseStorage().then((value) => vm.refresh());
                     },
-                    child: const Text('create or select another file'),
+                    child: const Text('create or select an existing file'),
                   ),
                 );
               }),
@@ -159,11 +172,40 @@ class _SplashViewState extends State<SplashView> {
     )));
   }
 
-  ListView _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
+  Widget _buildRecentFilesList(List<BlastFile> files, SplashViewModel vm) {
     if (vm.isLoading) {
       context.loaderOverlay.show();
     } else {
       context.loaderOverlay.hide();
+    }
+
+    // Check if files list is empty or null
+    if (files.isEmpty) {
+      return Container(
+        height: 200,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              'assets/general/empty-list.json',
+              width: 120,
+              height: 120,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No recent files',
+              style: _textTheme.titleMedium,
+            ),
+            Text(
+              'Create or select an existing file to get started',
+              style: _textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
 
     var myList = ListView.builder(

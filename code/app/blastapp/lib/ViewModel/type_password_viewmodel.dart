@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/exceptions.dart';
@@ -170,10 +171,7 @@ class TypePasswordViewModel extends ChangeNotifier {
                   FilledButton(
                     onPressed: () async {
                       try {
-                        final storageFile = await BiometricStorage().getStorage('blastvault');
-
-                        await storageFile.write(password);
-                        SettingService().setBiometricAuthEnabled(true);
+                        await BiometricHelper.saveData(password);
                       } catch (e) {
                         // Don't show error message if user canceled the biometric authentication
                         if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
@@ -181,8 +179,6 @@ class TypePasswordViewModel extends ChangeNotifier {
                         } else {
                           await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
                         }
-
-                        SettingService().setBiometricAuthEnabled(false);
                       }
 
                       if (context.mounted) {
@@ -218,9 +214,12 @@ class TypePasswordViewModel extends ChangeNotifier {
         if (response == CanAuthenticateResponse.success) {
           if (!context.mounted) return false;
 
-          final storageFile = await BiometricStorage().getStorage('blastvault');
-          final passwordValue = await storageFile.read();
-          password = passwordValue!;
+          final data = await BiometricHelper.readData();
+
+          password = '';
+          if (data != null) {
+            password = data.password;
+          }
 
           if (await checkPassword(false)) {
             return true;

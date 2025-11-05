@@ -201,4 +201,10 @@ class LoremCloud extends Cloud {
   Future<bool> logOut() {
     return Future.value(true);
   }
+
+  @override
+  bool get hasCachedCredentials => false;
+
+  @override
+  String? cachedCredentials;
 }

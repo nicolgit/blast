@@ -33,7 +33,8 @@ class OneDriveCloud extends Cloud {
         authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
         tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
         redirectUri: redirectUri,
-        scopes: ['openid', 'profile', 'Files.ReadWrite']);
+        scopes: ['openid', 'profile', 'Files.ReadWrite', 'offline_access'],
+        logoutUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=REDIRECT_URI');
   }
 
   late BlastOAuth _oauth;
@@ -46,6 +47,19 @@ class OneDriveCloud extends Cloud {
   String get description => 'Microsoft personal cloud storage, data stored in cloud, requires a Microsoft account';
   @override
   Future<String> get rootpath => Future.value('/drive/root');
+
+  @override
+  bool get hasCachedCredentials => true;
+
+  @override
+  String? get cachedCredentials {
+    return _oauth.cachedCredentials;
+  }
+
+  @override
+  set cachedCredentials(String? value) {
+    _oauth.cachedCredentials = value;
+  }
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {
@@ -167,6 +181,7 @@ class OneDriveCloud extends Cloud {
     }
 
     var client = await _oauth.createClient();
+
     var response =
         await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
 
@@ -178,10 +193,7 @@ class OneDriveCloud extends Cloud {
     }
 
     final fileId = jsonResponse['id'];
-
-    final CloudFileInfo cfi = await getFileInfo(id);
-
-    final CloudFile cf = CloudFile(data: bytes, lastModified: cfi.lastModified, id: fileId);
+    final CloudFile cf = CloudFile(data: bytes, lastModified: DateTime.now(), id: fileId);
     return cf;
   }
 

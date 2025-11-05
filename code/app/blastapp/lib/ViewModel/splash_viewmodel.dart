@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -96,9 +97,12 @@ class SplashViewModel extends ChangeNotifier {
       CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
 
+      if (CurrentFileService().cloud!.hasCachedCredentials) {
+        await BiometricHelper.readData();
+      }
+
       final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
       CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
-
       CurrentFileService().currentFileEncrypted = myFile.data;
 
       isLoading = false;
@@ -113,6 +117,7 @@ class SplashViewModel extends ChangeNotifier {
         myContext.router.push(const CardsBrowserRoute());
       }
     } catch (e) {
+      SettingService().setBiometricAuthEnabled(false);
       print(e);
     } finally {
       isLoading = false;

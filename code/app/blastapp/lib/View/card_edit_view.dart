@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_attribute_edit.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
@@ -66,7 +67,7 @@ class _CardEditViewState extends State<CardEditView> {
                           tooltip: 'Save',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              vm.saveCommand();
+                              vm.saveCommand(saveAndExit: true);
                             }
                           },
                         ),
@@ -111,7 +112,7 @@ class _CardEditViewState extends State<CardEditView> {
                       isFileChangedFuture: vm.isFileChangedAsync(),
                       onSavePressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          vm.saveCommand();
+                          vm.saveCommand(saveAndExit: false);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("file saved successfully!"),
@@ -130,14 +131,19 @@ class _CardEditViewState extends State<CardEditView> {
         buildDefaultDragHandles: false,
         children: [
           for (int i = 0; i < rows.length; i++)
-            _widgetFactory.buildAttributeRowEdit(
-              rows,
-              i,
+            BlastAttributeEdit(
+              key: ValueKey(i),
+              rows: rows,
+              index: i,
               focusOn: _focusOn,
               onNameChanged: (value) => vm.updateAttributeName(i, value),
               onValueChanged: (value) => vm.updateAttributeValue(i, value),
               onDelete: () => vm.deleteAttribute(i),
               onTypeSwap: () => vm.swapType(i),
+              blastTextFieldDecoration: _widgetFactory.blastTextFieldDecoration,
+              buildIconTypeButton: _widgetFactory.buildIconTypeButton,
+              theme: _widgetFactory.theme,
+              textTheme: _widgetFactory.textTheme,
             ),
         ]);
 
@@ -225,7 +231,7 @@ class _CardEditViewState extends State<CardEditView> {
             TextButton(
                 child: const Text('Yes'),
                 onPressed: () => {
-                      vm.saveCommand(),
+                      vm.saveCommand(saveAndExit: true),
                       Navigator.pop(context),
                     }),
           ],

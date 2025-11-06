@@ -50,7 +50,7 @@ class BlastApp extends StatefulWidget {
 class BlastAppState extends State<BlastApp> {
   ThemeMode _themeMode;
   BlastAppState(this._themeMode);
-  Timer ?_inactivityTimer;
+  Timer? _inactivityTimer;
 
   late BlastWidgetFactory _widgetFactory;
 
@@ -59,36 +59,35 @@ class BlastAppState extends State<BlastApp> {
     _widgetFactory = BlastWidgetFactory(context);
 
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {
-        _initializeInactivityTimer();
-      },
-      onPanDown: (_) {
-        _initializeInactivityTimer();
-      },
-      onPanUpdate: (_) {
-        _initializeInactivityTimer();
-      },
-      
-      child:GlobalLoaderOverlay(
-        overlayWidgetBuilder: (_) {
-          return const Center(child: CircularProgressIndicator());
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          _initializeInactivityTimer();
         },
-        overlayColor: _widgetFactory.theme.colorScheme.primary.withValues(alpha:0.8), // .withOpacity(0.8),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: "Blastapp title",
-          home: MaterialApp.router(
-            routerConfig: _appRouter.config(),
-            theme: BlastTheme.light,
-            darkTheme: BlastTheme.dark,
-            themeMode: _themeMode,
-              /*  ThemeMode.system to follow system theme, 
+        onPanDown: (_) {
+          _initializeInactivityTimer();
+        },
+        onPanUpdate: (_) {
+          _initializeInactivityTimer();
+        },
+        child: GlobalLoaderOverlay(
+            overlayWidgetBuilder: (_) {
+              return const Center(child: CircularProgressIndicator());
+            },
+            overlayColor: _widgetFactory.theme.colorScheme.primary.withValues(alpha: 0.8), // .withOpacity(0.8),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: "Blast!",
+              home: MaterialApp.router(
+                routerConfig: _appRouter.config(),
+                theme: BlastTheme.light,
+                darkTheme: BlastTheme.dark,
+                themeMode: _themeMode,
+                /*  ThemeMode.system to follow system theme, 
                   ThemeMode.light for light theme, 
                   ThemeMode.dark for dark theme
               */
-          ),
-        )));
+              ),
+            )));
   }
 
   void changeTheme(ThemeMode themeMode) {
@@ -131,37 +130,33 @@ class BlastAppState extends State<BlastApp> {
   }
 
   // start/restart timer
-    Future _initializeInactivityTimer() async {
-      
-      // get timeout from settings
-      int timeout = await SettingService().autoLogoutAfter;
-      final timeoutDuration = Duration(minutes: timeout);
+  Future _initializeInactivityTimer() async {
+    // get timeout from settings
+    int timeout = await SettingService().autoLogoutAfter;
+    final timeoutDuration = Duration(minutes: timeout);
 
-
-      if (_inactivityTimer != null) {
-        _inactivityTimer?.cancel();
-      }
-
-      print('inactivity timer started! ${timeoutDuration.toApproximateTime(isRelativeToNow: false)}');
-      _inactivityTimer = Timer(timeoutDuration, () => _handleInactivity());
-    }
-
-    void _handleInactivity() async {
+    if (_inactivityTimer != null) {
       _inactivityTimer?.cancel();
-      _inactivityTimer = null;
-
-      print('**** inactivity timer ended!');
-      
-      SplashViewModel vm =SplashViewModel(); // singleton reference
-      
-      if (await vm.closeAll() == true) {
-        _initializeInactivityTimer();
-      } 
-      else
-      {
-        print('**** inactivity timer ended, you are already on the splash screen, nothing to do.');
-      }
     }
+
+    print('inactivity timer started! ${timeoutDuration.toApproximateTime(isRelativeToNow: false)}');
+    _inactivityTimer = Timer(timeoutDuration, () => _handleInactivity());
+  }
+
+  void _handleInactivity() async {
+    _inactivityTimer?.cancel();
+    _inactivityTimer = null;
+
+    print('**** inactivity timer ended!');
+
+    SplashViewModel vm = SplashViewModel(); // singleton reference
+
+    if (await vm.closeAll() == true) {
+      _initializeInactivityTimer();
+    } else {
+      print('**** inactivity timer ended, you are already on the splash screen, nothing to do.');
+    }
+  }
 
   final _appRouter = BlastRouter();
 }

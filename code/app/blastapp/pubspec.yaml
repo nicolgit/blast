@@ -70,5 +70,6 @@ msix_config:
   publisher_display_name: Rubber Duckies farm
   identity_name: RubberDuckiesfarm.blastopensourcepasswordmanager
   publisher: CN=4CCF9CCB-473B-4745-A9F5-E48C2703FA41
+  msix_version: 1.0.0.0
   logo_path: assets/general/app-icon.png
   store: true

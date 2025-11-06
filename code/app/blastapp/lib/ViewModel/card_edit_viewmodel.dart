@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class CardEditViewModel extends ChangeNotifier {
   final BuildContext context;
   bool isChanged = false;
-  final BlastCard? _sourceCard;
+  BlastCard? _sourceCard;
   BlastCard currentCard = BlastCard();
   List<String> allTags = CurrentFileService().currentFileDocument!.getTags();
 
@@ -31,9 +31,10 @@ class CardEditViewModel extends ChangeNotifier {
     context.router.maybePop();
   }
 
-  void saveCommand() async {
+  void saveCommand({required bool saveAndExit}) async {
     if (_sourceCard == null) {
       CurrentFileService().currentFileDocument!.cards.insert(0, currentCard);
+      _sourceCard = CurrentFileService().currentFileDocument!.cards[0];
     } else {
       _sourceCard?.copyFrom(currentCard);
       _sourceCard?.lastUpdateDateTime = DateTime.now();
@@ -43,12 +44,16 @@ class CardEditViewModel extends ChangeNotifier {
 
     if (await _settingsService.autoSave) {
       CurrentFileService().saveFile(false);
+      CurrentFileService().currentFileDocument!.isChanged = false;
+      isChanged = false;
     }
 
     notifyListeners(); // Refresh UI to hide FileChangedBanner after save
 
-    if (!context.mounted) return;
-    context.router.maybePop();
+    if (saveAndExit) {
+      if (!context.mounted) return;
+      context.router.maybePop();
+    }
   }
 
   void updateTitle(String value) {

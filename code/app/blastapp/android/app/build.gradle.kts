@@ -47,7 +47,7 @@ android {
 
     defaultConfig {
         applicationId = "com.nicoladelfino.blastapp"
-        minSdk = 23 // flutter.minSdkVersion  
+        minSdk = flutter.minSdkVersion // flutter.minSdkVersion  
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInt()
         versionName = flutterVersionName

@@ -220,71 +220,166 @@ class _SplashViewState extends State<SplashView> {
 
   Widget _buildRecentFileItem(BuildContext context, List<BlastFile> files, int file, SplashViewModel vm) {
     return Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Dismissible(
             key: Key(files[file].fileUrl),
+            direction: DismissDirection.endToStart,
             onDismissed: (direction) async {
-              if (direction == DismissDirection.endToStart) {
-                await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
-              } else {
-                await vm.goToRecentFile(files[file]);
-              }
+              await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
             },
-            secondaryBackground: Container(
-              color: _theme.colorScheme.error,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Icon(Icons.cancel, color: _theme.colorScheme.onError),
-                  ),
-                ],
-              ),
-            ),
             background: Container(
-              color: _theme.colorScheme.inversePrimary,
+              decoration: BoxDecoration(
+                color: _theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Icon(Icons.file_open, color: _theme.colorScheme.onPrimary),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Icon(Icons.delete_outline, color: _theme.colorScheme.onErrorContainer, size: 24),
+                        ),
+                        const SizedBox(height: 4),
+                        Text('Remove',
+                            style: TextStyle(
+                                color: _theme.colorScheme.onErrorContainer, fontSize: 12, fontWeight: FontWeight.w500)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            secondaryBackground: Container(
+              decoration: BoxDecoration(
+                color: _theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Icon(Icons.delete_outline, color: _theme.colorScheme.onErrorContainer, size: 24),
+                        ),
+                        const SizedBox(height: 4),
+                        Text('Remove',
+                            style: TextStyle(
+                                color: _theme.colorScheme.onErrorContainer, fontSize: 12, fontWeight: FontWeight.w500)),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
             child: Material(
-                borderRadius: BorderRadius.circular(6),
-                elevation: 1,
-                color: _theme.colorScheme.surface,
-                shadowColor: _theme.colorScheme.onSurface,
-                surfaceTintColor: _theme.colorScheme.onSurface,
-                type: MaterialType.card,
-                child: FutureBuilder<Cloud>(
-                    future: vm.getCloudStorageById(files[file].cloudId),
-                    builder: (context, cloud) {
-                      return ListTile(
-                          onTap: () {
-                            vm.goToRecentFile(files[file]);
-                          },
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                Image.asset("assets/storage/${files[file].cloudId}.png", width: 72, height: 72),
-                                //Text(" > ", style: _textTheme.headlineSmall),
-                                //Image.asset("assets/general/app-icon.png", width: 48, height: 48),
-                              ]),
-                              Text(files[file].fileName,
-                                  style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                              Text("${cloud.data?.name} ${files[file].fileUrl}",
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  style: _textTheme.labelSmall)
-                            ],
-                          ));
-                    }))));
+                borderRadius: BorderRadius.circular(16),
+                elevation: 2,
+                shadowColor: _theme.colorScheme.shadow.withOpacity(0.1),
+                color: _theme.colorScheme.surfaceContainerLow,
+                child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () {
+                      vm.goToRecentFile(files[file]);
+                    },
+                    child: FutureBuilder<Cloud>(
+                        future: vm.getCloudStorageById(files[file].cloudId),
+                        builder: (context, cloud) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                // Cloud storage icon with modern styling
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: _theme.colorScheme.primaryContainer.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Image.asset(
+                                        "assets/storage/${files[file].cloudId}.png",
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+
+                                // File info - takes remaining space
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // File name with better typography
+                                      Text(
+                                        files[file].fileName,
+                                        style: _textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: _theme.colorScheme.onSurface,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+
+                                      // Cloud service name
+                                      Text(
+                                        cloud.data?.name ?? 'Unknown',
+                                        style: _textTheme.bodySmall?.copyWith(
+                                          color: _theme.colorScheme.primary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+
+                                      // File path with truncation
+                                      Text(
+                                        files[file].fileUrl,
+                                        style: _textTheme.bodySmall?.copyWith(
+                                          color: _theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Action indicator
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: _theme.colorScheme.surfaceContainerHighest,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                      color: _theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        })))));
   }
 }

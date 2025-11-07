@@ -118,6 +118,7 @@ class SplashViewModel extends ChangeNotifier {
       }
     } catch (e) {
       SettingService().setBiometricAuthEnabled(false);
+      CurrentFileService().cloud!.cachedCredentials = null;
       print(e);
     } finally {
       isLoading = false;

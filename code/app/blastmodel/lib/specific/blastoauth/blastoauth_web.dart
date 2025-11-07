@@ -31,8 +31,10 @@ class BlastOAuthWeb extends BlastOAuth {
     _popupWin = html.window.open(url.toString(), "blast Auth", "width=800, height=900, scrollbars=yes");
   }
 
+  bool canceling = false;
   Future<Uri> _listen(Uri url) async {
     Uri? responseUri;
+    canceling = false;
 
     //print("_listen URI: $url");
     html.window.onMessage.listen((event) async {
@@ -49,12 +51,12 @@ class BlastOAuthWeb extends BlastOAuth {
     });
 
     //wait for authentication, max 20 seconds
-    int counter = 0, timeout = 20;
-    while (responseUri == null && counter++ < timeout) {
+    int counter = 0;
+    while (responseUri == null && counter++ < timeout && !canceling) {
       await Future.delayed(const Duration(seconds: 1));
 
       if (kDebugMode) {
-        print("WEB waiting.... $counter of $timeout");
+        print("WEB waiting.... $counter of $timeout secs.");
       }
     }
 
@@ -72,6 +74,11 @@ class BlastOAuthWeb extends BlastOAuth {
 
     await _redirect(url);
     return true;
+  }
+
+  @override
+  void cancelAuthorization() {
+    canceling = true;
   }
 }
 

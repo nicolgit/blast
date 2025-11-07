@@ -10,6 +10,7 @@ abstract class Cloud {
   bool get hasCachedCredentials;
   String? get cachedCredentials;
   set cachedCredentials(String? value);
+  Future<void> cancelAuthorization();
 
   Future<List<CloudObject>> getFiles(String path);
   Future<CloudFile> createFile(String path, Uint8List bytes);

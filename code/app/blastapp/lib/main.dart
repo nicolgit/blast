@@ -71,7 +71,37 @@ class BlastAppState extends State<BlastApp> {
         },
         child: GlobalLoaderOverlay(
             overlayWidgetBuilder: (_) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: _widgetFactory.theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('authenticating...', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 16),
+                      CircularProgressIndicator(),
+                      SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: () {
+                          CurrentFileService().cloud!.cancelAuthorization();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
             overlayColor: _widgetFactory.theme.colorScheme.primary.withValues(alpha: 0.8), // .withOpacity(0.8),
             child: MaterialApp(

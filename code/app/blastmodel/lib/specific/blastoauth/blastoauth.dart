@@ -2,6 +2,8 @@ import 'package:app_links/app_links.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 abstract class BlastOAuth {
+  final timeout = 30; // timeout in seconds for listening authentication response
+
   final appLinks = AppLinks();
 
   String? cachedCredentials;
@@ -31,6 +33,8 @@ abstract class BlastOAuth {
   }
 
   Future<oauth2.Client> createClient();
+
+  void cancelAuthorization();
 
   Future<bool> logout();
   void dispose();

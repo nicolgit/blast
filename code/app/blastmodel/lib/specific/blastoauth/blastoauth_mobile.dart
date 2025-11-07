@@ -5,8 +5,6 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:url_launcher/url_launcher.dart';
 
 class BlastOAuthMobile extends BlastOAuth {
-  final _timeout = 15;
-
   @override
   void dispose() {}
 
@@ -55,7 +53,9 @@ class BlastOAuthMobile extends BlastOAuth {
     }
   }
 
+  bool canceling = false;
   Future<Uri> _listen(Uri url) async {
+    canceling = false;
     Uri? responseUri;
 
     appLinks.uriLinkStream.listen((uri) async {
@@ -66,11 +66,11 @@ class BlastOAuthMobile extends BlastOAuth {
 
     //wait for authentication
     int counter = 0;
-    while (responseUri == null && counter++ < _timeout) {
+    while (responseUri == null && counter++ < timeout && !canceling) {
       await Future.delayed(const Duration(seconds: 1));
 
       if (kDebugMode) {
-        print("waiting.... $counter of $_timeout secs.");
+        print("waiting.... $counter of $timeout secs.");
       }
     }
 
@@ -103,15 +103,20 @@ class BlastOAuthMobile extends BlastOAuth {
 
     //wait for logout
     int counter = 0;
-    while (responseUri == null && counter++ < _timeout) {
+    while (responseUri == null && counter++ < timeout) {
       await Future.delayed(const Duration(seconds: 1));
 
       if (kDebugMode) {
-        print("waiting.... $counter of $_timeout secs.");
+        print("waiting.... $counter of $timeout secs.");
       }
     }
 
     return true;
+  }
+
+  @override
+  void cancelAuthorization() {
+    canceling = true;
   }
 }
 

@@ -101,4 +101,9 @@ class FileSystemCloud extends Cloud {
 
   @override
   String? cachedCredentials;
+
+  @override
+  Future<void> cancelAuthorization() {
+    return Future.value();
+  }
 }

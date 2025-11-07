@@ -213,4 +213,10 @@ class OneDriveCloud extends Cloud {
   Future<bool> logOut() async {
     return await _oauth.logout();
   }
+
+  @override
+  Future<void> cancelAuthorization() {
+    _oauth.cancelAuthorization();
+    return Future.value();
+  }
 }

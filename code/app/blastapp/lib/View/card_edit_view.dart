@@ -326,10 +326,10 @@ class _CardEditViewState extends State<CardEditView> {
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeString);
-                  _focusOn = FocusOn.lastRow;
+                  _focusOn = FocusOn.lastRowName;
                 },
                 icon: const Icon(Icons.description),
-                label: const Text("add value"),
+                label: const Text("value"),
               ),
               TextButton.icon(
                 onPressed: () {
@@ -337,22 +337,23 @@ class _CardEditViewState extends State<CardEditView> {
                   _focusOn = FocusOn.lastRowValue;
                 },
                 icon: const Icon(Icons.lock),
-                label: const Text("add password"),
+                label: const Text("passwd"),
               ),
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeURL);
+                  _focusOn = FocusOn.lastRowValue;
                 },
                 icon: const Icon(Icons.link),
-                label: const Text("add URL"),
+                label: const Text("URL"),
               ),
               TextButton.icon(
                 onPressed: () {
                   vm.addAttribute(BlastAttributeType.typeHeader);
-                  _focusOn = FocusOn.lastRow;
+                  _focusOn = FocusOn.lastRowName;
                 },
                 icon: const Icon(Icons.text_increase),
-                label: const Text("add title"),
+                label: const Text("title"),
               ),
             ])),
         Row(

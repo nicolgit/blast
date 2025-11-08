@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastapp/blast_router.dart';
 
-enum FocusOn { title, lastRow, lastRowValue }
+enum FocusOn { title, lastRowName, lastRowValue }
 
 class BlastAttributeEdit extends StatefulWidget {
   final List<BlastAttribute> rows;
@@ -41,12 +42,40 @@ class BlastAttributeEdit extends StatefulWidget {
 class _BlastAttributeEditState extends State<BlastAttributeEdit> {
   late TextEditingController _nameController;
   late TextEditingController _valueController;
+  late FocusNode _nameFocusNode;
+  bool _isNameEditing = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.rows[widget.index].name);
     _valueController = TextEditingController(text: widget.rows[widget.index].value);
+    _nameFocusNode = FocusNode();
+    _nameFocusNode.addListener(_onNameFocusChange);
+
+    if (widget.focusOn == FocusOn.lastRowName) {
+      _isNameEditing = true;
+    }
+  }
+
+  void _onNameFocusChange() {
+    if (!_nameFocusNode.hasFocus && _isNameEditing) {
+      setState(() {
+        _isNameEditing = false;
+      });
+    }
+  }
+
+  void _toggleNameEditing() {
+    setState(() {
+      _isNameEditing = !_isNameEditing;
+      if (_isNameEditing) {
+        // Request focus when entering edit mode
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _nameFocusNode.requestFocus();
+        });
+      }
+    });
   }
 
   @override
@@ -65,6 +94,7 @@ class _BlastAttributeEditState extends State<BlastAttributeEdit> {
   void dispose() {
     _nameController.dispose();
     _valueController.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 
@@ -129,19 +159,56 @@ class _BlastAttributeEditState extends State<BlastAttributeEdit> {
                   flex: 1,
                   child: Column(
                     children: <Widget>[
-                      TextFormField(
-                        key: ValueKey('name_${widget.index}'),
-                        controller: _nameController,
-                        textInputAction: TextInputAction.next,
-                        onChanged: widget.onNameChanged,
-                        autofocus: (widget.index == widget.rows.length - 1) && (widget.focusOn == FocusOn.lastRow),
-                        style: widget.textTheme.labelMedium,
-                        decoration: widget.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
-                      )
+                      _isNameEditing
+                          ? Focus(
+                              onKeyEvent: (node, event) {
+                                if (event.logicalKey == LogicalKeyboardKey.escape) {
+                                  _nameFocusNode.unfocus();
+                                  return KeyEventResult.handled;
+                                }
+                                return KeyEventResult.ignored;
+                              },
+                              child: TextFormField(
+                                key: ValueKey('name_${widget.index}'),
+                                controller: _nameController,
+                                focusNode: _nameFocusNode,
+                                textInputAction: TextInputAction.done,
+                                onChanged: widget.onNameChanged,
+                                onFieldSubmitted: (value) {
+                                  setState(() {
+                                    _isNameEditing = false;
+                                  });
+                                },
+                                autofocus:
+                                    (widget.index == widget.rows.length - 1) && (widget.focusOn == FocusOn.lastRowName),
+                                style: widget.textTheme.labelMedium,
+                                decoration:
+                                    widget.blastTextFieldDecoration('Attribute name', 'Choose the attribute name'),
+                              ),
+                            )
+                          : Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 12),
+                                child: Text(
+                                  widget.rows[widget.index].name.isEmpty
+                                      ? 'Attribute name'
+                                      : widget.rows[widget.index].name,
+                                  style: widget.textTheme.labelLarge?.copyWith(
+                                    color: widget.theme.colorScheme.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )),
                     ],
                   ),
                 ),
                 const SizedBox(width: 3),
+                IconButton(
+                  onPressed: _toggleNameEditing,
+                  icon: Icon(_isNameEditing ? Icons.check : Icons.edit),
+                  tooltip: _isNameEditing ? "done" : "edit",
+                ),
                 widget.buildIconTypeButton(widget.rows[widget.index].type, widget.onTypeSwap),
                 IconButton(
                   onPressed: widget.onDelete,

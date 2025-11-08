@@ -161,7 +161,7 @@ class _CardViewState extends State<CardView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Notes (some markdown is ok)",
+                        Text("Notes",
                             style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
                         IconButton(

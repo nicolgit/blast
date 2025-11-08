@@ -169,7 +169,7 @@ class _CardEditViewState extends State<CardEditView> {
                   valueText = value;
                 });
               },
-              decoration: const InputDecoration(hintText: "Text Field in Dialog"),
+              decoration: const InputDecoration(hintText: "type your notes here..."),
             ),
             actions: <Widget>[
               MaterialButton(

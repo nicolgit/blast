@@ -37,7 +37,7 @@ class LoremCloud extends Cloud {
     List<CloudObject> files = [];
     int totalFiles = random.nextInt(20) + 1;
     for (int i = 0; i < totalFiles; i++) {
-      String name = _randomStringGenerator(random.nextInt(4) + 1, false);
+      String name = _randomStringGenerator(random.nextInt(4) + 1, false, false);
       name = name.replaceAll(" ", "-");
 
       name += random.nextInt(1000).toString();
@@ -109,8 +109,8 @@ class LoremCloud extends Cloud {
     for (int i = 0; i < totalCards; i++) {
       BlastCard card = BlastCard();
 
-      card.title = _randomStringGenerator(random.nextInt(5) + 1, false);
-      card.notes = _randomStringGenerator(random.nextInt(200) + 1, true);
+      card.title = _randomStringGenerator(random.nextInt(5) + 1, false, false);
+      card.notes = _randomStringGenerator(random.nextInt(200) + 1, true, true);
       card.isFavorite = random.nextInt(5) == 0;
       card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
       //card.lastOpenedDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
@@ -120,13 +120,13 @@ class LoremCloud extends Cloud {
       int totalCards = random.nextInt(100);
       for (int i = 0; i < totalCards; i++) {
         BlastAttribute attribute = BlastAttribute();
-        attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false);
+        attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false, false);
         attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
 
         if (attribute.type == BlastAttributeType.typeURL) {
           attribute.value = _randomUrlGenerator();
         } else {
-          attribute.value = _randomStringGenerator(random.nextInt(6), false);
+          attribute.value = _randomStringGenerator(random.nextInt(6), false, false);
         }
 
         card.rows.add(attribute);
@@ -138,13 +138,24 @@ class LoremCloud extends Cloud {
     return document;
   }
 
-  String _randomStringGenerator(int length, bool includeNewLine) {
+  String _randomStringGenerator(int length, bool includeNewLine, bool markdownStyle) {
     Random random = Random();
 
     String result = "";
     int nextNewLine = random.nextInt(50) + 5;
     for (int i = 0, nl = 0; i < length; i++, nl++) {
-      result += _words[random.nextInt(_words.length)];
+      var nextWord = _words[random.nextInt(_words.length)];
+
+      if (markdownStyle) {
+        var randomMarkdown = random.nextInt(10);
+        if (randomMarkdown == 0) {
+          nextWord = "**$nextWord**";
+        }
+        if (randomMarkdown == 1) {
+          nextWord = "*${nextWord}*";
+        }
+      }
+      result += nextWord;
 
       if (nl == nextNewLine && includeNewLine) {
         result += ".\n";
@@ -160,7 +171,7 @@ class LoremCloud extends Cloud {
 
   String _randomUrlGenerator() {
     Random random = Random();
-    return "http://loremcloud.com/${_randomStringGenerator(random.nextInt(4), false).replaceAll(' ', '/')}";
+    return "http://loremcloud.com/${_randomStringGenerator(random.nextInt(4), false, false).replaceAll(' ', '/')}";
   }
 
   List<String> _randomTagsGenerator(int tagsCount) {

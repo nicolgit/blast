@@ -1,4 +1,4 @@
-name: deploy to web (purple-flower)
+name: blast.duckiesfarm.com (purple-flower)
 
 on: workflow_dispatch
 env:
@@ -72,6 +72,7 @@ jobs:
           label: latest build
           message: ${{ env.MYBUILD }}
   
+
 
 
 

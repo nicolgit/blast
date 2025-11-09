@@ -25,6 +25,12 @@ class CardsBrowserViewModel extends ChangeNotifier {
   bool get noCards {
     return fileService.currentFileDocument!.cards.isEmpty;
   }
+
+  /// Check if any search filters are currently active
+  bool get hasActiveFilters {
+    return searchText.isNotEmpty ||
+           favoritesOnly;
+  }
   
   Future<List<BlastCard>>? getCards() async {
     return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
@@ -152,6 +158,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     sortType = SortType.recentUsed;
     searchOperator = SearchOperator.and;
     searchWhere = SearchWhere.everywhere;
+    favoritesOnly = false;
     notifyListeners();
   }
 

@@ -41,6 +41,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   late TextTheme _textTheme;
 
   final FocusNode _focusNode = FocusNode();
+  
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
     _theme = Theme.of(context);
@@ -79,7 +80,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                               child: useCompactLayout
                                   ? _buildMobileBottomButton(
                                       icon: Icons.password,
-                                      label: 'Generate',
                                       onPressed: () => vm.goToPasswordGenerator(),
                                     )
                                   : TextButton.icon(
@@ -100,17 +100,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                               child: useCompactLayout
                                   ? _buildMobileBottomButton(
                                       icon: Icons.search,
-                                      label: 'Search',
                                       onPressed: () => _showModalBottomSheet(context, vm),
+                                      hasActiveFilters: vm.hasActiveFilters,
                                     )
-                                  : TextButton.icon(
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                                        minimumSize: const Size(0, 48),
-                                      ),
+                                  : _buildDesktopSearchButton(
                                       onPressed: () => _showModalBottomSheet(context, vm),
-                                      icon: const Icon(Icons.search, size: 24.0),
-                                      label: const Text('Search'),
+                                      hasActiveFilters: vm.hasActiveFilters,
                                     ),
                             ),
                           ),
@@ -121,7 +116,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                               child: useCompactLayout
                                   ? _buildMobileBottomButton(
                                       icon: Icons.settings,
-                                      label: 'Settings',
                                       onPressed: () => vm.goToSettings(),
                                     )
                                   : TextButton.icon(
@@ -258,36 +252,79 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     super.dispose();
   }
 
-  /// Builds a mobile-optimized bottom button with icon and compact label
+  /// Builds a mobile-optimized bottom button with icon only
   Widget _buildMobileBottomButton({
     required IconData icon,
-    required String label,
     required VoidCallback onPressed,
+    bool hasActiveFilters = false,
   }) {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
+        decoration: hasActiveFilters
+            ? BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _theme.colorScheme.primary,
+                  width: 2.0,
+                ),
+                color: _theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+              )
+            : null,
+        child: Center(
+          child: Badge(
+            isLabelVisible: hasActiveFilters,
+            backgroundColor: _theme.colorScheme.error,
+            smallSize: 8,
+            child: Icon(
               icon,
               size: 24.0,
               color: _theme.colorScheme.primary,
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: _textTheme.labelSmall?.copyWith(
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds a desktop search button with visual effects for active filters
+  Widget _buildDesktopSearchButton({
+    required VoidCallback onPressed,
+    bool hasActiveFilters = false,
+  }) {
+    return TextButton.icon(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        minimumSize: const Size(0, 48),
+        backgroundColor: hasActiveFilters
+            ? _theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
+            : null,
+        side: hasActiveFilters
+            ? BorderSide(
                 color: _theme.colorScheme.primary,
-                fontSize: 11,
-              ),
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+                width: 2.0,
+              )
+            : null,
+      ),
+      onPressed: onPressed,
+      icon: Badge(
+        isLabelVisible: hasActiveFilters,
+        backgroundColor: _theme.colorScheme.error,
+        smallSize: 8,
+        child: Icon(
+          Icons.search,
+          size: 24.0,
+          color: hasActiveFilters
+              ? _theme.colorScheme.primary
+              : null,
+        ),
+      ),
+      label: Text(
+        'Search',
+        style: TextStyle(
+          fontWeight: hasActiveFilters ? FontWeight.bold : FontWeight.normal,
         ),
       ),
     );

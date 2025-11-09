@@ -139,11 +139,9 @@ class SplashViewModel extends ChangeNotifier {
 
   Future<void> removeFromRecent(BlastFile file) async {
     CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
-    await CurrentFileService().cloud!.logOut();
-
     SettingService().recentFiles.list.remove(file);
-
     SettingService().setRecentFiles(SettingService().recentFiles.list);
+    CurrentFileService().cloud!.logOut();
   }
 
   Future<ThemeMode> toggleLightDarkMode() async {

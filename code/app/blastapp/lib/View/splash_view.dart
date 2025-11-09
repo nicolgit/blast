@@ -138,7 +138,7 @@ class _SplashViewState extends State<SplashView> {
                     onPressed: () {
                       vm.goToChooseStorage().then((value) => vm.refresh());
                     },
-                    child: const Text('create or select an existing file'),
+                    child: const Text('create or select an existing vault'),
                   ),
                 );
               }),
@@ -187,7 +187,7 @@ class _SplashViewState extends State<SplashView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Lottie.asset(
-              'assets/general/empty-list.json',
+              'assets/general/no-recent-vault.json',
               width: 120,
               height: 120,
               fit: BoxFit.contain,
@@ -195,11 +195,7 @@ class _SplashViewState extends State<SplashView> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No recent files',
-              style: _textTheme.titleMedium,
-            ),
-            Text(
-              'Create or select an existing file to get started',
+              'Create or select an existing vault to get started',
               style: _textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),

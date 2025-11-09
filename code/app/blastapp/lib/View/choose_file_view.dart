@@ -132,51 +132,222 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     }
 
     if (listFiles.isEmpty) {
-      return Center(child: Text("No files found", style: _widgetFactory.textTheme.bodyLarge));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.folder_open_outlined,
+              size: 64,
+              color: _widgetFactory.theme.colorScheme.outline,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "No files found",
+              style: _widgetFactory.textTheme.headlineSmall?.copyWith(
+                color: _widgetFactory.theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "This folder is empty",
+              style: _widgetFactory.textTheme.bodyMedium?.copyWith(
+                color: _widgetFactory.theme.colorScheme.outline,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
-    var myList = ListView.builder(
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: listFiles.length,
       itemBuilder: (context, index) {
-        String name = listFiles[index].name;
-        String path = listFiles[index].path;
-
-        Widget leadingIcon;
-        if (listFiles[index].isDirectory) {
-          leadingIcon = Icon(Icons.folder, size: 48, color: _widgetFactory.theme.colorScheme.tertiary);
-        } else {
-          if (listFiles[index].name.endsWith(".blast")) {
-            leadingIcon = Image.asset("assets/general/app-icon.png", width: 48, height: 48);
-          } else {
-            leadingIcon = Icon(Icons.article, size: 48, color: _widgetFactory.theme.colorScheme.primary);
-          }
-        }
-
-        return Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-            child: Material(
-                borderRadius: BorderRadius.circular(6),
-                elevation: 1,
-                color: _widgetFactory.theme.colorScheme.surface,
-                shadowColor: _widgetFactory.theme.colorScheme.onSurface,
-                surfaceTintColor: _widgetFactory.theme.colorScheme.surface,
-                type: MaterialType.card,
-                child: ListTile(
-                  leading: leadingIcon, // Icon(listFiles[index].isDirectory ? Icons.folder : Icons.article),
-                  title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(path),
-                  onTap: () async {
-                    await vm.selectItem(listFiles[index]).catchError((error) {
-                      String errorMessage = "unable to open selected file, reason: ${error.toString()}";
-
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMessage)));
-                    });
-                  },
-                )));
+        return _buildModernFileItem(listFiles[index], vm, index);
       },
     );
+  }
 
-    return myList;
+  Widget _buildModernFileItem(CloudObject fileObject, ChooseFileViewModel vm, int index) {
+    String name = fileObject.name;
+    String path = fileObject.path;
+    bool isDirectory = fileObject.isDirectory;
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300 + (index * 50)),
+      curve: Curves.easeOutCubic,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        borderRadius: BorderRadius.circular(16),
+        elevation: 0,
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () async {
+            // Add haptic feedback
+            HapticFeedback.lightImpact();
+            
+            await vm.selectItem(fileObject).catchError((error) {
+              String errorMessage = "Unable to open selected file: ${error.toString()}";
+              
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(errorMessage),
+                  backgroundColor: _widgetFactory.theme.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: _widgetFactory.theme.colorScheme.surfaceContainerLow,
+              border: Border.all(
+                color: _widgetFactory.theme.colorScheme.outlineVariant,
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                // Modern icon container
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: _getIconBackgroundColor(fileObject),
+                  ),
+                  child: Center(
+                    child: _getModernIcon(fileObject),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // File info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: _widgetFactory.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: _widgetFactory.theme.colorScheme.onSurface,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            isDirectory ? Icons.folder_outlined : Icons.description_outlined,
+                            size: 14,
+                            color: _widgetFactory.theme.colorScheme.outline,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              path,
+                              style: _widgetFactory.textTheme.bodySmall?.copyWith(
+                                color: _widgetFactory.theme.colorScheme.outline,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (!isDirectory) ...[
+                        const SizedBox(height: 4),
+                        _buildFileTypeChip(fileObject),
+                      ],
+                    ],
+                  ),
+                ),
+                // Arrow indicator
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _widgetFactory.theme.colorScheme.surfaceContainerHigh,
+                  ),
+                  child: Icon(
+                    isDirectory ? Icons.arrow_forward_ios : Icons.open_in_new,
+                    size: 16,
+                    color: _widgetFactory.theme.colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getModernIcon(CloudObject fileObject) {
+    if (fileObject.isDirectory) {
+      return Icon(
+        Icons.folder_rounded,
+        size: 28,
+        color: _widgetFactory.theme.colorScheme.primary,
+      );
+    } else {
+      if (fileObject.name.endsWith(".blast")) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image.asset(
+            "assets/general/app-icon.png",
+            width: 28,
+            height: 28,
+            fit: BoxFit.cover,
+          ),
+        );
+      } else {
+        return Icon(
+          Icons.description_rounded,
+          size: 28,
+          color: _widgetFactory.theme.colorScheme.secondary,
+        );
+      }
+    }
+  }
+
+  Color _getIconBackgroundColor(CloudObject fileObject) {
+    if (fileObject.isDirectory) {
+      return _widgetFactory.theme.colorScheme.primaryContainer;
+    } else if (fileObject.name.endsWith(".blast")) {
+      return _widgetFactory.theme.colorScheme.tertiaryContainer;
+    } else {
+      return _widgetFactory.theme.colorScheme.secondaryContainer;
+    }
+  }
+
+  Widget _buildFileTypeChip(CloudObject fileObject) {
+    String extension = fileObject.name.split('.').last.toUpperCase();
+    if (extension == fileObject.name.toUpperCase()) {
+      extension = "FILE";
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
+      ),
+      child: Text(
+        extension,
+        style: _widgetFactory.textTheme.labelSmall?.copyWith(
+          color: _widgetFactory.theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 }

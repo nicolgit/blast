@@ -84,15 +84,7 @@ class _ChooseStorageViewState extends State<ChooseStorageView> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-          child: Text(
-            "Select your preferred cloud storage",
-            style: _widgetFactory.textTheme.titleSmall?.copyWith(
-              color: _widgetFactory.theme.colorScheme.onSurface.withValues(alpha: 0.8),
-            ),
-          ),
-        ),
+        
         ...cloudList.asMap().entries.map((entry) {
           final index = entry.key;
           final cloud = entry.value;

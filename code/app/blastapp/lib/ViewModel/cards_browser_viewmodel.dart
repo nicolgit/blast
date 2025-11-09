@@ -22,6 +22,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   CardsBrowserViewModel(this.context);
 
+  bool get noCards {
+    return fileService.currentFileDocument!.cards.isEmpty;
+  }
+  
   Future<List<BlastCard>>? getCards() async {
     return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }

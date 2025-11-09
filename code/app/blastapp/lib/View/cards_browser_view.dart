@@ -295,7 +295,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
     List<String> searchTerms = vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
-    if (cardsList.isEmpty) {
+    if (vm.noCards) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -323,6 +323,30 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 });
               },
               child: const Text('Create Card'),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    if (cardsList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Lottie.asset(
+                'assets/general/nothing-found.json',
+                repeat: true,
+                reverse: false,
+                animate: true,
+              ),
+            ),
+            Text(
+              'no card found matching your search criteria',
+              style: _widgetFactory.textTheme.labelMedium,
             ),
           ],
         ),

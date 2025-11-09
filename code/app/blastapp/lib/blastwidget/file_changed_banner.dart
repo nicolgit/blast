@@ -22,6 +22,7 @@ class FileChangedBanner extends StatelessWidget {
           visible: isFileChanged.data ?? false,
           child: Container(
             width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             color: widgetFactory.theme.colorScheme.error,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -30,9 +31,14 @@ class FileChangedBanner extends StatelessWidget {
                     style:
                         widgetFactory.textTheme.labelSmall!.copyWith(color: widgetFactory.theme.colorScheme.onError)),
                 Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
                     child: FilledButton(
                       onPressed: onSavePressed,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text('here', style: widgetFactory.textTheme.labelSmall!.copyWith(color: widgetFactory.theme.colorScheme.onPrimary)),
                     )),
                 Text('to save',

@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
+import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:uuid/uuid.dart';
@@ -22,7 +23,7 @@ class BlastCard {
 
   bool isFavorite = false;
   late DateTime lastUpdateDateTime = DateTime.now();
-  //late DateTime lastOpenedDateTime = DateTime.now();
+
   int usedCounter = 0;
   List<String> tags = List.empty(growable: true);
   List<BlastAttribute> rows = List.empty(growable: true);
@@ -116,4 +117,72 @@ class BlastCard {
   factory BlastCard.fromJson(Map<String, dynamic> json) => _$BlastCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$BlastCardToJson(this);
+
+  factory BlastCard.createCreditCard() {
+    BlastCard card = BlastCard();
+    card.title = "card name";
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "Cardholder Name"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typePassword
+      ..name = "Card Number"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "Expiration Date"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typePassword
+      ..name = "CVV"
+      ..value = "");
+    return card;
+  }
+
+  factory BlastCard.createWebCard() {
+    BlastCard card = BlastCard();
+    card.title = "website name";
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeURL
+      ..name = "URL"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "Username/Email"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typePassword
+      ..name = "Password"
+      ..value = "");
+    return card;
+  }
+
+  factory BlastCard.createFidelityCard() {
+    BlastCard card = BlastCard();
+    card.title = "fidelity card name";
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "Cardholder Name"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typePassword
+      ..name = "Card Number"
+      ..value = "");
+    return card;
+  }
+
+  factory BlastCard.createWifiCredentialsCard() {
+    BlastCard card = BlastCard();
+    card.title = "Wi-Fi Network";
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "Network Name (SSID)"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typePassword
+      ..name = "Password"
+      ..value = "");
+    return card;
+  }
 }

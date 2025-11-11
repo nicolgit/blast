@@ -41,7 +41,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   late TextTheme _textTheme;
 
   final FocusNode _focusNode = FocusNode();
-  
+
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
     _theme = Theme.of(context);
@@ -235,13 +235,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   ),
                 ),
                 floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    vm.addCard().then((value) {
-                      vm.refreshCardListCommand();
-                    });
-                  },
-                  child: const Icon(Icons.add),
+                floatingActionButton: Tooltip(
+                  message: 'Add new card',
+                  child: FloatingActionButton(
+                    onPressed: () => _showFloatingActionMenu(context, vm),
+                    child: const Icon(Icons.add),
+                  ),
                 ),
                 drawer: _buildHamburgetMenu(context, vm))));
   }
@@ -298,9 +297,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         minimumSize: const Size(0, 48),
-        backgroundColor: hasActiveFilters
-            ? _theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-            : null,
+        backgroundColor: hasActiveFilters ? _theme.colorScheme.primaryContainer.withValues(alpha: 0.3) : null,
         side: hasActiveFilters
             ? BorderSide(
                 color: _theme.colorScheme.primary,
@@ -316,9 +313,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         child: Icon(
           Icons.search,
           size: 24.0,
-          color: hasActiveFilters
-              ? _theme.colorScheme.primary
-              : null,
+          color: hasActiveFilters ? _theme.colorScheme.primary : null,
         ),
       ),
       label: Text(
@@ -355,9 +350,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             const SizedBox(height: 16),
             FilledButton(
               onPressed: () {
-                vm.addCard().then((value) {
-                  vm.refreshCardListCommand();
-                });
+                _showFloatingActionMenu(context, vm);
               },
               child: const Text('Create Card'),
             ),
@@ -365,7 +358,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ),
       );
     }
-    
+
     if (cardsList.isEmpty) {
       return Center(
         child: Column(
@@ -697,6 +690,120 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                 ],
               ));
         });
+      },
+    );
+  }
+
+  void _showFloatingActionMenu(BuildContext context, CardsBrowserViewModel vm) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Scrollable Content
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Button 1
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.primaryContainer,
+                          child: Icon(Icons.credit_card, color: _theme.colorScheme.primary),
+                        ),
+                        title: const Text('Credit Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new creditcard', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.addCreditCard().then((value) {
+                            vm.refreshCardListCommand();
+                          });
+                        },
+                      ),
+
+                      // Button 2
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.primaryContainer,
+                          child: Icon(Icons.web, color: _theme.colorScheme.primary),
+                        ),
+                        title: const Text('Web credentials', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new web credential card', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.addWebCard().then((value) {
+                            vm.refreshCardListCommand();
+                          });
+                        },
+                      ),
+
+                      // Button 4 wifi
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.primaryContainer,
+                          child: Icon(Icons.wifi, color: _theme.colorScheme.primary),
+                        ),
+                        title: const Text('Wi-Fi credentials', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new WiFi credential card', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.addWifiCredentialsCard().then((value) {
+                            vm.refreshCardListCommand();
+                          });
+                        },
+                      ),
+
+                      // Button 3
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.primaryContainer,
+                          child: Icon(Icons.card_membership, color: _theme.colorScheme.primary),
+                        ),
+                        title: const Text('Fidelity Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new fidelity card', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.addFidelityCard().then((value) {
+                            vm.refreshCardListCommand();
+                          });
+                        },
+                      ),
+
+                      //Button 4 empty card
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.errorContainer,
+                          child: Icon(Icons.note_add, color: _theme.colorScheme.onErrorContainer),
+                        ),
+                        title: const Text('Empty Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new empty card', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.addEmptyCard().then((value) {
+                            vm.refreshCardListCommand();
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }

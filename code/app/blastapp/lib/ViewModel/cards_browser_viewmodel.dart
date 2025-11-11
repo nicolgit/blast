@@ -28,10 +28,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   /// Check if any search filters are currently active
   bool get hasActiveFilters {
-    return searchText.isNotEmpty ||
-           favoritesOnly;
+    return searchText.isNotEmpty || favoritesOnly;
   }
-  
+
   Future<List<BlastCard>>? getCards() async {
     return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }
@@ -101,8 +100,28 @@ class CardsBrowserViewModel extends ChangeNotifier {
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
   Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
 
-  Future addCard() async {
+  Future addEmptyCard() async {
     await context.router.push(CardEditRoute());
+  }
+
+  Future addCreditCard() async {
+    fileService.currentFileDocument!.cards.insert(0, BlastCard.createCreditCard());
+    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+  }
+
+  Future addWebCard() {
+    fileService.currentFileDocument!.cards.insert(0, BlastCard.createWebCard());
+    return context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+  }
+
+  Future addFidelityCard() async {
+    fileService.currentFileDocument!.cards.insert(0, BlastCard.createFidelityCard());
+    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+  }
+
+  Future addWifiCredentialsCard() async {
+    fileService.currentFileDocument!.cards.insert(0, BlastCard.createWifiCredentialsCard());
+    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
   }
 
   void deleteCard(BlastCard card) {

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_attribute_edit.dart';
+import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
@@ -82,19 +83,27 @@ class _CardEditViewState extends State<CardEditView> {
                     ),
                     Padding(
                         padding: const EdgeInsets.all(6.0),
-                        child: Form(
-                          key: _formKey,
-                          child: TextFormField(
-                              initialValue: vm.currentCard.title,
-                              onChanged: (value) {
-                                vm.updateTitle(value);
-                              },
-                              validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
-                              autofocus: _focusOn == FocusOn.title,
-                              textInputAction: TextInputAction.next,
-                              style: _widgetFactory.textTheme.labelMedium,
-                              decoration: _widgetFactory.blastTextFieldDecoration(
-                                  'Card <${vm.currentCard.id}> title', 'Choose a title for the card')),
+                        child: Row(
+                          children: [
+                            BlastCardIcon(card: vm.currentCard),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Form(
+                                key: _formKey,
+                                child: TextFormField(
+                                    initialValue: vm.currentCard.title,
+                                    onChanged: (value) {
+                                      vm.updateTitle(value);
+                                    },
+                                    validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
+                                    autofocus: _focusOn == FocusOn.title,
+                                    textInputAction: TextInputAction.next,
+                                    style: _widgetFactory.textTheme.labelMedium,
+                                    decoration: _widgetFactory.blastTextFieldDecoration(
+                                        'Card <${vm.currentCard.id}> title', 'Choose a title for the card')),
+                              ),
+                            ),
+                          ],
                         )),
                     _buildTagsRow(vm),
                     FutureBuilder<List<BlastAttribute>>(

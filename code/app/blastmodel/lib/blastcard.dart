@@ -121,6 +121,7 @@ class BlastCard {
   factory BlastCard.createCreditCard() {
     BlastCard card = BlastCard();
     card.title = "card name";
+    card.tags.add("money");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"
@@ -161,6 +162,7 @@ class BlastCard {
   factory BlastCard.createFidelityCard() {
     BlastCard card = BlastCard();
     card.title = "fidelity card name";
+    card.tags.add("personal");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"

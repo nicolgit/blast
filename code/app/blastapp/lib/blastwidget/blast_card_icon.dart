@@ -1,12 +1,13 @@
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:flutter/material.dart';
 import 'package:blastmodel/blastcard.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 class BlastCardIcon extends StatelessWidget {
-  const BlastCardIcon({super.key, required this.card});
+  const BlastCardIcon({super.key, required this.card, required this.size});
 
   final BlastCard card;
+  final double size;
+
   @override
   Widget build(BuildContext context) {
     final String? urlDomain = _getFirstUrlDomain();
@@ -15,20 +16,23 @@ class BlastCardIcon extends StatelessWidget {
       Uri iconUri = Uri.parse(iconUriString);
 
       return Container(
-        width: 40,
-        height: 40,
+        width: size,
+        height: size,
         decoration: _buildIconDecoration(context),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            iconUri.toString(),
-            fit: BoxFit.cover,
-            width: 40,
-            height: 40,
-            errorBuilder: (context, error, stackTrace) {
-              // Fallback to circular text icon when image fails to load
-              return _buildTextIcon(context, _generateInitials(card.title));
-            },
+          child: ColoredBox(
+            color: Colors.white,
+            child: Image.network(
+              iconUri.toString(),
+              fit: BoxFit.cover,
+              width: size,
+              height: size,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback to circular text icon when image fails to load
+                return _buildTextIcon(context, _generateInitials(card.title));
+              },
+            ),
           ),
         ),
       );
@@ -51,8 +55,8 @@ class BlastCardIcon extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      width: 40,
-      height: 40,
+      width: size,
+      height: size,
       decoration: _buildIconDecoration(
         context,
       ),
@@ -95,8 +99,13 @@ class BlastCardIcon extends StatelessWidget {
     for (var field in card.rows) {
       if (field.type == BlastAttributeType.typeURL) {
         try {
-          final uri = Uri.parse(field.value);
+          var source = field.value.toLowerCase();
 
+          if (!source.startsWith('http://') && !source.startsWith('https://')) {
+            source = 'https://$source';
+          }
+
+          var uri = Uri.parse(source);
           return uri.host;
         } catch (e) {
           // Ignore parsing errors

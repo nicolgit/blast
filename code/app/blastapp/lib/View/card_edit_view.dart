@@ -85,7 +85,7 @@ class _CardEditViewState extends State<CardEditView> {
                         padding: const EdgeInsets.all(6.0),
                         child: Row(
                           children: [
-                            BlastCardIcon(card: vm.currentCard),
+                            BlastCardIcon(card: vm.currentCard, size: 48.0),
                             const SizedBox(width: 8.0),
                             Expanded(
                               child: Form(

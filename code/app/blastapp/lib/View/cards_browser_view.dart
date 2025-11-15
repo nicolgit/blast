@@ -437,7 +437,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Expanded(
                 child: ListTile(
-                  leading: BlastCardIcon(card: card),
+                  leading: BlastCardIcon(card: card, size: 48.0),
                   tileColor: _theme.colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),

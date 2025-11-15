@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
+import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +65,9 @@ class _CardViewState extends State<CardView> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              BlastCardIcon(card: vm.currentCard, size: 128),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -88,7 +88,7 @@ class BlastAppState extends State<BlastApp> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('authenticating...', style: TextStyle(fontSize: 18)),
+                      Text('opening...', style: TextStyle(fontSize: 18)),
                       SizedBox(height: 16),
                       CircularProgressIndicator(),
                       SizedBox(height: 24),

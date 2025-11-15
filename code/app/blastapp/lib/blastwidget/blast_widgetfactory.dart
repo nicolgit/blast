@@ -28,32 +28,6 @@ class BlastWidgetFactory {
 
   Color viewBackgroundColor() => theme.colorScheme.surface;
 
-  Widget blastCardIcon(String text, Color bgColor) {
-    String iconText = "";
-
-    for (var world in text.split(" ")) {
-      if (world.isNotEmpty) {
-        iconText += world[0].toUpperCase();
-      }
-    }
-
-    // remove from words all non-alphabetic characters
-    iconText = iconText.replaceAll(RegExp(r'[^a-zA-Z]'), '');
-
-    // max 3 characters
-    if (iconText.length > 3) {
-      iconText = iconText.substring(0, 3);
-    }
-
-    return CircleAvatar(
-      backgroundColor: bgColor,
-      child: Text(
-        iconText,
-        style: textTheme.labelSmall!.copyWith(color: theme.colorScheme.onPrimary),
-      ),
-    );
-  }
-
   InputDecoration blastTextFieldDecoration(String label, String hintText, {void Function()? onPressed}) {
     return InputDecoration(
         border: const OutlineInputBorder(),

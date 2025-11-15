@@ -29,7 +29,7 @@ class OneDriveCloud extends Cloud {
     }
 
     _oauth = getBlastAuth().initialize(
-        applicationId: Secrets.oneDriveApplicationId,
+        applicationId: clientId,
         authorizationEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'),
         tokenEndpoint: Uri.parse('https://login.microsoftonline.com/consumers/oauth2/v2.0/token'),
         redirectUri: redirectUri,
@@ -42,11 +42,13 @@ class OneDriveCloud extends Cloud {
   @override
   String get id => "MSONEDRIVE";
   @override
-  String get name => 'OneDrive personal';
+  String get name => 'OneDrive full access';
   @override
   String get description => 'Microsoft personal cloud storage, data stored in cloud, requires a Microsoft account';
   @override
   Future<String> get rootpath => Future.value('/drive/root');
+
+  String get clientId => Secrets.oneDriveApplicationId;
 
   @override
   bool get hasCachedCredentials => true;
@@ -182,8 +184,11 @@ class OneDriveCloud extends Cloud {
 
     var client = await _oauth.createClient();
 
-    var response =
-        await client.put(Uri.parse('https://graph.microsoft.com/v1.0/me/drive/root:$path:/content'), body: bytes);
+    // /me/drive/special/approot:/nomefile.txt:/content
+    //final putUri = 'https://graph.microsoft.com/v1.0/me/drive/root:$path:/content';
+    final stringRootPath = await rootpath;
+    final putUri = 'https://graph.microsoft.com/v1.0/me$stringRootPath:$path:/content';
+    var response = await client.put(Uri.parse(putUri), body: bytes);
 
     var jsonResponse = await json.decode(response.body);
 
@@ -219,4 +224,24 @@ class OneDriveCloud extends Cloud {
     _oauth.cancelAuthorization();
     return Future.value();
   }
+}
+
+class OneDriveFolderCloud extends OneDriveCloud {
+  OneDriveFolderCloud() : super();
+
+  @override
+  String get name => 'OneDrive app folder (preview)';
+
+  @override
+  String get id => "MSONEDRIVEFOLDER";
+
+  @override
+  String get description =>
+      'Microsoft OneDrive app folder access only. This is the most secure way to use OneDrive because Blast only has access to its own folder and not all your OneDrive files.';
+
+  @override
+  Future<String> get rootpath => Future.value('/drive/special/approot');
+
+  @override
+  String get clientId => Secrets.oneDriveFolderApplicationId;
 }

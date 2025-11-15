@@ -1,8 +1,8 @@
 These are the instructions for setting up cloud connections.
 
-# OneDrive Setup
+# OneDrive FULL ACCESS Setup
 Go to Microsoft Entra id > App Registrations > + New Registration
-* Name: `blastApp`
+* Name: `blastapp - full access`
 * Supported account types: `Personal Microsoft Account Only`
 * click [Registrer]
 
@@ -18,13 +18,13 @@ copy ApplicationId (ClientId) into [secrets.dart](/code/app/blastmodel/lib/secre
 Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentication > platform configurations > add a platform:
 * platform: `mobile and desktop`
 * redirect URI: `blastapp://auth` 
-* click [save]
+* click [configure]
 
 Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentication > platform configurations > add a platform:
 * platform: `Single-page application`
 * redirect URI: `https://blast.duckiesfarm.com/auth-landing.html`  
 * redirect URI: `http://localhost:5555/auth-landing.html` (*)
-* click [save]
+* click [configure]
 
 > (*) this is required only for local debugging. for debug in VS code locally add also the following in `.vscode/launch.json` file
 
@@ -38,6 +38,11 @@ Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentic
 },
 
 ```
+
+# OneDrive - single folder access
+same as above but with:
+* name: blastapp
+* Go to Microsoft Entra id > API permissions > add a permission > Microsoft Graph > `Files.ReadWrite.AppFolder`
 
 # Dropbox setup
 go to https://www.dropbox.com/developers/apps > create app

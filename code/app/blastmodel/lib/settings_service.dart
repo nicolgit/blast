@@ -29,7 +29,9 @@ class SettingService {
   SettingService._internal() {
     // init cloud storages list
     cloudStorages.add(DropboxCloud());
+    cloudStorages.add(OneDriveFolderCloud());
     cloudStorages.add(OneDriveCloud());
+
     if (kIsWeb) {
       // nothing to do
     } else if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || Platform.isWindows || Platform.isLinux) {

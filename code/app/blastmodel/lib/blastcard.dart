@@ -1,7 +1,6 @@
 import 'dart:core';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
-import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:uuid/uuid.dart';

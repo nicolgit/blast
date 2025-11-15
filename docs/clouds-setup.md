@@ -38,3 +38,26 @@ Go to Microsoft Entra id > App Registrations > all apps > `blastApp` > Authentic
 },
 
 ```
+
+# Dropbox setup
+go to https://www.dropbox.com/developers/apps > create app
+* Scoped Access
+* type of access: full dropbox
+* name: blast
+* create app
+
+once created go to permission type and select:
+* account_info
+  * account_info.read
+* file
+  * files.metadata.write
+  * files.content.write
+  * files.content.read
+* connect
+  * profile
+  * openid
+
+go to settings, redirect URI and use:
+* https://blast.duckiesfarm.com/auth-landing.html
+* blastapp://auth
+and **Allow** public clients  

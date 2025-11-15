@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -436,7 +437,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Expanded(
                 child: ListTile(
-                  leading: _widgetFactory.blastCardIcon(name, isFavorite ? Colors.amber : _theme.colorScheme.primary),
+                  leading: BlastCardIcon(card: card),
                   tileColor: _theme.colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),

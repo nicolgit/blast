@@ -4,6 +4,7 @@ import 'package:biometric_storage/biometric_storage.dart';
 import 'package:blastmodel/blastbiometricstorage.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
+import 'package:flutter/foundation.dart';
 
 class BiometricHelper {
   static PromptInfo _getPromptInfo() {
@@ -22,18 +23,16 @@ class BiometricHelper {
 
   static Future<BlastBiometricStorageData?> readData() async {
     try {
-      if (await SettingService().biometricAuthEnabled) {
-        final storageFile = await BiometricStorage().getStorage('blastvault', promptInfo: _getPromptInfo());
+      if (kIsWeb) return null;
+      if (await SettingService().askForBiometricAuth == false) return null;
+      if (await SettingService().biometricAuthEnabled == false) return null;
 
-        final jsonData = await storageFile.read();
+      final storageFile = await BiometricStorage().getStorage('blastvault', promptInfo: _getPromptInfo());
+      final jsonData = await storageFile.read();
 
-        if (jsonData != null) {
-          BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
-          CurrentFileService().cloud!.cachedCredentials = data.cloudCredentials ?? '';
-          return data;
-        }
-      } else {
-        await SettingService().setBiometricAuthEnabled(false);
+      if (jsonData != null) {
+        BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
+        return data;
       }
     } catch (e) {
       print("error loading biometric storage: $e");

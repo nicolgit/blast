@@ -23,7 +23,6 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     super.initState();
 
     viewModel.context = context;
-    viewModel.useBiometricAuth();
 
     passwordFocusNode = FocusNode();
   }

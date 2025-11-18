@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
+import 'package:blastapp/ViewModel/type_password_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/helpers/biometric_helper.dart';
+import 'package:blastapp/helpers/currentfile_helper.dart';
 import 'package:blastmodel/Cloud/cloud.dart';
+import 'package:blastmodel/blastbiometricstorage.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/settings_service.dart';
@@ -93,12 +96,53 @@ class SplashViewModel extends ChangeNotifier {
     final myContext = context!;
 
     try {
+      BlastBiometricStorageData? biometricData = await BiometricHelper.readData();
+
+      await CurrentFileHelper.load(file, biometricData?.cloudCredentials);
+
+      if (biometricData != null) {
+        await CurrentFileHelper.decrypt(
+            passwordType: PasswordType.password, password: biometricData.password, recoveryKey: "");
+
+        isLoading = false;
+        notifyListeners();
+      } else {
+        isLoading = false;
+        notifyListeners();
+
+        if (!myContext.mounted) return;
+        var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+        if (isFileDecrypted == true) {
+          _addCurrentFileToRecent();
+        }
+      }
+
+      if (!myContext.mounted) return;
+      await myContext.router.push(const CardsBrowserRoute());
+    } catch (e) {
+      SettingService().setBiometricAuthEnabled(false);
+      CurrentFileService().cloud!.cachedCredentials = null;
+      print(e);
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /*
+  Future<void> goToRecentFile(BlastFile file) async {
+    isLoading = true;
+    notifyListeners();
+
+    final myContext = context!;
+
+    try {
       CurrentFileService().reset();
       CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
       CurrentFileService().currentFileInfo = file;
 
       if (CurrentFileService().cloud!.hasCachedCredentials) {
-        await BiometricHelper.readData();
+        await BiometricHelper.readData(); 
       }
 
       final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
@@ -114,7 +158,7 @@ class SplashViewModel extends ChangeNotifier {
         _addCurrentFileToRecent();
 
         if (!myContext.mounted) return;
-        myContext.router.push(const CardsBrowserRoute());
+        await myContext.router.push(const CardsBrowserRoute());
       }
     } catch (e) {
       SettingService().setBiometricAuthEnabled(false);
@@ -125,6 +169,7 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+  */
 
   void _addCurrentFileToRecent() {
     final file = CurrentFileService().currentFileInfo;

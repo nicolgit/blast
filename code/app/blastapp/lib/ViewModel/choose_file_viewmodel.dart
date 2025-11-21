@@ -4,7 +4,14 @@ import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 
-enum FileSelectionResult { newFile, existingFile }
+enum FileSelectionAction { newFile, existingFile }
+
+class FileSelectionResult {
+  final FileSelectionAction action;
+  final String? newFilePath;
+
+  FileSelectionResult({required this.action, this.newFilePath});
+}
 
 class ChooseFileViewModel extends ChangeNotifier {
   BuildContext context;
@@ -87,7 +94,7 @@ class ChooseFileViewModel extends ChangeNotifier {
         currentFileService.getFileVersion(currentFileService.currentFileEncrypted!);
 
         if (!context.mounted) return;
-        context.router.maybePop(FileSelectionResult.existingFile);
+        context.router.maybePop(FileSelectionResult(action: FileSelectionAction.existingFile));
       } finally {
         isLoading = false;
         notifyListeners();
@@ -96,7 +103,8 @@ class ChooseFileViewModel extends ChangeNotifier {
   }
 
   Future<Future<bool>> newFileCommand() async {
-    return context.router.maybePop(FileSelectionResult.newFile);
+    return context.router
+        .maybePop(FileSelectionResult(action: FileSelectionAction.newFile, newFilePath: await currentPath));
   }
 
   Future<void> upDirectoryCommand() async {

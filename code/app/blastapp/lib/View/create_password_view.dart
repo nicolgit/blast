@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class CreatePasswordView extends StatefulWidget {
-  const CreatePasswordView({super.key});
+  final String path;
+
+  const CreatePasswordView({super.key, required this.path});
 
   @override
   State<StatefulWidget> createState() => _CreatePasswordViewState();
@@ -19,7 +21,7 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => CreatePasswordViewModel(context),
+      create: (context) => CreatePasswordViewModel(context, widget.path),
       child: Consumer<CreatePasswordViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),

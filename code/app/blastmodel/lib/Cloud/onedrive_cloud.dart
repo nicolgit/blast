@@ -46,7 +46,7 @@ class OneDriveCloud extends Cloud {
   @override
   String get description => 'Microsoft personal cloud storage, data stored in cloud, requires a Microsoft account';
   @override
-  Future<String> get rootpath => Future.value('/drive/root');
+  Future<String> get rootpath => Future.value('/drive/root/');
 
   String get clientId => Secrets.oneDriveApplicationId;
 
@@ -131,15 +131,15 @@ class OneDriveCloud extends Cloud {
 
   @override
   Future<String> goToParentDirectory(String currentPath) async {
-    var rootpath = await this.rootpath;
+    var rootPath = await rootpath;
 
-    if (currentPath == rootpath) {
-      return rootpath;
+    if (currentPath == rootPath) {
+      return Future.value(rootPath);
     }
 
     var newPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-    if (newPath == rootpath || newPath == '$rootpath:') {
-      return rootpath;
+    if (newPath.endsWith(":")) {
+      return Future.value(rootPath);
     }
 
     return Future.value(newPath);
@@ -172,22 +172,26 @@ class OneDriveCloud extends Cloud {
   Future<CloudFile> createFile(String path, Uint8List bytes) async {
     // https://learn.microsoft.com/en-us/onedrive/developer/rest-api/api/driveitem_put_content?view=odsp-graph-online
     // PUT /me/drive/root:/FolderA/FileB.txt:/content
+    // PUT /me/drive/special/approot:/nomefile.txt:/content   (for app folder cloud)
 
-    //remove string xxx from begin of path
-    if (path.startsWith(await rootpath)) {
-      path = path.substring((await rootpath).length);
-    }
+    if (path.contains(":")) {
+      // do nothing
+    } else {
+      if (path.startsWith(await rootpath)) {
+        path = path.substring((await rootpath).length);
 
-    if (!path.startsWith('/')) {
-      path = '/$path';
+        final stringRootPath = await rootpath;
+        //remove trailing slash
+        final trimmedRootPath =
+            stringRootPath.endsWith('/') ? stringRootPath.substring(0, stringRootPath.length - 1) : stringRootPath;
+
+        path = '$trimmedRootPath:$path';
+      }
     }
 
     var client = await _oauth.createClient();
 
-    // /me/drive/special/approot:/nomefile.txt:/content
-    //final putUri = 'https://graph.microsoft.com/v1.0/me/drive/root:$path:/content';
-    final stringRootPath = await rootpath;
-    final putUri = 'https://graph.microsoft.com/v1.0/me$stringRootPath:$path:/content';
+    final putUri = 'https://graph.microsoft.com/v1.0/me$path:/content';
     var response = await client.put(Uri.parse(putUri), body: bytes);
 
     var jsonResponse = await json.decode(response.body);
@@ -240,7 +244,7 @@ class OneDriveFolderCloud extends OneDriveCloud {
       'Microsoft OneDrive app folder access only. This is the most secure way to use OneDrive because Blast only has access to its own folder and not all your OneDrive files.';
 
   @override
-  Future<String> get rootpath => Future.value('/drive/special/approot');
+  Future<String> get rootpath => Future.value('/drive/special/approot/');
 
   @override
   String get clientId => Secrets.oneDriveFolderApplicationId;

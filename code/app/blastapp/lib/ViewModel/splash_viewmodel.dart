@@ -60,19 +60,20 @@ class SplashViewModel extends ChangeNotifier {
     }
 
     if (!myContext.mounted) return;
-    FileSelectionResult? isFileSelected = await myContext.router.push<FileSelectionResult>(const ChooseFileRoute());
-    if (isFileSelected != FileSelectionResult.newFile && isFileSelected != FileSelectionResult.existingFile) {
+    FileSelectionResult? fileSelectionResult =
+        await myContext.router.push<FileSelectionResult>(const ChooseFileRoute());
+    if (fileSelectionResult == null) {
       return;
     }
 
-    if (isFileSelected == FileSelectionResult.newFile) {
+    if (fileSelectionResult.action == FileSelectionAction.newFile) {
       if (!myContext.mounted) return;
-      var isFileCreated = await myContext.router.push(const CreatePasswordRoute());
+      var isFileCreated = await myContext.router.push(CreatePasswordRoute(path: fileSelectionResult.newFilePath!));
 
       if (isFileCreated != true) {
         return;
       }
-    } else if (isFileSelected == FileSelectionResult.existingFile) {
+    } else if (fileSelectionResult.action == FileSelectionAction.existingFile) {
       if (!myContext.mounted) return;
       var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
       if (isFileDecrypted != true) {

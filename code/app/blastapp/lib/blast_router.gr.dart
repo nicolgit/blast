@@ -182,18 +182,49 @@ class ChooseStorageRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [CreatePasswordView]
-class CreatePasswordRoute extends PageRouteInfo<void> {
-  const CreatePasswordRoute({List<PageRouteInfo>? children})
-      : super(CreatePasswordRoute.name, initialChildren: children);
+class CreatePasswordRoute extends PageRouteInfo<CreatePasswordRouteArgs> {
+  CreatePasswordRoute({
+    Key? key,
+    required String path,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CreatePasswordRoute.name,
+          args: CreatePasswordRouteArgs(key: key, path: path),
+          initialChildren: children,
+        );
 
   static const String name = 'CreatePasswordRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const CreatePasswordView();
+      final args = data.argsAs<CreatePasswordRouteArgs>();
+      return CreatePasswordView(key: args.key, path: args.path);
     },
   );
+}
+
+class CreatePasswordRouteArgs {
+  const CreatePasswordRouteArgs({this.key, required this.path});
+
+  final Key? key;
+
+  final String path;
+
+  @override
+  String toString() {
+    return 'CreatePasswordRouteArgs{key: $key, path: $path}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CreatePasswordRouteArgs) return false;
+    return key == other.key && path == other.path;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ path.hashCode;
 }
 
 /// generated route for

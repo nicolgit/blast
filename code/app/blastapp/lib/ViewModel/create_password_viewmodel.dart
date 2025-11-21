@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 
 class CreatePasswordViewModel extends ChangeNotifier {
   BuildContext context;
+  String path;
 
-  CreatePasswordViewModel(this.context);
+  CreatePasswordViewModel(this.context, this.path);
 
   String filename = '';
   String password = '';
@@ -74,14 +75,18 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   Future<void> _createFile() async {
-    if (filename.endsWith(".blast")) {
-      filename = filename.substring(0, filename.length - 6);
+    if (!filename.endsWith(".blast")) {
+      filename = "$filename.blast";
     }
+
+    // Use the path parameter to determine file location
+    String filePath = path.isEmpty ? filename : "$path/$filename";
+    //String fullFileUrl = "${await CurrentFileService().cloud!.rootpath}$filePath.blast";
 
     final file = BlastFile(
       cloudId: CurrentFileService().cloud!.id,
       fileName: "$filename.blast",
-      fileUrl: "${await CurrentFileService().cloud!.rootpath}$filename.blast",
+      fileUrl: filePath,
     );
 
     CurrentFileService().currentFileInfo = file;

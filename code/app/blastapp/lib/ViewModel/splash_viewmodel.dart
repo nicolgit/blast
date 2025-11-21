@@ -113,9 +113,10 @@ class SplashViewModel extends ChangeNotifier {
 
         if (!myContext.mounted) return;
         var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
-        if (isFileDecrypted == true) {
-          _addCurrentFileToRecent();
+        if (isFileDecrypted == false || isFileDecrypted == null) {
+          return;
         }
+        _addCurrentFileToRecent();
       }
 
       if (!myContext.mounted) return;
@@ -129,48 +130,6 @@ class SplashViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  /*
-  Future<void> goToRecentFile(BlastFile file) async {
-    isLoading = true;
-    notifyListeners();
-
-    final myContext = context!;
-
-    try {
-      CurrentFileService().reset();
-      CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
-      CurrentFileService().currentFileInfo = file;
-
-      if (CurrentFileService().cloud!.hasCachedCredentials) {
-        await BiometricHelper.readData(); 
-      }
-
-      final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
-      CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
-      CurrentFileService().currentFileEncrypted = myFile.data;
-
-      isLoading = false;
-      notifyListeners();
-
-      if (!myContext.mounted) return;
-      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
-      if (isFileDecrypted == true) {
-        _addCurrentFileToRecent();
-
-        if (!myContext.mounted) return;
-        await myContext.router.push(const CardsBrowserRoute());
-      }
-    } catch (e) {
-      SettingService().setBiometricAuthEnabled(false);
-      CurrentFileService().cloud!.cachedCredentials = null;
-      print(e);
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-  */
 
   void _addCurrentFileToRecent() {
     final file = CurrentFileService().currentFileInfo;

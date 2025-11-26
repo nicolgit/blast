@@ -17,10 +17,10 @@ File format is [documented here](docs/file-format.md).
 # Use Blast
 
 * ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg) ![](https://byob.yarr.is/nicolgit/blast/webtime) <https://blast.duckiesfarm.com> 
-* Android  - available in private beta
-* iOS - available via TestFlight
-* available on [Windows Store](https://apps.microsoft.com/detail/9nz7l5snvsxx)
-* MacOS - available via TestFlight
+* Android – currently in private beta ([send me a DM](https://github.com/nicolgit/) to get access)  
+* iOS – accessible through TestFlight ([send me a DM](https://github.com/nicolgit/) to gain access)
+* MacOS - accessible through TestFlight ([send me a DM](https://github.com/nicolgit/) to gain access)
+* Windows - public available on [Windows Store](https://apps.microsoft.com/detail/9nz7l5snvsxx)
 * Linux - not available yet, build it yourself
 
 # Features 

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
@@ -162,5 +163,14 @@ class CardEditViewModel extends ChangeNotifier {
     isChanged = true;
     CurrentFileService().currentFileDocument!.isChanged = true;
     notifyListeners();
+  }
+
+  void changeIcon() async {
+    final result = await context.router.push(const ChangeIconRoute());
+    if (result != null && result is String && result.isNotEmpty) {
+      // Handle the returned icon name
+      // For now, just print it or use it as needed
+      print('Selected icon: $result');
+    }
   }
 }

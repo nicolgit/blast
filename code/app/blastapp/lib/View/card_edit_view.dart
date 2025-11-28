@@ -86,7 +86,14 @@ class _CardEditViewState extends State<CardEditView> {
                         child: Row(
                           children: [
                             BlastCardIcon(card: vm.currentCard, size: 48.0),
-                            const SizedBox(width: 8.0),
+                            const SizedBox(width: 6.0),
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              iconSize: 20.0,
+                              tooltip: 'Change Icon',
+                              onPressed: () => vm.changeIcon(),
+                            ),
+                            const SizedBox(width: 6.0),
                             Expanded(
                               child: Form(
                                 key: _formKey,

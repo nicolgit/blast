@@ -133,6 +133,22 @@ class CardsBrowserRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ChangeIconView]
+class ChangeIconRoute extends PageRouteInfo<void> {
+  const ChangeIconRoute({List<PageRouteInfo>? children})
+      : super(ChangeIconRoute.name, initialChildren: children);
+
+  static const String name = 'ChangeIconRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChangeIconView();
+    },
+  );
+}
+
+/// generated route for
 /// [ChangePasswordView]
 class ChangePasswordRoute extends PageRouteInfo<void> {
   const ChangePasswordRoute({List<PageRouteInfo>? children})

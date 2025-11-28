@@ -88,9 +88,12 @@ class _CardViewState extends State<CardView> {
                           style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
                 ],
               ),
-              Text(
-                "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
-                style: _widgetFactory.textTheme.labelSmall,
+              Padding(
+                padding: const EdgeInsets.all(6),
+                child: Text(
+                  "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
+                  style: _widgetFactory.textTheme.labelSmall,
+                ),
               ),
               const SizedBox(height: 12),
               _rowOfTags(vm.currentCard.tags),

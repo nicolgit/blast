@@ -82,10 +82,10 @@ class _BlastAttributeEditState extends State<BlastAttributeEdit> {
   void didUpdateWidget(BlastAttributeEdit oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update controllers if the data has changed externally
-    if (oldWidget.rows[widget.index].name != widget.rows[widget.index].name) {
+    if (_nameController.text != widget.rows[widget.index].name) {
       _nameController.text = widget.rows[widget.index].name;
     }
-    if (oldWidget.rows[widget.index].value != widget.rows[widget.index].value) {
+    if (_valueController.text != widget.rows[widget.index].value) {
       _valueController.text = widget.rows[widget.index].value;
     }
   }

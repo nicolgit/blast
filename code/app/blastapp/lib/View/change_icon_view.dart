@@ -47,8 +47,8 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                     Expanded(
                       child: Center(
                         child: ElevatedButton(
-                          onPressed: () => vm.selectIcon('hello'),
-                          child: const Text('Hello'),
+                          onPressed: () => vm.selectIcon('Ferrari'),
+                          child: const Text('Ferrari'),
                         ),
                       ),
                     ),

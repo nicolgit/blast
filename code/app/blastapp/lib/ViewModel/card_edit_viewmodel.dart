@@ -166,11 +166,30 @@ class CardEditViewModel extends ChangeNotifier {
   }
 
   void changeIcon() async {
+    // Find if an "icon" attribute exists (case insensitive)
+    int iconIndex = currentCard.rows.indexWhere((attr) => attr.name.toLowerCase() == 'icon');
+
+    // If not found, add it
+    if (iconIndex == -1) {
+      var newAttribute = BlastAttribute();
+      newAttribute.type = BlastAttributeType.typeString;
+      newAttribute.name = 'icon';
+      newAttribute.value = '';
+      currentCard.rows.add(newAttribute);
+      iconIndex = currentCard.rows.length - 1;
+      isChanged = true;
+      CurrentFileService().currentFileDocument!.isChanged = true;
+      notifyListeners();
+    }
+
+    // Navigate to ChangeIconRoute and get result
     final result = await context.router.push(const ChangeIconRoute());
-    if (result != null && result is String && result.isNotEmpty) {
-      // Handle the returned icon name
-      // For now, just print it or use it as needed
-      print('Selected icon: $result');
+    if (result != null && result is String) {
+      // Update the icon attribute with the result
+      currentCard.rows[iconIndex].value = result;
+      isChanged = true;
+      CurrentFileService().currentFileDocument!.isChanged = true;
+      notifyListeners();
     }
   }
 }

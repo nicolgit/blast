@@ -14,7 +14,12 @@ class FileSystemCloud extends Cloud {
   String get description => 'data stored on local disk, accessible only on this device';
 
   @override
-  Future<String> get rootpath async => "${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}";
+  Future<String> get rootpath async {
+    if (Platform.isWindows) {
+      return "c:/";
+    }
+    return "${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}";
+  }
 
   @override
   Future<List<CloudObject>> getFiles(String path) async {

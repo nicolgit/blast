@@ -51,19 +51,39 @@ class CreatePasswordViewModel extends ChangeNotifier {
   }
 
   Future<void> acceptPassword() async {
-    await _createFile();
+    try {
+      await _createFile();
 
-    if (!context.mounted) return;
-    context.router.maybePop(true);
+      if (!context.mounted) return;
+      context.router.maybePop(true);
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to create file: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> acceptAndImport() async {
-    await _createFile();
+    try {
+      await _createFile();
 
-    if (!context.mounted) return;
-    context.router.push(const ImporterRoute()).then((value) => {
-          if (context.mounted) {context.router.maybePop(true)}
-        });
+      if (!context.mounted) return;
+      context.router.push(const ImporterRoute()).then((value) => {
+            if (context.mounted) {context.router.maybePop(true)}
+          });
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to create file: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<bool> isPasswordsNotEmpty() async {
@@ -85,7 +105,7 @@ class CreatePasswordViewModel extends ChangeNotifier {
 
     final file = BlastFile(
       cloudId: CurrentFileService().cloud!.id,
-      fileName: "$filename.blast",
+      fileName: filename,
       fileUrl: filePath,
     );
 

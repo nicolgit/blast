@@ -36,7 +36,7 @@ dependencies:
   biometric_storage: ^5.0.1
   lottie: ^3.1.2
   printing: ^5.14.2
-
+  flutter_svg: ^2.0.10+1
 
 flutter_launcher_icons:
   image_path: "assets/general/app-icon.png"

@@ -97,15 +97,20 @@ class BlastWidgetFactory {
 
     switch (type) {
       case BlastAttributeType.typeHeader:
-        return ListTile(
-          title: Container(
-            padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
-            child: Text(name,
-                style: textTheme.titleLarge!
-                    .copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
-          ),
-          onTap: () async {},
-        );
+        return Padding(
+            padding: EdgeInsets.only(left: 12, right: 12),
+            child: Center(
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: ListTile(
+                      title: Container(
+                        padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+                        child: Text(name,
+                            style: textTheme.titleLarge!
+                                .copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
+                      ),
+                      onTap: () async {},
+                    ))));
       case BlastAttributeType.typePassword:
         return Padding(
             padding: EdgeInsets.only(left: 12, right: 12),

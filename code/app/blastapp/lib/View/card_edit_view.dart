@@ -88,7 +88,7 @@ class _CardEditViewState extends State<CardEditView> {
                             BlastCardIcon(card: vm.currentCard, size: 48.0),
                             const SizedBox(width: 6.0),
                             IconButton(
-                              icon: const Icon(Icons.edit),
+                              icon: Icon(Icons.edit, color: _theme.colorScheme.onSurface),
                               iconSize: 20.0,
                               tooltip: 'Change Icon',
                               onPressed: () => vm.changeIcon(),

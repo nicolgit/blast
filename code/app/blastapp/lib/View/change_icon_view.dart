@@ -4,6 +4,7 @@ import 'package:blastapp/helpers/icon_lookup_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 @RoutePage()
 class ChangeIconView extends StatefulWidget {
@@ -91,12 +92,18 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
                       controller: _searchController,
+                      style: _theme.textTheme.bodyMedium?.copyWith(
+                        color: _theme.colorScheme.onSurface,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Search icons...',
-                        prefixIcon: const Icon(Icons.search),
+                        hintStyle: _theme.textTheme.bodyMedium?.copyWith(
+                          color: _theme.colorScheme.onSurface.withOpacity(0.5),
+                        ),
+                        prefixIcon: Icon(Icons.search, color: _theme.colorScheme.onSurface),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear),
+                                icon: Icon(Icons.clear, color: _theme.colorScheme.onSurface),
                                 onPressed: () {
                                   _searchController.clear();
                                 },
@@ -105,6 +112,14 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(color: _theme.colorScheme.outline),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(color: _theme.colorScheme.primary, width: 2.0),
+                        ),
                       ),
                     ),
                   ),
@@ -112,7 +127,14 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                     child: _isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : _filteredBrands.isEmpty
-                            ? const Center(child: Text('No icons found'))
+                            ? Center(
+                                child: Text(
+                                  'No icons found',
+                                  style: _theme.textTheme.bodyMedium?.copyWith(
+                                    color: _theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                              )
                             : LayoutBuilder(
                                 builder: (context, constraints) {
                                   final crossAxisCount = (constraints.maxWidth / 180).floor().clamp(2, 10);
@@ -146,6 +168,8 @@ class _ChangeIconViewState extends State<ChangeIconView> {
   }
 
   Widget _buildIconCard(BrandInfo brand, ChangeIconViewModel vm) {
+    final iconUrl = _theme.brightness == Brightness.dark ? brand.urlDark : brand.url;
+
     return InkWell(
       onTap: () => vm.selectIcon(brand.brandSlug),
       child: Card(
@@ -158,16 +182,34 @@ class _ChangeIconViewState extends State<ChangeIconView> {
               SizedBox(
                 width: 128,
                 height: 128,
-                child: SvgPicture.network(
-                  brand.url,
-                  placeholderBuilder: (context) => const CircularProgressIndicator(),
-                  fit: BoxFit.contain,
+                child: FutureBuilder<String?>(
+                  future: _fetchSvgData(iconUrl),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+                      return Icon(
+                        Icons.image_not_supported,
+                        size: 64,
+                        color: _theme.colorScheme.onSurface.withOpacity(0.3),
+                      );
+                    }
+
+                    return SvgPicture.string(
+                      snapshot.data!,
+                      fit: BoxFit.contain,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 brand.brandName,
-                style: _theme.textTheme.bodySmall,
+                style: _theme.textTheme.bodySmall?.copyWith(
+                  color: _theme.colorScheme.onSurface,
+                ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -177,5 +219,22 @@ class _ChangeIconViewState extends State<ChangeIconView> {
         ),
       ),
     );
+  }
+
+  Future<String?> _fetchSvgData(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url)).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw Exception('Timeout'),
+          );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+      return null;
+    } catch (e) {
+      // Silently handle network errors
+      return null;
+    }
   }
 }

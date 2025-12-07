@@ -174,6 +174,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
       onTap: () => vm.selectIcon(brand.brandSlug),
       child: Card(
         elevation: 2,
+        color: _theme.colorScheme.primary,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -208,7 +209,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
               Text(
                 brand.brandName,
                 style: _theme.textTheme.bodySmall?.copyWith(
-                  color: _theme.colorScheme.onSurface,
+                  color: _theme.colorScheme.onPrimary,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

@@ -6,8 +6,8 @@ class BrandInfo {
 
   const BrandInfo(this.brandName, this.brandSlug);
 
-  String get url => 'https://cdn.simpleicons.org/$brandSlug';
-  String get urlDark => 'https://cdn.simpleicons.org/$brandSlug/grey';
+  String get url => 'https://cdn.simpleicons.org/$brandSlug/white';
+  String get urlDark => 'https://cdn.simpleicons.org/$brandSlug/black';
 }
 
 class IconLookupHelper {

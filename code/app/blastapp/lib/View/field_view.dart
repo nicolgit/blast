@@ -21,6 +21,7 @@ late ThemeData _theme;
 class _FieldViewState extends State<FieldView> {
   int _selectedCharacterIndex = -1; // Track which character was tapped
   bool _copyButtonSelected = false; // Track if copy button is selected
+  double _scale = 1.0; // Scale factor for text (1.0 = 24pt, range 0.5 to 3.0)
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +135,35 @@ class _FieldViewState extends State<FieldView> {
             ),
           ),
           const SizedBox(height: 12),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('scale', style: TextStyle(fontSize: 24)),
+                    Expanded(
+                      child: Slider(
+                        value: _scale,
+                        min: 0.5,
+                        max: 3.0,
+                        divisions: 10,
+                        label: '${(_scale * 24).toInt()}pt',
+                        onChanged: (double value) {
+                          setState(() {
+                            _scale = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           Flexible(
               fit: FlexFit.loose,
               child: Padding(
@@ -196,8 +226,8 @@ class _FieldViewState extends State<FieldView> {
   }
 
   Widget _buildCharacterGrid(String text) {
-    const double charSize = 48.0;
-    const double charSpacing = 4.0;
+    final double charSize = 48.0 * _scale;
+    final double charSpacing = 4.0;
     const double horizontalPadding = 48.0; // Total horizontal padding from parent widgets
 
     // Calculate maxCharsPerRow based on screen width
@@ -233,7 +263,7 @@ class _FieldViewState extends State<FieldView> {
             child: Container(
               width: charSize,
               height: charSize,
-              margin: const EdgeInsets.all(charSpacing / 2),
+              margin: EdgeInsets.all(charSpacing / 2),
               decoration: BoxDecoration(
                 color: _selectedCharacterIndex >= 0 && currentIndex <= _selectedCharacterIndex
                     ? _theme.colorScheme.primaryContainer
@@ -265,12 +295,25 @@ class _FieldViewState extends State<FieldView> {
         charsInRow++;
       }
       // Create row
-      rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: rowChildren,
-        ),
+      final rowWidget = Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: rowChildren,
       );
+
+      if (rows.isEmpty && charsInRow < maxCharsPerRow) {
+        // First row: wrap in SizedBox with calculated width
+        // but only if totalrows are == 1
+        final rowWidth = rowChildren.length * (charSize + charSpacing);
+        rows.add(
+          SizedBox(
+            width: rowWidth,
+            child: rowWidget,
+          ),
+        );
+      } else {
+        // Subsequent rows: add without SizedBox
+        rows.add(rowWidget);
+      }
     }
 
     return SingleChildScrollView(
@@ -291,7 +334,7 @@ class _FieldViewState extends State<FieldView> {
         TextSpan(
           text: char,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 24 * _scale,
             fontWeight: FontWeight.bold,
             fontFamily: 'monospace',
             color: _getCharacterColor(char),

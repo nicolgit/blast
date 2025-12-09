@@ -25,6 +25,14 @@ class CardEditView extends StatefulWidget {
 
 class _CardEditViewState extends State<CardEditView> {
   FocusOn _focusOn = FocusOn.title;
+  final TextEditingController _titleController = TextEditingController();
+  bool _isInitialized = false;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,16 @@ class _CardEditViewState extends State<CardEditView> {
   Widget _buildScaffold(BuildContext context, CardEditViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
     _theme = _widgetFactory.theme;
+
+    // Set initial text and select all only once
+    if (!_isInitialized) {
+      _titleController.text = vm.currentCard.title ?? "";
+      _titleController.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: _titleController.text.length,
+      );
+      _isInitialized = true;
+    }
 
     return Container(
         color: _theme.colorScheme.surface,
@@ -98,7 +116,7 @@ class _CardEditViewState extends State<CardEditView> {
                               child: Form(
                                 key: _formKey,
                                 child: TextFormField(
-                                    initialValue: vm.currentCard.title,
+                                    controller: _titleController,
                                     onChanged: (value) {
                                       vm.updateTitle(value);
                                     },

@@ -60,6 +60,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   void setGeneratorType(GeneratorTypes type) {
     if (_generatorType != type) {
       _generatorType = type;
+      refreshPassword(); // Generate new password when type changes
       notifyListeners();
     }
   }
@@ -74,6 +75,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   void setTextLength(int length) {
     if (_textLength != length && length >= 5 && length <= 20) {
       _textLength = length;
+      refreshPassword();
       notifyListeners();
     }
   }
@@ -81,6 +83,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   void setWordCount(int count) {
     if (_wordCount != count && count >= 1 && count <= 4) {
       _wordCount = count;
+      refreshPassword();
       notifyListeners();
     }
   }
@@ -90,6 +93,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
       _selectedLanguage = language;
       // Clear existing words so they get repopulated with new language
       _words.clear();
+      refreshPassword();
       notifyListeners();
     }
   }

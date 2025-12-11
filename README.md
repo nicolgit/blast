@@ -32,16 +32,20 @@ Here the updated list of the main feature available on all platforms.
 * dynamic list of attribute for each blast card
 * number of card limited by the device memory
 * number of attributes for each blast card limited by the device memory
+* markdown format for  notes field
+* support for dark and light theme
+* build in password generator
+* view card attribute as text, barcode or qrcode
 * import data from other password managers:
   * [Keepass](https://keepass.info/) XML (2.x) file 
   * [Password Safe](https://pwsafe.org/) XML file   
 
 Not al feature are available everywhere here the current platform < - > feature mapping
 
-| feature                     | android | ios | linux | mac | web | windows |
-|-----------------------------|---------|-----|-------|-----|-----|---------|
-| export blast readable json  | 🔹      | 🔹   | 🔹    | 👍  | 🔹  | 🔹       |
-| import blast readable json  | 🔹      | 🔹   | 👍    | 👍  |     | 👍       |
+| feature                    | android | ios | linux | mac | web | windows |
+| -------------------------- | ------- | --- | ----- | --- | --- | ------- |
+| export blast readable json | 🔹       | 🔹   | 🔹     | 👍   | 🔹   | 🔹       |
+| import blast readable json | 🔹       | 🔹   | 👍     | 👍   |     | 👍       |
 
 👍 supported 🔹 planned
 
@@ -50,16 +54,18 @@ Objective is to support all the most used cloud storage.
 
 Not all cloud storage are implemented and tested on all platforms yet. In the following table you can see current supported storages vs platforms.
 
-| storage             | android | ios | linux | mac | web | windows |
-|---------------------|---------|-----|-------|-----|-----|---------|
-| local file system   | 👍       | 👍  | 👍    | 👍  |     | 👍      |
-| OneDrive            | 👍       | 👍  | 👍    | 👍  | 👍   | 👍      |
-| DropBox             | 👍      | 👍   | 👍    | 👍  | 👍   | 👍       |
-| Azure Storage       |         |     |       |     |     |         |
-| AWS S3              |         |     |       |     |     |         |
-| Google Drive        |         |     |       |     |     |         |
-| iCloud              |         |     |       |     |     |         |
-| Lorem Cloud (*)     | 👍      | 👍   | 👍    | 👍  | 👍   | 👍      | 
+| storage                     | android | ios | linux | mac | web | windows |
+| --------------------------- | ------- | --- | ----- | --- | --- | ------- |
+| local file system           | 👍       | 👍   | 👍     | 👍   |     | 👍       |
+| OneDrive                    | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
+| OneDrive (app&nbsp;folder)  | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
+| DropBox                     | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
+| DropBox   (app&nbsp;folder) |         |     |       |     |     |         |
+| Azure Storage               |         |     |       |     |     |         |
+| AWS S3                      |         |     |       |     |     |         |
+| Google Drive                |         |     |       |     |     |         |
+| iCloud                      |         |     |       |     |     |         |
+| Lorem Cloud (*)             | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
 
 (*) fake cloud, for testing purpose only.
 

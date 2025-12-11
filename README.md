@@ -10,6 +10,8 @@ There are many password keepers out there, what makes Blast different?
 * All your data is kept in **one single file** protected by a master password. The file is in an easily extendable .json format. Before being saved, it is encrypted using the 256-bit AES (Advanced Encryption Standard), making it super easy to move elsewhere.
 * Written from the ground up using Flutter, one of the most widely used multiplatform frameworks. One single source code will build versions for all the current most used platforms.
 
+![blast on iOs](video/ios.gif)
+
 # File Format
 
 File format is [documented here](docs/file-format.md).

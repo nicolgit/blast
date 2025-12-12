@@ -44,69 +44,71 @@ class _CardViewState extends State<CardView> {
     return SafeArea(
         child: Scaffold(
             backgroundColor: _widgetFactory.viewBackgroundColor(),
-            body: Center(
-                child: Column(children: [
-              AppBar(
-                title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    tooltip: 'Edit',
-                    onPressed: () {
-                      vm.editCommand();
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip: 'Quit',
-                    onPressed: () {
-                      vm.closeCommand();
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              BlastCardIcon(card: vm.currentCard, size: 128),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                      icon: vm.currentCard.isFavorite
-                          ? Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            )
-                          : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
-                      tooltip: "toggle favorite",
-                      onPressed: () {
-                        vm.toggleFavorite();
-                      }),
-                  Center(
-                      child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
-                          textAlign: TextAlign.center,
-                          style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Text(
-                  "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
-                  style: _widgetFactory.textTheme.labelSmall,
+            appBar: AppBar(
+              title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  tooltip: 'Edit',
+                  onPressed: () {
+                    vm.editCommand();
+                  },
                 ),
-              ),
-              const SizedBox(height: 12),
-              _rowOfTags(vm.currentCard.tags),
-              const SizedBox(height: 12),
-              FutureBuilder<List<BlastAttribute>>(
-                  future: vm.getRows(),
-                  builder: (context, cardsList) {
-                    return Expanded(
-                      child: Container(
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: 'Quit',
+                  onPressed: () {
+                    vm.closeCommand();
+                  },
+                ),
+              ],
+            ),
+            body: Column(children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: Center(
+                          child: Column(children: [
+                const SizedBox(height: 16),
+                BlastCardIcon(card: vm.currentCard, size: 128),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        icon: vm.currentCard.isFavorite
+                            ? Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              )
+                            : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
+                        tooltip: "toggle favorite",
+                        onPressed: () {
+                          vm.toggleFavorite();
+                        }),
+                    Center(
+                        child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
+                            textAlign: TextAlign.center,
+                            style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Text(
+                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
+                    style: _widgetFactory.textTheme.labelSmall,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _rowOfTags(vm.currentCard.tags),
+                const SizedBox(height: 12),
+                FutureBuilder<List<BlastAttribute>>(
+                    future: vm.getRows(),
+                    builder: (context, cardsList) {
+                      return Container(
                         child: _buildAttributesList(cardsList.data ?? [], vm),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+              ])))),
               FileChangedBanner(
                 isFileChangedFuture: vm.isFileChangedAsync(),
                 onSavePressed: () async {
@@ -119,23 +121,22 @@ class _CardViewState extends State<CardView> {
                   }
                 },
               ),
-            ]))));
+            ])));
   }
 
-  ListView _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
-    var myList = ListView.builder(
-      itemCount: cardsList.length + 1,
-      itemBuilder: (context, index) {
-        if (index == cardsList.length && vm.currentCard.notes != null) {
-          return _showNotes(vm.currentCard.notes!, vm);
-        }
+  Column _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
+    List<Widget> children = [];
 
-        return _widgetFactory.buildAttributeRow(context, cardsList[index], index, vm.toggleShowPassword,
-            vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl);
-      },
-    );
+    for (int index = 0; index < cardsList.length; index++) {
+      children.add(_widgetFactory.buildAttributeRow(context, cardsList[index], index, vm.toggleShowPassword,
+          vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl));
+    }
 
-    return myList;
+    if (vm.currentCard.notes != null) {
+      children.add(_showNotes(vm.currentCard.notes!, vm));
+    }
+
+    return Column(children: children);
   }
 
   Wrap _rowOfTags(List<String> tags) {

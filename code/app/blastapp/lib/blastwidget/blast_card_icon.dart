@@ -116,7 +116,7 @@ class BlastCardIcon extends StatelessWidget {
 
   Widget _buildSvgIcon(BuildContext context, String iconSlug) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = theme.brightness == Brightness.dark || card.isFavorite;
     final BrandInfo brandInfo = BrandInfo('', iconSlug);
     final iconUrl = isDark ? brandInfo.urlDark : brandInfo.url;
 

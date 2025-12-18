@@ -160,8 +160,14 @@ class _ChooseFileViewState extends State<ChooseFileView> {
       );
     }
 
-    return ListView.builder(
+    return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 800, // Maximum width per item
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 12,
+        mainAxisExtent: 120, // Dynamic height that scales with content
+      ),
       itemCount: listFiles.length,
       itemBuilder: (context, index) {
         return _buildModernFileItem(listFiles[index], vm, index);
@@ -177,7 +183,6 @@ class _ChooseFileViewState extends State<ChooseFileView> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300 + (index * 50)),
       curve: Curves.easeOutCubic,
-      margin: const EdgeInsets.only(bottom: 12),
       child: Material(
         borderRadius: BorderRadius.circular(16),
         elevation: 0,
@@ -187,10 +192,10 @@ class _ChooseFileViewState extends State<ChooseFileView> {
           onTap: () async {
             // Add haptic feedback
             HapticFeedback.lightImpact();
-            
+
             await vm.selectItem(fileObject).catchError((error) {
               String errorMessage = "Unable to open selected file: ${error.toString()}";
-              
+
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

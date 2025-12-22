@@ -15,9 +15,6 @@ class FileSystemCloud extends Cloud {
 
   @override
   Future<String> get rootpath async {
-    if (Platform.isWindows) {
-      return "c:/";
-    }
     return "${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}";
   }
 

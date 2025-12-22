@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
@@ -72,15 +73,40 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                                 ),
                                 label: Text('go up')),
                           ),
+                          if (vm.shouldShowGoToFolderButton)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: FutureBuilder<String>(
+                                  future: vm.currentPath,
+                                  builder: (context, currentPath) {
+                                    return Tooltip(
+                                        message: 'go to folder',
+                                        textStyle: _widgetFactory.textTooltip.labelSmall,
+                                        child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              vm.goToFolderCommand();
+                                            },
+                                            style: IconButton.styleFrom(
+                                              backgroundColor: _widgetFactory.theme.colorScheme.primary,
+                                              foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                            ),
+                                            icon: Icon(
+                                              Icons.folder_open,
+                                              size: 20,
+                                              color: _widgetFactory.theme.colorScheme.onPrimary,
+                                            ),
+                                            label: Text('go to folder')));
+                                  }),
+                            ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 12, right: 12),
+                            padding: const EdgeInsets.only(left: 12),
                             child: FutureBuilder<String>(
                                 future: vm.currentPath,
                                 builder: (context, currentPath) {
                                   return Tooltip(
                                       message: 'copy current path to clipboard',
                                       textStyle: _widgetFactory.textTooltip.labelSmall,
-                                      child: ElevatedButton.icon(
+                                      child: IconButton(
                                           onPressed: () {
                                             Clipboard.setData(ClipboardData(text: currentPath.data ?? ""));
                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -88,25 +114,27 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                                                     style: _widgetFactory.textTooltip.labelSmall)));
                                           },
                                           style: IconButton.styleFrom(
-                                            backgroundColor: _widgetFactory.theme.colorScheme.primary,
-                                            foregroundColor: _widgetFactory.theme.colorScheme.onPrimary,
+                                            backgroundColor: _widgetFactory.theme.colorScheme.secondary,
+                                            foregroundColor: _widgetFactory.theme.colorScheme.onSecondary,
                                           ),
                                           icon: Icon(
                                             Icons.copy,
                                             size: 20,
-                                            color: _widgetFactory.theme.colorScheme.onPrimary,
-                                          ),
-                                          label: Text('copy full path')));
+                                            color: _widgetFactory.theme.colorScheme.onSecondary,
+                                          )));
                                 }),
                           ),
-                          FutureBuilder<String>(
-                            future: vm.currentPath,
-                            builder: (context, currentPath) => Flexible(
-                                child: Text(
-                              currentPath.data ?? "",
-                              style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                            )),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: FutureBuilder<String>(
+                              future: vm.currentPath,
+                              builder: (context, currentPath) => Flexible(
+                                  child: Text(
+                                currentPath.data ?? "",
+                                style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                            ),
                           ),
                         ],
                       ),

@@ -116,7 +116,16 @@ class ChooseFileViewModel extends ChangeNotifier {
   }
 
   void goToFolderCommand() async {
-    if (!Platform.isWindows) return;
+    // Check if platform is available (not web) and is Windows
+    bool isWindows = false;
+    try {
+      isWindows = Platform.isWindows;
+    } catch (e) {
+      // Platform is not available (likely web), so return early
+      return;
+    }
+
+    if (!isWindows) return;
 
     try {
       String? selectedPath = await FilePicker.platform.getDirectoryPath();
@@ -136,6 +145,11 @@ class ChooseFileViewModel extends ChangeNotifier {
   }
 
   bool get shouldShowGoToFolderButton {
-    return Platform.isWindows && currentFileService.cloud?.id == "LOCAL";
+    try {
+      return Platform.isWindows && currentFileService.cloud?.id == "LOCAL";
+    } catch (e) {
+      // Platform is not available (likely web), so return false
+      return false;
+    }
   }
 }

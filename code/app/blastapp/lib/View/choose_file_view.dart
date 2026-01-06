@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/choose_file_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
@@ -124,16 +123,17 @@ class _ChooseFileViewState extends State<ChooseFileView> {
                                           )));
                                 }),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12),
-                            child: FutureBuilder<String>(
-                              future: vm.currentPath,
-                              builder: (context, currentPath) => Flexible(
-                                  child: Text(
-                                currentPath.data ?? "",
-                                style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
-                              )),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: FutureBuilder<String>(
+                                future: vm.currentPath,
+                                builder: (context, currentPath) => Text(
+                                  currentPath.data ?? "",
+                                  style: _widgetFactory.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ),
                           ),
                         ],

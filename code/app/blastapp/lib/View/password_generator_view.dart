@@ -159,7 +159,9 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                             Center(
                               child: Text(
                                 'words',
-                                style: _theme.textTheme.titleMedium,
+                                style: _theme.textTheme.titleMedium?.copyWith(
+                                  color: _theme.colorScheme.primary,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -191,7 +193,9 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                             Center(
                               child: Text(
                                 'language',
-                                style: _theme.textTheme.titleMedium,
+                                style: _theme.textTheme.titleMedium?.copyWith(
+                                  color: _theme.colorScheme.primary,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),

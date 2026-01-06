@@ -196,7 +196,9 @@ class _SplashViewState extends State<SplashView> {
             const SizedBox(height: 16),
             Text(
               'Create or select an existing vault to get started',
-              style: _textTheme.bodySmall,
+              style: _textTheme.bodySmall?.copyWith(
+                color: _theme.colorScheme.primary,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

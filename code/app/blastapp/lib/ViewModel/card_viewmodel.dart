@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastmodel/blastattribute.dart';
@@ -17,9 +19,17 @@ class CardViewModel extends ChangeNotifier {
   var cardHasBeenUsed = false;
 
   List<bool> showPasswordRow = [];
+  late Timer _timer;
 
   CardViewModel(this.context, this.currentCard) {
     showPasswordRow = List.filled(currentCard.rows.length, false);
+    _initializeTimer();
+  }
+
+  void _initializeTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      notifyListeners();
+    });
   }
 
   Future<List<BlastAttribute>> getRows() async {
@@ -170,5 +180,11 @@ class CardViewModel extends ChangeNotifier {
         return false;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 }

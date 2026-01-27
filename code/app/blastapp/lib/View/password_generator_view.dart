@@ -44,8 +44,7 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
         child: SafeArea(
             child: Scaffold(
                 backgroundColor: _theme.colorScheme.surface,
-                body: Center(
-                  child: Column(children: [
+                body: Column(children: [
                     AppBar(
                       title: const Text("random password generator"),
                       actions: [
@@ -370,6 +369,6 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                       ),
                     ),
                   ]),
-                ))));
+                )));
   }
 }

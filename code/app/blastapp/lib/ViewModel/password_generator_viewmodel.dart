@@ -23,6 +23,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   int _wordCount = 2; // Default to 2 words
   List<String> _words = []; // Will be populated from API
   String _selectedLanguage = 'en'; // Default to English
+  String? _wikiError; // Error message for wiki API failures
 
   // Private language mapping for Wikidata entity IDs
   final Map<String, String> _languageMap = {
@@ -45,6 +46,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   int get textLength => _textLength;
   int get wordCount => _wordCount;
   String get selectedLanguage => _selectedLanguage;
+  String? get wikiError => _wikiError;
 
   // Get available languages for the UI
   Map<String, String> get availableLanguages => {
@@ -154,74 +156,80 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   Future<String> _generateWikiWordPassword() async {
-    // Populate words from API when starting (only if not already populated)
-    if (_words.isEmpty) {
-      await _populateWordsFromAPI();
-    }
-
-    final random = Random();
-
-    final specialChars = ['!', '@', '#', '\$', '%', '&', '*', '+', '=', '?'];
-    final separators = ['', '-', '_', ' '];
-
-    // Use the user-selected word count
-    List<String> selectedWords = [];
-
-    for (int i = 0; i < _wordCount; i++) {
-      String word = _words[random.nextInt(_words.length)];
-
-      // Random capitalization for each word
-      int capitalizationType = random.nextInt(3);
-      switch (capitalizationType) {
-        case 0: // all lowercase
-          word = word.toLowerCase();
-          break;
-        case 1: // first char only uppercase
-          word = word[0].toUpperCase() + word.substring(1).toLowerCase();
-          break;
-        case 2: // all uppercase
-          word = word.toUpperCase();
-          break;
+    try {
+      // Populate words from API when starting (only if not already populated)
+      if (_words.isEmpty) {
+        await _populateWordsFromAPI();
       }
 
-      selectedWords.add(word);
+      final random = Random();
+
+      final specialChars = ['!', '@', '#', '\$', '%', '&', '*', '+', '=', '?'];
+      final separators = ['', '-', '_', ' '];
+
+      // Use the user-selected word count
+      List<String> selectedWords = [];
+
+      for (int i = 0; i < _wordCount; i++) {
+        String word = _words[random.nextInt(_words.length)];
+
+        // Random capitalization for each word
+        int capitalizationType = random.nextInt(3);
+        switch (capitalizationType) {
+          case 0: // all lowercase
+            word = word.toLowerCase();
+            break;
+          case 1: // first char only uppercase
+            word = word[0].toUpperCase() + word.substring(1).toLowerCase();
+            break;
+          case 2: // all uppercase
+            word = word.toUpperCase();
+            break;
+        }
+
+        selectedWords.add(word);
+      }
+
+      // Random word separator
+      String separator = separators[random.nextInt(separators.length)];
+      String wordsText = selectedWords.join(separator);
+
+      // Generate random number (1-999)
+      int number = random.nextInt(999) + 1;
+      String numberText = number.toString();
+
+      // Randomly decide number position (true = beginning, false = end)
+      bool numberAtBegin = random.nextBool();
+
+      // Random special character
+      String specialChar = specialChars[random.nextInt(specialChars.length)];
+
+      // Randomly decide special character position (true = beginning, false = end)
+      bool specialAtBegin = random.nextBool();
+
+      // Build the password
+      String password = '';
+
+      if (specialAtBegin) {
+        password += specialChar;
+      }
+
+      if (numberAtBegin) {
+        password += numberText + (separator.isEmpty ? '' : separator) + wordsText;
+      } else {
+        password += wordsText + (separator.isEmpty ? '' : separator) + numberText;
+      }
+
+      if (!specialAtBegin) {
+        password += specialChar;
+      }
+
+      return password;
+    } catch (e) {
+      debugPrint('Error generating wiki word password: $e');
+      // Fallback to a simple numeric password if wiki generation fails
+      return _generateNumericPassword();
     }
-
-    // Random word separator
-    String separator = separators[random.nextInt(separators.length)];
-    String wordsText = selectedWords.join(separator);
-
-    // Generate random number (1-999)
-    int number = random.nextInt(999) + 1;
-    String numberText = number.toString();
-
-    // Randomly decide number position (true = beginning, false = end)
-    bool numberAtBegin = random.nextBool();
-
-    // Random special character
-    String specialChar = specialChars[random.nextInt(specialChars.length)];
-
-    // Randomly decide special character position (true = beginning, false = end)
-    bool specialAtBegin = random.nextBool();
-
-    // Build the password
-    String password = '';
-
-    if (specialAtBegin) {
-      password += specialChar;
-    }
-
-    if (numberAtBegin) {
-      password += numberText + (separator.isEmpty ? '' : separator) + wordsText;
-    } else {
-      password += wordsText + (separator.isEmpty ? '' : separator) + numberText;
-    }
-
-    if (!specialAtBegin) {
-      password += specialChar;
-    }
-
-    return password;
   }
 
   Future<List<String>> _wikiPopulate(String language, int size) async {
@@ -281,13 +289,13 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
         return words;
       } else {
         debugPrint('Wikidata SPARQL API error: ${response.statusCode} - ${response.body}');
-        // Fallback if API fails
-        return _getFallbackWords();
+        // Throw exception if API fails
+        throw Exception('Unable to connect to query.wikidata.org');
       }
     } catch (e) {
       // Fallback if network error or parsing fails
       debugPrint('Wikidata SPARQL API error: $e');
-      return _getFallbackWords();
+      throw Exception('Unable to connect to query.wikidata.org');
     }
   }
 
@@ -375,10 +383,14 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     try {
       // Fetch a larger set of words (50) from Wikidata SPARQL API using selected language
       _words = await _wikiPopulate(_selectedLanguage, 50);
+      _wikiError = null; // Clear error on success
       debugPrint(
           'Successfully populated ${_words.length} words from Wikidata SPARQL API (language: $_selectedLanguage)');
     } catch (e) {
       debugPrint('Failed to populate words from API: $e');
+      _wikiError = 'Unable to connect to query.wikidata.org';
+      notifyListeners();
+      rethrow;
       // _words remains empty, fallback will be used in generator
     }
   }

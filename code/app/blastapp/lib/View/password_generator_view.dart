@@ -155,84 +155,103 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
                           children: [
-                            Center(
-                              child: Text(
-                                'words',
-                                style: _theme.textTheme.titleMedium?.copyWith(
-                                  color: _theme.colorScheme.primary,
+                            if (vm.wikiError != null)
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: _theme.colorScheme.errorContainer,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            SegmentedButton<int>(
-                              segments: const <ButtonSegment<int>>[
-                                ButtonSegment<int>(
-                                  value: 1,
-                                  label: Text('1'),
-                                ),
-                                ButtonSegment<int>(
-                                  value: 2,
-                                  label: Text('2'),
-                                ),
-                                ButtonSegment<int>(
-                                  value: 3,
-                                  label: Text('3'),
-                                ),
-                                ButtonSegment<int>(
-                                  value: 4,
-                                  label: Text('4'),
-                                ),
-                              ],
-                              selected: <int>{vm.wordCount},
-                              onSelectionChanged: (Set<int> newSelection) {
-                                vm.setWordCount(newSelection.first);
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: Text(
-                                'language',
-                                style: _theme.textTheme.titleMedium?.copyWith(
-                                  color: _theme.colorScheme.primary,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            SegmentedButton<String>(
-                              style: ButtonStyle(
-                                padding: WidgetStateProperty.all(
-                                  const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                ),
-                                textStyle: WidgetStateProperty.all(
-                                  const TextStyle(fontSize: 18),
-                                ),
-                              ),
-                              segments: vm.availableLanguages.keys.map((languageCode) {
-                                // Map language codes to flag emoticons
-                                const flagMap = {
-                                  'en': '🇺🇸', // English -> US flag
-                                  'it': '🇮🇹', // Italian -> Italy flag
-                                  'fr': '🇫🇷', // French -> France flag
-                                  'de': '🇩🇪', // German -> Germany flag
-                                  'es': '🇪🇸', // Spanish -> Spain flag
-                                  'pt': '🇵🇹', // Portuguese -> Portugal flag
-                                  'nl': '🇳🇱', // Dutch -> Netherlands flag
-                                };
-
-                                return ButtonSegment<String>(
-                                  value: languageCode,
-                                  label: Tooltip(
-                                    message: vm.availableLanguages[languageCode] ?? languageCode,
-                                    child: Text(flagMap[languageCode] ?? '🏳️'),
+                                child: Center(
+                                  child: Text(
+                                    vm.wikiError!,
+                                    style: TextStyle(
+                                      color: _theme.colorScheme.onErrorContainer,
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                );
-                              }).toList(),
-                              selected: <String>{vm.selectedLanguage},
-                              onSelectionChanged: (Set<String> newSelection) {
-                                vm.setSelectedLanguage(newSelection.first);
-                              },
-                              showSelectedIcon: false,
-                            ),
+                                ),
+                              )
+                            else ...[
+                              Center(
+                                child: Text(
+                                  'words',
+                                  style: _theme.textTheme.titleMedium?.copyWith(
+                                    color: _theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              SegmentedButton<int>(
+                                segments: const <ButtonSegment<int>>[
+                                  ButtonSegment<int>(
+                                    value: 1,
+                                    label: Text('1'),
+                                  ),
+                                  ButtonSegment<int>(
+                                    value: 2,
+                                    label: Text('2'),
+                                  ),
+                                  ButtonSegment<int>(
+                                    value: 3,
+                                    label: Text('3'),
+                                  ),
+                                  ButtonSegment<int>(
+                                    value: 4,
+                                    label: Text('4'),
+                                  ),
+                                ],
+                                selected: <int>{vm.wordCount},
+                                onSelectionChanged: (Set<int> newSelection) {
+                                  vm.setWordCount(newSelection.first);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              Center(
+                                child: Text(
+                                  'language',
+                                  style: _theme.textTheme.titleMedium?.copyWith(
+                                    color: _theme.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              SegmentedButton<String>(
+                                style: ButtonStyle(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                segments: vm.availableLanguages.keys.map((languageCode) {
+                                  // Map language codes to flag emoticons
+                                  const flagMap = {
+                                    'en': '🇺🇸', // English -> US flag
+                                    'it': '🇮🇹', // Italian -> Italy flag
+                                    'fr': '🇫🇷', // French -> France flag
+                                    'de': '🇩🇪', // German -> Germany flag
+                                    'es': '🇪🇸', // Spanish -> Spain flag
+                                    'pt': '🇵🇹', // Portuguese -> Portugal flag
+                                    'nl': '🇳🇱', // Dutch -> Netherlands flag
+                                  };
+
+                                  return ButtonSegment<String>(
+                                    value: languageCode,
+                                    label: Tooltip(
+                                      message: vm.availableLanguages[languageCode] ?? languageCode,
+                                      child: Text(flagMap[languageCode] ?? '🏳️'),
+                                    ),
+                                  );
+                                }).toList(),
+                                selected: <String>{vm.selectedLanguage},
+                                onSelectionChanged: (Set<String> newSelection) {
+                                  vm.setSelectedLanguage(newSelection.first);
+                                },
+                                showSelectedIcon: false,
+                              ),
+                            ],
                           ],
                         ),
                       ),

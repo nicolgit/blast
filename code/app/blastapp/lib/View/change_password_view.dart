@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/change_password_viewmodel.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,28 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     confirmPasswordController.dispose();
     filenameController.dispose();
     super.dispose();
+  }
+
+  void _showIterationsInfo(BuildContext context, ChangePasswordViewModel vm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('About Iterations'),
+          content: const Text(
+            'Iterations are used by Blast to generate a secure key from your password (PBKDF2KeyDerivator). '
+            'A higher number of iterations makes your file more secure, but opening it may slow down. '
+            'Choose a balance that works for you.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   late ThemeData _theme;
@@ -88,6 +111,41 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         labelText: 'Confirm Password',
                         hintText: 'confirm password for your file',
                         hintStyle: _textThemeHint),
+                  ),
+                  const SizedBox(height: 12.0),
+                  Text(
+                    'Current PBKDF2KeyDerivator iterations: ${CurrentFileService().iterations}',
+                    style: _textTheme.labelSmall,
+                  ),
+                  const SizedBox(height: 12.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          'New PBKDF2KeyDerivator iterations: ${ChangePasswordViewModel.iterationsList[vm.iterationLevel]}',
+                          style: _textTheme.labelSmall),
+                      const SizedBox(width: 8.0),
+                      IconButton(
+                        icon: const Icon(Icons.info_outline),
+                        onPressed: () => _showIterationsInfo(context, vm),
+                        iconSize: 18.0,
+                        constraints: const BoxConstraints(),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Slider(
+                      value: vm.iterationLevel.toDouble(),
+                      min: 0,
+                      max: (ChangePasswordViewModel.iterationsList.length - 1).toDouble(),
+                      divisions: ChangePasswordViewModel.iterationsList.length - 1,
+                      onChanged: (value) {
+                        vm.setIterationLevel(value.toInt());
+                      },
+                    ),
                   ),
                   const SizedBox(height: 12.0),
                   FutureBuilder<bool>(

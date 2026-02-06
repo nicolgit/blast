@@ -103,10 +103,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                                       icon: Icons.search,
                                       onPressed: () => _showModalBottomSheet(context, vm),
                                       hasActiveFilters: vm.hasActiveFilters,
+                                      onClearPressed: () => vm.clearSearchTextCommand(),
                                     )
                                   : _buildDesktopSearchButton(
                                       onPressed: () => _showModalBottomSheet(context, vm),
                                       hasActiveFilters: vm.hasActiveFilters,
+                                      onClearPressed: () => vm.clearSearchTextCommand(),
                                     ),
                             ),
                           ),
@@ -257,6 +259,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     required IconData icon,
     required VoidCallback onPressed,
     bool hasActiveFilters = false,
+    VoidCallback? onClearPressed,
   }) {
     return InkWell(
       onTap: onPressed,
@@ -277,7 +280,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           child: Badge(
             isLabelVisible: hasActiveFilters,
             backgroundColor: _theme.colorScheme.error,
-            smallSize: 8,
+            smallSize: 10,
             child: Icon(
               icon,
               size: 24.0,
@@ -293,6 +296,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   Widget _buildDesktopSearchButton({
     required VoidCallback onPressed,
     bool hasActiveFilters = false,
+    VoidCallback? onClearPressed,
   }) {
     return TextButton.icon(
       style: TextButton.styleFrom(
@@ -310,7 +314,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       icon: Badge(
         isLabelVisible: hasActiveFilters,
         backgroundColor: _theme.colorScheme.error,
-        smallSize: 8,
+        smallSize: 10,
         child: Icon(
           Icons.search,
           size: 24.0,
@@ -668,8 +672,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 6.0),
                     child: TextFormField(
                       onChanged: (value) {
-                        vm.searchText = value;
-                        vm.refreshCardListCommand();
+                        setModalState(() {
+                          vm.searchText = value;
+                          vm.refreshCardListCommand();
+                        });
                       },
                       onFieldSubmitted: (value) {
                         Navigator.pop(context);
@@ -688,6 +694,23 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       }),
                     ),
                   ),
+                  if (vm.hasActiveFilters)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
+                      child: TextButton.icon(
+                        onPressed: () {
+                          setModalState(() {
+                            vm.clearSearchTextCommand();
+                            _searchController.clear();
+                          });
+                        },
+                        icon: Icon(Icons.clear_all, color: _theme.colorScheme.error),
+                        label: Text(
+                          'Clear all filters',
+                          style: TextStyle(color: _theme.colorScheme.error),
+                        ),
+                      ),
+                    ),
                 ],
               ));
         });

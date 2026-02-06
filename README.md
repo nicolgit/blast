@@ -1,74 +1,132 @@
-![blast!](images/icon-v01.png)
-# 💥 Blast 💥
-your passwords, safe and sound.
+![Blast](images/icon-v01.png)
 
-# What is Blast?
-Blast is an open-source password and secrets keeper developed in Flutter. It can be used on **Android**, **iOS**, **Windows**, **Web**, **Linux**, and **Mac**. It stores your passwords in an encrypted file, allowing you to remember only one password (the "master password") instead of all the username/password combinations that you use.
+# Blast
 
-There are many password keepers out there, what makes Blast different? 
-* Blast doesn't require its own cloud to work. It's designed to use your favorite cloud as a backend or just your local file system. 
-* All your data is kept in **one single file** protected by a master password. The file is in an easily extendable .json format. Before being saved, it is encrypted using the 256-bit AES (Advanced Encryption Standard), making it super easy to move elsewhere.
-* Written from the ground up using Flutter, one of the most widely used multiplatform frameworks. One single source code will build versions for all the current most used platforms.
+Your passwords, safe and sound.
 
-![blast on iOs](video/ios.gif)
+![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg)
+![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-# File Format
+Blast is an open-source, cross-platform password and secrets manager built with Flutter.
+Your data lives in a single encrypted vault file protected by a master password - no proprietary backend required.
 
-File format is [documented here](docs/file-format.md).
+<img src="video/ios.gif" alt="Blast on iOS" height="1000" />
 
-# Use Blast
+## Highlights
 
-* Web - <https://blast.duckiesfarm.com>  ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg) 
-* Android – currently in private beta ([send me a DM](https://github.com/nicolgit/) to get access)  
-* iOS – available on [Apple Store](https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050)
-* MacOS - accessible through TestFlight ([send me a DM](https://github.com/nicolgit/) to gain access)
-* Windows - available on [Windows Store](https://apps.microsoft.com/detail/9nz7l5snvsxx) 
-* Linux - not available yet, but you can build it yourself
+- Bring your own storage: use your favorite cloud provider or your local file system
+- Single portable vault file: easy to back up, move, and keep under your control
+- One codebase, many platforms: Android, iOS, Windows, macOS, Linux, and Web
 
-# Features s
-Here the updated list of the main feature available on all platforms.
+## Download / Use
 
-* advanced search capability and sorting
-* favorite flag
-* tags
-* dynamic list of attribute for each blast card
-* number of card limited by the device memory
-* number of attributes for each blast card limited by the device memory
-* markdown format for notes field
-* support for dark and light theme
-* build in password generator
-* view card attribute as text, barcode or qrcode
-* import data from other password managers:
-  * [Keepass](https://keepass.info/) XML (2.x) file 
-  * [Password Safe](https://pwsafe.org/) XML file   
+- Web: https://blast.duckiesfarm.com
+- iOS: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050
+- Windows: https://apps.microsoft.com/detail/9nz7l5snvsxx
+- Android: currently in private beta (send a DM: https://github.com/nicolgit/)
+- macOS: TestFlight access (send a DM: https://github.com/nicolgit/)
+- Linux: not distributed yet (build from source)
 
-Not al feature are available everywhere here the current platform < - > feature mapping
+## Features
 
-| feature                    | android | ios | linux | mac | web | windows |
-| -------------------------- | ------- | --- | ----- | --- | --- | ------- |
-| export blast readable json | 🔹       | 🔹   | 🔹     | 👍   | 🔹   | 🔹       |
-| import blast readable json | 🔹       | 🔹   | 👍     | 👍   |     | 👍       |
+- Advanced search and sorting
+- Favorites and tags
+- Flexible card fields (attributes/rows)
+- Markdown notes
+- Light and dark theme
+- Built-in password generator
+- Display values as text, barcode, or QR code
+- Import from other password managers:
+  - KeePass XML (2.x)
+  - Password Safe XML
 
-👍 supported 🔹 planned
+### Platform feature map
 
+Some features are still rolling out across platforms.
 
-Objective is to support all the most used cloud storage. 
+| Feature                    | Android | iOS     | Linux   | macOS | Web     | Windows |
+| -------------------------- | ------- | ------- | ------- | ----- | ------- | ------- |
+| Export Blast-readable JSON | planned | planned | planned | yes   | planned | planned |
+| Import Blast-readable JSON | planned | planned | yes     | yes   |         | yes     |
 
-Not all cloud storage are implemented and tested on all platforms yet. In the following table you can see current supported storages vs platforms.
+Legend: yes = supported, planned = planned
 
-| storage                     | android | ios | linux | mac | web | windows |
-| --------------------------- | ------- | --- | ----- | --- | --- | ------- |
-| local file system           | 👍       | 👍   | 👍     | 👍   |     | 👍       |
-| OneDrive                    | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
-| OneDrive (app&nbsp;folder)  | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
-| DropBox                     | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
-| DropBox   (app&nbsp;folder) |         |     |       |     |     |         |
-| Azure Storage               |         |     |       |     |     |         |
-| AWS S3                      |         |     |       |     |     |         |
-| Google Drive                |         |     |       |     |     |         |
-| iCloud                      |         |     |       |     |     |         |
-| Lorem Cloud (*)             | 👍       | 👍   | 👍     | 👍   | 👍   | 👍       |
+## Storage backends
 
-(*) fake cloud, for testing purpose only.
+Blast aims to support the most common storage providers. Not all providers are implemented and tested on all platforms yet.
 
+| Storage               | Android | iOS | Linux | macOS | Web | Windows |
+| --------------------- | ------- | --- | ----- | ----- | --- | ------- |
+| Local file system     | yes     | yes | yes   | yes   |     | yes     |
+| OneDrive              | yes     | yes | yes   | yes   | yes | yes     |
+| OneDrive (app folder) | yes     | yes | yes   | yes   | yes | yes     |
+| Dropbox               | yes     | yes | yes   | yes   | yes | yes     |
+| Dropbox (app folder)  |         |     |       |       |     |         |
+| Azure Storage         |         |     |       |       |     |         |
+| AWS S3                |         |     |       |       |     |         |
+| Google Drive          |         |     |       |       |     |         |
+| iCloud                |         |     |       |       |     |         |
+| Lorem Cloud (*)       | yes     | yes | yes   | yes   | yes | yes     |
 
+(*) Fake cloud used for testing only.
+
+## File format and cryptography
+
+The vault is stored as a `.blast` file: a small binary header plus an encrypted JSON body.
+
+- Encryption: AES-256-CBC with PKCS7 padding
+- Key derivation: PBKDF2 (salt + iteration count stored in the header)
+
+Full spec: [docs/file-format.md](docs/file-format.md)
+
+## Build from source
+
+### Repository layout
+
+- App: `code/app/blastapp`
+- Core model / crypto / cloud providers: `code/app/blastmodel`
+
+### Prerequisites
+
+- Flutter SDK (Dart >= 3.1.3 and < 4.0.0)
+- Platform toolchains (Xcode for iOS/macOS, Android Studio for Android, Visual Studio for Windows, etc.)
+
+### Run
+
+```bash
+cd code/app/blastapp
+flutter pub get
+flutter run
+```
+
+### Web
+
+```bash
+cd code/app/blastapp
+flutter run -d chrome
+```
+
+## Cloud provider setup (optional)
+
+If you want to test cloud backends (OneDrive/Dropbox), you may need to register your own OAuth apps and set client IDs.
+
+- Setup notes: [docs/clouds-setup.md](docs/clouds-setup.md)
+- Secrets template: [code/app/blastmodel/lib/secretsToFill.dart](code/app/blastmodel/lib/secretsToFill.dart)
+
+## Privacy
+
+Blast does not run its own servers. Your encrypted vault is stored either locally or in the cloud provider you choose.
+
+See [PRIVACYPOLICY.md](PRIVACYPOLICY.md).
+
+## Contributing
+
+Issues and pull requests are welcome.
+
+## Security
+
+If you believe you found a security vulnerability, please use GitHub's private vulnerability reporting.
+
+## License
+
+MIT - see [LICENSE](LICENSE).

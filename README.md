@@ -1,16 +1,18 @@
-![Blast](images/icon-v01.png)
+<p align="center">
+  <a href="https://blast.duckiesfarm.com">
+    <img src="images/icon-v01.png" alt="Blast" width="128" />
+  </a>
+</p>
 
 # Blast
 
 Your passwords, safe and sound.
 
-![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg)
-![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Blast is an open-source, cross-platform password and secrets manager built with Flutter.
 Your data lives in a single encrypted vault file protected by a master password - no proprietary backend required.
 
-<img src="video/ios.gif" alt="Blast on iOS" height="1000" />
+<img src="video/ios.gif" alt="Blast on iOS" height="600" />
 
 ## Highlights
 

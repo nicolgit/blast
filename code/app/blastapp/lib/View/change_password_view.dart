@@ -113,17 +113,22 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         hintStyle: _textThemeHint),
                   ),
                   const SizedBox(height: 12.0),
-                  Text(
-                    'Current PBKDF2KeyDerivator iterations: ${CurrentFileService().iterations}',
-                    style: _textTheme.labelSmall,
-                  ),
-                  const SizedBox(height: 12.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                          'New PBKDF2KeyDerivator iterations: ${ChangePasswordViewModel.iterationsList[vm.iterationLevel]}',
-                          style: _textTheme.labelSmall),
+                      RichText(
+                        text: TextSpan(
+                          style: _textTheme.labelSmall,
+                          children: [
+                            const TextSpan(text: 'PBKDF2KeyDerivator iterations: '),
+                            TextSpan(
+                              text: '${ChangePasswordViewModel.iterationsList[vm.iterationLevel] / 1000}k',
+                              style: _textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(text: ' (current: ${CurrentFileService().iterations / 1000}k)'),
+                          ],
+                        ),
+                      ),
                       const SizedBox(width: 8.0),
                       IconButton(
                         icon: const Icon(Icons.info_outline),
@@ -134,7 +139,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: Slider(

@@ -7,7 +7,9 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 @RoutePage()
 class TypePasswordView extends StatefulWidget {
-  const TypePasswordView({super.key});
+  const TypePasswordView({super.key, this.forceSkipBiometricQuestion = false});
+
+  final bool forceSkipBiometricQuestion;
 
   @override
   State<StatefulWidget> createState() => _TypePasswordViewState();
@@ -23,6 +25,7 @@ class _TypePasswordViewState extends State<TypePasswordView> {
     super.initState();
 
     viewModel.context = context;
+    viewModel.forceSkipBiometricQuestion = widget.forceSkipBiometricQuestion;
 
     passwordFocusNode = FocusNode();
   }

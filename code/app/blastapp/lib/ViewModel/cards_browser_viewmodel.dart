@@ -132,7 +132,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -187,7 +187,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportMasterKeyCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(TypePasswordRoute());
     if (checkPasswordResult != true) {
       return;
     }
@@ -198,7 +198,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void changePasswordCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(const TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(TypePasswordRoute(forceSkipBiometricQuestion: true));
     if (checkPasswordResult != true) {
       return;
     }

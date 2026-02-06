@@ -75,7 +75,7 @@ class SplashViewModel extends ChangeNotifier {
       }
     } else if (fileSelectionResult.action == FileSelectionAction.existingFile) {
       if (!myContext.mounted) return;
-      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+      var isFileDecrypted = await myContext.router.push(TypePasswordRoute());
       if (isFileDecrypted != true) {
         return;
       }
@@ -112,7 +112,7 @@ class SplashViewModel extends ChangeNotifier {
         notifyListeners();
 
         if (!myContext.mounted) return;
-        var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+        var isFileDecrypted = await myContext.router.push(TypePasswordRoute());
         if (isFileDecrypted == false || isFileDecrypted == null) {
           return;
         }

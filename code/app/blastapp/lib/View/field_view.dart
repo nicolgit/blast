@@ -135,33 +135,43 @@ class _FieldViewState extends State<FieldView> {
             ),
           ),
           const SizedBox(height: 12),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 600),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('scale', style: TextStyle(fontSize: 24)),
-                    Expanded(
-                      child: Slider(
-                        value: _scale,
-                        min: 0.5,
-                        max: 3.0,
-                        divisions: 10,
-                        label: '${(_scale * 24).toInt()}pt',
-                        onChanged: (double value) {
-                          setState(() {
-                            _scale = value;
-                          });
-                        },
+          FutureBuilder(
+            future: vm.getCurrentQrCodeViewStyle(),
+            builder: (context, qrCodeStyle) {
+              final style = qrCodeStyle.data;
+              final showScale = style == QrCodeViewStyle.text || style == QrCodeViewStyle.code;
+              return Visibility(
+                visible: showScale,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 600),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('scale', style: TextStyle(fontSize: 24)),
+                          Expanded(
+                            child: Slider(
+                              value: _scale,
+                              min: 0.5,
+                              max: 3.0,
+                              divisions: 10,
+                              label: '${(_scale * 24).toInt()}pt',
+                              onChanged: (double value) {
+                                setState(() {
+                                  _scale = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           const SizedBox(height: 12),
           Flexible(

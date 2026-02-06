@@ -109,7 +109,9 @@ class BlastWidgetFactory {
                             style: textTheme.titleLarge!
                                 .copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
                       ),
-                      onTap: () async {},
+                      onTap: () async {
+                        showFieldView(name);
+                      },
                     ))));
       case BlastAttributeType.typePassword:
         return Padding(
@@ -157,15 +159,13 @@ class BlastWidgetFactory {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      showFieldView(value);
+                                      copyToClipboard(value);
                                     },
-                                    icon: const Icon(Icons.qr_code),
-                                    tooltip: 'show qr code'),
+                                    icon: const Icon(Icons.copy),
+                                    tooltip: 'copy to clipboard'),
                               ]),
                               onTap: () async {
-                                // toast notification warning
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
+                                showFieldView(value);
                               },
                             ))))));
       case BlastAttributeType.typeURL:
@@ -202,15 +202,13 @@ class BlastWidgetFactory {
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                             IconButton(
                                 onPressed: () {
-                                  showFieldView(value);
+                                  copyToClipboard(value);
                                 },
-                                icon: const Icon(Icons.qr_code),
-                                tooltip: 'show qr code'),
+                                icon: const Icon(Icons.copy),
+                                tooltip: 'copy to clipboard'),
                           ]),
                           onTap: () async {
-                            // toast notification warning
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
+                            showFieldView(value);
                           },
                         ))))));
       case BlastAttributeType.typeString:
@@ -238,15 +236,13 @@ class BlastWidgetFactory {
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                             IconButton(
                                 onPressed: () {
-                                  showFieldView(value);
+                                  copyToClipboard(value);
                                 },
-                                icon: const Icon(Icons.qr_code),
-                                tooltip: 'show qr code'),
+                                icon: const Icon(Icons.copy),
+                                tooltip: 'copy to clipboard'),
                           ]),
                           onTap: () async {
-                            // toast notification warning
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text("double tap to copy $name to clipboard")));
+                            showFieldView(value);
                           },
                         ))))));
     }

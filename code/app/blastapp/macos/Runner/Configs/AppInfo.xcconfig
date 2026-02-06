@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = blastapp
+PRODUCT_NAME = Blast for Mac
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.blastapp
+PRODUCT_BUNDLE_IDENTIFIER = com.nicoladelfino.blastapp
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = © 2023-present Duckiesfarm.com - All rights reserved.

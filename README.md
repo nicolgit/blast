@@ -18,14 +18,14 @@ File format is [documented here](docs/file-format.md).
 
 # Use Blast
 
-* ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg) ![](https://byob.yarr.is/nicolgit/blast/webtime) <https://blast.duckiesfarm.com> 
+* Web - <https://blast.duckiesfarm.com>  ![web build](https://github.com/nicolgit/blast/actions/workflows/deploy-purple-flower.yml/badge.svg) 
 * Android – currently in private beta ([send me a DM](https://github.com/nicolgit/) to get access)  
-* iOS – accessible through TestFlight ([send me a DM](https://github.com/nicolgit/) to gain access)
+* iOS – available on [Apple Store](https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050)
 * MacOS - accessible through TestFlight ([send me a DM](https://github.com/nicolgit/) to gain access)
-* Windows - public available on [Windows Store](https://apps.microsoft.com/detail/9nz7l5snvsxx)
-* Linux - not available yet, build it yourself
+* Windows - available on [Windows Store](https://apps.microsoft.com/detail/9nz7l5snvsxx) 
+* Linux - not available yet, but you can build it yourself
 
-# Features 
+# Features s
 Here the updated list of the main feature available on all platforms.
 
 * advanced search capability and sorting
@@ -34,7 +34,7 @@ Here the updated list of the main feature available on all platforms.
 * dynamic list of attribute for each blast card
 * number of card limited by the device memory
 * number of attributes for each blast card limited by the device memory
-* markdown format for  notes field
+* markdown format for notes field
 * support for dark and light theme
 * build in password generator
 * view card attribute as text, barcode or qrcode

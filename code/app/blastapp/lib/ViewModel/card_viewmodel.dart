@@ -20,6 +20,7 @@ class CardViewModel extends ChangeNotifier {
 
   List<bool> showPasswordRow = [];
   late Timer _timer;
+  final ValueNotifier<int> timeTextNotifier = ValueNotifier<int>(0);
 
   CardViewModel(this.context, this.currentCard) {
     showPasswordRow = List.filled(currentCard.rows.length, false);
@@ -28,7 +29,7 @@ class CardViewModel extends ChangeNotifier {
 
   void _initializeTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (_) {
-      notifyListeners();
+      timeTextNotifier.value++;
     });
   }
 
@@ -185,6 +186,7 @@ class CardViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _timer.cancel();
+    timeTextNotifier.dispose();
     super.dispose();
   }
 }

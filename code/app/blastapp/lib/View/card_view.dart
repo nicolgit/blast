@@ -93,9 +93,12 @@ class _CardViewState extends State<CardView> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(6),
-                  child: Text(
-                    "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
-                    style: _widgetFactory.textTheme.labelSmall,
+                  child: ValueListenableBuilder<int>(
+                    valueListenable: vm.timeTextNotifier,
+                    builder: (context, _, __) => Text(
+                      "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
+                      style: _widgetFactory.textTheme.labelSmall,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),

@@ -99,12 +99,14 @@ class SplashViewModel extends ChangeNotifier {
     try {
       BlastBiometricStorageData? biometricData = await BiometricHelper.readData();
 
+      print('debug 01');
       await CurrentFileHelper.load(file, biometricData?.cloudCredentials);
-
+      print('debug 02');
       if (biometricData != null) {
+        print('debug 03');
         await CurrentFileHelper.decrypt(
             passwordType: PasswordType.password, password: biometricData.password, recoveryKey: "");
-
+        print('debug 04');
         isLoading = false;
         notifyListeners();
       } else {
@@ -124,7 +126,7 @@ class SplashViewModel extends ChangeNotifier {
     } catch (e) {
       SettingService().setBiometricAuthEnabled(false);
       CurrentFileService().cloud!.cachedCredentials = null;
-      print(e);
+      print('Error loading recent file: $e');
     } finally {
       isLoading = false;
       notifyListeners();

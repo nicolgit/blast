@@ -12,7 +12,7 @@ class BlastOAuthWeb extends BlastOAuth {
 
   @override
   Future<oauth2.Client> createClient() async {
-    if (cachedCredentials != null) {
+    if (cachedCredentials != null && cachedCredentials!.isNotEmpty) {
       var credentials = oauth2.Credentials.fromJson(cachedCredentials!);
       return oauth2.Client(credentials, identifier: applicationId);
     }

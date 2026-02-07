@@ -9,14 +9,16 @@ import 'package:flutter/foundation.dart';
 
 class CurrentFileHelper {
   static Future load(BlastFile file, String? cloudCachedCredentials) async {
-    CurrentFileService().reset();
-    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
-    CurrentFileService().cloud!.cachedCredentials = cloudCachedCredentials ?? '';
-    CurrentFileService().currentFileInfo = file;
+    final cfs = CurrentFileService();
 
-    final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
-    CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
-    CurrentFileService().currentFileEncrypted = myFile.data;
+    cfs.reset();
+    cfs.cloud = await SettingService().getCloudStorageById(file.cloudId);
+    cfs.cloud!.cachedCredentials = cloudCachedCredentials ?? '';
+    cfs.currentFileInfo = file;
+
+    final myFile = await cfs.cloud!.getFile(cfs.currentFileInfo!.fileUrl);
+    cfs.currentFileInfo?.lastModified = myFile.lastModified;
+    cfs.currentFileEncrypted = myFile.data;
   }
 
   static Future decrypt(

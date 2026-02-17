@@ -740,6 +740,20 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Button 0 - Scan Barcode/QRCode
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _theme.colorScheme.primaryContainer,
+                          child: Icon(Icons.qr_code_scanner, color: _theme.colorScheme.primary),
+                        ),
+                        title: const Text('Scan Barcode/QRCode', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Scan a barcode or QR code', style: TextStyle(fontSize: 12)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          vm.goToScanner();
+                        },
+                      ),
+
                       // Button 1
                       ListTile(
                         leading: CircleAvatar(

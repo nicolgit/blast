@@ -226,4 +226,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
     if (!context.mounted) return;
     context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: true, returnsValue: false));
   }
+
+  void goToScanner() {
+    if (!context.mounted) return;
+    context.router.push(const ScannerRoute());
+  }
 }

@@ -385,6 +385,22 @@ class PasswordGeneratorRouteArgs {
 }
 
 /// generated route for
+/// [ScannerView]
+class ScannerRoute extends PageRouteInfo<void> {
+  const ScannerRoute({List<PageRouteInfo>? children})
+      : super(ScannerRoute.name, initialChildren: children);
+
+  static const String name = 'ScannerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ScannerView();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsView]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

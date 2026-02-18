@@ -38,6 +38,7 @@ dependencies:
   printing: ^5.14.2
   flutter_svg: ^2.0.10+1
   http: ^1.1.0
+  mobile_scanner: ^6.0.2
 
 flutter_launcher_icons:
   image_path: "assets/general/app-icon.png"

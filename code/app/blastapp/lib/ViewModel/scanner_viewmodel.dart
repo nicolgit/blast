@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastmodel/blastcard.dart';
+import 'package:blastmodel/currentfile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScannerViewModel extends ChangeNotifier {
   final BuildContext context;
+  final CurrentFileService fileService = CurrentFileService();
 
   String? _scannedValue;
   String? get scannedValue => _scannedValue;
@@ -36,6 +39,26 @@ class ScannerViewModel extends ChangeNotifier {
     _scannedValue = null;
     _scannedFormat = null;
     notifyListeners();
+  }
+
+  void addThisCard(String cardName, String cardholderName) {
+    if (_scannedValue == null) return;
+
+    var card = BlastCard.createFidelityCard();
+    card.title = cardName;
+
+    for (var row in card.rows) {
+      if (row.name == 'Cardholder Name') {
+        row.value = cardholderName;
+      } else if (row.name == 'Card Number') {
+        row.value = _scannedValue!;
+      }
+    }
+
+    fileService.currentFileDocument!.cards.insert(0, card);
+    fileService.currentFileDocument!.isChanged = true;
+
+    closeCommand();
   }
 
   void closeCommand() {

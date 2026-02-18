@@ -106,10 +106,16 @@ class _ScannerViewState extends State<ScannerView> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              TextButton.icon(
-                                onPressed: vm.clearScannedValue,
-                                icon: const Icon(Icons.refresh, size: 18),
-                                label: const Text('Scan again'),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width: 16),
+                                  FilledButton.icon(
+                                    onPressed: () => _showAddCardDialog(context, vm),
+                                    icon: const Icon(Icons.add_card, size: 18),
+                                    label: const Text('Add this card'),
+                                  ),
+                                ],
                               ),
                             ],
                           ],
@@ -124,5 +130,60 @@ class _ScannerViewState extends State<ScannerView> {
         ),
       ),
     );
+  }
+
+  Future<void> _showAddCardDialog(BuildContext context, ScannerViewModel vm) async {
+    final cardNameController = TextEditingController();
+    final cardholderNameController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Add Fidelity Card'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: cardNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Card Name',
+                  hintText: 'e.g. Store Loyalty Card',
+                ),
+                autofocus: true,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: cardholderNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Cardholder Name',
+                  hintText: 'e.g. John Doe',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      vm.addThisCard(
+        cardNameController.text.trim(),
+        cardholderNameController.text.trim(),
+      );
+    }
+
+    //cardNameController.dispose();
+    //cardholderNameController.dispose();
   }
 }

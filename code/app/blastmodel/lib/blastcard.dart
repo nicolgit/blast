@@ -123,6 +123,10 @@ class BlastCard {
     card.tags.add("money");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
+      ..name = "icon"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"
       ..value = "");
     card.rows.add(BlastAttribute()
@@ -144,6 +148,10 @@ class BlastCard {
     BlastCard card = BlastCard();
     card.title = "website name";
     card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
+      ..name = "icon"
+      ..value = "");
+    card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeURL
       ..name = "URL"
       ..value = "");
@@ -164,10 +172,14 @@ class BlastCard {
     card.tags.add("personal");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
+      ..name = "icon"
+      ..value = "");
+    card.rows.add(BlastAttribute()
+      ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"
       ..value = "");
     card.rows.add(BlastAttribute()
-      ..type = BlastAttributeType.typePassword
+      ..type = BlastAttributeType.typeString
       ..name = "Card Number"
       ..value = "");
     return card;

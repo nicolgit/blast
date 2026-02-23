@@ -31,9 +31,24 @@ platform :android do
   end
 
   desc "Publish a draft release to internal track"
-  lane :publish do
+  lane :publishinternal do
     upload_to_play_store(
       track: 'internal',
+      release_status: 'completed',
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Promote internal track release to production"
+  lane :publishproduction do
+    upload_to_play_store(
+      track: 'internal',
+      track_promote_to: 'production',
       release_status: 'completed',
       skip_upload_apk: true,
       skip_upload_aab: true,

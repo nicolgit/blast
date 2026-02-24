@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/settings_viewmodel.dart';
 import 'package:blastapp/main.dart';
+import 'package:blastapp/blastwidget/blast_setting_switch.dart';
 import 'package:blastmodel/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -106,22 +107,12 @@ class _SettingsViewState extends State<SettingsView> {
                                         ),
 
                                         // toogle switch for qrcode view
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text("remember last QR code view used", style: _textTheme.bodyLarge),
-                                            FutureBuilder<bool>(
-                                                future: vm.rememberLastQrCodeView,
-                                                builder: (BuildContext context, AsyncSnapshot<bool> remember) {
-                                                  return Switch(
-                                                    value: remember.hasData ? remember.data! : false,
-                                                    onChanged: (bool value) async {
-                                                      await vm.setRememberLastQrCodeView();
-                                                    },
-                                                    activeColor: _theme.colorScheme.primary,
-                                                  );
-                                                }),
-                                          ],
+                                        BlastSettingSwitch(
+                                          label: "remember last QR code view used",
+                                          future: vm.rememberLastQrCodeView,
+                                          onChanged: (_) => vm.setRememberLastQrCodeView(),
+                                          textTheme: _textTheme,
+                                          theme: _theme,
                                         ),
 
                                         // show QrCodeViewStyle if rememberlastQR is enabled
@@ -181,22 +172,12 @@ class _SettingsViewState extends State<SettingsView> {
                                               thickness: 1,
                                               height: 1,
                                             )),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text("auto save changes", style: _textTheme.bodyLarge),
-                                            FutureBuilder<bool>(
-                                                future: vm.autoSave,
-                                                builder: (BuildContext context, AsyncSnapshot<bool> autoSave) {
-                                                  return Switch(
-                                                    value: autoSave.hasData ? autoSave.data! : false,
-                                                    onChanged: (bool value) async {
-                                                      await vm.setAutoSave(value);
-                                                    },
-                                                    activeColor: _theme.colorScheme.primary,
-                                                  );
-                                                }),
-                                          ],
+                                        BlastSettingSwitch(
+                                          label: "auto save changes",
+                                          future: vm.autoSave,
+                                          onChanged: (value) => vm.setAutoSave(value),
+                                          textTheme: _textTheme,
+                                          theme: _theme,
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,22 +204,12 @@ class _SettingsViewState extends State<SettingsView> {
                                                 })
                                           ],
                                         ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text("ask for biometric authentication", style: _textTheme.bodyLarge),
-                                            FutureBuilder<bool>(
-                                                future: vm.askForBiometricAuth,
-                                                builder: (BuildContext context, AsyncSnapshot<bool> askBiometric) {
-                                                  return Switch(
-                                                    value: askBiometric.hasData ? askBiometric.data! : true,
-                                                    onChanged: (bool value) async {
-                                                      await vm.setAskForBiometricAuth(value);
-                                                    },
-                                                    activeColor: _theme.colorScheme.primary,
-                                                  );
-                                                }),
-                                          ],
+                                        BlastSettingSwitch(
+                                          label: "ask for biometric authentication",
+                                          future: vm.askForBiometricAuth,
+                                          onChanged: (value) => vm.setAskForBiometricAuth(value),
+                                          textTheme: _textTheme,
+                                          theme: _theme,
                                         ),
                                       ],
                                     )))

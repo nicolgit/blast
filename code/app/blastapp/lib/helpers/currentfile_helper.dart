@@ -9,14 +9,16 @@ import 'package:flutter/foundation.dart';
 
 class CurrentFileHelper {
   static Future load(BlastFile file, String? cloudCachedCredentials) async {
-    CurrentFileService().reset();
-    CurrentFileService().cloud = await SettingService().getCloudStorageById(file.cloudId);
-    CurrentFileService().cloud!.cachedCredentials = cloudCachedCredentials ?? '';
-    CurrentFileService().currentFileInfo = file;
+    final cfs = CurrentFileService();
 
-    final myFile = await CurrentFileService().cloud!.getFile(CurrentFileService().currentFileInfo!.fileUrl);
-    CurrentFileService().currentFileInfo?.lastModified = myFile.lastModified;
-    CurrentFileService().currentFileEncrypted = myFile.data;
+    cfs.reset();
+    cfs.cloud = await SettingService().getCloudStorageById(file.cloudId);
+    cfs.cloud!.cachedCredentials = cloudCachedCredentials ?? '';
+    cfs.currentFileInfo = file;
+
+    final myFile = await cfs.cloud!.getFile(cfs.currentFileInfo!.fileUrl);
+    cfs.currentFileInfo?.lastModified = myFile.lastModified;
+    cfs.currentFileEncrypted = myFile.data;
   }
 
   static Future decrypt(
@@ -25,7 +27,8 @@ class CurrentFileHelper {
       'type': passwordType,
       'password': password,
       'recoveryKey': recoveryKey,
-      'currentFileEncrypted': CurrentFileService().currentFileEncrypted!
+      'currentFileEncrypted': CurrentFileService().currentFileEncrypted!,
+      'iterations': CurrentFileService().iterations
     };
 
     Map<String, dynamic> resultMap = await compute(_checkPasswordComputation, inputData);
@@ -36,6 +39,7 @@ class CurrentFileHelper {
     CurrentFileService().password = resultMap['password'];
     CurrentFileService().salt = resultMap['salt'];
     CurrentFileService().iv = resultMap['iv'];
+    CurrentFileService().iterations = resultMap['iterations'];
   }
 
   static Map<String, dynamic> _checkPasswordComputation(Map<String, dynamic> inputData) {
@@ -43,6 +47,7 @@ class CurrentFileHelper {
     String password = inputData['password'];
     String recoveryKey = inputData['recoveryKey'];
     Uint8List currentFileEncrypted = inputData['currentFileEncrypted'];
+    int iterations = inputData['iterations'];
 
     CurrentFileService currentFileService = CurrentFileService();
 
@@ -55,11 +60,13 @@ class CurrentFileHelper {
 
       currentFileService.password = '';
       currentFileService.key = recoveryKeyBinary;
+      currentFileService.iterations = iterations;
       currentFileService.currentFileJsonString =
           currentFileService.decodeFile(currentFileEncrypted, recoveryKey, PasskeyType.hexkey);
     } else {
       // password
       currentFileService.password = password;
+      currentFileService.iterations = iterations;
       currentFileService.currentFileJsonString =
           currentFileService.decodeFile(currentFileEncrypted, password, PasskeyType.password);
     }
@@ -73,7 +80,8 @@ class CurrentFileHelper {
       'binaryFile': currentFileService.currentFileDocument,
       'jsonFile': currentFileService.currentFileJsonString,
       'salt': currentFileService.salt,
-      'iv': currentFileService.iv
+      'iv': currentFileService.iv,
+      'iterations': currentFileService.iterations,
     };
 
     return resultMap;

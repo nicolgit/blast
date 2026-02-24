@@ -75,7 +75,7 @@ class SplashViewModel extends ChangeNotifier {
       }
     } else if (fileSelectionResult.action == FileSelectionAction.existingFile) {
       if (!myContext.mounted) return;
-      var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+      var isFileDecrypted = await myContext.router.push(TypePasswordRoute());
       if (isFileDecrypted != true) {
         return;
       }
@@ -100,7 +100,6 @@ class SplashViewModel extends ChangeNotifier {
       BlastBiometricStorageData? biometricData = await BiometricHelper.readData();
 
       await CurrentFileHelper.load(file, biometricData?.cloudCredentials);
-
       if (biometricData != null) {
         await CurrentFileHelper.decrypt(
             passwordType: PasswordType.password, password: biometricData.password, recoveryKey: "");
@@ -112,7 +111,7 @@ class SplashViewModel extends ChangeNotifier {
         notifyListeners();
 
         if (!myContext.mounted) return;
-        var isFileDecrypted = await myContext.router.push(const TypePasswordRoute());
+        var isFileDecrypted = await myContext.router.push(TypePasswordRoute());
         if (isFileDecrypted == false || isFileDecrypted == null) {
           return;
         }
@@ -124,7 +123,7 @@ class SplashViewModel extends ChangeNotifier {
     } catch (e) {
       SettingService().setBiometricAuthEnabled(false);
       CurrentFileService().cloud!.cachedCredentials = null;
-      print(e);
+      print('Error loading recent file: $e');
     } finally {
       isLoading = false;
       notifyListeners();

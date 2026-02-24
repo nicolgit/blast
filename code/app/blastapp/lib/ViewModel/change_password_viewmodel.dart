@@ -5,10 +5,19 @@ import 'package:flutter/material.dart';
 class ChangePasswordViewModel extends ChangeNotifier {
   BuildContext context;
 
-  ChangePasswordViewModel(this.context);
+  ChangePasswordViewModel(this.context) {
+    final currentIterations = CurrentFileService().iterations;
+    final index = iterationsList.indexOf(currentIterations);
+    if (index != -1) {
+      iterationLevel = index;
+    }
+  }
+
+  static const List<int> iterationsList = [1000, 10000, 100000, 200000, 300000, 500000, 1000000];
 
   String password = '';
   String passwordConfirm = '';
+  int iterationLevel = 2;
 
   void setPassword(String value) {
     password = value;
@@ -17,6 +26,11 @@ class ChangePasswordViewModel extends ChangeNotifier {
 
   void setConfirmPassword(String value) {
     passwordConfirm = value;
+    notifyListeners();
+  }
+
+  void setIterationLevel(int level) {
+    iterationLevel = level;
     notifyListeners();
   }
 
@@ -29,11 +43,13 @@ class ChangePasswordViewModel extends ChangeNotifier {
   }
 
   Future<void> acceptPassword() async {
+    int selectedIterations = iterationsList[iterationLevel];
+
+    CurrentFileService().iterations = selectedIterations;
     CurrentFileService().newPassword(password);
-    CurrentFileService().currentFileJsonString =
-        CurrentFileService().currentFileDocument.toString();
-    CurrentFileService().currentFileEncrypted = CurrentFileService()
-        .encodeFile(CurrentFileService().currentFileJsonString!);
+    CurrentFileService().currentFileJsonString = CurrentFileService().currentFileDocument.toString();
+    CurrentFileService().currentFileEncrypted =
+        CurrentFileService().encodeFile(CurrentFileService().currentFileJsonString!);
 
     notifyListeners();
 

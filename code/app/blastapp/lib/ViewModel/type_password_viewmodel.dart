@@ -15,6 +15,7 @@ enum PasswordType {
 
 class TypePasswordViewModel extends ChangeNotifier {
   late BuildContext context;
+  bool forceSkipBiometricQuestion = false;
 
   TypePasswordViewModel();
 
@@ -115,6 +116,7 @@ class TypePasswordViewModel extends ChangeNotifier {
         // biometric authentication support (no web)
         if (!kIsWeb &&
             biometricAuthIntegration &&
+            !forceSkipBiometricQuestion &&
             response == CanAuthenticateResponse.success &&
             await SettingService().askForBiometricAuth) {
           if (!context.mounted) return false;

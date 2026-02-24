@@ -69,8 +69,6 @@ class CurrentFileService {
     }
     this.iv = iv;
 
-    iterations = defaultIterations;
-
     // Generate Key
     key = _generateMasterKey(salt, iterations, password);
   }

@@ -385,6 +385,22 @@ class PasswordGeneratorRouteArgs {
 }
 
 /// generated route for
+/// [ScannerView]
+class ScannerRoute extends PageRouteInfo<void> {
+  const ScannerRoute({List<PageRouteInfo>? children})
+      : super(ScannerRoute.name, initialChildren: children);
+
+  static const String name = 'ScannerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ScannerView();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsView]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
@@ -418,16 +434,59 @@ class SplashRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [TypePasswordView]
-class TypePasswordRoute extends PageRouteInfo<void> {
-  const TypePasswordRoute({List<PageRouteInfo>? children})
-      : super(TypePasswordRoute.name, initialChildren: children);
+class TypePasswordRoute extends PageRouteInfo<TypePasswordRouteArgs> {
+  TypePasswordRoute({
+    Key? key,
+    bool forceSkipBiometricQuestion = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TypePasswordRoute.name,
+          args: TypePasswordRouteArgs(
+            key: key,
+            forceSkipBiometricQuestion: forceSkipBiometricQuestion,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'TypePasswordRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const TypePasswordView();
+      final args = data.argsAs<TypePasswordRouteArgs>(
+        orElse: () => const TypePasswordRouteArgs(),
+      );
+      return TypePasswordView(
+        key: args.key,
+        forceSkipBiometricQuestion: args.forceSkipBiometricQuestion,
+      );
     },
   );
+}
+
+class TypePasswordRouteArgs {
+  const TypePasswordRouteArgs({
+    this.key,
+    this.forceSkipBiometricQuestion = false,
+  });
+
+  final Key? key;
+
+  final bool forceSkipBiometricQuestion;
+
+  @override
+  String toString() {
+    return 'TypePasswordRouteArgs{key: $key, forceSkipBiometricQuestion: $forceSkipBiometricQuestion}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TypePasswordRouteArgs) return false;
+    return key == other.key &&
+        forceSkipBiometricQuestion == other.forceSkipBiometricQuestion;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ forceSkipBiometricQuestion.hashCode;
 }

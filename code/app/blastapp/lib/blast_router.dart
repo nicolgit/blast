@@ -11,6 +11,7 @@ import 'package:blastapp/View/create_password_view.dart';
 import 'package:blastapp/View/eula_view.dart';
 import 'package:blastapp/View/importer_view.dart';
 import 'package:blastapp/View/password_generator_view.dart';
+import 'package:blastapp/View/scanner_view.dart';
 import 'package:blastapp/View/settings_view.dart';
 import 'package:blastapp/View/splash_view.dart';
 import 'package:blastapp/View/field_view.dart';
@@ -41,6 +42,7 @@ class BlastRouter extends RootStackRouter {
         AutoRoute(page: ImporterRoute.page),
         AutoRoute(page: CardFileInfoRoute.page),
         AutoRoute(page: PasswordGeneratorRoute.page),
+        AutoRoute(page: ScannerRoute.page),
         AutoRoute(page: SettingsRoute.page),
       ];
 }

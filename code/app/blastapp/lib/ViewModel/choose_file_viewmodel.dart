@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/blastfile.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 enum FileSelectionAction { newFile, existingFile }
@@ -113,5 +115,41 @@ class ChooseFileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void copyToClipboard(param0) {}
+  void goToFolderCommand() async {
+    // Check if platform is available (not web) and is Windows
+    bool isWindows = false;
+    try {
+      isWindows = Platform.isWindows;
+    } catch (e) {
+      // Platform is not available (likely web), so return early
+      return;
+    }
+
+    if (!isWindows) return;
+
+    try {
+      String? selectedPath = await FilePicker.platform.getDirectoryPath();
+
+      if (selectedPath != null) {
+        currentPath = Future.value(selectedPath);
+        _cachedFiles = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error selecting folder: $e'),
+        ));
+      }
+    }
+  }
+
+  bool get shouldShowGoToFolderButton {
+    try {
+      return Platform.isWindows && currentFileService.cloud?.id == "LOCAL";
+    } catch (e) {
+      // Platform is not available (likely web), so return false
+      return false;
+    }
+  }
 }

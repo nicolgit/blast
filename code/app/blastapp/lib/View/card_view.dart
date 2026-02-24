@@ -47,6 +47,17 @@ class _CardViewState extends State<CardView> {
             appBar: AppBar(
               title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
               actions: [
+                Row(
+                  children: [
+                    const Text('Edit Mode'),
+                    Switch(
+                      value: vm.editMode,
+                      onChanged: (value) {
+                        vm.toggleEditMode(value);
+                      },
+                    ),
+                  ],
+                ),
                 IconButton(
                   icon: const Icon(Icons.edit),
                   tooltip: 'Edit',
@@ -132,7 +143,9 @@ class _CardViewState extends State<CardView> {
 
     for (int index = 0; index < cardsList.length; index++) {
       children.add(_widgetFactory.buildAttributeRow(context, cardsList[index], index, vm.toggleShowPassword,
-          vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl));
+          vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl, vm.editMode, (attribute) {
+        _showEditFieldDialog(context, attribute, vm);
+      }));
     }
 
     if (vm.currentCard.notes != null) {
@@ -140,6 +153,40 @@ class _CardViewState extends State<CardView> {
     }
 
     return Column(children: children);
+  }
+
+  void _showEditFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
+    final controller = TextEditingController(text: attribute.value);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(attribute.name, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+        content: TextField(
+          controller: controller,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: 'Value',
+            labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              vm.updateAttributeValue(attribute, controller.text);
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Wrap _rowOfTags(List<String> tags) {

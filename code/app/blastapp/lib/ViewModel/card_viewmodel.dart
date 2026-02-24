@@ -17,6 +17,7 @@ class CardViewModel extends ChangeNotifier {
   final _settingsService = SettingService();
 
   var cardHasBeenUsed = false;
+  bool editMode = false;
 
   List<bool> showPasswordRow = [];
   late Timer _timer;
@@ -59,6 +60,17 @@ class CardViewModel extends ChangeNotifier {
 
   bool isPasswordRowVisible(int row) {
     return showPasswordRow[row];
+  }
+
+  void toggleEditMode(bool value) {
+    editMode = value;
+    notifyListeners();
+  }
+
+  void updateAttributeValue(BlastAttribute attribute, String newValue) {
+    attribute.value = newValue;
+    _blastDocumentChanged();
+    notifyListeners();
   }
 
   Future openUrl(String urlString) async {

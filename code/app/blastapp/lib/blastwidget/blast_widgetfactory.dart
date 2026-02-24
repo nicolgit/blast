@@ -90,7 +90,9 @@ class BlastWidgetFactory {
       bool Function(int) isPasswordRowVisible,
       Function(String) copyToClipboard,
       Function(String) showFieldView,
-      Function(String) openUrl) {
+      Function(String) openUrl,
+      bool editMode,
+      Function(BlastAttribute) editField) {
     String name = attribute.name;
     String value = attribute.value;
     final type = attribute.type;
@@ -137,32 +139,42 @@ class BlastWidgetFactory {
                                 style: textTheme.labelSmall,
                               ),
                               trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                                Visibility(
-                                  visible: !isPasswordRowVisible(index),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      toggleShowPassword(index);
-                                    },
-                                    icon: const Icon(Icons.visibility_off),
-                                    tooltip: 'hide',
+                                if (!editMode)
+                                  Visibility(
+                                    visible: !isPasswordRowVisible(index),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        toggleShowPassword(index);
+                                      },
+                                      icon: const Icon(Icons.visibility_off),
+                                      tooltip: 'hide',
+                                    ),
                                   ),
-                                ),
-                                Visibility(
-                                  visible: isPasswordRowVisible(index),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      toggleShowPassword(index);
-                                    },
-                                    icon: const Icon(Icons.visibility),
-                                    tooltip: 'show',
+                                if (!editMode)
+                                  Visibility(
+                                    visible: isPasswordRowVisible(index),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        toggleShowPassword(index);
+                                      },
+                                      icon: const Icon(Icons.visibility),
+                                      tooltip: 'show',
+                                    ),
                                   ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      copyToClipboard(value);
-                                    },
-                                    icon: const Icon(Icons.copy),
-                                    tooltip: 'copy to clipboard'),
+                                if (!editMode)
+                                  IconButton(
+                                      onPressed: () {
+                                        copyToClipboard(value);
+                                      },
+                                      icon: const Icon(Icons.copy),
+                                      tooltip: 'copy to clipboard'),
+                                if (editMode)
+                                  IconButton(
+                                      onPressed: () {
+                                        editField(attribute);
+                                      },
+                                      icon: const Icon(Icons.edit),
+                                      tooltip: 'edit field'),
                               ]),
                               onTap: () async {
                                 showFieldView(value);
@@ -200,12 +212,20 @@ class BlastWidgetFactory {
                             style: textTheme.labelSmall,
                           ),
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            IconButton(
-                                onPressed: () {
-                                  copyToClipboard(value);
-                                },
-                                icon: const Icon(Icons.copy),
-                                tooltip: 'copy to clipboard'),
+                            if (!editMode)
+                              IconButton(
+                                  onPressed: () {
+                                    copyToClipboard(value);
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  tooltip: 'copy to clipboard'),
+                            if (editMode)
+                              IconButton(
+                                  onPressed: () {
+                                    editField(attribute);
+                                  },
+                                  icon: const Icon(Icons.edit),
+                                  tooltip: 'edit field'),
                           ]),
                           onTap: () async {
                             showFieldView(value);
@@ -234,12 +254,20 @@ class BlastWidgetFactory {
                             style: textTheme.labelSmall,
                           ),
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            IconButton(
-                                onPressed: () {
-                                  copyToClipboard(value);
-                                },
-                                icon: const Icon(Icons.copy),
-                                tooltip: 'copy to clipboard'),
+                            if (!editMode)
+                              IconButton(
+                                  onPressed: () {
+                                    copyToClipboard(value);
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  tooltip: 'copy to clipboard'),
+                            if (editMode)
+                              IconButton(
+                                  onPressed: () {
+                                    editField(attribute);
+                                  },
+                                  icon: const Icon(Icons.edit),
+                                  tooltip: 'edit field'),
                           ]),
                           onTap: () async {
                             showFieldView(value);

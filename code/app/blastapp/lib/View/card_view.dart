@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/blastwidget/blast_attribute_row.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastmodel/blastattribute.dart';
@@ -142,10 +143,19 @@ class _CardViewState extends State<CardView> {
     List<Widget> children = [];
 
     for (int index = 0; index < cardsList.length; index++) {
-      children.add(_widgetFactory.buildAttributeRow(context, cardsList[index], index, vm.toggleShowPassword,
-          vm.isPasswordRowVisible, vm.copyToClipboard, vm.showFieldView, vm.openUrl, vm.editMode, (attribute) {
-        _showEditFieldDialog(context, attribute, vm);
-      }));
+      children.add(BlastAttributeRow(
+        attribute: cardsList[index],
+        index: index,
+        toggleShowPassword: vm.toggleShowPassword,
+        isPasswordRowVisible: vm.isPasswordRowVisible,
+        copyToClipboard: vm.copyToClipboard,
+        showFieldView: vm.showFieldView,
+        openUrl: vm.openUrl,
+        editMode: vm.editMode,
+        editField: (attribute) {
+          _showEditFieldDialog(context, attribute, vm);
+        },
+      ));
     }
 
     if (vm.currentCard.notes != null) {

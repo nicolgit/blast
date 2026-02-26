@@ -17,7 +17,7 @@ class BlastOAuthMobile extends BlastOAuth {
       }
     } catch (e) {
       // unable to reuse the cached credential
-      print(e);
+      //print(e);
     }
 
     var grant = oauth2.AuthorizationCodeGrant(applicationId, authorizationEndpoint, tokenEndpoint);

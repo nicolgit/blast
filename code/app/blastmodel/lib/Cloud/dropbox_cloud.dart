@@ -204,7 +204,7 @@ class DropboxCloud extends Cloud {
       final fileContent = Uint8List.fromList(downloadResponse.bodyBytes);
 
       if (kDebugMode) {
-        print('Dropbox file downloaded: ${id}');
+        print('Dropbox file downloaded: $id');
       }
 
       return CloudFile(data: fileContent, lastModified: lastModified, id: id);

@@ -98,7 +98,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                       decoration: InputDecoration(
                         hintText: 'Search icons...',
                         hintStyle: _theme.textTheme.bodyMedium?.copyWith(
-                          color: _theme.colorScheme.onSurface.withOpacity(0.5),
+                          color: _theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                         prefixIcon: Icon(Icons.search, color: _theme.colorScheme.onSurface),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -160,7 +160,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                     child: Text(
                       'Icons from simpleicons.org',
                       style: _theme.textTheme.bodySmall?.copyWith(
-                        color: _theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: _theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   ),
@@ -194,7 +194,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                       return Icon(
                         Icons.image_not_supported,
                         size: 64,
-                        color: _theme.colorScheme.onSurface.withOpacity(0.3),
+                        color: _theme.colorScheme.onSurface.withValues(alpha: 0.3),
                       );
                     }
 

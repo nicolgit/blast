@@ -123,7 +123,7 @@ class SplashViewModel extends ChangeNotifier {
     } catch (e) {
       SettingService().setBiometricAuthEnabled(false);
       CurrentFileService().cloud!.cachedCredentials = null;
-      print('Error loading recent file: $e');
+      //print('Error loading recent file: $e');
     } finally {
       isLoading = false;
       notifyListeners();

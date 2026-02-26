@@ -38,6 +38,7 @@ dependencies:
   pdf: ^3.11.0
   markdown_widget: ^2.3.2
   flutter_svg: ^1.1.6
+  window_manager: ^0.5.1
 
 flutter_launcher_icons:
   image_path: "assets/app-icon.png"

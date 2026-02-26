@@ -53,7 +53,7 @@ class BlastCardIcon extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       color: card.isFavorite ? Colors.amber : Theme.of(context).colorScheme.primary,
       border: Border.all(
-        color: card.isFavorite ? Colors.amber : Theme.of(context).colorScheme.outline.withOpacity(0.2),
+        color: card.isFavorite ? Colors.amber : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
         width: card.isFavorite ? 2.0 : 0.5,
       ),
     );

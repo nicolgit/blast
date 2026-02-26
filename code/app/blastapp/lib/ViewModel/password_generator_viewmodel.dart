@@ -374,11 +374,6 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     return result;
   }
 
-  List<String> _getFallbackWords() {
-    final fallbackWords = ['unable', 'to', 'connect', 'wikidata', 'api'];
-    return fallbackWords;
-  }
-
   Future<void> _populateWordsFromAPI() async {
     try {
       // Fetch a larger set of words (50) from Wikidata SPARQL API using selected language

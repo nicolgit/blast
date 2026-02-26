@@ -277,7 +277,7 @@ class LoremCloud extends Cloud {
           nextWord = "**$nextWord**";
         }
         if (randomMarkdown == 1) {
-          nextWord = "*${nextWord}*";
+          nextWord = "*$nextWord*";
         }
       }
       result += nextWord;

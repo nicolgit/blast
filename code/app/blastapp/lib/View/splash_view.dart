@@ -87,7 +87,7 @@ class _SplashViewState extends State<SplashView> {
                 ))));
   }
 
-  Widget _buildBody(context, SplashViewModel vm) {
+  Widget _buildBody(BuildContext context, SplashViewModel vm) {
     return SingleChildScrollView(
         child: Center(
             child: Column(
@@ -181,7 +181,7 @@ class _SplashViewState extends State<SplashView> {
 
     // Check if files list is empty or null
     if (files.isEmpty) {
-      return Container(
+      return SizedBox(
         height: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -282,7 +282,7 @@ class _SplashViewState extends State<SplashView> {
             child: Material(
                 borderRadius: BorderRadius.circular(16),
                 elevation: 2,
-                shadowColor: _theme.colorScheme.shadow.withOpacity(0.1),
+                shadowColor: _theme.colorScheme.shadow.withValues(alpha: 0.1),
                 color: _theme.colorScheme.surfaceContainerLow,
                 child: InkWell(
                     borderRadius: BorderRadius.circular(16),
@@ -301,7 +301,7 @@ class _SplashViewState extends State<SplashView> {
                                   width: 56,
                                   height: 56,
                                   decoration: BoxDecoration(
-                                    color: _theme.colorScheme.primaryContainer.withOpacity(0.3),
+                                    color: _theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: ClipRRect(

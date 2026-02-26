@@ -189,7 +189,6 @@ class _CardEditViewState extends State<CardEditView> {
     return myList;
   }
 
-
   Future _showChangedDialog(BuildContext context, CardEditViewModel vm) async {
     if (!vm.isChanged) {
       vm.cancelCommand();

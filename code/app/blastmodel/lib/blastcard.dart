@@ -119,12 +119,8 @@ class BlastCard {
 
   factory BlastCard.createCreditCard() {
     BlastCard card = BlastCard();
-    card.title = "card name";
+    card.title = "";
     card.tags.add("money");
-    card.rows.add(BlastAttribute()
-      ..type = BlastAttributeType.typeString
-      ..name = "icon"
-      ..value = "");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"
@@ -146,11 +142,7 @@ class BlastCard {
 
   factory BlastCard.createWebCard() {
     BlastCard card = BlastCard();
-    card.title = "website name";
-    card.rows.add(BlastAttribute()
-      ..type = BlastAttributeType.typeString
-      ..name = "icon"
-      ..value = "");
+    card.title = "";
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeURL
       ..name = "URL"
@@ -168,12 +160,8 @@ class BlastCard {
 
   factory BlastCard.createFidelityCard() {
     BlastCard card = BlastCard();
-    card.title = "fidelity card name";
+    card.title = "";
     card.tags.add("personal");
-    card.rows.add(BlastAttribute()
-      ..type = BlastAttributeType.typeString
-      ..name = "icon"
-      ..value = "");
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
       ..name = "Cardholder Name"
@@ -187,7 +175,7 @@ class BlastCard {
 
   factory BlastCard.createWifiCredentialsCard() {
     BlastCard card = BlastCard();
-    card.title = "Wi-Fi Network";
+    card.title = "";
     card.rows.add(BlastAttribute()
       ..type = BlastAttributeType.typeString
       ..name = "Network Name (SSID)"

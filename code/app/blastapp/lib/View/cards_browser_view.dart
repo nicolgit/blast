@@ -8,6 +8,7 @@ import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/secrets.dart';
+import 'package:blastapp/helpers/populate_card_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -762,11 +763,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         ),
                         title: const Text('Credit Card', style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text('Create a new creditcard', style: TextStyle(fontSize: 12)),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
-                          vm.addCreditCard().then((value) {
-                            vm.refreshCardListCommand();
-                          });
+                          await vm.addCreditCard();
+                          vm.refreshCardListCommand();
                         },
                       ),
 
@@ -778,11 +778,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         ),
                         title: const Text('Web credentials', style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text('Create a new web credential card', style: TextStyle(fontSize: 12)),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
-                          vm.addWebCard().then((value) {
-                            vm.refreshCardListCommand();
-                          });
+                          await vm.addWebCard();
+                          vm.refreshCardListCommand();
                         },
                       ),
 
@@ -794,11 +793,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         ),
                         title: const Text('Wi-Fi credentials', style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text('Create a new WiFi credential card', style: TextStyle(fontSize: 12)),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
-                          vm.addWifiCredentialsCard().then((value) {
-                            vm.refreshCardListCommand();
-                          });
+                          await vm.addWifiCredentialsCard();
+                          vm.refreshCardListCommand();
                         },
                       ),
 
@@ -810,11 +808,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         ),
                         title: const Text('Fidelity Card', style: TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: const Text('Create a new fidelity card', style: TextStyle(fontSize: 12)),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
-                          vm.addFidelityCard().then((value) {
-                            vm.refreshCardListCommand();
-                          });
+                          await vm.addFidelityCard();
+                          vm.refreshCardListCommand();
                         },
                       ),
 

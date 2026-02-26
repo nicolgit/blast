@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/helpers/populate_card_helper.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -104,24 +105,44 @@ class CardsBrowserViewModel extends ChangeNotifier {
     await context.router.push(CardEditRoute());
   }
 
-  Future addCreditCard() async {
-    fileService.currentFileDocument!.cards.insert(0, BlastCard.createCreditCard());
-    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
-  }
+  Future addWebCard() async {
+    final card = BlastCard.createWebCard();
+    final confirmed = await PopulateCardHelper.populateCard(context, card);
 
-  Future addWebCard() {
-    fileService.currentFileDocument!.cards.insert(0, BlastCard.createWebCard());
-    return context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+    if (confirmed && context.mounted) {
+      fileService.currentFileDocument!.cards.insert(0, card);
+      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+    }
   }
 
   Future addFidelityCard() async {
-    fileService.currentFileDocument!.cards.insert(0, BlastCard.createFidelityCard());
-    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+    final card = BlastCard.createFidelityCard();
+    final confirmed = await PopulateCardHelper.populateCard(context, card);
+
+    if (confirmed && context.mounted) {
+      fileService.currentFileDocument!.cards.insert(0, card);
+      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+    }
   }
 
   Future addWifiCredentialsCard() async {
-    fileService.currentFileDocument!.cards.insert(0, BlastCard.createWifiCredentialsCard());
-    await context.router.push(CardEditRoute(card: fileService.currentFileDocument!.cards[0]));
+    final card = BlastCard.createWifiCredentialsCard();
+    final confirmed = await PopulateCardHelper.populateCard(context, card);
+
+    if (confirmed && context.mounted) {
+      fileService.currentFileDocument!.cards.insert(0, card);
+      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+    }
+  }
+
+  Future addCreditCard() async {
+    final card = BlastCard.createCreditCard();
+    final confirmed = await PopulateCardHelper.populateCard(context, card);
+
+    if (confirmed && context.mounted) {
+      fileService.currentFileDocument!.cards.insert(0, card);
+      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+    }
   }
 
   void deleteCard(BlastCard card) {

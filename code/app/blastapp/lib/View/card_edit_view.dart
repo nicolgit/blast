@@ -3,6 +3,7 @@ import 'package:blastapp/ViewModel/card_edit_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_attribute_edit.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
+import 'package:blastapp/helpers/delete_card_helper.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
@@ -94,7 +95,10 @@ class _CardEditViewState extends State<CardEditView> {
                           icon: const Icon(Icons.delete),
                           tooltip: 'Delete',
                           onPressed: () async {
-                            await _showDeleteCardDialog(context, vm);
+                            final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, vm.currentCard);
+                            if (confirmed) {
+                              vm.deleteCard();
+                            }
                           },
                         ),
                       ],
@@ -266,36 +270,6 @@ class _CardEditViewState extends State<CardEditView> {
                 child: const Text('Yes'),
                 onPressed: () => {
                       vm.saveCommand(saveAndExit: true),
-                      Navigator.pop(context),
-                    }),
-          ],
-        );
-      },
-    );
-  }
-
-  Future _showDeleteCardDialog(BuildContext context, CardEditViewModel vm) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              const Text('Delete '),
-              Text('${vm.currentCard.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-          content: const Text('Are you sure you want to delete this card and all its content?'),
-          actions: <Widget>[
-            TextButton(
-                child: const Text('No'),
-                onPressed: () => {
-                      Navigator.pop(context),
-                    }),
-            TextButton(
-                child: const Text('Yes please!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                onPressed: () => {
-                      vm.deleteCard(),
                       Navigator.pop(context),
                     }),
           ],

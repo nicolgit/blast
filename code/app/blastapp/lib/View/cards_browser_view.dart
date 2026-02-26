@@ -9,6 +9,7 @@ import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:blastapp/helpers/populate_card_helper.dart';
+import 'package:blastapp/helpers/delete_card_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -404,7 +405,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               onEditPressed: (card) => vm.editCard(card).then((value) {
                 vm.refreshCardListCommand();
               }),
-              onDeletePressed: (card) => _showDeleteCardDialog(context, vm, card),
+              onDeletePressed: (card) async {
+                final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, card);
+                if (confirmed) {
+                  vm.deleteCard(card);
+                }
+              },
               onFavoritePressed: (card) {
                 card.isFavorite = !card.isFavorite;
                 card.lastUpdateDateTime = DateTime.now();
@@ -521,37 +527,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
     return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
-  }
-
-  Future _showDeleteCardDialog(BuildContext context, CardsBrowserViewModel vm, BlastCard card) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              const Text('Delete '),
-              Text('${card.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
-          content: const Text('Are you sure you want to delete this card and all its content?'),
-          actions: <Widget>[
-            TextButton(
-                child: const Text('No'),
-                onPressed: () => {
-                      Navigator.pop(context),
-                    }),
-            TextButton(
-                child: const Text('Yes please!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                onPressed: () => {
-                      vm.deleteCard(card),
-                      Navigator.pop(context),
-                    }),
-          ],
-        );
-      },
-    );
   }
 
   final _searchController = TextEditingController();

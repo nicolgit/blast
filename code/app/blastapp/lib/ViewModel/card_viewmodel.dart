@@ -67,6 +67,22 @@ class CardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateTitle(String value) {
+    if (value != currentCard.title) {
+      currentCard.title = value;
+      _blastDocumentChanged();
+      notifyListeners();
+    }
+  }
+
+  void updateNotes(String value) {
+    if (value != currentCard.notes) {
+      currentCard.notes = value;
+      _blastDocumentChanged();
+      notifyListeners();
+    }
+  }
+
   void updateAttributeValue(BlastAttribute attribute, String newValue) {
     attribute.value = newValue;
     _blastDocumentChanged();

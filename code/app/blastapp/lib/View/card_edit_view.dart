@@ -4,6 +4,7 @@ import 'package:blastapp/blastwidget/blast_attribute_edit.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/helpers/delete_card_helper.dart';
+import 'package:blastapp/helpers/notes_input_dialog.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
@@ -188,55 +189,6 @@ class _CardEditViewState extends State<CardEditView> {
     return myList;
   }
 
-  Future<String> _displayTextInputDialog(BuildContext context, String valueText) async {
-    final oldValue = valueText;
-
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('notes (some markdown is ok)', style: _widgetFactory.textTheme.headlineSmall),
-            content: TextField(
-              controller: TextEditingController()..text = valueText,
-              keyboardType: TextInputType.multiline,
-              minLines: 4,
-              maxLines: null,
-              style: _widgetFactory.textTheme.bodyMedium,
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              decoration: const InputDecoration(hintText: "type your notes here..."),
-            ),
-            actions: <Widget>[
-              MaterialButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                child: const Text('cancel'),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                    valueText = oldValue;
-                  });
-                },
-              ),
-              MaterialButton(
-                color: Colors.green,
-                textColor: Colors.white,
-                child: const Text('ok'),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-            ],
-          );
-        });
-
-    return valueText;
-  }
 
   Future _showChangedDialog(BuildContext context, CardEditViewModel vm) async {
     if (!vm.isChanged) {
@@ -369,7 +321,7 @@ class _CardEditViewState extends State<CardEditView> {
             TextButton(
               child: const Text('edit notes > '),
               onPressed: () async {
-                vm.updateNotes(await _displayTextInputDialog(context, vm.currentCard.notes ?? ""));
+                vm.updateNotes(await NotesInputDialog.show(context, vm.currentCard.notes ?? ""));
               },
             ),
             Expanded(

@@ -4,6 +4,7 @@ import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
+import 'package:blastapp/helpers/notes_input_dialog.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastcard.dart';
@@ -61,7 +62,7 @@ class _CardViewState extends State<CardView> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  tooltip: 'Edit',
+                  tooltip: 'advanced edit',
                   onPressed: () {
                     vm.editCommand();
                   },
@@ -101,6 +102,43 @@ class _CardViewState extends State<CardView> {
                         child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
                             textAlign: TextAlign.center,
                             style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
+                    if (vm.editMode)
+                      IconButton(
+                        icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+                        tooltip: 'Edit title',
+                        onPressed: () async {
+                          final controller = TextEditingController(text: vm.currentCard.title ?? "");
+                          final newTitle = await showDialog<String>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Edit title',
+                                  style: _widgetFactory.textTheme.headlineSmall!
+                                      .copyWith(color: _widgetFactory.theme.colorScheme.onSurface)),
+                              content: TextField(
+                                controller: controller,
+                                autofocus: true,
+                                style: _widgetFactory.textTheme.bodyMedium!
+                                    .copyWith(color: _widgetFactory.theme.colorScheme.onSurface),
+                                decoration: const InputDecoration(hintText: 'Card title'),
+                                onSubmitted: (value) => Navigator.pop(context, value),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, controller.text),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (newTitle != null) {
+                            vm.updateTitle(newTitle);
+                          }
+                        },
+                      ),
                   ],
                 ),
                 Padding(
@@ -232,19 +270,29 @@ class _CardViewState extends State<CardView> {
                         Text("Notes",
                             style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(Icons.copy, size: 18, color: _widgetFactory.theme.colorScheme.primary),
-                          tooltip: 'Copy notes to clipboard',
-                          onPressed: () {
-                            Clipboard.setData(ClipboardData(text: notes));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Notes copied to clipboard!"),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          },
-                        ),
+                        if (!vm.editMode)
+                          IconButton(
+                            icon: Icon(Icons.copy, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+                            tooltip: 'Copy notes to clipboard',
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: notes));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Notes copied to clipboard!"),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          ),
+                        if (vm.editMode)
+                          IconButton(
+                            icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+                            tooltip: 'Edit notes',
+                            onPressed: () async {
+                              final newNotes = await NotesInputDialog.show(context, notes);
+                              vm.updateNotes(newNotes);
+                            },
+                          ),
                       ],
                     ),
                     const SizedBox(height: 24),

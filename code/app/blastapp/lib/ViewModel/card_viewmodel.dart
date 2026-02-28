@@ -22,6 +22,7 @@ class CardViewModel extends ChangeNotifier {
   List<bool> showPasswordRow = [];
   late Timer _timer;
   final ValueNotifier<int> timeTextNotifier = ValueNotifier<int>(0);
+  bool _isDisposed = false;
 
   CardViewModel(this.context, this.currentCard) {
     showPasswordRow = List.filled(currentCard.rows.length, false);
@@ -45,7 +46,7 @@ class CardViewModel extends ChangeNotifier {
   void copyToClipboard(String value) async {
     await Clipboard.setData(ClipboardData(text: value));
     _markCardAsUsed();
-    notifyListeners();
+    _notifySafely();
   }
 
   void toggleShowPassword(int cardRow) {
@@ -55,7 +56,7 @@ class CardViewModel extends ChangeNotifier {
       _markCardAsUsed();
     }
 
-    notifyListeners();
+    _notifySafely();
   }
 
   bool isPasswordRowVisible(int row) {
@@ -64,14 +65,14 @@ class CardViewModel extends ChangeNotifier {
 
   void toggleEditMode(bool value) {
     editMode = value;
-    notifyListeners();
+    _notifySafely();
   }
 
   void updateTitle(String value) {
     if (value != currentCard.title) {
       currentCard.title = value;
       _blastDocumentChanged();
-      notifyListeners();
+      _notifySafely();
     }
   }
 
@@ -79,14 +80,14 @@ class CardViewModel extends ChangeNotifier {
     if (value != currentCard.notes) {
       currentCard.notes = value;
       _blastDocumentChanged();
-      notifyListeners();
+      _notifySafely();
     }
   }
 
   void updateAttributeValue(BlastAttribute attribute, String newValue) {
     attribute.value = newValue;
     _blastDocumentChanged();
-    notifyListeners();
+    _notifySafely();
   }
 
   Future openUrl(String urlString) async {
@@ -102,7 +103,7 @@ class CardViewModel extends ChangeNotifier {
 
     if (await canLaunchUrl(url)) {
       _markCardAsUsed();
-      notifyListeners();
+      _notifySafely();
 
       await launchUrl(url);
     } else {
@@ -113,13 +114,17 @@ class CardViewModel extends ChangeNotifier {
   Future editCommand() async {
     await context.router
         .push(CardEditRoute(card: currentCard))
-        .then((value) => {showPasswordRow = List.filled(currentCard.rows.length, false), notifyListeners()});
+        .then((value) {
+      if (_isDisposed) return;
+      showPasswordRow = List.filled(currentCard.rows.length, false);
+      _notifySafely();
+    });
 
     return Future.value();
   }
 
   void refresh() {
-    notifyListeners();
+    _notifySafely();
   }
 
   void _blastDocumentChanged() {
@@ -131,7 +136,7 @@ class CardViewModel extends ChangeNotifier {
     currentCard.isFavorite = !currentCard.isFavorite;
     CurrentFileService().currentFileDocument?.isChanged = true;
 
-    notifyListeners();
+    _notifySafely();
 
     if (await _settingsService.autoSave) {
       await _fileService.saveFile(false);
@@ -139,12 +144,12 @@ class CardViewModel extends ChangeNotifier {
       _blastDocumentChanged();
     }
 
-    notifyListeners();
+    _notifySafely();
   }
 
   void showFieldView(String value) async {
     _markCardAsUsed();
-    notifyListeners();
+    _notifySafely();
 
     await context.router.push(FieldRoute(value: value));
   }
@@ -160,7 +165,7 @@ class CardViewModel extends ChangeNotifier {
       await _fileService.saveFile(false);
     }
 
-    notifyListeners();
+    _notifySafely();
   }
 
   Future<bool> isFileChangedAsync() {
@@ -169,7 +174,7 @@ class CardViewModel extends ChangeNotifier {
 
   Future<bool> saveCommand() async {
     if (await _fileService.saveFile(false)) {
-      notifyListeners();
+      _notifySafely();
       return true;
     } else {
       // message box: file modified on another device - save or discard
@@ -202,7 +207,7 @@ class CardViewModel extends ChangeNotifier {
 
       if (result == true) {
         await _fileService.saveFile(true);
-        notifyListeners();
+        _notifySafely();
 
         return true;
       } else {
@@ -211,8 +216,14 @@ class CardViewModel extends ChangeNotifier {
     }
   }
 
+  void _notifySafely() {
+    if (_isDisposed) return;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
+    _isDisposed = true;
     _timer.cancel();
     timeTextNotifier.dispose();
     super.dispose();

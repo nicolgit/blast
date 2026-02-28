@@ -126,7 +126,7 @@ class BlastCard {
       ..name = "Cardholder Name"
       ..value = "");
     card.rows.add(BlastAttribute()
-      ..type = BlastAttributeType.typePassword
+      ..type = BlastAttributeType.typeString
       ..name = "Card Number"
       ..value = "");
     card.rows.add(BlastAttribute()

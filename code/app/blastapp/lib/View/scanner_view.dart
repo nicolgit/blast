@@ -89,7 +89,7 @@ class _ScannerViewState extends State<ScannerView> {
                               Text(
                                 vm.scannedFormat ?? 'Detected',
                                 style: _theme.textTheme.labelSmall?.copyWith(
-                                  color: _theme.colorScheme.primary,
+                                  color: _theme.colorScheme.onSurface,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -99,6 +99,7 @@ class _ScannerViewState extends State<ScannerView> {
                                   child: SelectableText(
                                     vm.scannedValue!,
                                     style: _theme.textTheme.bodyLarge?.copyWith(
+                                      color: _theme.colorScheme.onSurface,
                                       fontWeight: FontWeight.w500,
                                     ),
                                     textAlign: TextAlign.center,
@@ -146,18 +147,36 @@ class _ScannerViewState extends State<ScannerView> {
             children: [
               TextField(
                 controller: cardNameController,
-                decoration: const InputDecoration(
+                style: TextStyle(
+                  color: _theme.colorScheme.onSurface,
+                ),
+                decoration: InputDecoration(
                   labelText: 'Card Name',
                   hintText: 'e.g. Store Loyalty Card',
+                  labelStyle: TextStyle(
+                    color: _theme.colorScheme.onSurface,
+                  ),
+                  hintStyle: TextStyle(
+                    color: _theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
                 autofocus: true,
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: cardholderNameController,
-                decoration: const InputDecoration(
+                style: TextStyle(
+                  color: _theme.colorScheme.onSurface,
+                ),
+                decoration: InputDecoration(
                   labelText: 'Cardholder Name',
                   hintText: 'e.g. John Doe',
+                  labelStyle: TextStyle(
+                    color: _theme.colorScheme.onSurface,
+                  ),
+                  hintStyle: TextStyle(
+                    color: _theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
               ),
             ],
@@ -168,7 +187,44 @@ class _ScannerViewState extends State<ScannerView> {
               child: const Text('Cancel'),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
+              onPressed: () async {
+                final cardName = cardNameController.text.trim();
+                final cardholderName = cardholderNameController.text.trim();
+
+                if (cardName.isEmpty || cardholderName.isEmpty) {
+                  await showDialog<void>(
+                    context: dialogContext,
+                    builder: (warningDialogContext) => AlertDialog(
+                      title: Text(
+                        'Missing required fields',
+                        style: TextStyle(
+                          color: _theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      content: Text(
+                        'Card name and card holder name must not be empty.',
+                        style: TextStyle(
+                          color: _theme.colorScheme.onSurface,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(warningDialogContext).pop(),
+                          child: Text(
+                            'OK',
+                            style: TextStyle(
+                              color: _theme.colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.of(dialogContext).pop(true);
+              },
               child: const Text('Add'),
             ),
           ],
@@ -176,14 +232,19 @@ class _ScannerViewState extends State<ScannerView> {
       },
     );
 
+    final cardName = cardNameController.text.trim();
+    final cardholderName = cardholderNameController.text.trim();
+
     if (result == true) {
       vm.addThisCard(
-        cardNameController.text.trim(),
-        cardholderNameController.text.trim(),
+        cardName,
+        cardholderName,
       );
     }
 
-    //cardNameController.dispose();
-    //cardholderNameController.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cardNameController.dispose();
+      cardholderNameController.dispose();
+    });
   }
 }

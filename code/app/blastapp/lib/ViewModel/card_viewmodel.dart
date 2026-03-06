@@ -146,6 +146,19 @@ class CardViewModel extends ChangeNotifier {
     _notifySafely();
   }
 
+  Future<void> changeDocumentIcon() async {
+    final result = await context.router.push(ChangeIconRoute(currentIcon: currentCard.icon));
+    if (result != null && result is String && result.isNotEmpty) {
+      if (result == 'clear') {
+        currentCard.icon = null;
+      } else {
+        currentCard.icon = result;
+      }
+      _blastDocumentChanged();
+      _notifySafely();
+    }
+  }
+
   void showFieldView(String value) async {
     _markCardAsUsed();
     _notifySafely();

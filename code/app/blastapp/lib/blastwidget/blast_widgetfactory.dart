@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'blast_attribute_edit.dart';
-import 'blast_attribute_row.dart';
 
 class BlastWidgetFactory {
   late ThemeData theme;

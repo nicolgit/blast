@@ -104,14 +104,24 @@ class BlastCardIcon extends StatelessWidget {
   }
 
   String? _getIconSlug() {
-    for (var field in card.rows) {
-      if ((field.type == BlastAttributeType.typeString) &&
-          field.name.toLowerCase() == 'icon' &&
-          field.value.isNotEmpty) {
-        return field.value;
+    String? raw;
+    if (card.icon != null && card.icon!.isNotEmpty) {
+      raw = card.icon;
+    } else {
+      // legacy: fall back to a row named 'icon'
+      for (var field in card.rows) {
+        if ((field.type == BlastAttributeType.typeString) &&
+            field.name.toLowerCase() == 'icon' &&
+            field.value.isNotEmpty) {
+          raw = field.value;
+          break;
+        }
       }
     }
-    return null;
+    if (raw == null) return null;
+    const prefix = 'simpleicons:';
+    if (!raw.startsWith(prefix)) return null;
+    return raw.substring(prefix.length);
   }
 
   Widget _buildSvgIcon(BuildContext context, String iconSlug) {

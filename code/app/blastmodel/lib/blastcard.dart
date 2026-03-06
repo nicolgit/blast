@@ -20,6 +20,9 @@ class BlastCard {
   @JsonKey(includeIfNull: true)
   String? notes = "";
 
+  @JsonKey(includeIfNull: false)
+  String? icon;
+
   bool isFavorite = false;
   late DateTime lastUpdateDateTime = DateTime.now();
 
@@ -76,6 +79,7 @@ class BlastCard {
     id = card.id;
     title = card.title;
     notes = card.notes;
+    icon = card.icon;
     isFavorite = card.isFavorite;
     lastUpdateDateTime = card.lastUpdateDateTime;
 

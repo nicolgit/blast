@@ -8,7 +8,9 @@ import 'package:http/http.dart' as http;
 
 @RoutePage()
 class ChangeIconView extends StatefulWidget {
-  const ChangeIconView({super.key});
+  const ChangeIconView({super.key, this.currentIcon});
+
+  final String? currentIcon;
 
   @override
   State<ChangeIconView> createState() => _ChangeIconViewState();
@@ -90,37 +92,66 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: _searchController,
-                      style: _theme.textTheme.bodyMedium?.copyWith(
-                        color: _theme.colorScheme.onSurface,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Search icons...',
-                        hintStyle: _theme.textTheme.bodyMedium?.copyWith(
-                          color: _theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                style: _theme.textTheme.bodyMedium?.copyWith(
+                                  color: _theme.colorScheme.onSurface,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Search icons...',
+                                  hintStyle: _theme.textTheme.bodyMedium?.copyWith(
+                                    color: _theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                                  ),
+                                  prefixIcon: Icon(Icons.search, color: _theme.colorScheme.onSurface),
+                                  suffixIcon: _searchController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: Icon(Icons.clear, color: _theme.colorScheme.onSurface),
+                                          onPressed: () {
+                                            _searchController.clear();
+                                          },
+                                        )
+                                      : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(color: _theme.colorScheme.outline),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(color: _theme.colorScheme.primary, width: 2.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Tooltip(
+                              message: 'No icon',
+                              child: IconButton.outlined(
+                                icon: const Icon(Icons.hide_image_outlined),
+                                onPressed: () => vm.clearIcon(),
+                              ),
+                            ),
+                          ],
                         ),
-                        prefixIcon: Icon(Icons.search, color: _theme.colorScheme.onSurface),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: Icon(Icons.clear, color: _theme.colorScheme.onSurface),
-                                onPressed: () {
-                                  _searchController.clear();
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: _theme.colorScheme.outline),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: _theme.colorScheme.primary, width: 2.0),
-                        ),
-                      ),
+                        if (widget.currentIcon != null && widget.currentIcon!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              'Current: ${widget.currentIcon!.startsWith('simpleicons:') ? widget.currentIcon!.substring('simpleicons:'.length) : widget.currentIcon!}',
+                              style: _theme.textTheme.bodySmall?.copyWith(
+                                color: _theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   Expanded(

@@ -134,16 +134,33 @@ class CardsBrowserRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [ChangeIconView]
-class ChangeIconRoute extends PageRouteInfo<void> {
-  const ChangeIconRoute({List<PageRouteInfo>? children})
-      : super(ChangeIconRoute.name, initialChildren: children);
+class ChangeIconRouteArgs {
+  const ChangeIconRouteArgs({this.key, this.currentIcon});
+
+  final Key? key;
+  final String? currentIcon;
+
+  @override
+  String toString() {
+    return 'ChangeIconRouteArgs{key: $key, currentIcon: $currentIcon}';
+  }
+}
+
+class ChangeIconRoute extends PageRouteInfo<ChangeIconRouteArgs> {
+  ChangeIconRoute({String? currentIcon, List<PageRouteInfo>? children})
+      : super(
+          ChangeIconRoute.name,
+          args: ChangeIconRouteArgs(currentIcon: currentIcon),
+          initialChildren: children,
+        );
 
   static const String name = 'ChangeIconRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const ChangeIconView();
+      final args = data.argsAs<ChangeIconRouteArgs>(orElse: () => const ChangeIconRouteArgs());
+      return ChangeIconView(currentIcon: args.currentIcon);
     },
   );
 }

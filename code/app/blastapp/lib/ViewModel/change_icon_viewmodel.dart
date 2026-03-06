@@ -11,6 +11,10 @@ class ChangeIconViewModel extends ChangeNotifier {
   }
 
   void selectIcon(String iconName) {
-    context.router.maybePop(iconName);
+    context.router.maybePop('simpleicons:$iconName');
+  }
+
+  void clearIcon() {
+    context.router.maybePop('clear');
   }
 }

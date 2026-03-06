@@ -183,7 +183,7 @@ class CardEditViewModel extends ChangeNotifier {
     }
 
     // Navigate to ChangeIconRoute and get result
-    final result = await context.router.push(const ChangeIconRoute());
+    final result = await context.router.push(ChangeIconRoute(currentIcon: currentCard.icon));
     if (result != null && result is String) {
       // Update the icon attribute with the result
       currentCard.rows[iconIndex].value = result;

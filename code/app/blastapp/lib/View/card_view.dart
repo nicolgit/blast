@@ -82,7 +82,47 @@ class _CardViewState extends State<CardView> {
                       child: Center(
                           child: Column(children: [
                 const SizedBox(height: 16),
-                BlastCardIcon(card: vm.currentCard, size: 128),
+                if (vm.editMode)
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      BlastCardIcon(card: vm.currentCard, size: 128),
+                      Positioned(
+                        right: -12,
+                        bottom: -12,
+                        child: Tooltip(
+                          message: 'Change icon',
+                          child: GestureDetector(
+                            onTap: () => vm.changeDocumentIcon(),
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: _widgetFactory.theme.colorScheme.surface,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: _widgetFactory.theme.colorScheme.outline,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 4,
+                                    offset: Offset(1, 1),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: _widgetFactory.theme.colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  BlastCardIcon(card: vm.currentCard, size: 128),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -65,6 +65,8 @@ The \"Cards\" is an array of objects, each representing a unique \"Card\". Each 
 
 - \"IsFavorite\": A boolean indicating whether the card is marked as a favorite.
 
+- \"icon\": An optional string, if present has the format simpleicons:iconname, it is the icon for the card from the public repository https://simpleicons.org/
+
 - \"LastOpenedDateTime\": A string representing the date and time the card was last opened in ISO 8601 format.
 
 - \"LastUpdateDateTime\": A string representing the date and time the card was last updated in ISO 8601 format.

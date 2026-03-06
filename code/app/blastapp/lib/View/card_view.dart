@@ -200,6 +200,19 @@ class _CardViewState extends State<CardView> {
       children.add(_showNotes(vm.currentCard.notes!, vm));
     }
 
+    children.add(Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: FilledButton.icon(
+        onPressed: () => vm.showJsonDataDialog(context),
+        style: FilledButton.styleFrom(
+          backgroundColor: _widgetFactory.theme.colorScheme.primaryContainer,
+          foregroundColor: _widgetFactory.theme.colorScheme.onPrimaryContainer,
+        ),
+        icon: const Icon(Icons.data_object),
+        label: const Text('JSON data'),
+      ),
+    ));
+
     return Column(children: children);
   }
 

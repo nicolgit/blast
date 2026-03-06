@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
@@ -112,9 +113,7 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future editCommand() async {
-    await context.router
-        .push(CardEditRoute(card: currentCard))
-        .then((value) {
+    await context.router.push(CardEditRoute(card: currentCard)).then((value) {
       if (_isDisposed) return;
       showPasswordRow = List.filled(currentCard.rows.length, false);
       _notifySafely();
@@ -214,6 +213,49 @@ class CardViewModel extends ChangeNotifier {
         return false;
       }
     }
+  }
+
+  Future<void> showJsonDataDialog(BuildContext viewContext) async {
+    final String jsonData = const JsonEncoder.withIndent('  ').convert(currentCard.toJson());
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('JSON data'),
+        content: SizedBox(
+          width: 600,
+          child: TextFormField(
+            initialValue: jsonData,
+            readOnly: true,
+            minLines: 12,
+            maxLines: 20,
+            style: const TextStyle(fontFamily: 'monospace'),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: jsonData));
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(viewContext).showSnackBar(
+                const SnackBar(
+                  content: Text('JSON copied to clipboard!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            child: const Text('Copy'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _notifySafely() {

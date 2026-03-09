@@ -84,7 +84,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                     title: const Text("Change Icon"),
                     actions: [
                       IconButton(
-                        icon: const Icon(Icons.close),
+                        icon: Icon(Icons.close, color: _theme.colorScheme.onSurface),
                         tooltip: 'Close',
                         onPressed: () => vm.closeCommand(),
                       ),
@@ -135,7 +135,7 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                             Tooltip(
                               message: 'No icon',
                               child: IconButton.outlined(
-                                icon: const Icon(Icons.hide_image_outlined),
+                                icon: Icon(Icons.hide_image_outlined, color: _theme.colorScheme.onSurface),
                                 onPressed: () => vm.clearIcon(),
                               ),
                             ),

@@ -120,30 +120,38 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Password Length',
-                          style: _theme.textTheme.titleMedium,
+                    Center(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'password length ',
+                              style: _theme.textTheme.titleMedium?.copyWith(
+                                color: _theme.colorScheme.primary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${vm.textLength}',
+                              style: _theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: _theme.colorScheme.primary,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '${vm.textLength}',
-                          style: _theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: _theme.colorScheme.primary,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                    Slider(
-                      value: vm.textLength.toDouble(),
-                      min: 5,
-                      max: 20,
-                      divisions: 15,
-                      onChanged: (value) {
-                        vm.setTextLength(value.round());
-                      },
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 640),
+                      child: Slider(
+                        value: vm.textLength.toDouble(),
+                        min: 5,
+                        max: 20,
+                        divisions: 15,
+                        onChanged: (value) {
+                          vm.setTextLength(value.round());
+                        },
+                      ),
                     ),
                   ],
                 ),

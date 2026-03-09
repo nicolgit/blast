@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
@@ -325,30 +326,44 @@ class _CardViewState extends State<CardView> {
 
   void _showEditFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
     final controller = TextEditingController(text: attribute.value);
+    final isPassword = attribute.type == BlastAttributeType.typePassword;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(attribute.name, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(attribute.name, style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface)),
         content: TextField(
           controller: controller,
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface),
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             labelText: 'Value',
-            labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            labelStyle: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurfaceVariant),
           ),
           autofocus: true,
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
+          if (isPassword)
+            TextButton.icon(
+              icon: const Icon(Icons.password),
+              label: const Text('Generate'),
+              onPressed: () async {
+                //Navigator.of(dialogContext).pop();
+                final String? generated =
+                    await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
+                if (generated != null && generated.isNotEmpty) {
+                  vm.updateAttributeValue(attribute, generated);
+                }
+              },
+            ),
           TextButton(
             onPressed: () {
               vm.updateAttributeValue(attribute, controller.text);
-              Navigator.of(context).pop();
+              Navigator.of(dialogContext).pop();
             },
             child: const Text('OK'),
           ),

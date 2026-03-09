@@ -222,6 +222,27 @@ class _SplashViewState extends State<SplashView> {
         child: Dismissible(
             key: Key(files[file].fileUrl),
             direction: DismissDirection.endToStart,
+            confirmDismiss: (direction) async {
+              return await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Remove from recent'),
+                      content: Text(
+                          'Remove "${files[file].fileName}" from the recent files list? (the file will not be deleted from your storage)'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Remove'),
+                        ),
+                      ],
+                    ),
+                  ) ??
+                  false;
+            },
             onDismissed: (direction) async {
               await vm.removeFromRecent(files[file]).then((value) => vm.refresh());
             },

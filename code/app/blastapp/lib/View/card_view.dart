@@ -233,6 +233,9 @@ class _CardViewState extends State<CardView> {
         editField: (attribute) {
           _showEditFieldDialog(context, attribute, vm);
         },
+        deleteField: (attribute) {
+          _showDeleteFieldDialog(context, attribute, vm);
+        },
       ));
     }
 
@@ -254,6 +257,30 @@ class _CardViewState extends State<CardView> {
     ));
 
     return Column(children: children);
+  }
+
+  void _showDeleteFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete attribute', style: TextStyle(color: theme.colorScheme.onSurface)),
+        content: Text('Delete "${attribute.name}"?', style: TextStyle(color: theme.colorScheme.onSurface)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              vm.deleteAttribute(attribute);
+              Navigator.of(context).pop();
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showEditFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {

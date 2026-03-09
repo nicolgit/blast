@@ -91,6 +91,13 @@ class CardViewModel extends ChangeNotifier {
     _notifySafely();
   }
 
+  void deleteAttribute(BlastAttribute attribute) {
+    currentCard.rows.remove(attribute);
+    showPasswordRow = List.filled(currentCard.rows.length, false);
+    _blastDocumentChanged();
+    _notifySafely();
+  }
+
   Future openUrl(String urlString) async {
     if (urlString.toLowerCase().startsWith('http://') ||
         urlString.toLowerCase().startsWith('https://') ||

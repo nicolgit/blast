@@ -223,12 +223,14 @@ class _SplashViewState extends State<SplashView> {
             key: Key(files[file].fileUrl),
             direction: DismissDirection.endToStart,
             confirmDismiss: (direction) async {
+              final theme = Theme.of(context);
               return await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Remove from recent'),
+                      title: Text('Remove from recent', style: TextStyle(color: theme.colorScheme.onSurface)),
                       content: Text(
-                          'Remove "${files[file].fileName}" from the recent files list? (the file will not be deleted from your storage)'),
+                          'Remove "${files[file].fileName}" from the recent files list? (the file will not be deleted from your storage)',
+                          style: TextStyle(color: theme.colorScheme.onSurface)),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(false),

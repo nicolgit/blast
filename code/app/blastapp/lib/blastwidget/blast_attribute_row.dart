@@ -12,6 +12,7 @@ class BlastAttributeRow extends StatelessWidget {
   final Function(String) openUrl;
   final bool editMode;
   final Function(BlastAttribute) editField;
+  final Function(BlastAttribute)? deleteField;
 
   const BlastAttributeRow({
     super.key,
@@ -24,6 +25,7 @@ class BlastAttributeRow extends StatelessWidget {
     required this.openUrl,
     required this.editMode,
     required this.editField,
+    this.deleteField,
   });
 
   @override
@@ -112,6 +114,13 @@ class BlastAttributeRow extends StatelessWidget {
                                       },
                                       icon: const Icon(Icons.edit),
                                       tooltip: 'edit field'),
+                                if (editMode && deleteField != null)
+                                  IconButton(
+                                      onPressed: () {
+                                        deleteField!(attribute);
+                                      },
+                                      icon: const Icon(Icons.delete_outline),
+                                      tooltip: 'delete field'),
                               ]),
                               onTap: () async {
                                 showFieldView(value);
@@ -162,6 +171,13 @@ class BlastAttributeRow extends StatelessWidget {
                                   },
                                   icon: const Icon(Icons.edit),
                                   tooltip: 'edit field'),
+                            if (editMode && deleteField != null)
+                              IconButton(
+                                  onPressed: () {
+                                    deleteField!(attribute);
+                                  },
+                                  icon: const Icon(Icons.delete_outline),
+                                  tooltip: 'delete field'),
                           ]),
                           onTap: () async {
                             showFieldView(value);
@@ -203,6 +219,13 @@ class BlastAttributeRow extends StatelessWidget {
                                   },
                                   icon: const Icon(Icons.edit),
                                   tooltip: 'edit field'),
+                            if (editMode && deleteField != null)
+                              IconButton(
+                                  onPressed: () {
+                                    deleteField!(attribute);
+                                  },
+                                  icon: const Icon(Icons.delete_outline),
+                                  tooltip: 'delete field'),
                           ]),
                           onTap: () async {
                             showFieldView(value);

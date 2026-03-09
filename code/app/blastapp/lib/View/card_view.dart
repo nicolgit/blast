@@ -7,6 +7,7 @@ import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastapp/helpers/notes_input_dialog.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -231,7 +232,11 @@ class _CardViewState extends State<CardView> {
         openUrl: vm.openUrl,
         editMode: vm.editMode,
         editField: (attribute) {
-          _showEditFieldDialog(context, attribute, vm);
+          if (attribute.type == BlastAttributeType.typeHeader) {
+            _showEditHeaderDialog(context, attribute, vm);
+          } else {
+            _showEditFieldDialog(context, attribute, vm);
+          }
         },
         deleteField: (attribute) {
           _showDeleteFieldDialog(context, attribute, vm);
@@ -257,6 +262,41 @@ class _CardViewState extends State<CardView> {
     ));
 
     return Column(children: children);
+  }
+
+  void _showEditHeaderDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
+    final controller = TextEditingController(text: attribute.name);
+    final theme = Theme.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit header', style: TextStyle(color: theme.colorScheme.onSurface)),
+        content: TextField(
+          controller: controller,
+          style: TextStyle(color: theme.colorScheme.onSurface),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: 'Header',
+            labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              vm.updateAttributeName(attribute, controller.text);
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDeleteFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {

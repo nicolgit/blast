@@ -44,16 +44,52 @@ class BlastAttributeRow extends StatelessWidget {
             child: Center(
                 child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 600),
-                    child: ListTile(
-                      title: Container(
-                        padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
-                        child: Text(name,
-                            style: textTheme.titleLarge!
-                                .copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
+                    child: GestureDetector(
+                      onTap: () => showFieldView(name),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(name,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: textTheme.titleLarge!.copyWith(
+                                      color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
+                            ),
+                            if (editMode)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: IconButton.outlined(
+                                  onPressed: () {
+                                    editField(attribute);
+                                  },
+                                  icon: Icon(Icons.edit, color: theme.colorScheme.onPrimaryContainer),
+                                  tooltip: 'edit field',
+                                  iconSize: 20,
+                                  style: IconButton.styleFrom(
+                                    side: BorderSide(color: theme.colorScheme.secondary),
+                                  ),
+                                ),
+                              ),
+                            if (editMode && deleteField != null)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: IconButton.outlined(
+                                  onPressed: () {
+                                    deleteField!(attribute);
+                                  },
+                                  icon: Icon(Icons.delete_outline, color: theme.colorScheme.onPrimaryContainer),
+                                  tooltip: 'delete field',
+                                  iconSize: 20,
+                                  style: IconButton.styleFrom(
+                                    side: BorderSide(color: theme.colorScheme.secondary),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                      onTap: () async {
-                        showFieldView(name);
-                      },
                     ))));
       case BlastAttributeType.typePassword:
         return Padding(

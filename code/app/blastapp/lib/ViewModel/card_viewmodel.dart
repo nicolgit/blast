@@ -91,6 +91,12 @@ class CardViewModel extends ChangeNotifier {
     _notifySafely();
   }
 
+  void updateAttributeName(BlastAttribute attribute, String newName) {
+    attribute.name = newName;
+    _blastDocumentChanged();
+    _notifySafely();
+  }
+
   void deleteAttribute(BlastAttribute attribute) {
     currentCard.rows.remove(attribute);
     showPasswordRow = List.filled(currentCard.rows.length, false);
@@ -238,10 +244,13 @@ class CardViewModel extends ChangeNotifier {
   Future<void> showJsonDataDialog(BuildContext viewContext) async {
     final String jsonData = const JsonEncoder.withIndent('  ').convert(currentCard.toJson());
 
+    final theme = Theme.of(context);
+    final foregroundColor = theme.colorScheme.onSurface;
+
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('JSON data'),
+        title: Text('JSON data', style: TextStyle(color: foregroundColor)),
         content: SizedBox(
           width: 600,
           child: TextFormField(
@@ -249,14 +258,31 @@ class CardViewModel extends ChangeNotifier {
             readOnly: true,
             minLines: 12,
             maxLines: 20,
-            style: const TextStyle(fontFamily: 'monospace'),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            style: TextStyle(fontFamily: 'monospace', color: foregroundColor),
+            contextMenuBuilder: (context, editableTextState) {
+              return Theme(
+                data: theme.copyWith(
+                  cardColor: theme.colorScheme.surfaceContainerHighest,
+                ),
+                child: AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: editableTextState.contextMenuAnchors,
+                  buttonItems: editableTextState.contextMenuButtonItems,
+                ),
+              );
+            },
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: theme.colorScheme.tertiaryContainer,
             ),
           ),
         ),
         actions: [
-          TextButton(
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: theme.colorScheme.secondaryContainer,
+              foregroundColor: theme.colorScheme.onSecondaryContainer,
+            ),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: jsonData));
               Navigator.of(dialogContext).pop();
@@ -267,7 +293,7 @@ class CardViewModel extends ChangeNotifier {
                 ),
               );
             },
-            child: const Text('Copy'),
+            child: const Text('Copy to clipboard'),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),

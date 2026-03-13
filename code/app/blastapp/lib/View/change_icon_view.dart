@@ -134,8 +134,9 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                             const SizedBox(width: 8),
                             Tooltip(
                               message: 'No icon',
-                              child: IconButton.outlined(
+                              child: OutlinedButton.icon(
                                 icon: Icon(Icons.hide_image_outlined, color: _theme.colorScheme.onSurface),
+                                label: Text('No icon', style: TextStyle(color: _theme.colorScheme.onSurface)),
                                 onPressed: () => vm.clearIcon(),
                               ),
                             ),

@@ -245,6 +245,13 @@ class _CardViewState extends State<CardView> {
         deleteField: (attribute) {
           _showDeleteFieldDialog(context, attribute, vm);
         },
+        generatePassword: (attribute) async {
+          final String? generated =
+              await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
+          if (generated != null && generated.isNotEmpty) {
+            vm.updateAttributeValue(attribute, generated);
+          }
+        },
       ));
     }
 
@@ -329,7 +336,6 @@ class _CardViewState extends State<CardView> {
 
   void _showEditFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
     final controller = TextEditingController(text: attribute.value);
-    final isPassword = attribute.type == BlastAttributeType.typePassword;
 
     showDialog(
       context: context,
@@ -350,19 +356,6 @@ class _CardViewState extends State<CardView> {
             onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
-          if (isPassword)
-            TextButton.icon(
-              icon: const Icon(Icons.password),
-              label: const Text('Generate'),
-              onPressed: () async {
-                //Navigator.of(dialogContext).pop();
-                final String? generated =
-                    await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
-                if (generated != null && generated.isNotEmpty) {
-                  vm.updateAttributeValue(attribute, generated);
-                }
-              },
-            ),
           TextButton(
             onPressed: () {
               vm.updateAttributeValue(attribute, controller.text);

@@ -147,8 +147,7 @@ class BlastAttributeRow extends StatelessWidget {
                                       tooltip: 'copy to clipboard'),
                                 if (editMode && generatePassword != null)
                                   TextButton(
-                                      onPressed: () => generatePassword!(attribute),
-                                      child: const Text('generate')),
+                                      onPressed: () => generatePassword!(attribute), child: const Text('generate')),
                                 if (editMode)
                                   IconButton(
                                       onPressed: () {

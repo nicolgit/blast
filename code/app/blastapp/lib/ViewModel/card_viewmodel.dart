@@ -77,6 +77,14 @@ class CardViewModel extends ChangeNotifier {
     }
   }
 
+  List<String> get allTags => CurrentFileService().currentFileDocument?.getTags() ?? [];
+
+  void updateTags(List<String> values) {
+    currentCard.tags = values.map((tag) => tag.toString()).toList();
+    _blastDocumentChanged();
+    _notifySafely();
+  }
+
   void updateNotes(String value) {
     if (value != currentCard.notes) {
       currentCard.notes = value;

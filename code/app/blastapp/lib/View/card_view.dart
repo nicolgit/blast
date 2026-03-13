@@ -6,6 +6,9 @@ import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastapp/helpers/notes_input_dialog.dart';
+import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
@@ -194,7 +197,7 @@ class _CardViewState extends State<CardView> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _rowOfTags(vm.currentCard.tags),
+                _rowOfTags(vm.currentCard.tags, vm),
                 const SizedBox(height: 12),
                 FutureBuilder<List<BlastAttribute>>(
                     future: vm.getRows(),
@@ -372,17 +375,62 @@ class _CardViewState extends State<CardView> {
     );
   }
 
-  Wrap _rowOfTags(List<String> tags) {
+  Widget _rowOfTags(List<String> tags, CardViewModel vm) {
     List<Widget> rowItems = [];
     for (var tag in tags) {
       rowItems.add(_widgetFactory.blastTag(tag));
     }
 
-    return Wrap(
-      spacing: 6.0,
-      runSpacing: 6.0,
-      alignment: WrapAlignment.center,
-      children: rowItems,
+    final noTagsPlaceholder = tags.isEmpty
+        ? Text(
+            '(no tags)',
+            style: _widgetFactory.textTheme.bodyMedium!.copyWith(
+              fontStyle: FontStyle.italic,
+              color: _widgetFactory.theme.colorScheme.onSurface,
+            ),
+          )
+        : null;
+
+    final wrap = tags.isEmpty
+        ? (noTagsPlaceholder ?? const SizedBox.shrink())
+        : Wrap(
+            spacing: 6.0,
+            runSpacing: 6.0,
+            alignment: WrapAlignment.center,
+            children: rowItems,
+          );
+
+    if (!vm.editMode) return wrap;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(child: wrap),
+        IconButton(
+          icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+          tooltip: 'Edit tags',
+          onPressed: () async {
+            await showDialog(
+              context: context,
+              builder: (ctx) => MultiSelectDialog(
+                title: Text('Select tags',
+                    style: _widgetFactory.textTheme.headlineMedium!
+                        .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
+                items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
+                initialValue: vm.currentCard.tags,
+                onConfirm: (values) {
+                  vm.updateTags(List<String>.from(values));
+                },
+                listType: MultiSelectListType.CHIP,
+                selectedColor: _widgetFactory.theme.colorScheme.primary,
+                unselectedColor: _widgetFactory.theme.colorScheme.surface,
+                selectedItemsTextStyle:
+                    _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 

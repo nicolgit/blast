@@ -400,9 +400,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           itemBuilder: (context, index) {
             return _buildCardItem(
               card: cardsList[index],
-              onEditPressed: (card) => vm.editCard(card).then((value) {
-                vm.refreshCardListCommand();
-              }),
               onDeletePressed: (card) async {
                 final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, card);
                 if (confirmed) {
@@ -429,7 +426,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
 
   Widget _buildCardItem({
     required BlastCard card,
-    required Function(BlastCard) onEditPressed,
     required Function(BlastCard) onDeletePressed,
     required Function(BlastCard) onFavoritePressed,
     required Function(BlastCard) onTap,
@@ -495,13 +491,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                               onFavoritePressed(card);
                             },
                             tooltip: isFavorite ? "remove from favorites" : "add to favorites",
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.edit, color: _widgetFactory.theme.colorScheme.secondary),
-                            onPressed: () {
-                              onEditPressed(card);
-                            },
-                            tooltip: "edit",
                           ),
                           IconButton(
                             icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),

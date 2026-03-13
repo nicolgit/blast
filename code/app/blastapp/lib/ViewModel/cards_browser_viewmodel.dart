@@ -41,11 +41,6 @@ class CardsBrowserViewModel extends ChangeNotifier {
     await context.router.push(CardRoute(card: selectedCard));
   }
 
-  Future editCard(BlastCard selectedCard) async {
-    this.selectedCard = selectedCard;
-    await context.router.push(CardEditRoute(card: selectedCard));
-  }
-
   void closeCommand() {
     context.router.replaceAll([const SplashRoute()]);
   }

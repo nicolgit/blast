@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
-import 'package:blastapp/blastwidget/blast_card_icon.dart';
+import 'package:blastapp/blastwidget/blast_card.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:humanizer/humanizer.dart';
+
 import 'package:lottie/lottie.dart';
 
 @RoutePage()
@@ -393,12 +393,12 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 600.0,
-            mainAxisExtent: 180.0,
+            mainAxisExtent: 120.0,
           ),
           padding: const EdgeInsets.all(8.0),
           itemCount: cardsList.length,
           itemBuilder: (context, index) {
-            return _buildCardItem(
+            return BlastCardItem(
               card: cardsList[index],
               onDeletePressed: (card) async {
                 final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, card);
@@ -422,98 +422,6 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         );
       },
     );
-  }
-
-  Widget _buildCardItem({
-    required BlastCard card,
-    required Function(BlastCard) onDeletePressed,
-    required Function(BlastCard) onFavoritePressed,
-    required Function(BlastCard) onTap,
-    required bool isSelected,
-    required List<String> textToHighlight,
-  }) {
-    String name = card.title != null ? card.title! : '';
-    bool isFavorite = card.isFavorite;
-
-    return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        child: Card(
-            elevation: 6,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Expanded(
-                child: ListTile(
-                  leading: BlastCardIcon(card: card, size: 48.0),
-                  tileColor: _theme.colorScheme.surfaceContainer,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6))),
-                  title: Row(children: [
-                    Visibility(
-                      visible: isFavorite,
-                      child: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                      ),
-                    ),
-                    Expanded(
-                        child:
-                            _buildHighlightedText(name, textToHighlight, const TextStyle(fontWeight: FontWeight.bold)))
-                  ]),
-                  subtitle: Text(
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    'used ${card.usedCounter} times, last time ${card.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}',
-                  ),
-                  selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-                  selected: isSelected,
-                  onTap: () async {
-                    onTap(card);
-                  },
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: _widgetFactory.theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6))),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  child: Row(
-                    children: [
-                      Expanded(child: _buildTagsRow(card.tags)),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              isFavorite ? Icons.star : Icons.star_border,
-                              color: isFavorite ? Colors.amber : _widgetFactory.theme.colorScheme.secondary,
-                            ),
-                            onPressed: () {
-                              onFavoritePressed(card);
-                            },
-                            tooltip: isFavorite ? "remove from favorites" : "add to favorites",
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete, color: _widgetFactory.theme.colorScheme.secondary),
-                            onPressed: () {
-                              onDeletePressed(card);
-                            },
-                            tooltip: "delete",
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ])));
-  }
-
-  Wrap _buildTagsRow(List<String> tags) {
-    List<Widget> rowItems = [];
-    for (var tag in tags) {
-      rowItems.add(_widgetFactory.blastTag(tag));
-    }
-    return Wrap(spacing: 6.0, runSpacing: 6.0, children: rowItems);
   }
 
   final _searchController = TextEditingController();
@@ -900,69 +808,5 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ),
       ],
     ));
-  }
-
-  Widget _buildHighlightedText(String text, List<String> textToHighlight, TextStyle? style) {
-    if (textToHighlight.isEmpty) {
-      return Text(
-        text,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        style: style,
-      );
-    }
-
-    List<TextSpan> spans = [];
-    String remainingText = text;
-
-    // Ensure the base style has proper color
-    TextStyle baseStyle = style?.copyWith(
-          color: style.color ?? _theme.colorScheme.onSurface,
-        ) ??
-        TextStyle(color: _theme.colorScheme.onSurface);
-
-    while (remainingText.isNotEmpty) {
-      String? foundTerm;
-      int foundIndex = -1;
-
-      // Find the first occurrence of any highlight term
-      for (String term in textToHighlight) {
-        int index = remainingText.toLowerCase().indexOf(term.toLowerCase());
-        if (index != -1 && (foundIndex == -1 || index < foundIndex)) {
-          foundIndex = index;
-          foundTerm = term;
-        }
-      }
-
-      if (foundIndex == -1) {
-        // No more terms to highlight, add the rest as normal text
-        spans.add(TextSpan(text: remainingText, style: baseStyle));
-        break;
-      } else {
-        // Add text before the highlighted term
-        if (foundIndex > 0) {
-          spans.add(TextSpan(text: remainingText.substring(0, foundIndex), style: baseStyle));
-        }
-
-        // Add the highlighted term
-        String actualTerm = remainingText.substring(foundIndex, foundIndex + foundTerm!.length);
-        spans.add(TextSpan(
-          text: actualTerm,
-          style: baseStyle.copyWith(
-            backgroundColor: _theme.colorScheme.secondary,
-            color: _theme.colorScheme.onSecondary,
-          ),
-        ));
-
-        // Continue with the remaining text
-        remainingText = remainingText.substring(foundIndex + foundTerm.length);
-      }
-    }
-
-    return RichText(
-      overflow: TextOverflow.ellipsis,
-      maxLines: 2,
-      text: TextSpan(children: spans),
-    );
   }
 }

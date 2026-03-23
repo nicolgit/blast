@@ -23,10 +23,11 @@ Your data lives in a single encrypted vault file protected by a master password 
 ## Download / Use
 
 - Web: https://blast.duckiesfarm.com
-- iOS: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050
+- iPhone/iPad: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050
 - Windows: https://apps.microsoft.com/detail/9nz7l5snvsxx
 - Android: currently in private beta (send a DM: https://github.com/nicolgit/)
-- macOS: TestFlight access (send a DM: https://github.com/nicolgit/)
+- macOS: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050?platform=mac
+- Windows: https://apps.microsoft.com/detail/9nz7l5snvsxx
 - Linux: not distributed yet (build from source)
 
 ## Features

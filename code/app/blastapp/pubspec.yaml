@@ -14,7 +14,7 @@ dependencies:
   blastmodel:
     path: ./../blastmodel
   provider: ^6.0.5
-  auto_route: ^10.1.0+1
+  auto_route: ^11.1.0
   path_provider: ^2.1.2
   url_launcher: ^6.2.4
   diacritic: ^0.1.5
@@ -38,7 +38,7 @@ dependencies:
   printing: ^5.14.2
   flutter_svg: ^2.0.10+1
   http: ^1.1.0
-  mobile_scanner: ^6.0.2
+  mobile_scanner: ^7.2.0
 
 flutter_launcher_icons:
   image_path: "assets/general/app-icon.png"

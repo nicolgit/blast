@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
+import 'package:csv/csv.dart';
 import 'package:xml/xml.dart' as xml;
 
 import 'package:blastmodel/blastdocument.dart';
@@ -114,5 +115,37 @@ class Importer {
 
   static String _safePwsafeFindElement(XmlElement entry, String elementName) {
     return entry.findElements(elementName).firstOrNull == null ? '' : entry.findElements(elementName).first.innerText;
+  }
+
+  static BlastDocument importCsv(String csvString) {
+    final rows = const CsvToListConverter(eol: '\n').convert(csvString);
+    var blastDocument = BlastDocument();
+
+    if (rows.isEmpty) return blastDocument;
+
+    // First row is header
+    final headers = rows.first.map((h) => h.toString().trim()).toList();
+
+    for (var i = 1; i < rows.length; i++) {
+      final row = rows[i];
+      if (row.isEmpty) continue;
+
+      String cell(int col) => col >= row.length ? '' : row[col].toString();
+
+      var card = BlastCard();
+      card.title = cell(0);
+
+      for (var col = 1; col < headers.length; col++) {
+        final name = headers[col];
+        final value = cell(col);
+        final type = name.toLowerCase() == 'password' ? BlastAttributeType.typePassword : BlastAttributeType.typeString;
+        card.rows.add(BlastAttribute.withParams(name, value, type));
+      }
+
+      blastDocument.cards.add(card);
+    }
+
+    blastDocument.isChanged = true;
+    return blastDocument;
   }
 }

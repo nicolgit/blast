@@ -81,6 +81,29 @@ class ImporterViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> importCsvCommand() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      String csvString = '';
+
+      if (kIsWeb) {
+        final fileBytes = result.files.first.bytes;
+        csvString = utf8.decode(fileBytes!);
+      } else {
+        File file = File(result.files.single.path!);
+        csvString = file.readAsStringSync();
+      }
+
+      fileService.currentFileDocument = Importer.importCsv(csvString);
+    } else {
+      throw Exception('User canceled the picker');
+    }
+  }
+
   String importedCount() {
     return fileService.currentFileDocument!.cards.length.toString();
   }

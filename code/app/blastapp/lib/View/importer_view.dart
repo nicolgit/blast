@@ -117,6 +117,28 @@ class _ImporterViewState extends State<ImporterView> {
                 },
                 child: const Text('Password Safe XML file'),
               )),
+          Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: FilledButton(
+                onPressed: () async {
+                  try {
+                    await vm.importCsvCommand();
+
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Imported successfully ${vm.importedCount()} items!")));
+
+                    context.router.maybePop();
+                  } catch (e) {
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("unable to import selected file. error: $e"),
+                    ));
+                  }
+                },
+                child: const Text('CSV file'),
+              )),
           const Text("WARNING: Importing your data here will overwrite all the current file content."),
         ])))));
   }

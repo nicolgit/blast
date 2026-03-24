@@ -154,6 +154,10 @@ class CardsBrowserViewModel extends ChangeNotifier {
     }
 
     String? path = await FilePicker.platform.getDirectoryPath();
+    if (path == null) {
+      // User canceled the picker
+      return;
+    }
 
     String name = 'blastapp-export';
     String fileName = '$path/$name.json';
@@ -203,7 +207,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportMasterKeyCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(TypePasswordRoute());
+    var checkPasswordResult = await context.router.push(TypePasswordRoute(forceSkipBiometricQuestion: true));
     if (checkPasswordResult != true) {
       return;
     }

@@ -10,7 +10,9 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.nicoladelfino.blast.blastvault</string>
 	</array>
-	<key>com.apple.security.print</key>	
-		<true/>	
-	</dict>
+	<key>com.apple.security.print</key>
+	<true/>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+</dict>
 </plist>

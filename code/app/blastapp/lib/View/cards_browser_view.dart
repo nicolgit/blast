@@ -9,6 +9,8 @@ import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:blastapp/helpers/delete_card_helper.dart';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -773,7 +775,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         ListTile(
           leading: const Icon(Icons.download),
           title: const Text('export .json file'),
-          enabled: !kIsWeb,
+          enabled: !kIsWeb && (Platform.isWindows || Platform.isMacOS),
           onTap: () {
             Navigator.pop(context); // close drawer
             vm.exportCommand();

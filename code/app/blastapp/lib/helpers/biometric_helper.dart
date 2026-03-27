@@ -35,7 +35,7 @@ class BiometricHelper {
         return data;
       }
     } catch (e) {
-      print("error loading biometric storage: $e");
+      // print("error loading biometric storage: $e");
       await SettingService().setBiometricAuthEnabled(false);
     }
     return null;

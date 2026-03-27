@@ -249,7 +249,7 @@ class _CardViewState extends State<CardView> {
           final String? generated =
               await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
           if (generated != null && generated.isNotEmpty) {
-            vm.updateAttributeValue(attribute, generated);
+            vm.setGeneratedPassword(attribute, generated);
           }
         },
       ));

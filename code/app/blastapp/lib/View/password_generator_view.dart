@@ -337,17 +337,17 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                         List<Widget> buttons = [
                           Flexible(
                             child: ElevatedButton.icon(
-                              onPressed: vm.isRunning ? vm.stopGenerator : vm.startGenerator,
+                              onPressed: vm.status == Status.Running ? vm.stopGenerator : vm.startGenerator,
                               icon: Icon(
-                                vm.isRunning ? Icons.stop : Icons.play_arrow,
+                                vm.status == Status.Running ? Icons.stop : Icons.play_arrow,
                                 size: 20,
                               ),
-                              label: Text(vm.isRunning ? 'Stop' : 'Start'),
+                              label: Text(vm.status == Status.Running ? 'Stop' : 'Start'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: vm.isRunning
+                                backgroundColor: vm.status == Status.Running
                                     ? _theme.colorScheme.errorContainer
                                     : _theme.colorScheme.primaryContainer,
-                                foregroundColor: vm.isRunning
+                                foregroundColor: vm.status == Status.Running
                                     ? _theme.colorScheme.onErrorContainer
                                     : _theme.colorScheme.onPrimaryContainer,
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -356,7 +356,7 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                               ),
                             ),
                           ),
-                          if (!vm.isRunning) ...[
+                          if (vm.status != Status.Running) ...[
                             const SizedBox(width: 8, height: 8),
                             Flexible(
                               child: ElevatedButton.icon(

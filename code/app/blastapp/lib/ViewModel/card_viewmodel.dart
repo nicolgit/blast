@@ -99,6 +99,36 @@ class CardViewModel extends ChangeNotifier {
     _notifySafely();
   }
 
+  Future<void> setGeneratedPassword(BlastAttribute attribute, String newValue) async {
+    if (attribute.value.isNotEmpty) {
+      if (!context.mounted) return;
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text('Replace Password'),
+            content: Text('Do you want to replace current password (${attribute.value}) with the new one ($newValue)?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Update'),
+              ),
+            ],
+          );
+        },
+      );
+      if (result != true) return;
+    }
+    attribute.value = newValue;
+    _blastDocumentChanged();
+    _notifySafely();
+  }
+
   void updateAttributeName(BlastAttribute attribute, String newName) {
     attribute.name = newName;
     _blastDocumentChanged();

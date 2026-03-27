@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,16 @@ enum GeneratorTypes {
   wikiword;
 }
 
+enum Status {
+  Running,
+  Terminating,
+  Terminated;
+}
+
 class PasswordGeneratorViewModel extends ChangeNotifier {
   final BuildContext context;
   GeneratorTypes _generatorType = GeneratorTypes.wikiword; // Default to WikiWord
-  bool _isRunning = false;
+  Status _status = Status.Terminated;
   Timer? _backgroundTimer;
   String _password = '';
   int _textLength = 10;
@@ -41,7 +48,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   GeneratorTypes get generatorType => _generatorType;
-  bool get isRunning => _isRunning;
+  Status get status => _status;
   String get password => _password;
   int get textLength => _textLength;
   int get wordCount => _wordCount;
@@ -391,11 +398,12 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   Future<void> _startBackgroundProcess() async {
-    _isRunning = true;
+    _status = Status.Running;
 
     _backgroundTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
-      if (!_isRunning) {
+      if (_status != Status.Running) {
         timer.cancel();
+        _status = Status.Terminated;
         return;
       }
       // Background process logic goes here
@@ -405,21 +413,25 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     });
   }
 
-  void _stopBackgroundProcess() {
-    _isRunning = false;
+  Future<void> _stopBackgroundProcess() async {
+    _status = Status.Terminating;
     _backgroundTimer?.cancel();
     _backgroundTimer = null;
+
+    while (_status != Status.Terminated) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
   }
 
   void startGenerator() {
-    if (!_isRunning) {
+    if (_status == Status.Terminated) {
       _startBackgroundProcess();
       notifyListeners();
     }
   }
 
   void stopGenerator() {
-    if (_isRunning) {
+    if (_status == Status.Running) {
       _stopBackgroundProcess();
       notifyListeners();
     }

@@ -262,6 +262,50 @@ class _CardViewState extends State<CardView> {
       ));
     }
 
+    if (vm.editMode) {
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        child: Wrap(
+          spacing: 8,
+          alignment: WrapAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: () {
+                final attr = BlastAttribute.withParams('Field', '', BlastAttributeType.typeString);
+                vm.addAttribute(attr);
+              },
+              icon: const Icon(Icons.description, size: 16),
+              label: const Text('Value'),
+            ),
+            OutlinedButton.icon(
+              onPressed: () {
+                final attr = BlastAttribute.withParams('Password', '', BlastAttributeType.typePassword);
+                vm.addAttribute(attr);
+              },
+              icon: const Icon(Icons.lock, size: 16),
+              label: const Text('Password'),
+            ),
+            OutlinedButton.icon(
+              onPressed: () {
+                final attr = BlastAttribute.withParams('Title', '', BlastAttributeType.typeHeader);
+                vm.addAttribute(attr);
+              },
+              icon: const Icon(Icons.title, size: 16),
+              label: const Text('Title'),
+            ),
+            OutlinedButton.icon(
+              onPressed: () {
+                final attr = BlastAttribute.withParams('URL', '', BlastAttributeType.typeURL);
+                vm.addAttribute(attr);
+              },
+              icon: const Icon(Icons.link, size: 16),
+              label: const Text('URL'),
+            ),
+          ],
+        ),
+      ));
+    }
+
     if (vm.currentCard.notes != null) {
       children.add(_showNotes(vm.currentCard.notes!, vm));
     }

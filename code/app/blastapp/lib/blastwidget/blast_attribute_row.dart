@@ -109,7 +109,7 @@ class BlastAttributeRow extends StatelessWidget {
                             },
                             child: ListTile(
                               leading: const Icon(Icons.lock),
-                              title: Text(editMode || isPasswordRowVisible(index) ? value : "***********",
+                              title: Text(isPasswordRowVisible(index) ? value : "***********",
                                   style: textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
                               subtitle: Text(
                                 name,

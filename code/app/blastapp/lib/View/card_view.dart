@@ -5,6 +5,7 @@ import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
+import 'package:blastapp/helpers/blast_attribute_edit_dialogs.dart';
 import 'package:blastapp/helpers/notes_input_dialog.dart';
 import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -237,13 +238,15 @@ class _CardViewState extends State<CardView> {
         editMode: vm.editMode,
         editField: (attribute) {
           if (attribute.type == BlastAttributeType.typeHeader) {
-            _showEditHeaderDialog(context, attribute, vm);
+            BlastAttributeEditDialogs.showEditHeaderDialog(context, attribute, vm);
+          } else if (attribute.type == BlastAttributeType.typePassword) {
+            BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
           } else {
-            _showEditFieldDialog(context, attribute, vm);
+            BlastAttributeEditDialogs.showEditFieldDialog(context, attribute, vm);
           }
         },
         deleteField: (attribute) {
-          _showDeleteFieldDialog(context, attribute, vm);
+          BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
         },
         generatePassword: (attribute) async {
           final String? generated =
@@ -273,99 +276,6 @@ class _CardViewState extends State<CardView> {
     ));
 
     return Column(children: children);
-  }
-
-  void _showEditHeaderDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
-    final controller = TextEditingController(text: attribute.name);
-    final theme = Theme.of(context);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit header', style: TextStyle(color: theme.colorScheme.onSurface)),
-        content: TextField(
-          controller: controller,
-          style: TextStyle(color: theme.colorScheme.onSurface),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: 'Header',
-            labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              vm.updateAttributeName(attribute, controller.text);
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
-    final theme = Theme.of(context);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete attribute', style: TextStyle(color: theme.colorScheme.onSurface)),
-        content: Text('Delete "${attribute.name}"?', style: TextStyle(color: theme.colorScheme.onSurface)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              vm.deleteAttribute(attribute);
-              Navigator.of(context).pop();
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
-    final controller = TextEditingController(text: attribute.value);
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(attribute.name, style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface)),
-        content: TextField(
-          controller: controller,
-          style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: 'Value',
-            labelStyle: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurfaceVariant),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              vm.updateAttributeValue(attribute, controller.text);
-              Navigator.of(dialogContext).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _rowOfTags(List<String> tags, CardViewModel vm) {

@@ -228,42 +228,56 @@ class _CardViewState extends State<CardView> {
   }
 
   Column _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
-    List<Widget> children = [];
+    BlastAttributeRow buildRow(int index) => BlastAttributeRow(
+          key: ValueKey(cardsList[index]),
+          attribute: cardsList[index],
+          index: index,
+          toggleShowPassword: vm.toggleShowPassword,
+          isPasswordRowVisible: vm.isPasswordRowVisible,
+          copyToClipboard: vm.copyToClipboard,
+          showFieldView: vm.showFieldView,
+          openUrl: vm.openUrl,
+          editMode: vm.editMode,
+          editField: (attribute) {
+            if (attribute.type == BlastAttributeType.typeHeader) {
+              BlastAttributeEditDialogs.showEditHeaderDialog(context, attribute, vm);
+            } else if (attribute.type == BlastAttributeType.typePassword) {
+              BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
+            } else {
+              BlastAttributeEditDialogs.showEditFieldDialog(context, attribute, vm);
+            }
+          },
+          deleteField: (attribute) {
+            BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
+          },
+          generatePassword: (attribute) async {
+            final String? generated =
+                await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
+            if (generated != null && generated.isNotEmpty) {
+              vm.setGeneratedPassword(attribute, generated);
+            }
+          },
+        );
 
-    for (int index = 0; index < cardsList.length; index++) {
-      children.add(BlastAttributeRow(
-        attribute: cardsList[index],
-        index: index,
-        toggleShowPassword: vm.toggleShowPassword,
-        isPasswordRowVisible: vm.isPasswordRowVisible,
-        copyToClipboard: vm.copyToClipboard,
-        showFieldView: vm.showFieldView,
-        openUrl: vm.openUrl,
-        editMode: vm.editMode,
-        editField: (attribute) {
-          if (attribute.type == BlastAttributeType.typeHeader) {
-            BlastAttributeEditDialogs.showEditHeaderDialog(context, attribute, vm);
-          } else if (attribute.type == BlastAttributeType.typePassword) {
-            BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
-          } else {
-            BlastAttributeEditDialogs.showEditFieldDialog(context, attribute, vm);
-          }
-        },
-        deleteField: (attribute) {
-          BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
-        },
-        generatePassword: (attribute) async {
-          final String? generated =
-              await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
-          if (generated != null && generated.isNotEmpty) {
-            vm.setGeneratedPassword(attribute, generated);
-          }
-        },
-      ));
-    }
+    final Widget rowsWidget = vm.editMode
+        ? ReorderableListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            onReorder: vm.reorderAttributes,
+            children: [
+              for (int i = 0; i < cardsList.length; i++) buildRow(i),
+            ],
+          )
+        : Column(
+            children: [
+              for (int i = 0; i < cardsList.length; i++) buildRow(i),
+            ],
+          );
+
+    final List<Widget> extras = [];
 
     if (vm.editMode) {
-      children.add(Padding(
+      extras.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Wrap(
           spacing: 8,
@@ -307,10 +321,10 @@ class _CardViewState extends State<CardView> {
     }
 
     if (vm.currentCard.notes != null) {
-      children.add(_showNotes(vm.currentCard.notes!, vm));
+      extras.add(_showNotes(vm.currentCard.notes!, vm));
     }
 
-    children.add(Padding(
+    extras.add(Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: FilledButton.icon(
         onPressed: () => vm.showJsonDataDialog(context),
@@ -323,7 +337,7 @@ class _CardViewState extends State<CardView> {
       ),
     ));
 
-    return Column(children: children);
+    return Column(children: [rowsWidget, ...extras]);
   }
 
   Widget _rowOfTags(List<String> tags, CardViewModel vm) {

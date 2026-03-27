@@ -118,7 +118,7 @@ class _CardViewState extends State<CardView> {
                               ),
                               child: Icon(
                                 Icons.edit,
-                                size: 20,
+                                size: 36,
                                 color: _widgetFactory.theme.colorScheme.primary,
                               ),
                             ),
@@ -148,10 +148,14 @@ class _CardViewState extends State<CardView> {
                         child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
                             textAlign: TextAlign.center,
                             style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
+                    const SizedBox(width: 6),
                     if (vm.editMode)
-                      IconButton(
+                      IconButton.outlined(
                         icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
                         tooltip: 'Edit title',
+                        style: IconButton.styleFrom(
+                          side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                        ),
                         onPressed: () async {
                           final controller = TextEditingController(text: vm.currentCard.title ?? "");
                           final newTitle = await showDialog<String>(
@@ -309,9 +313,13 @@ class _CardViewState extends State<CardView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Flexible(child: wrap),
-        IconButton(
+        const SizedBox(width: 6),
+        IconButton.outlined(
           icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
           tooltip: 'Edit tags',
+          style: IconButton.styleFrom(
+            side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+          ),
           onPressed: () async {
             await showDialog(
               context: context,
@@ -331,6 +339,43 @@ class _CardViewState extends State<CardView> {
                     _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
               ),
             );
+          },
+        ),
+        const SizedBox(width: 6),
+        IconButton.outlined(
+          icon: Icon(Icons.add, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+          tooltip: 'Add custom tag',
+          style: IconButton.styleFrom(
+            side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+          ),
+          onPressed: () async {
+            final controller = TextEditingController();
+            final newTag = await showDialog<String>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text('Add custom tag', style: TextStyle(color: _widgetFactory.theme.colorScheme.onSurface)),
+                content: TextField(
+                  controller: controller,
+                  autofocus: true,
+                  decoration: const InputDecoration(hintText: 'Tag name'),
+                  onSubmitted: (value) => Navigator.of(ctx).pop(value),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(controller.text),
+                    child: const Text('Add'),
+                  ),
+                ],
+              ),
+            );
+            if (newTag != null && newTag.trim().isNotEmpty) {
+              final updatedTags = [...vm.currentCard.tags, newTag.trim()];
+              vm.updateTags(updatedTags);
+            }
           },
         ),
       ],

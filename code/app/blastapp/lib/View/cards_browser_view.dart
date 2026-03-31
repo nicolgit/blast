@@ -339,14 +339,23 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 200,
-              height: 200,
-              child: Lottie.asset(
-                'assets/general/man-walking.json',
-                repeat: true,
-                reverse: false,
-                animate: true,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SizedBox(
+                width: 200,
+                height: 200,
+                child: Container(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Lottie.asset(
+                    'assets/general/man-walking.json',
+                    repeat: true,
+                    reverse: false,
+                    animate: true,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 24),

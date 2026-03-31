@@ -118,7 +118,7 @@ class Importer {
   }
 
   static BlastDocument importCsv(String csvString) {
-    final rows = const CsvToListConverter(eol: '\n').convert(csvString);
+    final rows = csv.decode(csvString);
     var blastDocument = BlastDocument();
 
     if (rows.isEmpty) return blastDocument;

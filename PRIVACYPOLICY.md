@@ -21,10 +21,11 @@ When using cloud storage services, authentication tokens are stored locally on y
 Blast offers optional integration with various cloud storage services to store your encrypted password file. Currently supported services include:
 
 - **OneDrive**: Microsoft personal cloud storage
+- **Dropbox**: Cloud storage and synchronization service
 - **Local File System**: Data stored locally on your device
 - **Lorem Cloud**: Testing environment only
 
-Additional cloud storage providers (DropBox, Azure Storage, AWS S3, Google Drive, iCloud) are planned for future releases.
+Additional cloud storage providers (Azure Storage, AWS S3, Google Drive, iCloud) are planned for future releases.
 
 ## OneDrive Integration
 If you choose to use OneDrive, the app will request access to your Microsoft account with the following permissions:
@@ -32,6 +33,14 @@ If you choose to use OneDrive, the app will request access to your Microsoft acc
 - `openid` and `profile`: For authentication purposes only
 
 This access is used solely for storing and managing your password file. We do not access any other files or data in your OneDrive account.
+
+## Dropbox Integration
+If you choose to use Dropbox, the app will request access to your Dropbox account with the following permissions:
+- `files.content.read`: To retrieve your encrypted password file
+- `files.content.write`: To save and update your encrypted password file
+- `files.metadata.read`: To check file information and manage your password file
+
+This access is used solely for storing and managing your password file. We do not access any other files or data in your Dropbox account.
 
 ## Local Storage
 When using local file system storage, your encrypted password file is stored in your device's application documents directory and is only accessible by the Blast application.
@@ -61,7 +70,8 @@ We implement multiple layers of security to protect your data:
 Blast integrates with third-party cloud storage services only when you explicitly choose to use them. These integrations are:
 
 - **Microsoft OneDrive**: Uses Microsoft Graph API for file storage
-- **Future Services**: Additional cloud providers may be added (DropBox, Google Drive, iCloud, etc.)
+- **Dropbox**: Uses Dropbox API v2 for file storage
+- **Future Services**: Additional cloud providers may be added (Google Drive, iCloud, etc.)
 
 ## What Data is Shared
 - Only your encrypted password file is stored in your chosen cloud service
@@ -71,6 +81,7 @@ Blast integrates with third-party cloud storage services only when you explicitl
 ## Third-Party Privacy
 When using cloud storage, you are also subject to the privacy policies of those providers:
 - [Microsoft Privacy Statement](https://privacy.microsoft.com/privacystatement) (for OneDrive users)
+- [Dropbox Privacy Policy](https://www.dropbox.com/privacy) (for Dropbox users)
 
 ## No Other Third-Party Services
 Blast does not use:

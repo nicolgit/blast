@@ -67,12 +67,6 @@ class _CardViewState extends State<CardView> {
                     ),
                   ],
                 ),
-                BlastEditButton(
-                  tooltip: 'advanced edit',
-                  onPressed: () {
-                    vm.editCommand();
-                  },
-                ),
                 IconButton(
                   icon: const Icon(Icons.close),
                   tooltip: 'Quit',
@@ -267,7 +261,7 @@ class _CardViewState extends State<CardView> {
                 side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.description, size: 16),
-              label: const Text('Value'),
+              label: const Text('+Value'),
             ),
             OutlinedButton.icon(
               onPressed: () {
@@ -280,7 +274,7 @@ class _CardViewState extends State<CardView> {
                 side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.lock, size: 16),
-              label: const Text('Password'),
+              label: const Text('+Password'),
             ),
             OutlinedButton.icon(
               onPressed: () {
@@ -293,7 +287,7 @@ class _CardViewState extends State<CardView> {
                 side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.title, size: 16),
-              label: const Text('Title'),
+              label: const Text('+Title'),
             ),
             OutlinedButton.icon(
               onPressed: () {
@@ -306,7 +300,7 @@ class _CardViewState extends State<CardView> {
                 side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.link, size: 16),
-              label: const Text('URL'),
+              label: const Text('+URL'),
             ),
           ],
         ),

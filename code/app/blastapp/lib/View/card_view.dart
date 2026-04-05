@@ -69,6 +69,11 @@ class _CardViewState extends State<CardView> {
                 IconButton(
                   icon: const Icon(Icons.edit),
                   tooltip: 'advanced edit',
+                  style: IconButton.styleFrom(
+                    backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                    foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                    side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                  ),
                   onPressed: () {
                     vm.editCommand();
                   },
@@ -103,7 +108,7 @@ class _CardViewState extends State<CardView> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: _widgetFactory.theme.colorScheme.surface,
+                                color: _widgetFactory.theme.colorScheme.tertiaryContainer,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: _widgetFactory.theme.colorScheme.outline,
@@ -119,7 +124,7 @@ class _CardViewState extends State<CardView> {
                               child: Icon(
                                 Icons.edit,
                                 size: 36,
-                                color: _widgetFactory.theme.colorScheme.primary,
+                                color: _widgetFactory.theme.colorScheme.onTertiaryContainer,
                               ),
                             ),
                           ),
@@ -151,9 +156,11 @@ class _CardViewState extends State<CardView> {
                     const SizedBox(width: 6),
                     if (vm.editMode)
                       IconButton.outlined(
-                        icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+                        icon: const Icon(Icons.edit, size: 18),
                         tooltip: 'Edit title',
                         style: IconButton.styleFrom(
+                          backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                          foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
                           side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
                         ),
                         onPressed: () async {
@@ -285,33 +292,53 @@ class _CardViewState extends State<CardView> {
           children: [
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams('Field', '', BlastAttributeType.typeString);
+                final attr = BlastAttribute.withParams('+Field', '', BlastAttributeType.typeString);
                 vm.addAttribute(attr);
               },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+              ),
               icon: const Icon(Icons.description, size: 16),
               label: const Text('Value'),
             ),
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams('Password', '', BlastAttributeType.typePassword);
+                final attr = BlastAttribute.withParams('+Password', '', BlastAttributeType.typePassword);
                 vm.addAttribute(attr);
               },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+              ),
               icon: const Icon(Icons.lock, size: 16),
               label: const Text('Password'),
             ),
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams('Title', '', BlastAttributeType.typeHeader);
+                final attr = BlastAttribute.withParams('+Title', '', BlastAttributeType.typeHeader);
                 vm.addAttribute(attr);
               },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+              ),
               icon: const Icon(Icons.title, size: 16),
               label: const Text('Title'),
             ),
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams('URL', '', BlastAttributeType.typeURL);
+                final attr = BlastAttribute.withParams('+URL', '', BlastAttributeType.typeURL);
                 vm.addAttribute(attr);
               },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+              ),
               icon: const Icon(Icons.link, size: 16),
               label: const Text('URL'),
             ),
@@ -373,9 +400,11 @@ class _CardViewState extends State<CardView> {
         Flexible(child: wrap),
         const SizedBox(width: 6),
         IconButton.outlined(
-          icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+          icon: const Icon(Icons.edit, size: 18),
           tooltip: 'Edit tags',
           style: IconButton.styleFrom(
+            backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+            foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
             side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
           ),
           onPressed: () async {
@@ -401,9 +430,11 @@ class _CardViewState extends State<CardView> {
         ),
         const SizedBox(width: 6),
         IconButton.outlined(
-          icon: Icon(Icons.add, size: 18, color: _widgetFactory.theme.colorScheme.primary),
+          icon: const Icon(Icons.add, size: 18),
           tooltip: 'Add custom tag',
           style: IconButton.styleFrom(
+            backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+            foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
             side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
           ),
           onPressed: () async {
@@ -456,7 +487,7 @@ class _CardViewState extends State<CardView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Notes",
+                        Text(vm.editMode ? "Notes (some markdown is ok)" : "Notes",
                             style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
                         if (!vm.editMode)
@@ -474,13 +505,21 @@ class _CardViewState extends State<CardView> {
                             },
                           ),
                         if (vm.editMode)
-                          IconButton(
-                            icon: Icon(Icons.edit, size: 18, color: _widgetFactory.theme.colorScheme.primary),
-                            tooltip: 'Edit notes',
-                            onPressed: () async {
-                              final newNotes = await NotesInputDialog.show(context, notes);
-                              vm.updateNotes(newNotes);
-                            },
+                          Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: IconButton(
+                              icon: const Icon(Icons.edit, size: 18),
+                              tooltip: 'Edit notes',
+                              style: IconButton.styleFrom(
+                                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                              ),
+                              onPressed: () async {
+                                final newNotes = await NotesInputDialog.show(context, notes);
+                                vm.updateNotes(newNotes);
+                              },
+                            ),
                           ),
                       ],
                     ),

@@ -36,6 +36,22 @@ class BlastAttributeRow extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
 
+    Widget buildDeleteButton({double iconSize = 20}) {
+      return IconButton(
+        onPressed: () {
+          deleteField!(attribute);
+        },
+        icon: const Icon(Icons.delete_outline),
+        tooltip: 'delete field',
+        iconSize: iconSize,
+        style: IconButton.styleFrom(
+          backgroundColor: theme.colorScheme.error,
+          foregroundColor: theme.colorScheme.onError,
+          side: BorderSide(color: theme.colorScheme.primary),
+        ),
+      );
+    }
+
     final name = attribute.name;
     final value = attribute.value;
     final type = attribute.type;
@@ -73,18 +89,8 @@ class BlastAttributeRow extends StatelessWidget {
                               ),
                             if (editMode && deleteField != null)
                               Padding(
-                                padding: const EdgeInsets.only(left: 12),
-                                child: IconButton.outlined(
-                                  onPressed: () {
-                                    deleteField!(attribute);
-                                  },
-                                  icon: Icon(Icons.delete_outline, color: theme.colorScheme.onPrimaryContainer),
-                                  tooltip: 'delete field',
-                                  iconSize: 20,
-                                  style: IconButton.styleFrom(
-                                    side: BorderSide(color: theme.colorScheme.secondary),
-                                  ),
-                                ),
+                                padding: const EdgeInsets.only(left: 3),
+                                child: buildDeleteButton(iconSize: 20),
                               ),
                           ],
                         ),
@@ -151,13 +157,8 @@ class BlastAttributeRow extends StatelessWidget {
                                         editField(attribute);
                                       },
                                       tooltip: 'edit field'),
-                                if (editMode && deleteField != null)
-                                  IconButton(
-                                      onPressed: () {
-                                        deleteField!(attribute);
-                                      },
-                                      icon: const Icon(Icons.delete_outline),
-                                      tooltip: 'delete field'),
+                                if (editMode && deleteField != null) const SizedBox(width: 3),
+                                if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
                               ]),
                               onTap: () async {
                                 showFieldView(value);
@@ -207,13 +208,8 @@ class BlastAttributeRow extends StatelessWidget {
                                     editField(attribute);
                                   },
                                   tooltip: 'edit field'),
-                            if (editMode && deleteField != null)
-                              IconButton(
-                                  onPressed: () {
-                                    deleteField!(attribute);
-                                  },
-                                  icon: const Icon(Icons.delete_outline),
-                                  tooltip: 'delete field'),
+                            if (editMode && deleteField != null) const SizedBox(width: 3),
+                            if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
                           ]),
                           onTap: () async {
                             showFieldView(value);
@@ -254,13 +250,8 @@ class BlastAttributeRow extends StatelessWidget {
                                     editField(attribute);
                                   },
                                   tooltip: 'edit field'),
-                            if (editMode && deleteField != null)
-                              IconButton(
-                                  onPressed: () {
-                                    deleteField!(attribute);
-                                  },
-                                  icon: const Icon(Icons.delete_outline),
-                                  tooltip: 'delete field'),
+                            if (editMode && deleteField != null) const SizedBox(width: 3),
+                            if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
                           ]),
                           onTap: () async {
                             showFieldView(value);

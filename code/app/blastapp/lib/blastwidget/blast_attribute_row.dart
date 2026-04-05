@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:blastapp/blastwidget/blast_edit_button.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 
@@ -62,16 +63,12 @@ class BlastAttributeRow extends StatelessWidget {
                             if (editMode)
                               Padding(
                                 padding: const EdgeInsets.only(left: 12),
-                                child: IconButton.outlined(
+                                child: BlastEditButton(
                                   onPressed: () {
                                     editField(attribute);
                                   },
-                                  icon: Icon(Icons.edit, color: theme.colorScheme.onPrimaryContainer),
                                   tooltip: 'edit field',
                                   iconSize: 20,
-                                  style: IconButton.styleFrom(
-                                    side: BorderSide(color: theme.colorScheme.secondary),
-                                  ),
                                 ),
                               ),
                             if (editMode && deleteField != null)
@@ -149,11 +146,10 @@ class BlastAttributeRow extends StatelessWidget {
                                   TextButton(
                                       onPressed: () => generatePassword!(attribute), child: const Text('generate')),
                                 if (editMode)
-                                  IconButton(
+                                  BlastEditButton(
                                       onPressed: () {
                                         editField(attribute);
                                       },
-                                      icon: const Icon(Icons.edit),
                                       tooltip: 'edit field'),
                                 if (editMode && deleteField != null)
                                   IconButton(
@@ -206,11 +202,10 @@ class BlastAttributeRow extends StatelessWidget {
                                   icon: const Icon(Icons.copy),
                                   tooltip: 'copy to clipboard'),
                             if (editMode)
-                              IconButton(
+                              BlastEditButton(
                                   onPressed: () {
                                     editField(attribute);
                                   },
-                                  icon: const Icon(Icons.edit),
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null)
                               IconButton(
@@ -254,11 +249,10 @@ class BlastAttributeRow extends StatelessWidget {
                                   icon: const Icon(Icons.copy),
                                   tooltip: 'copy to clipboard'),
                             if (editMode)
-                              IconButton(
+                              BlastEditButton(
                                   onPressed: () {
                                     editField(attribute);
                                   },
-                                  icon: const Icon(Icons.edit),
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null)
                               IconButton(

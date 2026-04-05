@@ -5,6 +5,7 @@ import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
+import 'package:blastapp/blastwidget/blast_edit_button.dart';
 import 'package:blastapp/helpers/blast_attribute_edit_dialogs.dart';
 import 'package:blastapp/helpers/notes_input_dialog.dart';
 import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
@@ -66,14 +67,8 @@ class _CardViewState extends State<CardView> {
                     ),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.edit),
+                BlastEditButton(
                   tooltip: 'advanced edit',
-                  style: IconButton.styleFrom(
-                    backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
-                    foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                    side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
-                  ),
                   onPressed: () {
                     vm.editCommand();
                   },
@@ -101,33 +96,10 @@ class _CardViewState extends State<CardView> {
                       Positioned(
                         right: -12,
                         bottom: -12,
-                        child: Tooltip(
-                          message: 'Change icon',
-                          child: GestureDetector(
-                            onTap: () => vm.changeDocumentIcon(),
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: _widgetFactory.theme.colorScheme.tertiaryContainer,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: _widgetFactory.theme.colorScheme.outline,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 4,
-                                    offset: Offset(1, 1),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.edit,
-                                size: 36,
-                                color: _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                              ),
-                            ),
-                          ),
+                        child: BlastEditButton(
+                          tooltip: 'Change icon',
+                          iconSize: 36,
+                          onPressed: () => vm.changeDocumentIcon(),
                         ),
                       ),
                     ],
@@ -155,14 +127,8 @@ class _CardViewState extends State<CardView> {
                             style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
                     const SizedBox(width: 6),
                     if (vm.editMode)
-                      IconButton.outlined(
-                        icon: const Icon(Icons.edit, size: 18),
+                      BlastEditButton(
                         tooltip: 'Edit title',
-                        style: IconButton.styleFrom(
-                          backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
-                          foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                          side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
-                        ),
                         onPressed: () async {
                           final controller = TextEditingController(text: vm.currentCard.title ?? "");
                           final newTitle = await showDialog<String>(
@@ -399,14 +365,8 @@ class _CardViewState extends State<CardView> {
       children: [
         Flexible(child: wrap),
         const SizedBox(width: 6),
-        IconButton.outlined(
-          icon: const Icon(Icons.edit, size: 18),
+        BlastEditButton(
           tooltip: 'Edit tags',
-          style: IconButton.styleFrom(
-            backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
-            foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
-            side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
-          ),
           onPressed: () async {
             await showDialog(
               context: context,
@@ -505,21 +465,13 @@ class _CardViewState extends State<CardView> {
                             },
                           ),
                         if (vm.editMode)
-                          Padding(
+                          BlastEditButton(
+                            tooltip: 'Edit notes',
                             padding: const EdgeInsets.all(3),
-                            child: IconButton(
-                              icon: const Icon(Icons.edit, size: 18),
-                              tooltip: 'Edit notes',
-                              style: IconButton.styleFrom(
-                                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
-                                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
-                              ),
-                              onPressed: () async {
-                                final newNotes = await NotesInputDialog.show(context, notes);
-                                vm.updateNotes(newNotes);
-                              },
-                            ),
+                            onPressed: () async {
+                              final newNotes = await NotesInputDialog.show(context, notes);
+                              vm.updateNotes(newNotes);
+                            },
                           ),
                       ],
                     ),

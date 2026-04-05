@@ -25,7 +25,8 @@ class CardViewModel extends ChangeNotifier {
   final ValueNotifier<int> timeTextNotifier = ValueNotifier<int>(0);
   bool _isDisposed = false;
 
-  CardViewModel(this.context, this.currentCard) {
+  CardViewModel(this.context, this.currentCard, {bool startInEditMode = false}) {
+    editMode = startInEditMode;
     showPasswordRow = List.filled(currentCard.rows.length, false);
     _initializeTimer();
   }

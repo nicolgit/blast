@@ -75,10 +75,10 @@ class CardFileInfoRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [CardView]
 class CardRoute extends PageRouteInfo<CardRouteArgs> {
-  CardRoute({Key? key, required BlastCard card, List<PageRouteInfo>? children})
+  CardRoute({Key? key, required BlastCard card, bool openInEditMode = false, List<PageRouteInfo>? children})
       : super(
           CardRoute.name,
-          args: CardRouteArgs(key: key, card: card),
+          args: CardRouteArgs(key: key, card: card, openInEditMode: openInEditMode),
           initialChildren: children,
         );
 
@@ -88,32 +88,34 @@ class CardRoute extends PageRouteInfo<CardRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<CardRouteArgs>();
-      return CardView(key: args.key, card: args.card);
+      return CardView(key: args.key, card: args.card, openInEditMode: args.openInEditMode);
     },
   );
 }
 
 class CardRouteArgs {
-  const CardRouteArgs({this.key, required this.card});
+  const CardRouteArgs({this.key, required this.card, this.openInEditMode = false});
 
   final Key? key;
 
   final BlastCard card;
 
+  final bool openInEditMode;
+
   @override
   String toString() {
-    return 'CardRouteArgs{key: $key, card: $card}';
+    return 'CardRouteArgs{key: $key, card: $card, openInEditMode: $openInEditMode}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! CardRouteArgs) return false;
-    return key == other.key && card == other.card;
+    return key == other.key && card == other.card && openInEditMode == other.openInEditMode;
   }
 
   @override
-  int get hashCode => key.hashCode ^ card.hashCode;
+  int get hashCode => key.hashCode ^ card.hashCode ^ openInEditMode.hashCode;
 }
 
 /// generated route for

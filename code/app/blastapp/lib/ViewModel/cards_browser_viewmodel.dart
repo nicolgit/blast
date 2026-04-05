@@ -36,9 +36,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
     return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }
 
-  Future selectCard(BlastCard selectedCard) async {
+  Future selectCard(BlastCard selectedCard, {bool openInEditMode = false}) async {
     this.selectedCard = selectedCard;
-    await context.router.push(CardRoute(card: selectedCard));
+    await context.router.push(CardRoute(card: selectedCard, openInEditMode: openInEditMode));
   }
 
   void closeCommand() {

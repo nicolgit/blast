@@ -411,6 +411,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           itemBuilder: (context, index) {
             return BlastCardItem(
               card: cardsList[index],
+              onEditPressed: (card) async {
+                await vm.selectCard(card, openInEditMode: true);
+                vm.refreshCardListCommand();
+              },
               onDeletePressed: (card) async {
                 final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, card);
                 if (confirmed) {

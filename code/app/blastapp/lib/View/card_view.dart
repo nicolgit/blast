@@ -23,8 +23,9 @@ import 'package:intl/intl.dart'; //for date formate locale
 
 @RoutePage()
 class CardView extends StatefulWidget {
-  const CardView({super.key, required this.card});
+  const CardView({super.key, required this.card, this.openInEditMode = false});
   final BlastCard card;
+  final bool openInEditMode;
 
   @override
   State<StatefulWidget> createState() => _CardViewState();
@@ -36,7 +37,7 @@ class _CardViewState extends State<CardView> {
     final card = widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
-      create: (context) => CardViewModel(context, card),
+      create: (context) => CardViewModel(context, card, startInEditMode: widget.openInEditMode),
       child: Consumer<CardViewModel>(
         builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),

@@ -7,6 +7,7 @@ import 'package:humanizer/humanizer.dart';
 class BlastCardItem extends StatelessWidget {
   final BlastCard card;
   final Function(BlastCard) onDeletePressed;
+  final Function(BlastCard) onEditPressed;
   final Function(BlastCard) onFavoritePressed;
   final Function(BlastCard) onTap;
   final bool isSelected;
@@ -16,6 +17,7 @@ class BlastCardItem extends StatelessWidget {
     super.key,
     required this.card,
     required this.onDeletePressed,
+    required this.onEditPressed,
     required this.onFavoritePressed,
     required this.onTap,
     required this.isSelected,
@@ -67,6 +69,13 @@ class BlastCardItem extends StatelessWidget {
                         ),
                         onPressed: () => onFavoritePressed(card),
                         tooltip: isFavorite ? "remove from favorites" : "add to favorites",
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        icon: Icon(Icons.edit, color: widgetFactory.theme.colorScheme.secondary),
+                        onPressed: () => onEditPressed(card),
+                        tooltip: "edit",
                       ),
                       IconButton(
                         visualDensity: VisualDensity.compact,

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/ViewModel/card_viewmodel.dart';
 import 'package:blastapp/blastwidget/blast_markdown_text.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_attribute_row.dart';
@@ -32,6 +32,8 @@ class CardView extends StatefulWidget {
 }
 
 class _CardViewState extends State<CardView> {
+  bool _isEnforcingTitle = false;
+
   @override
   Widget build(BuildContext context) {
     final card = widget.card; // this is the card passed in from the CardsBrowserView
@@ -46,10 +48,62 @@ class _CardViewState extends State<CardView> {
 
   late BlastWidgetFactory _widgetFactory;
 
+  Future<void> _showEditTitleDialog(CardViewModel vm, {bool requireNonEmpty = false}) async {
+    final controller = TextEditingController(text: vm.currentCard.title ?? "");
+    final newTitle = await showDialog<String>(
+      context: context,
+      barrierDismissible: !requireNonEmpty,
+      builder: (context) => AlertDialog(
+        title: Text('Edit title',
+            style: _widgetFactory.textTheme.headlineSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onSurface)),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: _widgetFactory.textTheme.bodyMedium!.copyWith(color: _widgetFactory.theme.colorScheme.onSurface),
+          decoration: const InputDecoration(hintText: 'Card title'),
+          onSubmitted: (value) => Navigator.pop(context, value),
+        ),
+        actions: [
+          if (!requireNonEmpty)
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+    if (newTitle != null && newTitle.trim().isNotEmpty) {
+      vm.updateTitle(newTitle);
+    }
+  }
+
+  Future<void> _enforceTitleOnOpen(CardViewModel vm) async {
+    if (_isEnforcingTitle) return;
+    _isEnforcingTitle = true;
+
+    while (mounted && (vm.currentCard.title == null || vm.currentCard.title!.trim().isEmpty)) {
+      await _showEditTitleDialog(vm, requireNonEmpty: true);
+    }
+
+    _isEnforcingTitle = false;
+  }
+
   Widget _buildScaffold(BuildContext context, CardViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
     //_theme = Theme.of(context);
     //_textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+
+    if (widget.openInEditMode &&
+        vm.editMode &&
+        (vm.currentCard.title == null || vm.currentCard.title!.trim().isEmpty)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _enforceTitleOnOpen(vm);
+      });
+    }
 
     return SafeArea(
         child: Scaffold(
@@ -124,38 +178,7 @@ class _CardViewState extends State<CardView> {
                     if (vm.editMode)
                       BlastEditButton(
                         tooltip: 'Edit title',
-                        onPressed: () async {
-                          final controller = TextEditingController(text: vm.currentCard.title ?? "");
-                          final newTitle = await showDialog<String>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Edit title',
-                                  style: _widgetFactory.textTheme.headlineSmall!
-                                      .copyWith(color: _widgetFactory.theme.colorScheme.onSurface)),
-                              content: TextField(
-                                controller: controller,
-                                autofocus: true,
-                                style: _widgetFactory.textTheme.bodyMedium!
-                                    .copyWith(color: _widgetFactory.theme.colorScheme.onSurface),
-                                decoration: const InputDecoration(hintText: 'Card title'),
-                                onSubmitted: (value) => Navigator.pop(context, value),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, controller.text),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (newTitle != null) {
-                            vm.updateTitle(newTitle);
-                          }
-                        },
+                        onPressed: () => _showEditTitleDialog(vm),
                       ),
                   ],
                 ),

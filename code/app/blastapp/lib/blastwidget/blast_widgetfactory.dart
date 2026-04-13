@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
-import 'blast_attribute_edit.dart';
 
 class BlastWidgetFactory {
   late ThemeData theme;
@@ -35,30 +34,6 @@ class BlastWidgetFactory {
         hintText: hintText,
         hintStyle: _textThemeHint,
         suffixIcon: onPressed != null ? IconButton(icon: const Icon(Icons.clear), onPressed: onPressed) : null);
-  }
-
-  Widget buildAttributeRowEdit(
-    List<BlastAttribute> rows,
-    int i, {
-    required FocusOn focusOn,
-    required Function(String) onNameChanged,
-    required Function(String) onValueChanged,
-    required VoidCallback onDelete,
-    required VoidCallback onTypeSwap,
-  }) {
-    return BlastAttributeEdit(
-      rows: rows,
-      index: i,
-      focusOn: focusOn,
-      onNameChanged: onNameChanged,
-      onValueChanged: onValueChanged,
-      onDelete: onDelete,
-      onTypeSwap: onTypeSwap,
-      blastTextFieldDecoration: blastTextFieldDecoration,
-      buildIconTypeButton: buildIconTypeButton,
-      theme: theme,
-      textTheme: textTheme,
-    );
   }
 
   IconButton buildIconTypeButton(BlastAttributeType type, VoidCallback onTypeSwap) {

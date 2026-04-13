@@ -180,16 +180,6 @@ class CardViewModel extends ChangeNotifier {
     }
   }
 
-  Future editCommand() async {
-    await context.router.push(CardEditRoute(card: currentCard)).then((value) {
-      if (_isDisposed) return;
-      showPasswordRow = List.filled(currentCard.rows.length, false);
-      _notifySafely();
-    });
-
-    return Future.value();
-  }
-
   void refresh() {
     _notifySafely();
   }

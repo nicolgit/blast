@@ -97,7 +97,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
   Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
 
   Future addEmptyCard() async {
-    await context.router.push(CardEditRoute());
+    final card = BlastCard();
+    fileService.currentFileDocument!.cards.insert(0, card);
+    await context.router.push(CardRoute(card: card, openInEditMode: true));
   }
 
   Future addWebCard() async {

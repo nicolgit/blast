@@ -5,16 +5,12 @@
 </p>
 
 # Blast
+Your passwords, safe and sound.
 
-**Private. Portable. Simple.**
-
-Blast is an open-source, cross-platform password and secrets manager designed for people who want **full control over their data**.
-
-No proprietary backend. No forced cloud. No lock-in.
+Blast is an open-source, cross-platform password and secrets manager designed for people who want **full control over their data**. Private. Portable. Simple. No proprietary backend. No forced cloud. No lock-in.
 
 
 ## 🧠 Why Blast?
-
 Most password managers rely on their own infrastructure.
 
 **Blast doesn’t.**
@@ -23,8 +19,7 @@ Most password managers rely on their own infrastructure.
 - You choose where it lives
 - You can move it anytime
 
-👉 Local? Cloud? USB drive? Your choice.
-
+👉 Local? Cloud? USB drive? It is your choice.
 
 ## 🔐 Core principles
 
@@ -56,29 +51,29 @@ Blast stores everything inside a single encrypted `.blast` vault file.
 
 ---
 
-## 🚀 Get started
+## 🚀 Use Blast today
 
 - Web: https://blast.duckiesfarm.com  
-- iOS / macOS: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050  
+- iOS/macOS: https://apps.apple.com/it/app/blast-open-source-password-mgr/id6742346050  
 - Android: https://play.google.com/store/apps/details?id=com.nicoladelfino.blastapp  
 - Windows: https://apps.microsoft.com/detail/9nz7l5snvsxx  
 - Linux: build from source  
 
-## 🧩 Features
+## 🧩 Main Features
 
 - Advanced search and sorting
 - Favorites and tags
 - Flexible custom fields
 - Markdown notes
 - Password generator
-- QR / barcode support
-- Light / dark mode
+- QR/barcode support
+- Light/dark mode
 
-### Import support
+### Import form another password manager
 
 - KeePass XML (2.x)
 - Password Safe XML
-- CSV
+- CSV (i.e. 1Password)
 
 ## ☁️ Storage: Bring Your Own
 
@@ -108,31 +103,19 @@ Vault structure:
 - Binary header (parameters)
 - Encrypted JSON body
 
-Full specification:  
+Full file specification:  
 👉 `docs/file-format.md`
 
 
-## ⚠️ Threat model (important)
+## ⚠️ Threat model
 
 Blast protects your data if:
-
 - your device is secure
 - your master password is strong
 
 Blast does **not** protect against:
-
 - compromised devices (malware, keyloggers)
 - weak master passwords
-
-
-## 🔍 Comparison
-
-| Feature            | Blast | Typical cloud manager |
-|------------------|------|----------------------|
-| Own servers       | ❌   | ✅                   |
-| Vendor lock-in    | ❌   | ✅                   |
-| Portable vault    | ✅   | ❌                   |
-| Offline usage     | ✅   | ⚠️ limited           |
 
 
 ## 🛠 Build from source

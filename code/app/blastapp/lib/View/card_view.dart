@@ -59,9 +59,10 @@ class _CardViewState extends State<CardView> {
         content: TextField(
           controller: controller,
           autofocus: true,
+          textInputAction: TextInputAction.done,
           style: _widgetFactory.textTheme.bodyMedium!.copyWith(color: _widgetFactory.theme.colorScheme.onSurface),
           decoration: const InputDecoration(hintText: 'Card title'),
-          onSubmitted: (value) => Navigator.pop(context, value),
+          onSubmitted: (_) => Navigator.pop(context, controller.text),
         ),
         actions: [
           if (!requireNonEmpty)

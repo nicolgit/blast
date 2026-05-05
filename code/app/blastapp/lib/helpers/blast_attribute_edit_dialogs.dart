@@ -20,6 +20,10 @@ class BlastAttributeEditDialogs {
             labelStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant),
           ),
           autofocus: true,
+          onSubmitted: (value) {
+            vm.updateAttributeName(attribute, controller.text);
+            Navigator.of(context).pop();
+          },
         ),
         actions: [
           TextButton(
@@ -65,6 +69,7 @@ class BlastAttributeEditDialogs {
   static void showEditPasswordFieldDialog(BuildContext context, BlastAttribute attribute, CardViewModel vm) {
     final controller = TextEditingController(text: attribute.value);
     final confirmController = TextEditingController(text: attribute.value);
+    final confirmFocusNode = FocusNode();
     bool obscure = true;
 
     showDialog(
@@ -106,10 +111,12 @@ class BlastAttributeEditDialogs {
                     ),
                   ),
                   autofocus: true,
+                  onSubmitted: (_) => confirmFocusNode.requestFocus(),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: confirmController,
+                  focusNode: confirmFocusNode,
                   obscureText: obscure,
                   onChanged: (_) => setState(() {}),
                   style: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurface),
@@ -118,6 +125,14 @@ class BlastAttributeEditDialogs {
                     labelText: 'Confirm ${attribute.name} value',
                     labelStyle: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurfaceVariant),
                   ),
+                  onSubmitted: (_) {
+                    if (!mismatch) {
+                      vm.updateAttributeValue(attribute, controller.text);
+                      Navigator.of(dialogContext).pop();
+                    } else {
+                      confirmFocusNode.requestFocus();
+                    }
+                  },
                 ),
                 if (mismatch) ...[
                   const SizedBox(height: 8),
@@ -180,6 +195,10 @@ class BlastAttributeEditDialogs {
               labelStyle: TextStyle(color: Theme.of(dialogContext).colorScheme.onSurfaceVariant),
             ),
             autofocus: true,
+            onSubmitted: (value) {
+              vm.updateAttributeValue(attribute, controller.text);
+              Navigator.of(dialogContext).pop();
+            },
           ),
           actions: [
             TextButton(

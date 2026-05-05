@@ -276,24 +276,30 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            TextField(
-                              controller: TextEditingController(text: vm.password),
-                              maxLines: null,
-                              minLines: 1,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 1.2,
-                                color: _theme.colorScheme.onSurface,
-                              ),
-                              textAlign: TextAlign.center,
-                              textAlignVertical: TextAlignVertical.center,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 1024),
+                              child: TextField(
+                                controller: TextEditingController(text: vm.password),
+                                maxLines: null,
+                                minLines: 1,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 1.2,
+                                  color: _theme.colorScheme.onSurface,
+                                ),
+                                textAlign: TextAlign.center,
+                                textAlignVertical: TextAlignVertical.center,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 12),
-                            BlastPasswordComplexity(currentPassword: vm.password),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 1024),
+                              child: BlastPasswordComplexity(currentPassword: vm.password),
+                            ),
                             const SizedBox(height: 12),
                             if (widget.returnsValue || widget.allowCopyToClipboard)
                               Row(

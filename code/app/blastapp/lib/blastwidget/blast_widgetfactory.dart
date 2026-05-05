@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 
 class BlastWidgetFactory {

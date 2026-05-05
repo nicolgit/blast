@@ -1,4 +1,5 @@
 import 'package:blastapp/ViewModel/card_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_password_complexity.dart';
 import 'package:blastmodel/blastattribute.dart';
 import 'package:flutter/material.dart';
 
@@ -113,6 +114,8 @@ class BlastAttributeEditDialogs {
                   autofocus: true,
                   onSubmitted: (_) => confirmFocusNode.requestFocus(),
                 ),
+                const SizedBox(height: 12),
+                BlastPasswordComplexity(currentPassword: controller.text),
                 const SizedBox(height: 12),
                 TextField(
                   controller: confirmController,

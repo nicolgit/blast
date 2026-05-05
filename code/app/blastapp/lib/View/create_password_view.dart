@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/create_password_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_password_complexity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,6 +100,8 @@ class _CreatePasswordViewState extends State<CreatePasswordView> {
                             hintText: 'Choose a password for your file',
                             hintStyle: _textThemeHint),
                       ),
+                      const SizedBox(height: 12.0),
+                      BlastPasswordComplexity(currentPassword: passwordController.text),
                       const SizedBox(height: 12.0),
                       TextField(
                         obscureText: true,

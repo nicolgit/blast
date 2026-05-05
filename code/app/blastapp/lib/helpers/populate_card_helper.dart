@@ -1,3 +1,4 @@
+import 'package:blastapp/blastwidget/blast_password_complexity.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +116,7 @@ class PopulateCardHelper {
                       textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
                       obscureText: isPassword && hideValue,
                       obscuringCharacter: '*',
+                      onChanged: (_) => setState(() {}),
                       onSubmitted: (_) {
                         Navigator.of(context).pop(isLast ? _PopulateResult.ok : _PopulateResult.next);
                       },
@@ -131,6 +133,10 @@ class PopulateCardHelper {
                             : null,
                       ),
                     ),
+                    if (isPassword) ...[
+                      const SizedBox(height: 8),
+                      BlastPasswordComplexity(currentPassword: controller.text),
+                    ],
                   ],
                 ),
                 actions: [

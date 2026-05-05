@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/password_generator_viewmodel.dart';
+import 'package:blastapp/blastwidget/blast_password_complexity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -291,6 +292,8 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                 border: OutlineInputBorder(),
                               ),
                             ),
+                            const SizedBox(height: 12),
+                            BlastPasswordComplexity(currentPassword: vm.password),
                             const SizedBox(height: 12),
                             if (widget.returnsValue || widget.allowCopyToClipboard)
                               Row(

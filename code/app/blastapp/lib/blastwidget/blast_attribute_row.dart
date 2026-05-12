@@ -36,6 +36,14 @@ class BlastAttributeRow extends StatelessWidget {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
 
+    Widget buildDragHint({double iconSize = 20}) {
+      return Icon(
+        Icons.drag_indicator,
+        size: iconSize,
+        color: theme.colorScheme.onSurfaceVariant,
+      );
+    }
+
     Widget buildDeleteButton({double iconSize = 20}) {
       return IconButton(
         onPressed: () {
@@ -91,6 +99,11 @@ class BlastAttributeRow extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 3),
                                 child: buildDeleteButton(iconSize: 20),
+                              ),
+                            if (editMode)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: buildDragHint(iconSize: 20),
                               ),
                           ],
                         ),
@@ -159,6 +172,8 @@ class BlastAttributeRow extends StatelessWidget {
                                       tooltip: 'edit field'),
                                 if (editMode && deleteField != null) const SizedBox(width: 3),
                                 if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
+                                if (editMode) const SizedBox(width: 4),
+                                if (editMode) buildDragHint(iconSize: 20),
                               ]),
                               onTap: () async {
                                 showFieldView(value);
@@ -210,6 +225,8 @@ class BlastAttributeRow extends StatelessWidget {
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null) const SizedBox(width: 3),
                             if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
+                            if (editMode) const SizedBox(width: 4),
+                            if (editMode) buildDragHint(iconSize: 20),
                           ]),
                           onTap: () async {
                             showFieldView(value);
@@ -252,6 +269,8 @@ class BlastAttributeRow extends StatelessWidget {
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null) const SizedBox(width: 3),
                             if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
+                            if (editMode) const SizedBox(width: 4),
+                            if (editMode) buildDragHint(iconSize: 20),
                           ]),
                           onTap: () async {
                             showFieldView(value);

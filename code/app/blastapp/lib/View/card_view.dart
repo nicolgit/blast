@@ -255,9 +255,15 @@ class _CardViewState extends State<CardView> {
         ? ReorderableListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
             onReorder: vm.reorderAttributes,
             children: [
-              for (int i = 0; i < cardsList.length; i++) buildRow(i),
+              for (int i = 0; i < cardsList.length; i++)
+                ReorderableDelayedDragStartListener(
+                  key: ValueKey(cardsList[i]),
+                  index: i,
+                  child: buildRow(i),
+                ),
             ],
           )
         : Column(

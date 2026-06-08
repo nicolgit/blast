@@ -28,6 +28,29 @@ class LoremCloud extends Cloud {
   final _source =
       "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum";
 
+  final List<String> _simpleIconSlugs = const [
+    'google',
+    'youtube',
+    'facebook',
+    'wikipedia',
+    'instagram',
+    'reddit',
+    'x',
+    'amazon',
+    'netflix',
+    'spotify',
+    'discord',
+    'apple',
+    'github',
+    'linkedin',
+    'whatsapp',
+    'telegram',
+    'tiktok',
+    'adobe',
+    'paypal',
+    'openai',
+  ];
+
   final _popularWebsitesJson = '''[
   {"name": "Google", "url": "https://www.google.com"},
   {"name": "YouTube", "url": "https://www.youtube.com"},
@@ -233,34 +256,45 @@ class LoremCloud extends Cloud {
     int totalCards = random.nextInt(150);
 
     for (int i = 0; i < totalCards; i++) {
-      BlastCard card = BlastCard();
-
-      card.title = _randomStringGenerator(random.nextInt(5) + 1, false, false);
-      card.notes = _randomStringGenerator(random.nextInt(200) + 1, true, true);
-      card.isFavorite = random.nextInt(5) == 0;
-      card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
-      card.usedCounter = random.nextInt(100);
-      card.tags = _randomTagsGenerator(random.nextInt(5));
-
-      int totalAttributes = random.nextInt(15);
-      for (int i = 0; i < totalAttributes; i++) {
-        BlastAttribute attribute = BlastAttribute();
-        attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false, false);
-        attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
-
-        if (attribute.type == BlastAttributeType.typeURL) {
-          attribute.value = _randomUrlGenerator();
-        } else {
-          attribute.value = _randomStringGenerator(random.nextInt(6), false, false);
-        }
-
-        card.rows.add(attribute);
-      }
-
-      document.cards.add(card);
+      document.cards.add(_createRandomCard());
     }
 
     return document;
+  }
+
+  BlastCard _createRandomCard() {
+    Random random = Random();
+
+    BlastCard card = BlastCard();
+
+    card.title = _randomStringGenerator(random.nextInt(5) + 1, false, false);
+    card.notes = _randomStringGenerator(random.nextInt(200) + 1, true, true);
+    card.isFavorite = random.nextInt(5) == 0;
+    card.lastUpdateDateTime = DateTime.now().subtract(Duration(days: random.nextInt(365)));
+    card.usedCounter = random.nextInt(100);
+    card.tags = _randomTagsGenerator(random.nextInt(5));
+
+    if (random.nextBool()) {
+      final iconSlug = _simpleIconSlugs[random.nextInt(_simpleIconSlugs.length)];
+      card.icon = 'simpleicons:$iconSlug';
+    }
+
+    int totalAttributes = random.nextInt(15);
+    for (int i = 0; i < totalAttributes; i++) {
+      BlastAttribute attribute = BlastAttribute();
+      attribute.name = _randomStringGenerator(random.nextInt(4) + 1, false, false);
+      attribute.type = BlastAttributeType.values[random.nextInt(BlastAttributeType.values.length)];
+
+      if (attribute.type == BlastAttributeType.typeURL) {
+        attribute.value = _randomUrlGenerator();
+      } else {
+        attribute.value = _randomStringGenerator(random.nextInt(6), false, false);
+      }
+
+      card.rows.add(attribute);
+    }
+
+    return card;
   }
 
   String _randomStringGenerator(int length, bool includeNewLine, bool markdownStyle) {

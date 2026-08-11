@@ -46,7 +46,7 @@ class BlastSettingSwitch extends StatelessWidget {
               onChanged: (bool value) async {
                 await onChanged(value);
               },
-              activeColor: theme.colorScheme.primary,
+              activeThumbColor: theme.colorScheme.primary,
             );
           },
         ),

@@ -155,7 +155,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
       return;
     }
 
-    String? path = await FilePicker.platform.getDirectoryPath();
+    String? path = await FilePicker.getDirectoryPath();
     if (path == null) {
       // User canceled the picker
       return;

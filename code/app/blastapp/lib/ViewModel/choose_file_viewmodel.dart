@@ -128,7 +128,7 @@ class ChooseFileViewModel extends ChangeNotifier {
     if (!isWindows) return;
 
     try {
-      String? selectedPath = await FilePicker.platform.getDirectoryPath();
+      String? selectedPath = await FilePicker.getDirectoryPath();
 
       if (selectedPath != null) {
         currentPath = Future.value(selectedPath);

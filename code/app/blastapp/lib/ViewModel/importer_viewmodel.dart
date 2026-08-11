@@ -19,7 +19,7 @@ class ImporterViewModel extends ChangeNotifier {
   }
 
   Future importBlastCommand() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {
       if (kIsWeb) {
@@ -42,7 +42,7 @@ class ImporterViewModel extends ChangeNotifier {
   }
 
   Future<void> importKeepassXMLCommand() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {
       String xmlString = '';
@@ -62,7 +62,7 @@ class ImporterViewModel extends ChangeNotifier {
   }
 
   Future<void> importPwsafeXMLCommand() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {
       String xmlString = '';
@@ -82,7 +82,7 @@ class ImporterViewModel extends ChangeNotifier {
   }
 
   Future<void> importCsvCommand() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv'],
     );

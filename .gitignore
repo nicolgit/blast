@@ -20,3 +20,6 @@
 # Android Studio directories
 .idea
 .cxx
+
+# Local Microsoft Edge Tools/webhint configuration
+/code/app/.hintrc

@@ -291,6 +291,7 @@ class CardViewModel extends ChangeNotifier {
 
     final theme = Theme.of(context);
     final foregroundColor = theme.colorScheme.onSurface;
+    final jsonFontSize = (theme.textTheme.bodySmall?.fontSize);
 
     await showDialog<void>(
       context: context,
@@ -303,7 +304,11 @@ class CardViewModel extends ChangeNotifier {
             readOnly: true,
             minLines: 12,
             maxLines: 20,
-            style: TextStyle(fontFamily: 'monospace', color: foregroundColor),
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: jsonFontSize,
+              color: foregroundColor,
+            ),
             contextMenuBuilder: (context, editableTextState) {
               return Theme(
                 data: theme.copyWith(

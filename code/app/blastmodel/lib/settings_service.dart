@@ -81,6 +81,21 @@ class SettingService {
     await prefs.setInt('appTheme', value.index);
   }
 
+  Future<int> get cardStyle async {
+    var prefs = await _prefs;
+    final value = prefs.getInt('cardStyle') ?? 0;
+    return value == 0 || value == 1 ? value : 0;
+  }
+
+  Future<void> setCardStyle(int value) async {
+    if (value != 0 && value != 1) {
+      throw ArgumentError.value(value, 'value', 'Card style must be 0 or 1');
+    }
+
+    var prefs = await _prefs;
+    await prefs.setInt('cardStyle', value);
+  }
+
   Future<int> get autoLogoutAfter async {
     var prefs = await _prefs;
     return prefs.getInt('appTimeout') ?? 5;

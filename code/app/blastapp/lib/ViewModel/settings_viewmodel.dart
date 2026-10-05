@@ -18,6 +18,14 @@ class QrCodeViewStyleView {
   QrCodeViewStyleView(this.viewName, this.viewStyle, this.icon);
 }
 
+class CardStyleView {
+  final String styleName;
+  final int style;
+  final IconData icon;
+
+  CardStyleView(this.styleName, this.style, this.icon);
+}
+
 class SettingsViewModel extends ChangeNotifier {
   final BuildContext context;
   final SettingService _settingService = SettingService();
@@ -47,6 +55,15 @@ class SettingsViewModel extends ChangeNotifier {
 
   Future<void> setThemeMode(ThemeMode value) async {
     await _settingService.setAppTheme(value);
+    notifyListeners();
+  }
+
+  Future<int> get cardStyle async {
+    return await _settingService.cardStyle;
+  }
+
+  Future<void> setCardStyle(int value) async {
+    await _settingService.setCardStyle(value);
     notifyListeners();
   }
 
@@ -83,6 +100,13 @@ class SettingsViewModel extends ChangeNotifier {
     ];
   }
 
+  List<CardStyleView> getCardStyleSelectorItems() {
+    return [
+      CardStyleView("  Minimal  ", 0, Icons.credit_card),
+      CardStyleView("  Standard  ", 1, Icons.view_agenda_outlined),
+    ];
+  }
+
   List<int>? getAutoLogoutAfterItems() {
     return [3, 5, 10, 15];
   }
@@ -90,7 +114,8 @@ class SettingsViewModel extends ChangeNotifier {
   List<QrCodeViewStyleView> getQrCodeViewStyleItems() {
     return [
       QrCodeViewStyleView("  QR code  ", QrCodeViewStyle.qrcode, Icons.qr_code),
-      QrCodeViewStyleView("  Barcode  ", QrCodeViewStyle.barcode, Icons.barcode_reader),
+      QrCodeViewStyleView(
+          "  Barcode  ", QrCodeViewStyle.barcode, Icons.barcode_reader),
       QrCodeViewStyleView("  Text  ", QrCodeViewStyle.text, Icons.text_fields),
       QrCodeViewStyleView("  Code  ", QrCodeViewStyle.code, Icons.code),
     ];

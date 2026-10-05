@@ -57,13 +57,12 @@ class BlastCardMinimal extends BlastCardBase {
                         const SizedBox(height: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6),
-                          color: colorScheme.onSurface,
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                           child: buildHighlightedText(
                             context,
                             card.title ?? '',
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: colorScheme.surface,
-                                  fontWeight: FontWeight.bold,
                                 ),
                             textAlign: TextAlign.center,
                           ),

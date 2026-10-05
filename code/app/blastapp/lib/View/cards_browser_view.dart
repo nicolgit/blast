@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/cards_browser_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
-import 'package:blastapp/blastwidget/blast_card.dart';
+import 'package:blastapp/blastwidget/blastcard/blast_card.dart';
 import 'package:blastapp/blastwidget/file_changed_banner.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -402,9 +402,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.builder(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 600.0,
-            mainAxisExtent: 120.0,
+            childAspectRatio: BlastCardItem.childAspectRatio,
           ),
           padding: const EdgeInsets.all(8.0),
           itemCount: cardsList.length,

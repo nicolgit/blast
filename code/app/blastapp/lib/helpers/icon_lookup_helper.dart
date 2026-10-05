@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:blastmodel/blastattributetype.dart';
+import 'package:blastmodel/blastcard.dart';
 import 'package:http/http.dart' as http;
 
 class BrandInfo {
@@ -8,6 +12,7 @@ class BrandInfo {
 
   String get url => 'https://cdn.simpleicons.org/$brandSlug/white';
   String get urlDark => 'https://cdn.simpleicons.org/$brandSlug/black';
+  String get brandColorUrl => 'https://cdn.simpleicons.org/$brandSlug';
 }
 
 class IconLookupHelper {
@@ -21,6 +26,7 @@ class IconLookupHelper {
 
   List<BrandInfo> _brands = [];
   bool _isLoaded = false;
+  final Map<String, Future<Color?>> _brandColors = {};
 
   String _extractBetweenBackticks(String text) {
     final startIndex = text.indexOf('`');
@@ -88,5 +94,53 @@ class IconLookupHelper {
     }
 
     return results;
+  }
+
+  static String? getIconSlug(BlastCard card) {
+    String? raw = card.icon;
+
+    if (raw == null || raw.isEmpty) {
+      for (final field in card.rows) {
+        if (field.type == BlastAttributeType.typeString &&
+            field.name.toLowerCase() == 'icon' &&
+            field.value.isNotEmpty) {
+          raw = field.value;
+          break;
+        }
+      }
+    }
+
+    const prefix = 'simpleicons:';
+    if (raw == null || !raw.startsWith(prefix)) {
+      return null;
+    }
+
+    return raw.substring(prefix.length);
+  }
+
+  static Future<Color?> getBrandColor(String brandSlug) {
+    final instance = IconLookupHelper();
+    return instance._brandColors.putIfAbsent(
+      brandSlug,
+      () => instance._fetchBrandColor(brandSlug),
+    );
+  }
+
+  Future<Color?> _fetchBrandColor(String brandSlug) async {
+    final response = await http
+        .get(Uri.parse(BrandInfo('', brandSlug).brandColorUrl))
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    final match = RegExp(r'<svg[^>]*\sfill="#([0-9a-fA-F]{6})"').firstMatch(response.body);
+    if (match == null) {
+      return null;
+    }
+
+    final rgb = int.parse(match.group(1)!, radix: 16);
+    return Color(0xFF000000 | rgb);
   }
 }

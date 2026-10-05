@@ -25,7 +25,8 @@ class CardViewModel extends ChangeNotifier {
   final ValueNotifier<int> timeTextNotifier = ValueNotifier<int>(0);
   bool _isDisposed = false;
 
-  CardViewModel(this.context, this.currentCard, {bool startInEditMode = false}) {
+  CardViewModel(this.context, this.currentCard,
+      {bool startInEditMode = false}) {
     editMode = startInEditMode;
     showPasswordRow = List.filled(currentCard.rows.length, false);
     _initializeTimer();
@@ -42,6 +43,17 @@ class CardViewModel extends ChangeNotifier {
   }
 
   void closeCommand() {
+    context.router.maybePop();
+  }
+
+  void deleteCurrentCard() {
+    final document = _fileService.currentFileDocument;
+    if (document == null) {
+      throw StateError('Cannot delete a card without an open document');
+    }
+
+    document.cards.remove(currentCard);
+    document.isChanged = true;
     context.router.maybePop();
   }
 
@@ -78,7 +90,8 @@ class CardViewModel extends ChangeNotifier {
     }
   }
 
-  List<String> get allTags => CurrentFileService().currentFileDocument?.getTags() ?? [];
+  List<String> get allTags =>
+      CurrentFileService().currentFileDocument?.getTags() ?? [];
 
   void updateTags(List<String> values) {
     currentCard.tags = values.map((tag) => tag.toString()).toList();
@@ -100,7 +113,8 @@ class CardViewModel extends ChangeNotifier {
     _notifySafely();
   }
 
-  Future<void> setGeneratedPassword(BlastAttribute attribute, String newValue) async {
+  Future<void> setGeneratedPassword(
+      BlastAttribute attribute, String newValue) async {
     if (attribute.value.isNotEmpty) {
       if (!context.mounted) return;
       final result = await showDialog<bool>(
@@ -109,7 +123,8 @@ class CardViewModel extends ChangeNotifier {
           return AlertDialog(
             backgroundColor: Colors.white,
             title: const Text('Replace Password'),
-            content: Text('Do you want to replace current password (${attribute.value}) with the new one ($newValue)?'),
+            content: Text(
+                'Do you want to replace current password (${attribute.value}) with the new one ($newValue)?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -205,7 +220,8 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future<void> changeDocumentIcon() async {
-    final result = await context.router.push(ChangeIconRoute(currentIcon: currentCard.icon));
+    final result = await context.router
+        .push(ChangeIconRoute(currentIcon: currentCard.icon));
     if (result != null && result is String && result.isNotEmpty) {
       if (result == 'clear') {
         currentCard.icon = null;
@@ -239,7 +255,8 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future<bool> isFileChangedAsync() {
-    return Future.value(CurrentFileService().currentFileDocument?.isChanged ?? false);
+    return Future.value(
+        CurrentFileService().currentFileDocument?.isChanged ?? false);
   }
 
   Future<bool> saveCommand() async {
@@ -287,7 +304,8 @@ class CardViewModel extends ChangeNotifier {
   }
 
   Future<void> showJsonDataDialog(BuildContext viewContext) async {
-    final String jsonData = const JsonEncoder.withIndent('  ').convert(currentCard.toJson());
+    final String jsonData =
+        const JsonEncoder.withIndent('  ').convert(currentCard.toJson());
 
     final theme = Theme.of(context);
     final foregroundColor = theme.colorScheme.onSurface;

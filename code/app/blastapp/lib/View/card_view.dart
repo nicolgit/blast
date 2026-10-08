@@ -37,15 +37,12 @@ class _CardViewState extends State<CardView> {
 
   @override
   Widget build(BuildContext context) {
-    final card =
-        widget.card; // this is the card passed in from the CardsBrowserView
+    final card = widget.card; // this is the card passed in from the CardsBrowserView
 
     return ChangeNotifierProvider(
-      create: (context) =>
-          CardViewModel(context, card, startInEditMode: widget.openInEditMode),
+      create: (context) => CardViewModel(context, card, startInEditMode: widget.openInEditMode),
       child: Consumer<CardViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -55,7 +52,7 @@ class _CardViewState extends State<CardView> {
   Future<void> _showEditTitleView(CardViewModel vm) async {
     final attribute = BlastAttribute.withParams(
       vm.currentCard.title ?? '',
-      '',
+      'CardName',
       BlastAttributeType.typeHeader,
     );
     final saved = await context.router.push<bool>(
@@ -85,8 +82,7 @@ class _CardViewState extends State<CardView> {
 
     if (widget.openInEditMode &&
         vm.editMode &&
-        (vm.currentCard.title == null ||
-            vm.currentCard.title!.trim().isEmpty)) {
+        (vm.currentCard.title == null || vm.currentCard.title!.trim().isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _enforceTitleOnOpen(vm);
       });
@@ -96,9 +92,7 @@ class _CardViewState extends State<CardView> {
         child: Scaffold(
             backgroundColor: _widgetFactory.viewBackgroundColor(),
             appBar: AppBar(
-              title: Text(vm.currentCard.title != null
-                  ? vm.currentCard.title!
-                  : "No Title"),
+              title: Text(vm.currentCard.title != null ? vm.currentCard.title! : "No Title"),
               actions: [
                 Row(
                   children: [
@@ -154,21 +148,15 @@ class _CardViewState extends State<CardView> {
                                 Icons.star,
                                 color: Colors.amber,
                               )
-                            : Icon(Icons.star_border,
-                                color:
-                                    _widgetFactory.theme.colorScheme.primary),
+                            : Icon(Icons.star_border, color: _widgetFactory.theme.colorScheme.primary),
                         tooltip: "toggle favorite",
                         onPressed: () {
                           vm.toggleFavorite();
                         }),
                     Center(
-                        child: Text(
-                            vm.currentCard.title != null
-                                ? vm.currentCard.title!
-                                : "",
+                        child: Text(vm.currentCard.title != null ? vm.currentCard.title! : "",
                             textAlign: TextAlign.center,
-                            style: _widgetFactory.textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold))),
+                            style: _widgetFactory.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold))),
                     const SizedBox(width: 6),
                     if (vm.editMode)
                       BlastEditButton(
@@ -213,8 +201,7 @@ class _CardViewState extends State<CardView> {
             ])));
   }
 
-  Column _buildAttributesList(
-      List<BlastAttribute> cardsList, CardViewModel vm) {
+  Column _buildAttributesList(List<BlastAttribute> cardsList, CardViewModel vm) {
     BlastAttributeRow buildRow(int index) => BlastAttributeRow(
           key: ValueKey(cardsList[index]),
           attribute: cardsList[index],
@@ -227,24 +214,24 @@ class _CardViewState extends State<CardView> {
           editMode: vm.editMode,
           editField: (attribute) async {
             if (attribute.type == BlastAttributeType.typeHeader) {
-              BlastAttributeEditDialogs.showEditHeaderDialog(
-                  context, attribute, vm);
+              final saved = await context.router.push<bool>(
+                FieldEditRoute(attribute: attribute),
+              );
+              if (mounted && saved == true) {
+                vm.updateAttributeName(attribute, attribute.name);
+              }
             } else if (attribute.type == BlastAttributeType.typePassword) {
-              BlastAttributeEditDialogs.showEditPasswordFieldDialog(
-                  context, attribute, vm);
+              BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
             } else {
-              BlastAttributeEditDialogs.showEditFieldDialog(
-                  context, attribute, vm);
+              BlastAttributeEditDialogs.showEditFieldDialog(context, attribute, vm);
             }
           },
           deleteField: (attribute) {
-            BlastAttributeEditDialogs.showDeleteFieldDialog(
-                context, attribute, vm);
+            BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
           },
           generatePassword: (attribute) async {
-            final String? generated = await context.router.push(
-                PasswordGeneratorRoute(
-                    allowCopyToClipboard: false, returnsValue: true));
+            final String? generated =
+                await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
             if (generated != null && generated.isNotEmpty) {
               vm.setGeneratedPassword(attribute, generated);
             }
@@ -283,34 +270,26 @@ class _CardViewState extends State<CardView> {
           children: [
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams(
-                    '+Field', '', BlastAttributeType.typeString);
+                final attr = BlastAttribute.withParams('+Field', '', BlastAttributeType.typeString);
                 vm.addAttribute(attr);
               },
               style: OutlinedButton.styleFrom(
-                backgroundColor:
-                    _widgetFactory.theme.colorScheme.tertiaryContainer,
-                foregroundColor:
-                    _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                side:
-                    BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.description, size: 16),
               label: const Text('+Value'),
             ),
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams(
-                    '+Password', '', BlastAttributeType.typePassword);
+                final attr = BlastAttribute.withParams('+Password', '', BlastAttributeType.typePassword);
                 vm.addAttribute(attr);
               },
               style: OutlinedButton.styleFrom(
-                backgroundColor:
-                    _widgetFactory.theme.colorScheme.tertiaryContainer,
-                foregroundColor:
-                    _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                side:
-                    BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.lock, size: 16),
               label: const Text('+Password'),
@@ -326,29 +305,22 @@ class _CardViewState extends State<CardView> {
                 }
               },
               style: OutlinedButton.styleFrom(
-                backgroundColor:
-                    _widgetFactory.theme.colorScheme.tertiaryContainer,
-                foregroundColor:
-                    _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                side:
-                    BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.title, size: 16),
               label: const Text('+Title'),
             ),
             OutlinedButton.icon(
               onPressed: () {
-                final attr = BlastAttribute.withParams(
-                    '+URL', '', BlastAttributeType.typeURL);
+                final attr = BlastAttribute.withParams('+URL', '', BlastAttributeType.typeURL);
                 vm.addAttribute(attr);
               },
               style: OutlinedButton.styleFrom(
-                backgroundColor:
-                    _widgetFactory.theme.colorScheme.tertiaryContainer,
-                foregroundColor:
-                    _widgetFactory.theme.colorScheme.onTertiaryContainer,
-                side:
-                    BorderSide(color: _widgetFactory.theme.colorScheme.primary),
+                backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
+                foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
+                side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
               ),
               icon: const Icon(Icons.link, size: 16),
               label: const Text('+URL'),
@@ -438,9 +410,8 @@ class _CardViewState extends State<CardView> {
               context: context,
               builder: (ctx) => MultiSelectDialog(
                 title: Text('Select tags',
-                    style: _widgetFactory.textTheme.headlineMedium!.copyWith(
-                        color: _widgetFactory
-                            .theme.colorScheme.onPrimaryContainer)),
+                    style: _widgetFactory.textTheme.headlineMedium!
+                        .copyWith(color: _widgetFactory.theme.colorScheme.onPrimaryContainer)),
                 items: vm.allTags.map((e) => MultiSelectItem(e, e)).toList(),
                 initialValue: vm.currentCard.tags,
                 onConfirm: (values) {
@@ -449,9 +420,8 @@ class _CardViewState extends State<CardView> {
                 listType: MultiSelectListType.CHIP,
                 selectedColor: _widgetFactory.theme.colorScheme.primary,
                 unselectedColor: _widgetFactory.theme.colorScheme.surface,
-                selectedItemsTextStyle: _widgetFactory.textTheme.labelSmall!
-                    .copyWith(
-                        color: _widgetFactory.theme.colorScheme.onPrimary),
+                selectedItemsTextStyle:
+                    _widgetFactory.textTheme.labelSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onPrimary),
               ),
             );
           },
@@ -462,8 +432,7 @@ class _CardViewState extends State<CardView> {
           tooltip: 'Add custom tag',
           style: IconButton.styleFrom(
             backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
-            foregroundColor:
-                _widgetFactory.theme.colorScheme.onTertiaryContainer,
+            foregroundColor: _widgetFactory.theme.colorScheme.onTertiaryContainer,
             side: BorderSide(color: _widgetFactory.theme.colorScheme.primary),
           ),
           onPressed: () async {
@@ -471,9 +440,7 @@ class _CardViewState extends State<CardView> {
             final newTag = await showDialog<String>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: Text('Add custom tag',
-                    style: TextStyle(
-                        color: _widgetFactory.theme.colorScheme.onSurface)),
+                title: Text('Add custom tag', style: TextStyle(color: _widgetFactory.theme.colorScheme.onSurface)),
                 content: TextField(
                   controller: controller,
                   autofocus: true,
@@ -518,19 +485,12 @@ class _CardViewState extends State<CardView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                            vm.editMode
-                                ? "Notes (some markdown is ok)"
-                                : "Notes",
-                            style: _widgetFactory.textTheme.bodyMedium!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                        Text(vm.editMode ? "Notes (some markdown is ok)" : "Notes",
+                            style: _widgetFactory.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
                         if (!vm.editMode)
                           IconButton(
-                            icon: Icon(Icons.copy,
-                                size: 18,
-                                color:
-                                    _widgetFactory.theme.colorScheme.primary),
+                            icon: Icon(Icons.copy, size: 18, color: _widgetFactory.theme.colorScheme.primary),
                             tooltip: 'Copy notes to clipboard',
                             onPressed: () {
                               Clipboard.setData(ClipboardData(text: notes));
@@ -547,8 +507,7 @@ class _CardViewState extends State<CardView> {
                             tooltip: 'Edit notes',
                             padding: const EdgeInsets.all(3),
                             onPressed: () async {
-                              final newNotes =
-                                  await NotesInputDialog.show(context, notes);
+                              final newNotes = await NotesInputDialog.show(context, notes);
                               vm.updateNotes(newNotes);
                             },
                           ),
@@ -560,8 +519,7 @@ class _CardViewState extends State<CardView> {
                       child: BlastMarkdownText(
                         text: notes,
                         style: _widgetFactory.textTheme.bodyMedium,
-                        styleHeader:
-                            _widgetFactory.textTheme.titleMedium!.copyWith(
+                        styleHeader: _widgetFactory.textTheme.titleMedium!.copyWith(
                           color: _widgetFactory.theme.colorScheme.error,
                         ),
                       ),

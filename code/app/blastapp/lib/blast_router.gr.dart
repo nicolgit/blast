@@ -267,6 +267,53 @@ class EulaRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [FieldEditView]
+class FieldEditRoute extends PageRouteInfo<FieldEditRouteArgs> {
+  FieldEditRoute({
+    Key? key,
+    required BlastAttribute attribute,
+    List<PageRouteInfo>? children,
+  }) : super(
+          FieldEditRoute.name,
+          args: FieldEditRouteArgs(key: key, attribute: attribute),
+          initialChildren: children,
+        );
+
+  static const String name = 'FieldEditRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<FieldEditRouteArgs>();
+      return FieldEditView(key: args.key, attribute: args.attribute);
+    },
+  );
+}
+
+class FieldEditRouteArgs {
+  const FieldEditRouteArgs({this.key, required this.attribute});
+
+  final Key? key;
+
+  final BlastAttribute attribute;
+
+  @override
+  String toString() {
+    return 'FieldEditRouteArgs{key: $key, attribute: $attribute}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FieldEditRouteArgs) return false;
+    return key == other.key && attribute == other.attribute;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ attribute.hashCode;
+}
+
+/// generated route for
 /// [FieldView]
 class FieldRoute extends PageRouteInfo<FieldRouteArgs> {
   FieldRoute({Key? key, required String value, List<PageRouteInfo>? children})

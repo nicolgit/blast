@@ -48,37 +48,18 @@ class _CardViewState extends State<CardView> {
 
   late BlastWidgetFactory _widgetFactory;
 
-  Future<void> _showEditTitleDialog(CardViewModel vm, {bool requireNonEmpty = false}) async {
-    final controller = TextEditingController(text: vm.currentCard.title ?? "");
-    final newTitle = await showDialog<String>(
-      context: context,
-      barrierDismissible: !requireNonEmpty,
-      builder: (context) => AlertDialog(
-        title: Text('Edit title',
-            style: _widgetFactory.textTheme.headlineSmall!.copyWith(color: _widgetFactory.theme.colorScheme.onSurface)),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textInputAction: TextInputAction.done,
-          style: _widgetFactory.textTheme.bodyMedium!.copyWith(color: _widgetFactory.theme.colorScheme.onSurface),
-          decoration: const InputDecoration(hintText: 'Card title'),
-          onSubmitted: (_) => Navigator.pop(context, controller.text),
-        ),
-        actions: [
-          if (!requireNonEmpty)
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, controller.text),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+  Future<void> _showEditTitleView(CardViewModel vm) async {
+    final attribute = BlastAttribute.withParams(
+      vm.currentCard.title ?? '',
+      '',
+      BlastAttributeType.typeHeader,
     );
-    if (newTitle != null && newTitle.trim().isNotEmpty) {
-      vm.updateTitle(newTitle);
+    final saved = await context.router.push<bool>(
+      FieldEditRoute(attribute: attribute),
+    );
+
+    if (mounted && saved == true && attribute.name.trim().isNotEmpty) {
+      vm.updateTitle(attribute.name);
     }
   }
 
@@ -87,7 +68,7 @@ class _CardViewState extends State<CardView> {
     _isEnforcingTitle = true;
 
     while (mounted && (vm.currentCard.title == null || vm.currentCard.title!.trim().isEmpty)) {
-      await _showEditTitleDialog(vm, requireNonEmpty: true);
+      await _showEditTitleView(vm);
     }
 
     _isEnforcingTitle = false;
@@ -179,7 +160,7 @@ class _CardViewState extends State<CardView> {
                     if (vm.editMode)
                       BlastEditButton(
                         tooltip: 'Edit title',
-                        onPressed: () => _showEditTitleDialog(vm),
+                        onPressed: () => _showEditTitleView(vm),
                       ),
                   ],
                 ),
@@ -230,9 +211,14 @@ class _CardViewState extends State<CardView> {
           showFieldView: vm.showFieldView,
           openUrl: vm.openUrl,
           editMode: vm.editMode,
-          editField: (attribute) {
+          editField: (attribute) async {
             if (attribute.type == BlastAttributeType.typeHeader) {
-              BlastAttributeEditDialogs.showEditHeaderDialog(context, attribute, vm);
+              final saved = await context.router.push<bool>(
+                FieldEditRoute(attribute: attribute),
+              );
+              if (mounted && saved == true) {
+                vm.updateAttributeName(attribute, attribute.name);
+              }
             } else if (attribute.type == BlastAttributeType.typePassword) {
               BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
             } else {
@@ -308,9 +294,14 @@ class _CardViewState extends State<CardView> {
               label: const Text('+Password'),
             ),
             OutlinedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 final attr = BlastAttribute.withParams('+Title', '', BlastAttributeType.typeHeader);
-                vm.addAttribute(attr);
+                final saved = await context.router.push<bool>(
+                  FieldEditRoute(attribute: attr),
+                );
+                if (mounted && saved == true) {
+                  vm.addAttribute(attr);
+                }
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,

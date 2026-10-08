@@ -12,7 +12,7 @@ class BlastAttributeRow extends StatelessWidget {
   final Function(String) showFieldView;
   final Function(String) openUrl;
   final bool editMode;
-  final Function(BlastAttribute) editField;
+  final Future<void> Function(BlastAttribute) editField;
   final Function(BlastAttribute)? deleteField;
   final Future<void> Function(BlastAttribute)? generatePassword;
 
@@ -72,7 +72,13 @@ class BlastAttributeRow extends StatelessWidget {
                 child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 600),
                     child: GestureDetector(
-                      onTap: () => showFieldView(name),
+                      onTap: () async {
+                        if (editMode) {
+                          await editField(attribute);
+                        } else {
+                          showFieldView(name);
+                        }
+                      },
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                         child: Row(
@@ -88,8 +94,8 @@ class BlastAttributeRow extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 12),
                                 child: BlastEditButton(
-                                  onPressed: () {
-                                    editField(attribute);
+                                  onPressed: () async {
+                                    await editField(attribute);
                                   },
                                   tooltip: 'edit field',
                                   iconSize: 20,
@@ -166,8 +172,8 @@ class BlastAttributeRow extends StatelessWidget {
                                       onPressed: () => generatePassword!(attribute), child: const Text('generate')),
                                 if (editMode)
                                   BlastEditButton(
-                                      onPressed: () {
-                                        editField(attribute);
+                                      onPressed: () async {
+                                        await editField(attribute);
                                       },
                                       tooltip: 'edit field'),
                                 if (editMode && deleteField != null) const SizedBox(width: 3),
@@ -219,8 +225,8 @@ class BlastAttributeRow extends StatelessWidget {
                                   tooltip: 'copy to clipboard'),
                             if (editMode)
                               BlastEditButton(
-                                  onPressed: () {
-                                    editField(attribute);
+                                  onPressed: () async {
+                                    await editField(attribute);
                                   },
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null) const SizedBox(width: 3),
@@ -263,8 +269,8 @@ class BlastAttributeRow extends StatelessWidget {
                                   tooltip: 'copy to clipboard'),
                             if (editMode)
                               BlastEditButton(
-                                  onPressed: () {
-                                    editField(attribute);
+                                  onPressed: () async {
+                                    await editField(attribute);
                                   },
                                   tooltip: 'edit field'),
                             if (editMode && deleteField != null) const SizedBox(width: 3),

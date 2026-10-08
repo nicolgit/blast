@@ -8,6 +8,7 @@ import 'package:blastapp/View/card_file_info_view.dart';
 import 'package:blastapp/View/choose_storage_view.dart';
 import 'package:blastapp/View/create_password_view.dart';
 import 'package:blastapp/View/eula_view.dart';
+import 'package:blastapp/View/field_edit_view.dart';
 import 'package:blastapp/View/importer_view.dart';
 import 'package:blastapp/View/password_generator_view.dart';
 import 'package:blastapp/View/scanner_view.dart';
@@ -16,6 +17,7 @@ import 'package:blastapp/View/splash_view.dart';
 import 'package:blastapp/View/field_view.dart';
 import 'package:blastapp/View/type_password_view.dart';
 import 'package:blastmodel/blastcard.dart';
+import 'package:blastmodel/blastattribute.dart';
 import 'package:flutter/rendering.dart';
 part 'blast_router.gr.dart';
 
@@ -36,6 +38,7 @@ class BlastRouter extends RootStackRouter {
         AutoRoute(page: ChangeIconRoute.page),
         AutoRoute(page: CardsBrowserRoute.page),
         AutoRoute(page: CardRoute.page),
+        AutoRoute(page: FieldEditRoute.page),
         AutoRoute(page: FieldRoute.page),
         AutoRoute(page: ImporterRoute.page),
         AutoRoute(page: CardFileInfoRoute.page),

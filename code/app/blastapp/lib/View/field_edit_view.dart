@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/field_edit_viewmodel.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -92,8 +93,9 @@ class _FieldEditViewState extends State<FieldEditView> {
                         ? TextField(
                             controller: _controller,
                             focusNode: _focusNode,
-                            autofocus: true,
+                            autofocus: widget.attribute.type == BlastAttributeType.typeHeader,
                             textInputAction: TextInputAction.done,
+                            onSubmitted: (_) => _save(),
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               labelText: _viewModel.labelText,

@@ -35,8 +35,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
     return ChangeNotifierProvider(
       create: (context) => CardsBrowserViewModel(context),
       child: Consumer<CardsBrowserViewModel>(
-        builder: (context, viewmodel, child) =>
-            _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -50,16 +49,14 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   Widget _buildScaffold(BuildContext context, CardsBrowserViewModel vm) {
     _widgetFactory = BlastWidgetFactory(context);
     _theme = Theme.of(context);
-    _textTheme =
-        _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return KeyboardListener(
         focusNode: _focusNode,
         autofocus: true,
         onKeyEvent: (event) {
           if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.enter ||
-                  event.logicalKey == LogicalKeyboardKey.space)) {
+              (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.space)) {
             _showModalBottomSheet(context, vm);
           }
 
@@ -70,88 +67,84 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         child: SafeArea(
             child: Scaffold(
                 backgroundColor: _widgetFactory.viewBackgroundColor(),
-                bottomNavigationBar: BottomAppBar(
-                  height: 80,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 8.0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      // Use icon-only buttons for small screens, full buttons for larger screens
-                      bool useCompactLayout = constraints.maxWidth < 600;
+                bottomNavigationBar: Material(
+                  elevation: 3,
+                  child: SafeArea(
+                    child: SizedBox(
+                      height: 80,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            // Use icon-only buttons for small screens, full buttons for larger screens
+                            bool useCompactLayout = constraints.maxWidth < 600;
 
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Tooltip(
-                              message: 'Generate password',
-                              child: useCompactLayout
-                                  ? _buildMobileBottomButton(
-                                      icon: Icons.password,
-                                      onPressed: () =>
-                                          vm.goToPasswordGenerator(),
-                                    )
-                                  : TextButton.icon(
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0, vertical: 12.0),
-                                        minimumSize: const Size(0, 48),
-                                      ),
-                                      label: const Text('Generate password'),
-                                      icon: const Icon(Icons.password,
-                                          size: 24.0),
-                                      onPressed: () =>
-                                          vm.goToPasswordGenerator(),
-                                    ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Tooltip(
-                              message: 'Press SPACE or ENTER to search',
-                              child: useCompactLayout
-                                  ? _buildMobileBottomButton(
-                                      icon: Icons.search,
-                                      onPressed: () =>
-                                          _showModalBottomSheet(context, vm),
-                                      hasActiveFilters: vm.hasActiveFilters,
-                                      onClearPressed: () =>
-                                          vm.clearSearchTextCommand(),
-                                    )
-                                  : _buildDesktopSearchButton(
-                                      onPressed: () =>
-                                          _showModalBottomSheet(context, vm),
-                                      hasActiveFilters: vm.hasActiveFilters,
-                                      onClearPressed: () =>
-                                          vm.clearSearchTextCommand(),
-                                    ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Tooltip(
-                              message: 'Open settings',
-                              child: useCompactLayout
-                                  ? _buildMobileBottomButton(
-                                      icon: Icons.settings,
-                                      onPressed: () => vm.goToSettings(),
-                                    )
-                                  : TextButton.icon(
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16.0, vertical: 12.0),
-                                        minimumSize: const Size(0, 48),
-                                      ),
-                                      label: const Text('Settings'),
-                                      icon: const Icon(Icons.settings,
-                                          size: 24.0),
-                                      onPressed: () => vm.goToSettings(),
-                                    ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: Tooltip(
+                                    message: 'Generate password',
+                                    child: useCompactLayout
+                                        ? _buildMobileBottomButton(
+                                            icon: Icons.password,
+                                            onPressed: () => vm.goToPasswordGenerator(),
+                                          )
+                                        : TextButton.icon(
+                                            style: TextButton.styleFrom(
+                                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                              minimumSize: const Size(0, 48),
+                                            ),
+                                            label: const Text('Generate password'),
+                                            icon: const Icon(Icons.password, size: 24.0),
+                                            onPressed: () => vm.goToPasswordGenerator(),
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Tooltip(
+                                    message: 'Press SPACE or ENTER to search',
+                                    child: useCompactLayout
+                                        ? _buildMobileBottomButton(
+                                            icon: Icons.search,
+                                            onPressed: () => _showModalBottomSheet(context, vm),
+                                            hasActiveFilters: vm.hasActiveFilters,
+                                            onClearPressed: () => vm.clearSearchTextCommand(),
+                                          )
+                                        : _buildDesktopSearchButton(
+                                            onPressed: () => _showModalBottomSheet(context, vm),
+                                            hasActiveFilters: vm.hasActiveFilters,
+                                            onClearPressed: () => vm.clearSearchTextCommand(),
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Tooltip(
+                                    message: 'Open settings',
+                                    child: useCompactLayout
+                                        ? _buildMobileBottomButton(
+                                            icon: Icons.settings,
+                                            onPressed: () => vm.goToSettings(),
+                                          )
+                                        : TextButton.icon(
+                                            style: TextButton.styleFrom(
+                                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                              minimumSize: const Size(0, 48),
+                                            ),
+                                            label: const Text('Settings'),
+                                            icon: const Icon(Icons.settings, size: 24.0),
+                                            onPressed: () => vm.goToSettings(),
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 body: Center(
@@ -167,8 +160,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                             onPressed: () async {
                               if (await vm.saveCommand()) {
                                 if (!context.mounted) return;
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                   content: Text("file saved successfully!"),
                                 ));
                               }
@@ -185,25 +177,20 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                                   style: _widgetFactory.textTooltip.labelLarge,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop(); // dismiss dialod
+                                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialod
                                 },
                               );
                               Widget noButton = FilledButton.tonal(
                                 child: const Text("No, just exit"),
                                 onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop(); // dismiss dialog
+                                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                                   vm.closeCommand();
                                 },
                               );
                               Widget okButton = FilledButton(
-                                child: Text("Yes save it",
-                                    style:
-                                        _widgetFactory.textTooltip.labelLarge),
+                                child: Text("Yes save it", style: _widgetFactory.textTooltip.labelLarge),
                                 onPressed: () async {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop(); // dismiss dialog
+                                  Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
                                   await vm.saveCommand();
                                   vm.closeCommand();
                                 },
@@ -213,8 +200,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                                 AlertDialog alert = AlertDialog(
                                   backgroundColor: Colors.white,
                                   title: const Text("File changed"),
-                                  content: const Text(
-                                      "Do you want to save it before closing?"),
+                                  content: const Text("Do you want to save it before closing?"),
                                   actions: [
                                     cancelButton,
                                     noButton,
@@ -242,8 +228,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                             return Expanded(
                               child: Material(
                                 type: MaterialType.transparency,
-                                child:
-                                    _buildCardsList(cardsList.data ?? [], vm),
+                                child: _buildCardsList(cardsList.data ?? [], vm),
                               ),
                             );
                           }),
@@ -252,8 +237,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                         onSavePressed: () async {
                           if (await vm.saveCommand()) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                 content: Text("file saved successfully!"),
                               ));
                             }
@@ -263,8 +247,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                     ],
                   ),
                 ),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.endDocked,
+                floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                 floatingActionButton: Tooltip(
                   message: 'Add new card',
                   child: FloatingActionButton(
@@ -300,8 +283,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   color: _theme.colorScheme.primary,
                   width: 2.0,
                 ),
-                color:
-                    _theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                color: _theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
               )
             : null,
         child: Center(
@@ -330,9 +312,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         minimumSize: const Size(0, 48),
-        backgroundColor: hasActiveFilters
-            ? _theme.colorScheme.primaryContainer.withValues(alpha: 0.3)
-            : null,
+        backgroundColor: hasActiveFilters ? _theme.colorScheme.primaryContainer.withValues(alpha: 0.3) : null,
         side: hasActiveFilters
             ? BorderSide(
                 color: _theme.colorScheme.primary,
@@ -361,8 +341,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
   }
 
   Widget _buildCardsList(List<BlastCard> cardsList, CardsBrowserViewModel vm) {
-    List<String> searchTerms =
-        vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
+    List<String> searchTerms = vm.searchText.split(' ').where((term) => term.isNotEmpty).toList();
     if (!vm.isCardStyleLoaded) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -437,9 +416,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 600.0,
-            childAspectRatio: vm.cardStyle == 0
-                ? BlastCardMinimal.childAspectRatio
-                : BlastCardItem.childAspectRatio,
+            childAspectRatio: vm.cardStyle == 0 ? BlastCardMinimal.childAspectRatio : BlastCardItem.childAspectRatio,
           ),
           padding: const EdgeInsets.all(8.0),
           itemCount: cardsList.length,
@@ -452,8 +429,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
             }
 
             Future<void> onDeletePressed(BlastCard card) async {
-              final confirmed =
-                  await DeleteCardHelper.showDeleteCardDialog(context, card);
+              final confirmed = await DeleteCardHelper.showDeleteCardDialog(context, card);
               if (confirmed) {
                 vm.deleteCard(card);
               }
@@ -510,135 +486,113 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
       isScrollControlled: true,
       useSafeArea: true,
       builder: (context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setModalState) {
+        return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
           return Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Wrap(
-                          alignment: WrapAlignment.center,
-                          spacing: 6.0,
-                          runSpacing: 6.0,
-                          children: [
-                            Tooltip(
-                              message: 'toggle favorites only',
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: vm.favoritesOnly
-                                      ? _theme.colorScheme.secondaryContainer
-                                      : _theme.colorScheme.surface,
-                                  border: Border.all(
-                                    color: _theme.colorScheme.outline,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    onTap: () {
-                                      setModalState(() {
-                                        vm.favoritesOnly = !vm.favoritesOnly;
-                                        vm.refreshCardListCommand();
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0, vertical: 6.0),
-                                      child: Icon(
-                                        Icons.star,
-                                        color: vm.favoritesOnly
-                                            ? _theme.colorScheme
-                                                .onSecondaryContainer
-                                            : _theme.colorScheme.onSurface,
-                                        size: 18.0,
-                                      ),
-                                    ),
+                      child: Wrap(alignment: WrapAlignment.center, spacing: 6.0, runSpacing: 6.0, children: [
+                        Tooltip(
+                          message: 'toggle favorites only',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  vm.favoritesOnly ? _theme.colorScheme.secondaryContainer : _theme.colorScheme.surface,
+                              border: Border.all(
+                                color: _theme.colorScheme.outline,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20.0),
+                                onTap: () {
+                                  setModalState(() {
+                                    vm.favoritesOnly = !vm.favoritesOnly;
+                                    vm.refreshCardListCommand();
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 6.0),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: vm.favoritesOnly
+                                        ? _theme.colorScheme.onSecondaryContainer
+                                        : _theme.colorScheme.onSurface,
+                                    size: 18.0,
                                   ),
                                 ),
                               ),
                             ),
-                            Tooltip(
-                              message: 'search operator',
-                              child: SegmentedButton<SearchOperator>(
-                                segments: const <ButtonSegment<SearchOperator>>[
-                                  ButtonSegment<SearchOperator>(
-                                      value: SearchOperator.and,
-                                      label: Text('and'),
-                                      icon:
-                                          Icon((Icons.radio_button_unchecked))),
-                                  ButtonSegment<SearchOperator>(
-                                      value: SearchOperator.or,
-                                      label: Text('or'),
-                                      icon: Icon(Icons.radio_button_unchecked)),
-                                ],
-                                selected: <SearchOperator>{vm.searchOperator},
-                                onSelectionChanged:
-                                    (Set<SearchOperator> newSelection) {
-                                  setModalState(() {
-                                    vm.searchOperator = newSelection.first;
-                                    vm.refreshCardListCommand();
-                                  });
-                                },
-                              ),
-                            ),
-                            Tooltip(
-                              message: 'search scope',
-                              child: SegmentedButton<SearchWhere>(
-                                segments: const <ButtonSegment<SearchWhere>>[
-                                  ButtonSegment<SearchWhere>(
-                                      value: SearchWhere.title,
-                                      label: Text('title'),
-                                      icon: Icon(Icons.subject)),
-                                  ButtonSegment<SearchWhere>(
-                                      value: SearchWhere.everywhere,
-                                      label: Text('all'),
-                                      icon: Icon(Icons.all_inclusive)),
-                                ],
-                                selected: <SearchWhere>{vm.searchWhere},
-                                onSelectionChanged:
-                                    (Set<SearchWhere> newSelection) {
-                                  setModalState(() {
-                                    vm.searchWhere = newSelection.first;
-                                    vm.refreshCardListCommand();
-                                  });
-                                },
-                              ),
-                            ),
-                            Tooltip(
-                              message: 'sort type',
-                              child: SegmentedButton<SortType>(
-                                segments: const <ButtonSegment<SortType>>[
-                                  ButtonSegment<SortType>(
-                                      value: SortType.mostUsed,
-                                      label: Text('used'),
-                                      icon: Icon(Icons.upload)),
-                                  ButtonSegment<SortType>(
-                                      value: SortType.recentUsed,
-                                      label: Text('recent'),
-                                      icon: Icon(Icons.schedule)),
-                                ],
-                                selected: <SortType>{vm.sortType},
-                                onSelectionChanged:
-                                    (Set<SortType> newSelection) {
-                                  setModalState(() {
-                                    vm.sortType = newSelection.first;
-                                    vm.refreshCardListCommand();
-                                  });
-                                },
-                              ),
-                            ),
-                          ])),
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'search operator',
+                          child: SegmentedButton<SearchOperator>(
+                            segments: const <ButtonSegment<SearchOperator>>[
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.and,
+                                  label: Text('and'),
+                                  icon: Icon((Icons.radio_button_unchecked))),
+                              ButtonSegment<SearchOperator>(
+                                  value: SearchOperator.or,
+                                  label: Text('or'),
+                                  icon: Icon(Icons.radio_button_unchecked)),
+                            ],
+                            selected: <SearchOperator>{vm.searchOperator},
+                            onSelectionChanged: (Set<SearchOperator> newSelection) {
+                              setModalState(() {
+                                vm.searchOperator = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'search scope',
+                          child: SegmentedButton<SearchWhere>(
+                            segments: const <ButtonSegment<SearchWhere>>[
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.title, label: Text('title'), icon: Icon(Icons.subject)),
+                              ButtonSegment<SearchWhere>(
+                                  value: SearchWhere.everywhere, label: Text('all'), icon: Icon(Icons.all_inclusive)),
+                            ],
+                            selected: <SearchWhere>{vm.searchWhere},
+                            onSelectionChanged: (Set<SearchWhere> newSelection) {
+                              setModalState(() {
+                                vm.searchWhere = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'sort type',
+                          child: SegmentedButton<SortType>(
+                            segments: const <ButtonSegment<SortType>>[
+                              ButtonSegment<SortType>(
+                                  value: SortType.mostUsed, label: Text('used'), icon: Icon(Icons.upload)),
+                              ButtonSegment<SortType>(
+                                  value: SortType.recentUsed, label: Text('recent'), icon: Icon(Icons.schedule)),
+                            ],
+                            selected: <SortType>{vm.sortType},
+                            onSelectionChanged: (Set<SortType> newSelection) {
+                              setModalState(() {
+                                vm.sortType = newSelection.first;
+                                vm.refreshCardListCommand();
+                              });
+                            },
+                          ),
+                        ),
+                      ])),
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 12.0, right: 12.0, bottom: 6.0),
+                    padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 6.0),
                     child: TextFormField(
                       onChanged: (value) {
                         setModalState(() {
@@ -654,8 +608,8 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       textAlign: TextAlign.center,
                       style: _widgetFactory.textTheme.labelMedium,
                       controller: _searchController,
-                      decoration: _widgetFactory.blastTextFieldDecoration(
-                          'Search', 'Enter your search text', onPressed: () {
+                      decoration:
+                          _widgetFactory.blastTextFieldDecoration('Search', 'Enter your search text', onPressed: () {
                         setModalState(() {
                           vm.clearSearchTextCommand();
                           _searchController.clear();
@@ -665,8 +619,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                   ),
                   if (vm.hasActiveFilters)
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, bottom: 12.0),
+                      padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 12.0),
                       child: TextButton.icon(
                         onPressed: () {
                           setModalState(() {
@@ -674,8 +627,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                             _searchController.clear();
                           });
                         },
-                        icon: Icon(Icons.clear_all,
-                            color: _theme.colorScheme.error),
+                        icon: Icon(Icons.clear_all, color: _theme.colorScheme.error),
                         label: Text(
                           'Clear all filters',
                           style: TextStyle(color: _theme.colorScheme.error),
@@ -715,13 +667,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.primaryContainer,
-                          child: Icon(Icons.qr_code_scanner,
-                              color: _theme.colorScheme.primary),
+                          child: Icon(Icons.qr_code_scanner, color: _theme.colorScheme.primary),
                         ),
-                        title: const Text('Scan Barcode/QRCode',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Scan a barcode or QR code',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Scan Barcode/QRCode', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Scan a barcode or QR code', style: TextStyle(fontSize: 12)),
                         onTap: () {
                           Navigator.pop(context);
                           vm.goToScanner();
@@ -732,13 +681,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.primaryContainer,
-                          child: Icon(Icons.credit_card,
-                              color: _theme.colorScheme.primary),
+                          child: Icon(Icons.credit_card, color: _theme.colorScheme.primary),
                         ),
-                        title: const Text('Credit Card',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Create a new creditcard',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Credit Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new creditcard', style: TextStyle(fontSize: 12)),
                         onTap: () async {
                           Navigator.pop(context);
                           await vm.addCreditCard();
@@ -750,13 +696,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.primaryContainer,
-                          child: Icon(Icons.web,
-                              color: _theme.colorScheme.primary),
+                          child: Icon(Icons.web, color: _theme.colorScheme.primary),
                         ),
-                        title: const Text('Web credentials',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Create a new web credential card',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Web credentials', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new web credential card', style: TextStyle(fontSize: 12)),
                         onTap: () async {
                           Navigator.pop(context);
                           await vm.addWebCard();
@@ -768,14 +711,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.primaryContainer,
-                          child: Icon(Icons.wifi,
-                              color: _theme.colorScheme.primary),
+                          child: Icon(Icons.wifi, color: _theme.colorScheme.primary),
                         ),
-                        title: const Text('Wi-Fi credentials',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text(
-                            'Create a new WiFi credential card',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Wi-Fi credentials', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new WiFi credential card', style: TextStyle(fontSize: 12)),
                         onTap: () async {
                           Navigator.pop(context);
                           await vm.addWifiCredentialsCard();
@@ -787,13 +726,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.primaryContainer,
-                          child: Icon(Icons.card_membership,
-                              color: _theme.colorScheme.primary),
+                          child: Icon(Icons.card_membership, color: _theme.colorScheme.primary),
                         ),
-                        title: const Text('Fidelity Card',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Create a new fidelity card',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Fidelity Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new fidelity card', style: TextStyle(fontSize: 12)),
                         onTap: () async {
                           Navigator.pop(context);
                           await vm.addFidelityCard();
@@ -805,13 +741,10 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: _theme.colorScheme.errorContainer,
-                          child: Icon(Icons.note_add,
-                              color: _theme.colorScheme.onErrorContainer),
+                          child: Icon(Icons.note_add, color: _theme.colorScheme.onErrorContainer),
                         ),
-                        title: const Text('Empty Card',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: const Text('Create a new empty card',
-                            style: TextStyle(fontSize: 12)),
+                        title: const Text('Empty Card', style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: const Text('Create a new empty card', style: TextStyle(fontSize: 12)),
                         onTap: () {
                           Navigator.pop(context);
                           vm.addEmptyCard().then((value) {
@@ -843,13 +776,9 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
           ),
           child: Column(
             children: [
-              const Image(
-                  image: AssetImage('assets/general/icon-v01.png'),
-                  width: 102,
-                  height: 102),
+              const Image(image: AssetImage('assets/general/icon-v01.png'), width: 102, height: 102),
               Text("build ${Secrets.buildNumber}",
-                  style: _textTheme.labelMedium
-                      ?.copyWith(color: _theme.colorScheme.onPrimary)),
+                  style: _textTheme.labelMedium?.copyWith(color: _theme.colorScheme.onPrimary)),
             ],
           ),
         ),
@@ -865,8 +794,7 @@ class _CardBrowserViewState extends State<CardsBrowserView> {
               ),
               child: const Text("cancel"),
               onPressed: () async {
-                Navigator.of(context, rootNavigator: true)
-                    .pop(); // dismiss dialog
+                Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
               },
             );
 

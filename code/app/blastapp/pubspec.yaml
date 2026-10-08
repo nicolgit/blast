@@ -14,7 +14,7 @@ dependencies:
   blastmodel:
     path: ./../blastmodel
   provider: ^6.0.5
-  auto_route: ^11.1.0
+  auto_route: 11.1.0
   path_provider: ^2.1.2
   url_launcher: ^6.2.4
   diacritic: ^0.1.5

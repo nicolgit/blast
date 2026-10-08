@@ -6,6 +6,7 @@ import 'package:blastapp/helpers/populate_card_helper.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
 import 'package:blastmodel/currentfile_service.dart';
+import 'package:blastmodel/settings_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +21,18 @@ class CardsBrowserViewModel extends ChangeNotifier {
   SearchOperator searchOperator = SearchOperator.and;
   SearchWhere searchWhere = SearchWhere.everywhere;
   bool favoritesOnly = false;
+  int cardStyle = 0;
+  bool isCardStyleLoaded = false;
 
-  CardsBrowserViewModel(this.context);
+  CardsBrowserViewModel(this.context) {
+    _loadCardStyle();
+  }
+
+  Future<void> _loadCardStyle() async {
+    cardStyle = await SettingService().cardStyle;
+    isCardStyleLoaded = true;
+    notifyListeners();
+  }
 
   bool get noCards {
     return fileService.currentFileDocument!.cards.isEmpty;
@@ -33,12 +44,15 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   Future<List<BlastCard>>? getCards() async {
-    return fileService.currentFileDocument!.search(searchText, searchOperator, sortType, searchWhere, favoritesOnly);
+    return fileService.currentFileDocument!.search(
+        searchText, searchOperator, sortType, searchWhere, favoritesOnly);
   }
 
-  Future selectCard(BlastCard selectedCard, {bool openInEditMode = false}) async {
+  Future selectCard(BlastCard selectedCard,
+      {bool openInEditMode = false}) async {
     this.selectedCard = selectedCard;
-    await context.router.push(CardRoute(card: selectedCard, openInEditMode: openInEditMode));
+    await context.router
+        .push(CardRoute(card: selectedCard, openInEditMode: openInEditMode));
   }
 
   void closeCommand() {
@@ -94,7 +108,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
   }
 
   bool isFileChanged() => fileService.currentFileDocument!.isChanged;
-  Future<bool> isFileChangedAsync() async => fileService.currentFileDocument!.isChanged;
+  Future<bool> isFileChangedAsync() async =>
+      fileService.currentFileDocument!.isChanged;
 
   Future addEmptyCard() async {
     final card = BlastCard();
@@ -108,7 +123,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     if (confirmed && context.mounted) {
       fileService.currentFileDocument!.cards.insert(0, card);
-      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+      await context.router
+          .push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
     }
   }
 
@@ -118,7 +134,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     if (confirmed && context.mounted) {
       fileService.currentFileDocument!.cards.insert(0, card);
-      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+      await context.router
+          .push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
     }
   }
 
@@ -128,7 +145,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     if (confirmed && context.mounted) {
       fileService.currentFileDocument!.cards.insert(0, card);
-      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+      await context.router
+          .push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
     }
   }
 
@@ -138,7 +156,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
     if (confirmed && context.mounted) {
       fileService.currentFileDocument!.cards.insert(0, card);
-      await context.router.push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
+      await context.router
+          .push(CardRoute(card: fileService.currentFileDocument!.cards[0]));
     }
   }
 
@@ -175,7 +194,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
       if (i == 5) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Too many files with the same name. Please delete some files and try again.'),
+          content: Text(
+              'Too many files with the same name. Please delete some files and try again.'),
         ));
         return;
       }
@@ -209,7 +229,8 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void exportMasterKeyCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(TypePasswordRoute(forceSkipBiometricQuestion: true));
+    var checkPasswordResult = await context.router
+        .push(TypePasswordRoute(forceSkipBiometricQuestion: true));
     if (checkPasswordResult != true) {
       return;
     }
@@ -220,13 +241,15 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void changePasswordCommand() async {
     if (!context.mounted) return;
-    var checkPasswordResult = await context.router.push(TypePasswordRoute(forceSkipBiometricQuestion: true));
+    var checkPasswordResult = await context.router
+        .push(TypePasswordRoute(forceSkipBiometricQuestion: true));
     if (checkPasswordResult != true) {
       return;
     }
 
     if (!context.mounted) return;
-    var changePasswordResult = await context.router.push(const ChangePasswordRoute());
+    var changePasswordResult =
+        await context.router.push(const ChangePasswordRoute());
     if (changePasswordResult != true) {
       return;
     }
@@ -239,14 +262,16 @@ class CardsBrowserViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void goToSettings() {
+  Future<void> goToSettings() async {
     if (!context.mounted) return;
-    context.router.push(const SettingsRoute());
+    await context.router.push(const SettingsRoute());
+    await _loadCardStyle();
   }
 
   void goToPasswordGenerator() {
     if (!context.mounted) return;
-    context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: true, returnsValue: false));
+    context.router.push(PasswordGeneratorRoute(
+        allowCopyToClipboard: true, returnsValue: false));
   }
 
   void goToScanner() {

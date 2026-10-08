@@ -25,7 +25,8 @@ class _SettingsViewState extends State<SettingsView> {
     return ChangeNotifierProvider(
       create: (context) => SettingsViewModel(context),
       child: Consumer<SettingsViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -35,7 +36,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   Widget _buildScaffold(BuildContext context, SettingsViewModel vm) {
     _theme = Theme.of(context);
-    _textTheme = _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
+    _textTheme =
+        _theme.textTheme.apply(bodyColor: _theme.colorScheme.onSurface);
 
     return Container(
         color: _theme.colorScheme.surface,
@@ -68,36 +70,67 @@ class _SettingsViewState extends State<SettingsView> {
                                   child: Container(
                                       padding: EdgeInsets.all(6),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
                                         children: [
                                           // dropdown theme selector
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text("app theme", style: _textTheme.bodyLarge),
+                                              Text("app theme",
+                                                  style: _textTheme.bodyLarge),
                                               FutureBuilder(
                                                   future: vm.themeMode,
-                                                  builder: (BuildContext context, AsyncSnapshot<ThemeMode> theme) {
-                                                    return DropdownButton<ThemeMode>(
-                                                      borderRadius: BorderRadius.circular(6),
-                                                      dropdownColor: _theme.colorScheme.surface,
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<ThemeMode>
+                                                          theme) {
+                                                    return DropdownButton<
+                                                        ThemeMode>(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                      dropdownColor: _theme
+                                                          .colorScheme.surface,
                                                       value: theme.data,
-                                                      onChanged: (ThemeMode? newValue) async {
-                                                        await vm.setThemeMode(newValue!);
-                                                        if (!context.mounted) return;
-                                                        BlastApp.of(context).changeTheme(newValue);
+                                                      onChanged: (ThemeMode?
+                                                          newValue) async {
+                                                        await vm.setThemeMode(
+                                                            newValue!);
+                                                        if (!context.mounted) {
+                                                          return;
+                                                        }
+                                                        BlastApp.of(context)
+                                                            .changeTheme(
+                                                                newValue);
                                                       },
-                                                      items: vm.getThemeSelectorItems().map((ThemeView value) {
-                                                        return DropdownMenuItem<ThemeMode>(
-                                                          value: value.themeMode,
+                                                      items: vm
+                                                          .getThemeSelectorItems()
+                                                          .map((ThemeView
+                                                              value) {
+                                                        return DropdownMenuItem<
+                                                            ThemeMode>(
+                                                          value:
+                                                              value.themeMode,
                                                           child: Container(
-                                                            color: Colors.transparent,
+                                                            color: Colors
+                                                                .transparent,
                                                             child: Row(
                                                               children: [
-                                                                SizedBox(width: 6),
-                                                                Icon(value.icon, color: _theme.colorScheme.onSurface),
-                                                                SizedBox(width: 6),
-                                                                Text(value.themeName, style: _textTheme.bodyLarge),
+                                                                SizedBox(
+                                                                    width: 6),
+                                                                Icon(value.icon,
+                                                                    color: _theme
+                                                                        .colorScheme
+                                                                        .onSurface),
+                                                                SizedBox(
+                                                                    width: 6),
+                                                                Text(
+                                                                    value
+                                                                        .themeName,
+                                                                    style: _textTheme
+                                                                        .bodyLarge),
                                                               ],
                                                             ),
                                                           ),
@@ -108,11 +141,76 @@ class _SettingsViewState extends State<SettingsView> {
                                             ],
                                           ),
 
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("card style",
+                                                  style: _textTheme.bodyLarge),
+                                              FutureBuilder<int>(
+                                                future: vm.cardStyle,
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<int>
+                                                        cardStyle) {
+                                                  return DropdownButton<int>(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                    dropdownColor: _theme
+                                                        .colorScheme.surface,
+                                                    value: cardStyle.data,
+                                                    onChanged:
+                                                        (int? newValue) async {
+                                                      if (newValue != null) {
+                                                        await vm.setCardStyle(
+                                                            newValue);
+                                                      }
+                                                    },
+                                                    items: vm
+                                                        .getCardStyleSelectorItems()
+                                                        .map((CardStyleView
+                                                            value) {
+                                                      return DropdownMenuItem<
+                                                          int>(
+                                                        value: value.style,
+                                                        child: Container(
+                                                          color: Colors
+                                                              .transparent,
+                                                          child: Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                  width: 6),
+                                                              Icon(
+                                                                value.icon,
+                                                                color: _theme
+                                                                    .colorScheme
+                                                                    .onSurface,
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 6),
+                                                              Text(
+                                                                value.styleName,
+                                                                style: _textTheme
+                                                                    .bodyLarge,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+
                                           // toogle switch for qrcode view
                                           BlastSettingSwitch(
-                                            label: "remember last QR code view used",
+                                            label:
+                                                "remember last QR code view used",
                                             future: vm.rememberLastQrCodeView,
-                                            onChanged: (_) => vm.setRememberLastQrCodeView(),
+                                            onChanged: (_) =>
+                                                vm.setRememberLastQrCodeView(),
                                             textTheme: _textTheme,
                                             theme: _theme,
                                           ),
@@ -120,40 +218,79 @@ class _SettingsViewState extends State<SettingsView> {
                                           // show QrCodeViewStyle if rememberlastQR is enabled
                                           FutureBuilder<bool>(
                                               future: vm.rememberLastQrCodeView,
-                                              builder: (BuildContext context, AsyncSnapshot<bool> remember) {
-                                                if (remember.hasData && remember.data!) {
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<bool>
+                                                      remember) {
+                                                if (remember.hasData &&
+                                                    remember.data!) {
                                                   return Container();
                                                 } else {
                                                   return Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Text("default QR code view", style: _textTheme.bodyLarge),
+                                                      Text(
+                                                          "default QR code view",
+                                                          style: _textTheme
+                                                              .bodyLarge),
                                                       FutureBuilder(
-                                                          future: vm.lastQrCodeView,
-                                                          builder: (BuildContext context,
-                                                              AsyncSnapshot<QrCodeViewStyle> qrCodeView) {
-                                                            return DropdownButton<QrCodeViewStyle>(
-                                                              borderRadius: BorderRadius.circular(6),
-                                                              dropdownColor: _theme.colorScheme.surface,
-                                                              value: qrCodeView.data,
-                                                              onChanged: (QrCodeViewStyle? newValue) async {
-                                                                await vm.setLastQrCodeView(newValue!);
+                                                          future:
+                                                              vm.lastQrCodeView,
+                                                          builder: (BuildContext
+                                                                  context,
+                                                              AsyncSnapshot<
+                                                                      QrCodeViewStyle>
+                                                                  qrCodeView) {
+                                                            return DropdownButton<
+                                                                QrCodeViewStyle>(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          6),
+                                                              dropdownColor:
+                                                                  _theme
+                                                                      .colorScheme
+                                                                      .surface,
+                                                              value: qrCodeView
+                                                                  .data,
+                                                              onChanged:
+                                                                  (QrCodeViewStyle?
+                                                                      newValue) async {
+                                                                await vm
+                                                                    .setLastQrCodeView(
+                                                                        newValue!);
                                                               },
                                                               items: vm
                                                                   .getQrCodeViewStyleItems()
-                                                                  .map((QrCodeViewStyleView value) {
-                                                                return DropdownMenuItem<QrCodeViewStyle>(
-                                                                  value: value.viewStyle,
-                                                                  child: Container(
-                                                                    color: Colors.transparent,
+                                                                  .map((QrCodeViewStyleView
+                                                                      value) {
+                                                                return DropdownMenuItem<
+                                                                    QrCodeViewStyle>(
+                                                                  value: value
+                                                                      .viewStyle,
+                                                                  child:
+                                                                      Container(
+                                                                    color: Colors
+                                                                        .transparent,
                                                                     child: Row(
                                                                       children: [
-                                                                        SizedBox(width: 6),
-                                                                        Icon(value.icon,
-                                                                            color: _theme.colorScheme.onSurface),
-                                                                        SizedBox(width: 6),
-                                                                        Text(value.viewName,
-                                                                            style: _textTheme.bodyLarge),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                6),
+                                                                        Icon(
+                                                                            value
+                                                                                .icon,
+                                                                            color:
+                                                                                _theme.colorScheme.onSurface),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                6),
+                                                                        Text(
+                                                                            value
+                                                                                .viewName,
+                                                                            style:
+                                                                                _textTheme.bodyLarge),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -169,48 +306,71 @@ class _SettingsViewState extends State<SettingsView> {
                                           // dropdown select default QR view
 
                                           Container(
-                                              padding: EdgeInsets.only(top: 6, bottom: 6),
+                                              padding: EdgeInsets.only(
+                                                  top: 6, bottom: 6),
                                               child: Divider(
-                                                color: _theme.colorScheme.outline,
+                                                color:
+                                                    _theme.colorScheme.outline,
                                                 thickness: 1,
                                                 height: 1,
                                               )),
                                           BlastSettingSwitch(
                                             label: "auto save changes",
                                             future: vm.autoSave,
-                                            onChanged: (value) => vm.setAutoSave(value),
+                                            onChanged: (value) =>
+                                                vm.setAutoSave(value),
                                             textTheme: _textTheme,
                                             theme: _theme,
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text("auto logoff after", style: _textTheme.bodyLarge),
+                                              Text("auto logoff after",
+                                                  style: _textTheme.bodyLarge),
                                               FutureBuilder<int>(
                                                   future: vm.autoLogoutAfter,
-                                                  builder: (BuildContext context, AsyncSnapshot<int> timeout) {
+                                                  builder:
+                                                      (BuildContext context,
+                                                          AsyncSnapshot<int>
+                                                              timeout) {
                                                     return DropdownButton<int>(
-                                                        borderRadius: BorderRadius.circular(6),
-                                                        dropdownColor: _theme.colorScheme.surface,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        dropdownColor: _theme
+                                                            .colorScheme
+                                                            .surface,
                                                         value: timeout.data,
-                                                        onChanged: (int? newValue) async {
-                                                          await vm.setAutoLogoutAfter(newValue!);
+                                                        onChanged: (int?
+                                                            newValue) async {
+                                                          await vm
+                                                              .setAutoLogoutAfter(
+                                                                  newValue!);
                                                         },
-                                                        items: vm.getAutoLogoutAfterItems()!.map((int value) {
-                                                          return DropdownMenuItem<int>(
+                                                        items: vm
+                                                            .getAutoLogoutAfterItems()!
+                                                            .map((int value) {
+                                                          return DropdownMenuItem<
+                                                                  int>(
                                                               value: value,
                                                               child: Container(
-                                                                  color: Colors.transparent,
-                                                                  child: Text(" $value minutes",
-                                                                      style: _textTheme.bodyLarge)));
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  child: Text(
+                                                                      " $value minutes",
+                                                                      style: _textTheme
+                                                                          .bodyLarge)));
                                                         }).toList());
                                                   })
                                             ],
                                           ),
                                           BlastSettingSwitch(
-                                            label: "ask for biometric authentication",
+                                            label:
+                                                "ask for biometric authentication",
                                             future: vm.askForBiometricAuth,
-                                            onChanged: (value) => vm.setAskForBiometricAuth(value),
+                                            onChanged: (value) => vm
+                                                .setAskForBiometricAuth(value),
                                             textTheme: _textTheme,
                                             theme: _theme,
                                           ),

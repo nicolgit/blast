@@ -69,17 +69,6 @@ Blast stores everything inside a single encrypted `.blast` vault file.
 - QR/barcode support
 - Light/dark mode
 
-In Edit Mode, text, URL and password rows use an editor for both name and value, with
-initial focus on the value. Enter on the name moves to the value; Enter on the
-value saves. Cancel discards edits and does not add a new row.
-URL rows also have a **Test** button that opens the entered URL without saving.
-Addresses without a protocol are tested using HTTPS.
-Password values and their confirmation are masked. Enter on the value moves to
-the confirmation; saving requires matching values. A live colored indicator and
-label show password quality. Existing passwords are prefilled in both fields.
-**Generate password** opens the password generator; choosing a password fills
-both masked fields without saving the row until **Save** is pressed.
-
 ### Import form another password manager
 
 - KeePass XML (2.x)

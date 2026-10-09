@@ -213,26 +213,19 @@ class _CardViewState extends State<CardView> {
           openUrl: vm.openUrl,
           editMode: vm.editMode,
           editField: (attribute) async {
-              final saved = await context.router.push<bool>(
-                FieldEditRoute(attribute: attribute),
-              );
-              if (mounted && saved == true) {
-                if (attribute.type == BlastAttributeType.typeHeader) {
-                  vm.updateAttributeName(attribute, attribute.name);
-                } else {
-                  vm.updateAttributeValue(attribute, attribute.value);
-                }
+            final saved = await context.router.push<bool>(
+              FieldEditRoute(attribute: attribute),
+            );
+            if (mounted && saved == true) {
+              if (attribute.type == BlastAttributeType.typeHeader) {
+                vm.updateAttributeName(attribute, attribute.name);
+              } else {
+                vm.updateAttributeValue(attribute, attribute.value);
               }
+            }
           },
           deleteField: (attribute) {
             BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
-          },
-          generatePassword: (attribute) async {
-            final String? generated =
-                await context.router.push(PasswordGeneratorRoute(allowCopyToClipboard: false, returnsValue: true));
-            if (generated != null && generated.isNotEmpty) {
-              vm.setGeneratedPassword(attribute, generated);
-            }
           },
         );
 

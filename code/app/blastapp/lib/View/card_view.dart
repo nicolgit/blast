@@ -213,12 +213,18 @@ class _CardViewState extends State<CardView> {
           openUrl: vm.openUrl,
           editMode: vm.editMode,
           editField: (attribute) async {
-            if (attribute.type == BlastAttributeType.typeHeader) {
+            if (attribute.type == BlastAttributeType.typeHeader ||
+                attribute.type == BlastAttributeType.typeString ||
+                attribute.type == BlastAttributeType.typeURL) {
               final saved = await context.router.push<bool>(
                 FieldEditRoute(attribute: attribute),
               );
               if (mounted && saved == true) {
-                vm.updateAttributeName(attribute, attribute.name);
+                if (attribute.type == BlastAttributeType.typeHeader) {
+                  vm.updateAttributeName(attribute, attribute.name);
+                } else {
+                  vm.updateAttributeValue(attribute, attribute.value);
+                }
               }
             } else if (attribute.type == BlastAttributeType.typePassword) {
               BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
@@ -269,9 +275,14 @@ class _CardViewState extends State<CardView> {
           alignment: WrapAlignment.center,
           children: [
             OutlinedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 final attr = BlastAttribute.withParams('+Field', '', BlastAttributeType.typeString);
-                vm.addAttribute(attr);
+                final saved = await context.router.push<bool>(
+                  FieldEditRoute(attribute: attr),
+                );
+                if (mounted && saved == true) {
+                  vm.addAttribute(attr);
+                }
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,
@@ -313,9 +324,14 @@ class _CardViewState extends State<CardView> {
               label: const Text('+Title'),
             ),
             OutlinedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 final attr = BlastAttribute.withParams('+URL', '', BlastAttributeType.typeURL);
-                vm.addAttribute(attr);
+                final saved = await context.router.push<bool>(
+                  FieldEditRoute(attribute: attr),
+                );
+                if (mounted && saved == true) {
+                  vm.addAttribute(attr);
+                }
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,

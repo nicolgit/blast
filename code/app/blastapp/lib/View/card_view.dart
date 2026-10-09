@@ -213,9 +213,6 @@ class _CardViewState extends State<CardView> {
           openUrl: vm.openUrl,
           editMode: vm.editMode,
           editField: (attribute) async {
-            if (attribute.type == BlastAttributeType.typeHeader ||
-                attribute.type == BlastAttributeType.typeString ||
-                attribute.type == BlastAttributeType.typeURL) {
               final saved = await context.router.push<bool>(
                 FieldEditRoute(attribute: attribute),
               );
@@ -226,11 +223,6 @@ class _CardViewState extends State<CardView> {
                   vm.updateAttributeValue(attribute, attribute.value);
                 }
               }
-            } else if (attribute.type == BlastAttributeType.typePassword) {
-              BlastAttributeEditDialogs.showEditPasswordFieldDialog(context, attribute, vm);
-            } else {
-              BlastAttributeEditDialogs.showEditFieldDialog(context, attribute, vm);
-            }
           },
           deleteField: (attribute) {
             BlastAttributeEditDialogs.showDeleteFieldDialog(context, attribute, vm);
@@ -293,9 +285,14 @@ class _CardViewState extends State<CardView> {
               label: const Text('+Value'),
             ),
             OutlinedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 final attr = BlastAttribute.withParams('+Password', '', BlastAttributeType.typePassword);
-                vm.addAttribute(attr);
+                final saved = await context.router.push<bool>(
+                  FieldEditRoute(attribute: attr),
+                );
+                if (mounted && saved == true) {
+                  vm.addAttribute(attr);
+                }
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: _widgetFactory.theme.colorScheme.tertiaryContainer,

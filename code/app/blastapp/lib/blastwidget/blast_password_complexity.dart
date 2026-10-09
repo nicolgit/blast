@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
 
 class BlastPasswordComplexity extends StatelessWidget {
-  const BlastPasswordComplexity({super.key, required this.currentPassword});
+  const BlastPasswordComplexity({super.key, required this.currentPassword, this.showLabel = false});
 
   final String currentPassword;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
     final complexity = _calculateComplexity(currentPassword);
 
-    return LinearProgressIndicator(
+    final indicator = LinearProgressIndicator(
       value: complexity / 10.0,
       backgroundColor: Colors.grey.shade300,
       color: _getColor(complexity),
       minHeight: 8,
+    );
+    if (!showLabel) return indicator;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        indicator,
+        const SizedBox(height: 8),
+        Text(
+          complexity <= 3 ? 'Weak password' : complexity <= 6 ? 'Medium password' : 'Strong password',
+          style: TextStyle(color: _getColor(complexity)),
+        ),
+      ],
     );
   }
 

@@ -12,7 +12,9 @@ class FieldEditViewModel extends ChangeNotifier {
       attribute.type == BlastAttributeType.typeHeader || canEditName;
 
   bool get canEditName =>
-      attribute.type == BlastAttributeType.typeString || attribute.type == BlastAttributeType.typeURL;
+      attribute.type != BlastAttributeType.typeHeader;
+
+  bool get isPassword => attribute.type == BlastAttributeType.typePassword;
 
   bool get canTestUrl => attribute.type == BlastAttributeType.typeURL;
 
@@ -41,9 +43,8 @@ class FieldEditViewModel extends ChangeNotifier {
         return attribute.name;
       case BlastAttributeType.typeString:
       case BlastAttributeType.typeURL:
-        return attribute.value;
       case BlastAttributeType.typePassword:
-        return '';
+        return attribute.value;
     }
   }
 
@@ -53,9 +54,8 @@ class FieldEditViewModel extends ChangeNotifier {
         return 'Header';
       case BlastAttributeType.typeString:
       case BlastAttributeType.typeURL:
-        return 'Value';
       case BlastAttributeType.typePassword:
-        return 'Unsupported attribute type';
+        return 'Value';
     }
   }
 
@@ -65,12 +65,9 @@ class FieldEditViewModel extends ChangeNotifier {
         attribute.name = value;
       case BlastAttributeType.typeString:
       case BlastAttributeType.typeURL:
+      case BlastAttributeType.typePassword:
         attribute.name = name;
         attribute.value = value;
-      case BlastAttributeType.typePassword:
-        throw UnsupportedError(
-          'Editing ${attribute.type.name} attributes is not supported',
-        );
     }
   }
 }

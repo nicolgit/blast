@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:blastapp/helpers/icon_lookup_helper.dart';
+import 'package:blastapp/helpers/favicon_background_colors.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:flutter/material.dart';
 import 'package:blastmodel/blastcard.dart';
@@ -24,7 +25,8 @@ class BlastCardIcon extends StatelessWidget {
   final bool transparentBackground;
   final Color? initialsColor;
 
-  static Future<Color?> getBackgroundColor(BlastCard card) {
+  static Future<Color?> getBackgroundColor(BlastCard card,
+      {Brightness brightness = Brightness.light}) {
     final iconSlug = IconLookupHelper.getIconSlug(card);
     if (iconSlug != null) {
       return IconLookupHelper.getBrandColor(iconSlug);
@@ -37,7 +39,8 @@ class BlastCardIcon extends StatelessWidget {
 
     return _faviconCache
         .putIfAbsent(domain, () => _fetchFaviconData(domain))
-        .then((favicon) => favicon?.backgroundColor);
+        .then(
+            (favicon) => favicon?.backgroundColors?.forBrightness(brightness));
   }
 
   @override
@@ -220,7 +223,8 @@ class BlastCardIcon extends StatelessWidget {
               ? null
               : _buildIconDecoration(
                   context,
-                  backgroundColor: favicon.backgroundColor,
+                  backgroundColor: favicon.backgroundColors
+                      ?.forBrightness(Theme.of(context).brightness),
                 ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -248,54 +252,34 @@ class BlastCardIcon extends StatelessWidget {
       }
 
       final bytes = response.bodyBytes;
-      final backgroundColor = await _calculateDominantColor(bytes);
-      return _FaviconData(bytes, backgroundColor);
+      final backgroundColors = await _calculateBackgroundColors(bytes);
+      return _FaviconData(bytes, backgroundColors);
     } catch (_) {
       return null;
     }
   }
 
-  static Future<Color?> _calculateDominantColor(Uint8List bytes) async {
+  static Future<FaviconBackgroundColors?> _calculateBackgroundColors(
+      Uint8List bytes) async {
     final codec = await ui.instantiateImageCodec(bytes,
         targetWidth: 32, targetHeight: 32);
-    final frame = await codec.getNextFrame();
-
     try {
-      final byteData =
-          await frame.image.toByteData(format: ui.ImageByteFormat.rawRgba);
-      if (byteData == null) {
-        return null;
-      }
-
-      final pixels = byteData.buffer.asUint8List();
-      final colorCounts = <int, int>{};
-
-      for (var offset = 0; offset < pixels.length; offset += 4) {
-        final alpha = pixels[offset + 3];
-        if (alpha < 32) {
-          continue;
+      final frame = await codec.getNextFrame();
+      try {
+        final byteData = await frame.image
+            .toByteData(format: ui.ImageByteFormat.rawStraightRgba);
+        if (byteData == null) {
+          return null;
         }
-
-        final red = pixels[offset] >> 4;
-        final green = pixels[offset + 1] >> 4;
-        final blue = pixels[offset + 2] >> 4;
-        final colorBucket = (red << 8) | (green << 4) | blue;
-        colorCounts.update(colorBucket, (count) => count + alpha,
-            ifAbsent: () => alpha);
+        return FaviconBackgroundColors.fromPixels(
+            byteData.buffer
+                .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+            frame.image.width,
+            frame.image.height);
+      } finally {
+        frame.image.dispose();
       }
-
-      if (colorCounts.isEmpty) {
-        return null;
-      }
-
-      final dominantBucket =
-          colorCounts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
-      final red = ((dominantBucket >> 8) & 0xF) * 17;
-      final green = ((dominantBucket >> 4) & 0xF) * 17;
-      final blue = (dominantBucket & 0xF) * 17;
-      return Color.fromARGB(255, red, green, blue);
     } finally {
-      frame.image.dispose();
       codec.dispose();
     }
   }
@@ -339,8 +323,8 @@ class BlastCardIcon extends StatelessWidget {
 }
 
 class _FaviconData {
-  const _FaviconData(this.bytes, this.backgroundColor);
+  const _FaviconData(this.bytes, this.backgroundColors);
 
   final Uint8List bytes;
-  final Color? backgroundColor;
+  final FaviconBackgroundColors? backgroundColors;
 }

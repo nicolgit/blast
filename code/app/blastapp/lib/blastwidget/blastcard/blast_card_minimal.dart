@@ -24,12 +24,16 @@ class BlastCardMinimal extends BlastCardBase {
       return AspectRatio(
         aspectRatio: BlastCardMinimal.childAspectRatio,
         child: Card(
-          color: isSelected ? colorScheme.onPrimary : backgroundColor ?? colorScheme.primary,
+          color: isSelected
+              ? colorScheme.onPrimary
+              : backgroundColor ?? colorScheme.primary,
           clipBehavior: Clip.antiAlias,
           elevation: 6,
           shape: RoundedRectangleBorder(
             borderRadius: const BorderRadius.all(Radius.circular(6)),
-            side: card.isFavorite ? const BorderSide(color: Colors.amber, width: 2) : BorderSide.none,
+            side: card.isFavorite
+                ? const BorderSide(color: Colors.amber, width: 2)
+                : BorderSide.none,
           ),
           child: Stack(
             children: [
@@ -43,7 +47,8 @@ class BlastCardMinimal extends BlastCardBase {
                         Container(
                           decoration: card.isFavorite
                               ? BoxDecoration(
-                                  border: Border.all(color: Colors.amber, width: 2),
+                                  border:
+                                      Border.all(color: Colors.amber, width: 2),
                                   borderRadius: BorderRadius.circular(8),
                                 )
                               : null,
@@ -51,7 +56,9 @@ class BlastCardMinimal extends BlastCardBase {
                             card: card,
                             size: 72,
                             transparentBackground: true,
-                            initialsColor: isSelected ? colorScheme.primary : colorScheme.onPrimary,
+                            initialsColor: isSelected
+                                ? colorScheme.primary
+                                : colorScheme.onPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -77,7 +84,9 @@ class BlastCardMinimal extends BlastCardBase {
                 left: 4,
                 child: IconButton(
                   onPressed: () => onFavoritePressed(card),
-                  tooltip: card.isFavorite ? 'remove from favorites' : 'add to favorites',
+                  tooltip: card.isFavorite
+                      ? 'remove from favorites'
+                      : 'add to favorites',
                   icon: Icon(
                     card.isFavorite ? Icons.star : Icons.star_border,
                     color: Colors.amber,
@@ -107,7 +116,8 @@ class BlastCardMinimal extends BlastCardBase {
     }
 
     return FutureBuilder<Color?>(
-      future: BlastCardIcon.getBackgroundColor(card),
+      future: BlastCardIcon.getBackgroundColor(card,
+          brightness: Theme.of(context).brightness),
       builder: (context, snapshot) => buildCard(snapshot.data),
     );
   }

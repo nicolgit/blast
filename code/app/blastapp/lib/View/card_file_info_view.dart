@@ -18,7 +18,8 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
     return ChangeNotifierProvider(
       create: (context) => CardFileInfoViewModel(context),
       child: Consumer<CardFileInfoViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -51,7 +52,8 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
               Text("Master Key", style: _widgetFactory.textTheme.titleMedium),
               const SizedBox(height: 24),
               SelectableText(vm.getRecoveryKey(),
-                  style: _widgetFactory.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: _widgetFactory.textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center),
               const SizedBox(height: 24),
               Row(
@@ -92,11 +94,13 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
                         style: _widgetFactory.textTheme.titleSmall),
                     const SizedBox(height: 12),
                     FilledButton(
+                      autofocus: true,
                       onPressed: () => vm.closeCommand(),
                       child: const Text('continue'),
                     ),
                     const SizedBox(height: 12),
-                    Text("last update: ${vm.fileService.currentFileInfo?.lastModified}",
+                    Text(
+                        "last update: ${vm.fileService.currentFileInfo?.lastModified}",
                         style: _widgetFactory.textTheme.titleSmall),
                   ]))
             ]),

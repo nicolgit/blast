@@ -89,6 +89,7 @@ class BlastCardIcon extends StatelessWidget {
         child: Text(
           initials,
           style: theme.textTheme.labelSmall!.copyWith(
+            fontSize: size * 0.5,
             color:
                 foregroundColor ?? initialsColor ?? theme.colorScheme.onPrimary,
           ),

@@ -54,18 +54,12 @@ class BlastCardIcon extends StatelessWidget {
     return _buildTextIcon(context, _generateInitials(card.title));
   }
 
-  BoxDecoration _buildIconDecoration(BuildContext context,
-      {Color? backgroundColor}) {
+  BoxDecoration _buildIconDecoration(BuildContext context, {Color? backgroundColor}) {
     return BoxDecoration(
       borderRadius: BorderRadius.circular(8),
-      color: backgroundColor ??
-          (card.isFavorite
-              ? Colors.amber
-              : Theme.of(context).colorScheme.primary),
+      color: backgroundColor ?? (card.isFavorite ? Colors.amber : Theme.of(context).colorScheme.primary),
       border: Border.all(
-        color: card.isFavorite
-            ? Colors.amber
-            : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+        color: card.isFavorite ? Colors.amber : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
         width: card.isFavorite ? 2.0 : 0.5,
       ),
     );
@@ -82,16 +76,17 @@ class BlastCardIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: transparentBackground
-          ? null
-          : _buildIconDecoration(context, backgroundColor: backgroundColor),
+      decoration: transparentBackground ? null : _buildIconDecoration(context, backgroundColor: backgroundColor),
       child: Center(
-        child: Text(
-          initials,
-          style: theme.textTheme.labelSmall!.copyWith(
-            fontSize: size * 0.5,
-            color:
-                foregroundColor ?? initialsColor ?? theme.colorScheme.onPrimary,
+        child: SizedBox(
+          width: double.infinity,
+          child: Text(
+            initials,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall!.copyWith(
+              fontSize: size * 0.29,
+              color: foregroundColor ?? initialsColor ?? theme.colorScheme.onPrimary,
+            ),
           ),
         ),
       ),
@@ -132,10 +127,8 @@ class BlastCardIcon extends StatelessWidget {
         final brandColor = colorSnapshot.data;
         final useLightForeground = brandColor == null
             ? theme.brightness != Brightness.dark && !card.isFavorite
-            : ThemeData.estimateBrightnessForColor(brandColor) ==
-                Brightness.dark;
-        final foregroundColor =
-            useLightForeground ? Colors.white : Colors.black;
+            : ThemeData.estimateBrightnessForColor(brandColor) == Brightness.dark;
+        final foregroundColor = useLightForeground ? Colors.white : Colors.black;
         final iconUrl = useLightForeground ? brandInfo.url : brandInfo.urlDark;
 
         return Container(
@@ -164,9 +157,7 @@ class BlastCardIcon extends StatelessWidget {
                     );
                   }
 
-                  if (snapshot.hasError ||
-                      !snapshot.hasData ||
-                      snapshot.data == null) {
+                  if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
                     // Fallback to text icon when SVG fails to load
                     return _buildTextIcon(
                       context,
@@ -191,8 +182,7 @@ class BlastCardIcon extends StatelessWidget {
 
   Widget _buildFavicon(BuildContext context, String domain) {
     return FutureBuilder<_FaviconData?>(
-      future:
-          _faviconCache.putIfAbsent(domain, () => _fetchFaviconData(domain)),
+      future: _faviconCache.putIfAbsent(domain, () => _fetchFaviconData(domain)),
       builder: (context, snapshot) {
         final favicon = snapshot.data;
         if (favicon == null) {
@@ -200,8 +190,7 @@ class BlastCardIcon extends StatelessWidget {
             return SizedBox(
               width: size,
               height: size,
-              child: const Center(
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+              child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
             );
           }
 
@@ -234,8 +223,7 @@ class BlastCardIcon extends StatelessWidget {
 
   static Future<_FaviconData?> _fetchFaviconData(String domain) async {
     try {
-      final uri =
-          Uri.parse('https://www.google.com/s2/favicons?sz=256&domain=$domain');
+      final uri = Uri.parse('https://www.google.com/s2/favicons?sz=256&domain=$domain');
       final response = await http.get(uri).timeout(const Duration(seconds: 5));
       if (response.statusCode != 200) {
         return null;
@@ -250,13 +238,11 @@ class BlastCardIcon extends StatelessWidget {
   }
 
   static Future<Color?> _calculateDominantColor(Uint8List bytes) async {
-    final codec = await ui.instantiateImageCodec(bytes,
-        targetWidth: 32, targetHeight: 32);
+    final codec = await ui.instantiateImageCodec(bytes, targetWidth: 32, targetHeight: 32);
     final frame = await codec.getNextFrame();
 
     try {
-      final byteData =
-          await frame.image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final byteData = await frame.image.toByteData(format: ui.ImageByteFormat.rawRgba);
       if (byteData == null) {
         return null;
       }
@@ -274,16 +260,14 @@ class BlastCardIcon extends StatelessWidget {
         final green = pixels[offset + 1] >> 4;
         final blue = pixels[offset + 2] >> 4;
         final colorBucket = (red << 8) | (green << 4) | blue;
-        colorCounts.update(colorBucket, (count) => count + alpha,
-            ifAbsent: () => alpha);
+        colorCounts.update(colorBucket, (count) => count + alpha, ifAbsent: () => alpha);
       }
 
       if (colorCounts.isEmpty) {
         return null;
       }
 
-      final dominantBucket =
-          colorCounts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
+      final dominantBucket = colorCounts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
       final red = ((dominantBucket >> 8) & 0xF) * 17;
       final green = ((dominantBucket >> 4) & 0xF) * 17;
       final blue = (dominantBucket & 0xF) * 17;

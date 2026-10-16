@@ -40,6 +40,9 @@ dependencies:
   http: ^1.1.0
   mobile_scanner: ^7.2.0
 
+dependency_overrides:
+  image: 4.10.0
+
 flutter_launcher_icons:
   image_path: "assets/general/app-icon.png"
   remove_alpha_ios: true

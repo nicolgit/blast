@@ -14,7 +14,6 @@ class BlastAttributeRow extends StatelessWidget {
   final bool editMode;
   final Future<void> Function(BlastAttribute) editField;
   final Function(BlastAttribute)? deleteField;
-  final Future<void> Function(BlastAttribute)? generatePassword;
 
   const BlastAttributeRow({
     super.key,
@@ -28,7 +27,6 @@ class BlastAttributeRow extends StatelessWidget {
     required this.editMode,
     required this.editField,
     this.deleteField,
-    this.generatePassword,
   });
 
   @override
@@ -167,9 +165,6 @@ class BlastAttributeRow extends StatelessWidget {
                                       },
                                       icon: const Icon(Icons.copy),
                                       tooltip: 'copy to clipboard'),
-                                if (editMode && generatePassword != null)
-                                  TextButton(
-                                      onPressed: () => generatePassword!(attribute), child: const Text('generate')),
                                 if (editMode)
                                   BlastEditButton(
                                       onPressed: () async {

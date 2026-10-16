@@ -80,7 +80,6 @@ class BlastDocument {
   }
 
   List<String> getDefaultTags() {
-    // TODO - make this list configurable
     final List<String> tags = <String>["personal", "work", "family", "money", "health", "hobby"];
 
     return tags;

@@ -96,7 +96,7 @@ class _CardViewState extends State<CardView> {
               actions: [
                 Row(
                   children: [
-                    const Text('Edit Mode'),
+                    const Text('Edit'),
                     Switch(
                       value: vm.editMode,
                       onChanged: (value) {
@@ -243,7 +243,7 @@ class _CardViewState extends State<CardView> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             buildDefaultDragHandles: false,
-            onReorder: vm.reorderAttributes,
+            onReorderItem: vm.reorderAttributes,
             children: [
               for (int i = 0; i < cardsList.length; i++)
                 ReorderableDelayedDragStartListener(

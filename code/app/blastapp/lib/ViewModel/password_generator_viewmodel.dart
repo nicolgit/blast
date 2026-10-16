@@ -14,15 +14,15 @@ enum GeneratorTypes {
 }
 
 enum Status {
-  Running,
-  Terminating,
-  Terminated;
+  running,
+  terminating,
+  terminated;
 }
 
 class PasswordGeneratorViewModel extends ChangeNotifier {
   final BuildContext context;
   GeneratorTypes _generatorType = GeneratorTypes.wikiword; // Default to WikiWord
-  Status _status = Status.Terminated;
+  Status _status = Status.terminated;
   Timer? _backgroundTimer;
   String _password = '';
   int _textLength = 10;
@@ -397,12 +397,12 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   Future<void> _startBackgroundProcess() async {
-    _status = Status.Running;
+    _status = Status.running;
 
     _backgroundTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
-      if (_status != Status.Running) {
+      if (_status != Status.running) {
         timer.cancel();
-        _status = Status.Terminated;
+        _status = Status.terminated;
         return;
       }
       // Background process logic goes here
@@ -413,24 +413,24 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   Future<void> _stopBackgroundProcess() async {
-    _status = Status.Terminating;
+    _status = Status.terminating;
     _backgroundTimer?.cancel();
     _backgroundTimer = null;
 
-    while (_status != Status.Terminated) {
+    while (_status != Status.terminated) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
   void startGenerator() {
-    if (_status == Status.Terminated) {
+    if (_status == Status.terminated) {
       _startBackgroundProcess();
       notifyListeners();
     }
   }
 
   void stopGenerator() {
-    if (_status == Status.Running) {
+    if (_status == Status.running) {
       _stopBackgroundProcess();
       notifyListeners();
     }

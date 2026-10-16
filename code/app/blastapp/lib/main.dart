@@ -169,7 +169,10 @@ class BlastAppState extends State<BlastApp> {
       _inactivityTimer?.cancel();
     }
 
-    print('inactivity timer started! ${timeoutDuration.toApproximateTime(isRelativeToNow: false)}');
+    if (kDebugMode) {
+      debugPrint('inactivity timer started! ${timeoutDuration.toApproximateTime(isRelativeToNow: false)}');
+    }
+
     _inactivityTimer = Timer(timeoutDuration, () => _handleInactivity());
   }
 
@@ -184,7 +187,9 @@ class BlastAppState extends State<BlastApp> {
     if (await vm.closeAll() == true) {
       _initializeInactivityTimer();
     } else {
-      print('**** inactivity timer ended, you are already on the splash screen, nothing to do.');
+      if (kDebugMode) {
+        debugPrint('**** inactivity timer ended, user chose not to close all views.');
+      }
     }
   }
 

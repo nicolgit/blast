@@ -92,6 +92,7 @@ class _CardFileInfoViewState extends State<CardFileInfoView> {
                         style: _widgetFactory.textTheme.titleSmall),
                     const SizedBox(height: 12),
                     FilledButton(
+                      autofocus: true,
                       onPressed: () => vm.closeCommand(),
                       child: const Text('continue'),
                     ),

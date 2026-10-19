@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/helpers/credit_card_selector_dialog.dart';
 import 'package:blastapp/helpers/populate_card_helper.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:blastmodel/blastdocument.dart';
@@ -152,6 +153,9 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   Future addCreditCard() async {
     final card = BlastCard.createCreditCard();
+    final selected = await CreditCardSelectorDialog.selectIcon(context, card);
+    if (!selected || !context.mounted) return;
+
     final confirmed = await PopulateCardHelper.populateCard(context, card);
 
     if (confirmed && context.mounted) {

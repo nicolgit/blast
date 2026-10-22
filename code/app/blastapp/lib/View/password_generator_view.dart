@@ -320,6 +320,7 @@ class _PasswordGeneratorViewState extends State<PasswordGeneratorView> {
                                     ),
                                   if (widget.allowCopyToClipboard)
                                     ElevatedButton.icon(
+                                      autofocus: true,
                                       onPressed: vm.copyToClipboard,
                                       icon: const Icon(Icons.copy, size: 20),
                                       label: const Text('Copy to Clipboard'),

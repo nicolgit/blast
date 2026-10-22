@@ -396,7 +396,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _startBackgroundProcess() async {
+  void _startBackgroundProcess() {
     _status = Status.running;
 
     _backgroundTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
@@ -412,14 +412,10 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> _stopBackgroundProcess() async {
-    _status = Status.terminating;
+  void _stopBackgroundProcess() {
     _backgroundTimer?.cancel();
     _backgroundTimer = null;
-
-    while (_status != Status.terminated) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
+    _status = Status.terminated;
   }
 
   void startGenerator() {

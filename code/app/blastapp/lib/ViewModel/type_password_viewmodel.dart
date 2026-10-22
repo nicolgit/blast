@@ -153,6 +153,7 @@ class TypePasswordViewModel extends ChangeNotifier {
                     child: const Text('No'),
                   ),
                   FilledButton(
+                    autofocus: true,
                     onPressed: () async {
                       try {
                         await BiometricHelper.saveData(password);

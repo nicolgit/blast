@@ -27,6 +27,7 @@ class CreditCardSelectorDialog extends StatefulWidget {
 
     card.icon =
         brand.brandSlug.isEmpty ? null : 'simpleicons:${brand.brandSlug}';
+    card.title = brand.brandSlug.isEmpty ? 'credit card' : brand.brandName;
     return true;
   }
 

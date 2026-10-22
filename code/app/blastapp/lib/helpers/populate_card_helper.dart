@@ -6,14 +6,31 @@ import 'package:flutter/material.dart';
 enum _PopulateResult { next, prev, ok, cancel }
 
 class PopulateCardHelper {
-  static Future<bool> populateCard(BuildContext context, BlastCard card) async {
+  static Future<bool> populateCreditCard(BuildContext context, BlastCard card) {
+    final cardType = card.title!;
+    return populateCard(
+      context,
+      card,
+      titleFromFirstAttribute: (value) {
+        final cardholder = value.trim();
+        return cardholder.isEmpty ? cardType : "$cardholder's $cardType";
+      },
+    );
+  }
+
+  static Future<bool> populateCard(
+    BuildContext context,
+    BlastCard card, {
+    String Function(String)? titleFromFirstAttribute,
+  }) async {
     if (card.rows.isEmpty) return true;
 
     // Step 1: Ask for the card name
     final nameController = TextEditingController(text: card.title);
     String? nameError;
 
-    while (true) {
+    while (titleFromFirstAttribute == null) {
+      if (!context.mounted) return false;
       final nameResult = await showDialog<_PopulateResult>(
         context: context,
         barrierDismissible: false,
@@ -22,12 +39,15 @@ class PopulateCardHelper {
             builder: (context, setState) {
               final focusNode = FocusNode();
               return AlertDialog(
-                title: Text('Card Name', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                title: Text('Card Name',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 content: TextField(
                   controller: nameController,
                   focusNode: focusNode,
                   autofocus: true,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) {
                     if (nameController.text.trim().isEmpty) {
@@ -50,7 +70,8 @@ class PopulateCardHelper {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(_PopulateResult.cancel),
+                    onPressed: () =>
+                        Navigator.of(context).pop(_PopulateResult.cancel),
                     child: const Text('Cancel'),
                   ),
                   TextButton(
@@ -80,12 +101,15 @@ class PopulateCardHelper {
     }
 
     // Step 2: Iterate through attributes (skip headers)
-    final editableRows = card.rows.where((r) => r.type != BlastAttributeType.typeHeader).toList();
+    final editableRows = card.rows
+        .where((r) => r.type != BlastAttributeType.typeHeader)
+        .toList();
     if (editableRows.isEmpty) return true;
 
     int currentIndex = 0;
 
     while (true) {
+      if (!context.mounted) return false;
       final attribute = editableRows[currentIndex];
       final isFirst = currentIndex == 0;
       final isLast = currentIndex == editableRows.length - 1;
@@ -102,23 +126,28 @@ class PopulateCardHelper {
             builder: (context, setState) {
               final onSurface = Theme.of(context).colorScheme.onSurface;
               return AlertDialog(
-                title: Text(card.title ?? '', style: TextStyle(color: onSurface)),
+                title:
+                    Text(card.title ?? '', style: TextStyle(color: onSurface)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(attribute.name, style: TextStyle(color: onSurface, fontWeight: FontWeight.bold)),
+                    Text(attribute.name,
+                        style: TextStyle(
+                            color: onSurface, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: controller,
                       autofocus: true,
                       style: TextStyle(color: onSurface),
-                      textInputAction: isLast ? TextInputAction.done : TextInputAction.next,
+                      textInputAction:
+                          isLast ? TextInputAction.done : TextInputAction.next,
                       obscureText: isPassword && hideValue,
                       obscuringCharacter: '*',
                       onChanged: (_) => setState(() {}),
                       onSubmitted: (_) {
-                        Navigator.of(context).pop(isLast ? _PopulateResult.ok : _PopulateResult.next);
+                        Navigator.of(context).pop(
+                            isLast ? _PopulateResult.ok : _PopulateResult.next);
                       },
                       decoration: InputDecoration(
                         hintText: 'Enter ${attribute.name}',
@@ -127,8 +156,12 @@ class PopulateCardHelper {
                                 onPressed: () {
                                   setState(() => hideValue = !hideValue);
                                 },
-                                icon: Icon(hideValue ? Icons.visibility : Icons.visibility_off),
-                                tooltip: hideValue ? 'Show password' : 'Hide password',
+                                icon: Icon(hideValue
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                tooltip: hideValue
+                                    ? 'Show password'
+                                    : 'Hide password',
                               )
                             : null,
                       ),
@@ -141,22 +174,26 @@ class PopulateCardHelper {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(_PopulateResult.cancel),
+                    onPressed: () =>
+                        Navigator.of(context).pop(_PopulateResult.cancel),
                     child: const Text('Cancel'),
                   ),
                   if (!isFirst)
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(_PopulateResult.prev),
+                      onPressed: () =>
+                          Navigator.of(context).pop(_PopulateResult.prev),
                       child: const Text('Prev'),
                     ),
                   if (!isLast)
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(_PopulateResult.next),
+                      onPressed: () =>
+                          Navigator.of(context).pop(_PopulateResult.next),
                       child: const Text('Next'),
                     ),
                   if (isLast)
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(_PopulateResult.ok),
+                      onPressed: () =>
+                          Navigator.of(context).pop(_PopulateResult.ok),
                       child: const Text('OK'),
                     ),
                 ],
@@ -171,6 +208,9 @@ class PopulateCardHelper {
       }
 
       attribute.value = controller.text;
+      if (isFirst && titleFromFirstAttribute != null) {
+        card.title = titleFromFirstAttribute(attribute.value);
+      }
 
       if (result == _PopulateResult.next) {
         currentIndex++;

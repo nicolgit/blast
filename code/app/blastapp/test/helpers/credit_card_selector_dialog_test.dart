@@ -38,6 +38,7 @@ void main() {
     ValueChanged<bool> onResult, {
     bool populate = false,
     ThemeData? theme,
+    bool creditCard = true,
   }) async {
     await tester.pumpWidget(MaterialApp(
       theme: theme,
@@ -45,11 +46,15 @@ void main() {
         body: Builder(
           builder: (context) => TextButton(
             onPressed: () async {
+              if (!creditCard) {
+                onResult(await PopulateCardHelper.populateCard(context, card));
+                return;
+              }
               final selected =
                   await CreditCardSelectorDialog.selectIcon(context, card);
               onResult(selected);
               if (selected && populate && context.mounted) {
-                await PopulateCardHelper.populateCard(context, card);
+                await PopulateCardHelper.populateCreditCard(context, card);
               }
             },
             child: const Text('Add credit card'),
@@ -168,7 +173,7 @@ void main() {
     'Discover': 'discover',
     'Bank of America': 'bankofamerica',
   }.entries) {
-    testWidgets('Next confirms ${brand.key} and continues to Card Name',
+    testWidgets('Next confirms ${brand.key} and continues to Cardholder Name',
         (tester) async {
       final card = BlastCard.createCreditCard();
       bool? result;
@@ -181,7 +186,12 @@ void main() {
 
       expect(result, isTrue);
       expect(card.icon, 'simpleicons:${brand.value}');
-      expect(find.text('Card Name'), findsOneWidget);
+      expect(find.text('Card Name'), findsNothing);
+      expect(find.text('Cardholder Name'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '  Nicola  ');
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+      expect(card.title, "Nicola's ${brand.key}");
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
     });
@@ -197,20 +207,22 @@ void main() {
 
     expect(result, isTrue);
     expect(card.icon, isNull);
-    expect(find.text('Card Name'), findsOneWidget);
+    expect(find.text('Card Name'), findsNothing);
+    expect(find.text('Cardholder Name'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Nicola');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    expect(card.title, "Nicola's credit card");
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
   });
 
-  testWidgets('keeps the selected icon through naming and attribute entry',
+  testWidgets(
+      'keeps the selected icon and generated title through attribute entry',
       (tester) async {
     final card = BlastCard.createCreditCard();
     await openSelector(tester, card, (_) {}, populate: true);
     await selectBrand(tester, 'Visa');
-    await tester.tap(find.text('Next'));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextField), 'My credit card');
     await tester.tap(find.text('Next'));
     await tester.pumpAndSettle();
 
@@ -223,9 +235,68 @@ void main() {
     }
 
     expect(find.byType(AlertDialog), findsNothing);
-    expect(card.title, 'My credit card');
+    expect(card.title, "Test User's Visa");
     expect(card.rows.map((row) => row.value), values);
     expect(card.icon, 'simpleicons:visa');
     expect(BlastCard.fromJson(card.toJson()).icon, 'simpleicons:visa');
+    expect(BlastCard.fromJson(card.toJson()).title, "Test User's Visa");
   });
+
+  testWidgets('updates the title when the cardholder is changed using Prev',
+      (tester) async {
+    final card = BlastCard.createCreditCard();
+    await openSelector(tester, card, (_) {}, populate: true);
+    await selectBrand(tester, 'Visa');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Nicola');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    expect(card.title, "Nicola's Visa");
+
+    await tester.tap(find.text('Prev'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        'Nicola');
+    await tester.enterText(find.byType(TextField), 'Alex');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    expect(card.title, "Alex's Visa");
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('an empty cardholder keeps the card type without a possessive',
+      (tester) async {
+    final card = BlastCard.createCreditCard();
+    await openSelector(tester, card, (_) {}, populate: true);
+    await selectBrand(tester, '(my card is not listed)');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), '   ');
+    await tester.tap(find.text('Next'));
+    await tester.pumpAndSettle();
+    expect(card.title, 'credit card');
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+  });
+
+  for (final factory in {
+    'web': BlastCard.createWebCard,
+    'fidelity': BlastCard.createFidelityCard,
+    'Wi-Fi': BlastCard.createWifiCredentialsCard,
+  }.entries) {
+    testWidgets('${factory.key} cards still ask for a name', (tester) async {
+      final card = factory.value();
+      await openSelector(tester, card, (_) {}, creditCard: false);
+      expect(find.text('Card Name'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'Custom name');
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+      expect(card.title, 'Custom name');
+      expect(find.text(card.rows.first.name), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+    });
+  }
 }

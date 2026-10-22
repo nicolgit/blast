@@ -156,7 +156,7 @@ class CardsBrowserViewModel extends ChangeNotifier {
     final selected = await CreditCardSelectorDialog.selectIcon(context, card);
     if (!selected || !context.mounted) return;
 
-    final confirmed = await PopulateCardHelper.populateCard(context, card);
+    final confirmed = await PopulateCardHelper.populateCreditCard(context, card);
 
     if (confirmed && context.mounted) {
       fileService.currentFileDocument!.cards.insert(0, card);

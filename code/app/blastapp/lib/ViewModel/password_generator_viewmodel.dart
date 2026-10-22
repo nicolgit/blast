@@ -21,9 +21,11 @@ enum Status {
 
 class PasswordGeneratorViewModel extends ChangeNotifier {
   final BuildContext context;
-  GeneratorTypes _generatorType = GeneratorTypes.wikiword; // Default to WikiWord
+  GeneratorTypes _generatorType =
+      GeneratorTypes.wikiword; // Default to WikiWord
   Status _status = Status.terminated;
   Timer? _backgroundTimer;
+  bool _isDisposed = false;
   String _password = '';
   int _textLength = 10;
   int _wordCount = 2; // Default to 2 words
@@ -111,7 +113,8 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     final chars = '0123456789abcdef';
 
     String generateSegment(int length) {
-      return List.generate(length, (_) => chars[random.nextInt(chars.length)]).join();
+      return List.generate(length, (_) => chars[random.nextInt(chars.length)])
+          .join();
     }
 
     return '${generateSegment(8)}-${generateSegment(4)}-${generateSegment(4)}-${generateSegment(4)}-${generateSegment(12)}';
@@ -221,9 +224,11 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
       }
 
       if (numberAtBegin) {
-        password += numberText + (separator.isEmpty ? '' : separator) + wordsText;
+        password +=
+            numberText + (separator.isEmpty ? '' : separator) + wordsText;
       } else {
-        password += wordsText + (separator.isEmpty ? '' : separator) + numberText;
+        password +=
+            wordsText + (separator.isEmpty ? '' : separator) + numberText;
       }
 
       if (!specialAtBegin) {
@@ -274,7 +279,8 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
         // Extract lemmas and clean them for use as words
         List<String> words = [];
         for (var binding in bindings) {
-          if (binding['lemmaLabel'] != null && binding['lemmaLabel']['value'] != null) {
+          if (binding['lemmaLabel'] != null &&
+              binding['lemmaLabel']['value'] != null) {
             String lemma = binding['lemmaLabel']['value'] as String;
 
             // Clean the lemma - remove special characters, spaces, etc.
@@ -294,7 +300,8 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
 
         return words;
       } else {
-        debugPrint('Wikidata SPARQL API error: ${response.statusCode} - ${response.body}');
+        debugPrint(
+            'Wikidata SPARQL API error: ${response.statusCode} - ${response.body}');
         // Throw exception if API fails
         throw Exception('Unable to connect to query.wikidata.org');
       }
@@ -389,8 +396,10 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
           'Successfully populated ${_words.length} words from Wikidata SPARQL API (language: $_selectedLanguage)');
     } catch (e) {
       debugPrint('Failed to populate words from API: $e');
-      _wikiError = 'Unable to connect to query.wikidata.org';
-      notifyListeners();
+      if (!_isDisposed) {
+        _wikiError = 'Unable to connect to query.wikidata.org';
+        notifyListeners();
+      }
       rethrow;
       // _words remains empty, fallback will be used in generator
     }
@@ -399,7 +408,8 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   void _startBackgroundProcess() {
     _status = Status.running;
 
-    _backgroundTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+    _backgroundTimer =
+        Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       if (_status != Status.running) {
         timer.cancel();
         _status = Status.terminated;
@@ -433,6 +443,8 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshPassword() async {
+    if (_isDisposed) return;
+
     // Generate a single new password based on current generator type
     if (_generatorType == GeneratorTypes.guid) {
       setPassword(_generateGuid());
@@ -441,7 +453,9 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
     } else if (_generatorType == GeneratorTypes.numeric) {
       setPassword(_generateNumericPassword());
     } else if (_generatorType == GeneratorTypes.wikiword) {
-      setPassword(await _generateWikiWordPassword());
+      final password = await _generateWikiWordPassword();
+      if (_isDisposed) return;
+      setPassword(password);
     }
   }
 
@@ -467,6 +481,7 @@ class PasswordGeneratorViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _isDisposed = true;
     _stopBackgroundProcess();
     super.dispose();
   }

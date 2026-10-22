@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:blastapp/View/password_generator_view.dart';
 import 'package:blastapp/ViewModel/password_generator_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -69,4 +73,42 @@ void main() {
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
+
+  for (final succeeds in [true, false]) {
+    testWidgets(
+        'Wiki request ${succeeds ? 'success' : 'failure'} after disposal is ignored',
+        (tester) async {
+      final response = Completer<http.Response>();
+      var requestCount = 0;
+
+      await http.runWithClient(() async {
+        final vm = await openGenerator(tester);
+        var notifications = 0;
+        vm.addListener(() => notifications++);
+
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(requestCount, 1);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        response.complete(http.Response(
+          succeeds
+              ? '{"results":{"bindings":[{"lemmaLabel":{"value":"Example"}}]}}'
+              : 'Service unavailable',
+          succeeds ? 200 : 503,
+        ));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(vm.password, isEmpty);
+        expect(vm.wikiError, isNull);
+        expect(notifications, 0);
+        expect(requestCount, 1);
+        expect(tester.takeException(), isNull);
+      },
+          () => MockClient((request) {
+                requestCount++;
+                return response.future;
+              }));
+    });
+  }
 }

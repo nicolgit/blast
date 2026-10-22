@@ -1,4 +1,7 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blastwidget/blast_password_complexity.dart';
+import 'package:blastmodel/blastattribute.dart';
 import 'package:blastmodel/blastattributetype.dart';
 import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
@@ -25,82 +28,21 @@ class PopulateCardHelper {
   }) async {
     if (card.rows.isEmpty) return true;
 
-    // Step 1: Ask for the card name
-    final nameController = TextEditingController(text: card.title);
-    String? nameError;
-
-    while (titleFromFirstAttribute == null) {
+    if (titleFromFirstAttribute == null) {
       if (!context.mounted) return false;
-      final nameResult = await showDialog<_PopulateResult>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              final focusNode = FocusNode();
-              return AlertDialog(
-                title: Text('Card Name',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface)),
-                content: TextField(
-                  controller: nameController,
-                  focusNode: focusNode,
-                  autofocus: true,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) {
-                    if (nameController.text.trim().isEmpty) {
-                      setState(() => nameError = 'Card name cannot be empty');
-                      focusNode.requestFocus();
-                    } else {
-                      Navigator.of(context).pop(_PopulateResult.next);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Enter card name',
-                    errorText: nameError,
-                    errorStyle: const TextStyle(color: Colors.red),
-                  ),
-                  onChanged: (_) {
-                    if (nameError != null) {
-                      setState(() => nameError = null);
-                    }
-                  },
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () =>
-                        Navigator.of(context).pop(_PopulateResult.cancel),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      if (nameController.text.trim().isEmpty) {
-                        setState(() => nameError = 'Card name cannot be empty');
-                      } else {
-                        Navigator.of(context).pop(_PopulateResult.next);
-                      }
-                    },
-                    child: const Text('Next'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
+      final nameAttribute = BlastAttribute.withParams(
+        card.title ?? '',
+        'CardName',
+        BlastAttributeType.typeHeader,
       );
+      final saved = await context.router.push<bool>(
+        FieldEditRoute(attribute: nameAttribute),
+      );
+      if (saved != true) return false;
 
-      if (nameResult == null || nameResult == _PopulateResult.cancel) {
-        return false;
-      }
-      if (nameResult == _PopulateResult.next) {
-        card.title = nameController.text.trim();
-        break;
-      }
+      card.title = nameAttribute.name.trim();
     }
 
-    // Step 2: Iterate through attributes (skip headers)
     final editableRows = card.rows
         .where((r) => r.type != BlastAttributeType.typeHeader)
         .toList();

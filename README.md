@@ -64,6 +64,7 @@ Blast stores everything inside a single encrypted `.blast` vault file.
 - Advanced search and sorting
 - Favorites and tags
 - Flexible custom fields
+- Web credentials, Wi-Fi credentials, and fidelity cards use the field editor to enter the card name.
 - Credit card creation with brand selection and automatic titles, such as "Nicola's Visa" or "Nicola's credit card".
 - Markdown notes
 - Password generator

@@ -27,6 +27,7 @@ class _FieldEditViewState extends State<FieldEditView> {
   late final FocusNode _nameFocusNode;
   late final FocusNode _focusNode;
   bool _obscurePassword = true;
+  String? _valueError;
 
   Widget _passwordVisibilityButton() => IconButton(
         tooltip: _obscurePassword ? 'Show password' : 'Hide password',
@@ -89,6 +90,11 @@ class _FieldEditViewState extends State<FieldEditView> {
   }
 
   void _save() {
+    if (_viewModel.isCardName && _controller.text.trim().isEmpty) {
+      setState(() => _valueError = 'Card name cannot be empty');
+      _focusNode.requestFocus();
+      return;
+    }
     if (_passwordMismatch) {
       _confirmFocusNode.requestFocus();
       return;
@@ -185,7 +191,11 @@ class _FieldEditViewState extends State<FieldEditView> {
                                 obscureText: _viewModel.isPassword && _obscurePassword,
                                 autocorrect: !_viewModel.isPassword,
                                 enableSuggestions: !_viewModel.isPassword,
-                                onChanged: _viewModel.isPassword ? (_) => setState(() {}) : null,
+                                onChanged: (_) {
+                                  if (_viewModel.isPassword || _valueError != null) {
+                                    setState(() => _valueError = null);
+                                  }
+                                },
                                 keyboardType: _viewModel.canTestUrl ? TextInputType.url : TextInputType.text,
                                 textInputAction: _viewModel.isPassword ? TextInputAction.next : TextInputAction.done,
                                 onSubmitted: (_) {
@@ -198,6 +208,7 @@ class _FieldEditViewState extends State<FieldEditView> {
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(),
                                   labelText: _viewModel.labelText,
+                                  errorText: _valueError,
                                   labelStyle: labelStyle,
                                   floatingLabelStyle: labelStyle,
                                   suffixIcon: _viewModel.canTestUrl

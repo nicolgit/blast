@@ -1,3 +1,6 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/View/field_edit_view.dart';
+import 'package:blastapp/blast_router.dart';
 import 'package:blastapp/blast_theme.dart';
 import 'package:blastapp/helpers/credit_card_selector_dialog.dart';
 import 'package:blastapp/helpers/icon_lookup_helper.dart';
@@ -40,28 +43,43 @@ void main() {
     ThemeData? theme,
     bool creditCard = true,
   }) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: theme,
-      home: Scaffold(
-        body: Builder(
-          builder: (context) => TextButton(
-            onPressed: () async {
-              if (!creditCard) {
-                onResult(await PopulateCardHelper.populateCard(context, card));
-                return;
-              }
-              final selected =
-                  await CreditCardSelectorDialog.selectIcon(context, card);
-              onResult(selected);
-              if (selected && populate && context.mounted) {
-                await PopulateCardHelper.populateCreditCard(context, card);
-              }
-            },
-            child: const Text('Add credit card'),
-          ),
+    final home = Scaffold(
+      body: Builder(
+        builder: (context) => TextButton(
+          onPressed: () async {
+            if (!creditCard) {
+              onResult(await PopulateCardHelper.populateCard(context, card));
+              return;
+            }
+            final selected =
+                await CreditCardSelectorDialog.selectIcon(context, card);
+            onResult(selected);
+            if (selected && populate && context.mounted) {
+              await PopulateCardHelper.populateCreditCard(context, card);
+            }
+          },
+          child: const Text('Add credit card'),
         ),
       ),
-    ));
+    );
+    if (creditCard) {
+      await tester.pumpWidget(MaterialApp(theme: theme, home: home));
+    } else {
+      final router = RootStackRouter.build(routes: [
+        NamedRouteDef(
+          name: 'TestHome',
+          path: '/',
+          builder: (context, data) => home,
+        ),
+        AutoRoute(page: FieldEditRoute.page),
+      ]);
+      addTearDown(router.dispose);
+      await tester.pumpWidget(MaterialApp.router(
+        theme: theme,
+        routerConfig: router.config(),
+      ));
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Add credit card'));
     await tester.pumpAndSettle();
   }
@@ -286,17 +304,59 @@ void main() {
     'fidelity': BlastCard.createFidelityCard,
     'Wi-Fi': BlastCard.createWifiCredentialsCard,
   }.entries) {
-    testWidgets('${factory.key} cards still ask for a name', (tester) async {
+    testWidgets('${factory.key} cards use the field editor for the name',
+        (tester) async {
       final card = factory.value();
       await openSelector(tester, card, (_) {}, creditCard: false);
+      expect(find.byType(FieldEditView), findsOneWidget);
+      expect(find.byType(AlertDialog), findsNothing);
       expect(find.text('Card Name'), findsOneWidget);
-      await tester.enterText(find.byType(TextField), 'Custom name');
-      await tester.tap(find.text('Next'));
+      expect(find.byType(TextField), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '  Custom name  ');
+      await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
       expect(card.title, 'Custom name');
       expect(find.text(card.rows.first.name), findsOneWidget);
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('${factory.key} name editor rejects empty names',
+        (tester) async {
+      final card = factory.value();
+      await openSelector(tester, card, (_) {}, creditCard: false);
+      await tester.enterText(find.byType(TextField), '   ');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FieldEditView), findsOneWidget);
+      expect(find.text('Card name cannot be empty'), findsOneWidget);
+      expect(card.title, '');
+      await tester.enterText(find.byType(TextField), 'Valid name');
+      await tester.pump();
+      expect(find.text('Card name cannot be empty'), findsNothing);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      expect(card.title, 'Valid name');
+      expect(find.text(card.rows.first.name), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('${factory.key} name editor cancels without changing the card',
+        (tester) async {
+      final card = factory.value()..title = 'Original name';
+      bool? confirmed;
+      await openSelector(tester, card, (value) => confirmed = value,
+          creditCard: false);
+      await tester.enterText(find.byType(TextField), 'Discarded name');
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(confirmed, isFalse);
+      expect(card.title, 'Original name');
+      expect(find.byType(FieldEditView), findsNothing);
+      expect(find.byType(AlertDialog), findsNothing);
     });
   }
 }

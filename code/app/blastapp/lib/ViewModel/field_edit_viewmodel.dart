@@ -14,6 +14,10 @@ class FieldEditViewModel extends ChangeNotifier {
   bool get canEditName =>
       attribute.type != BlastAttributeType.typeHeader;
 
+  bool get isCardName =>
+      attribute.type == BlastAttributeType.typeHeader &&
+      attribute.value == 'CardName';
+
   bool get isPassword => attribute.type == BlastAttributeType.typePassword;
 
   bool get canTestUrl => attribute.type == BlastAttributeType.typeURL;
@@ -51,7 +55,7 @@ class FieldEditViewModel extends ChangeNotifier {
   String get labelText {
     switch (attribute.type) {
       case BlastAttributeType.typeHeader:
-        return 'Header';
+        return isCardName ? 'Card Name' : 'Header';
       case BlastAttributeType.typeString:
       case BlastAttributeType.typeURL:
       case BlastAttributeType.typePassword:

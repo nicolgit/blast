@@ -440,18 +440,51 @@ class PasswordGeneratorRouteArgs {
 
 /// generated route for
 /// [ScannerView]
-class ScannerRoute extends PageRouteInfo<void> {
-  const ScannerRoute({List<PageRouteInfo>? children})
-      : super(ScannerRoute.name, initialChildren: children);
+class ScannerRoute extends PageRouteInfo<ScannerRouteArgs> {
+  ScannerRoute({
+    Key? key,
+    bool returnsValue = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ScannerRoute.name,
+          args: ScannerRouteArgs(key: key, returnsValue: returnsValue),
+          initialChildren: children,
+        );
 
   static const String name = 'ScannerRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const ScannerView();
+      final args = data.argsAs<ScannerRouteArgs>(
+        orElse: () => const ScannerRouteArgs(),
+      );
+      return ScannerView(key: args.key, returnsValue: args.returnsValue);
     },
   );
+}
+
+class ScannerRouteArgs {
+  const ScannerRouteArgs({this.key, this.returnsValue = false});
+
+  final Key? key;
+
+  final bool returnsValue;
+
+  @override
+  String toString() {
+    return 'ScannerRouteArgs{key: $key, returnsValue: $returnsValue}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ScannerRouteArgs) return false;
+    return key == other.key && returnsValue == other.returnsValue;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ returnsValue.hashCode;
 }
 
 /// generated route for

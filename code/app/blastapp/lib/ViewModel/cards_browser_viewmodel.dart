@@ -280,6 +280,6 @@ class CardsBrowserViewModel extends ChangeNotifier {
 
   void goToScanner() {
     if (!context.mounted) return;
-    context.router.push(const ScannerRoute());
+    context.router.push(ScannerRoute());
   }
 }

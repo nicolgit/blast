@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class ScannerView extends StatefulWidget {
-  const ScannerView({super.key});
+  const ScannerView({super.key, this.returnsValue = false});
+
+  final bool returnsValue;
 
   @override
   State<ScannerView> createState() => _ScannerViewState();
@@ -16,9 +18,11 @@ class _ScannerViewState extends State<ScannerView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => ScannerViewModel(context),
+      create: (context) =>
+          ScannerViewModel(context, qrOnly: widget.returnsValue),
       child: Consumer<ScannerViewModel>(
-        builder: (context, viewmodel, child) => _buildScaffold(context, viewmodel),
+        builder: (context, viewmodel, child) =>
+            _buildScaffold(context, viewmodel),
       ),
     );
   }
@@ -36,7 +40,9 @@ class _ScannerViewState extends State<ScannerView> {
           body: Column(
             children: [
               AppBar(
-                title: const Text("Scan Barcode/QRCode"),
+                title: Text(widget.returnsValue
+                    ? 'Scan QR code'
+                    : 'Scan Barcode/QRCode'),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.close),
@@ -67,7 +73,8 @@ class _ScannerViewState extends State<ScannerView> {
                       flex: 1,
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 16),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -75,13 +82,17 @@ class _ScannerViewState extends State<ScannerView> {
                               Icon(
                                 Icons.qr_code_scanner,
                                 size: 40,
-                                color: _theme.colorScheme.primary.withValues(alpha: 0.5),
+                                color: _theme.colorScheme.primary
+                                    .withValues(alpha: 0.5),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Point the camera at a barcode or QR code',
+                                widget.returnsValue
+                                    ? 'Point the camera at a QR code'
+                                    : 'Point the camera at a barcode or QR code',
                                 style: _theme.textTheme.bodyMedium?.copyWith(
-                                  color: _theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                  color: _theme.colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -112,9 +123,22 @@ class _ScannerViewState extends State<ScannerView> {
                                 children: [
                                   const SizedBox(width: 16),
                                   FilledButton.icon(
-                                    onPressed: () => _showAddCardDialog(context, vm),
-                                    icon: const Icon(Icons.add_card, size: 18),
-                                    label: const Text('Add this card'),
+                                    onPressed: () {
+                                      if (widget.returnsValue) {
+                                        context.router
+                                            .maybePop(vm.scannedValue);
+                                      } else {
+                                        _showAddCardDialog(context, vm);
+                                      }
+                                    },
+                                    icon: Icon(
+                                        widget.returnsValue
+                                            ? Icons.check
+                                            : Icons.add_card,
+                                        size: 18),
+                                    label: Text(widget.returnsValue
+                                        ? 'Use value'
+                                        : 'Add this card'),
                                   ),
                                 ],
                               ),
@@ -133,7 +157,8 @@ class _ScannerViewState extends State<ScannerView> {
     );
   }
 
-  Future<void> _showAddCardDialog(BuildContext context, ScannerViewModel vm) async {
+  Future<void> _showAddCardDialog(
+      BuildContext context, ScannerViewModel vm) async {
     final cardNameController = TextEditingController();
     final cardholderNameController = TextEditingController();
 
@@ -209,7 +234,8 @@ class _ScannerViewState extends State<ScannerView> {
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () => Navigator.of(warningDialogContext).pop(),
+                          onPressed: () =>
+                              Navigator.of(warningDialogContext).pop(),
                           child: Text(
                             'OK',
                             style: TextStyle(

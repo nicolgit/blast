@@ -70,8 +70,11 @@ class _FieldEditViewState extends State<FieldEditView> {
     }
 
     if (_viewModel.isSupported &&
-        (_nameFocusNode.hasFocus || _focusNode.hasFocus || _confirmFocusNode.hasFocus) &&
-        (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
+        (_nameFocusNode.hasFocus ||
+            _focusNode.hasFocus ||
+            _confirmFocusNode.hasFocus) &&
+        (event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
       if (_nameFocusNode.hasFocus) {
         _focusNode.requestFocus();
       } else if (_viewModel.isPassword && _focusNode.hasFocus) {
@@ -103,7 +106,8 @@ class _FieldEditViewState extends State<FieldEditView> {
     Navigator.of(context).pop(true);
   }
 
-  bool get _passwordMismatch => _viewModel.isPassword && _controller.text != _confirmController.text;
+  bool get _passwordMismatch =>
+      _viewModel.isPassword && _controller.text != _confirmController.text;
 
   Future<void> _generatePassword() async {
     final generated = await context.router.push<String>(
@@ -114,6 +118,19 @@ class _FieldEditViewState extends State<FieldEditView> {
     setState(() {
       _controller.text = generated;
       _confirmController.text = generated;
+    });
+    _focusNode.requestFocus();
+  }
+
+  Future<void> _scanValue() async {
+    final scanned = await context.router.push<String>(
+      ScannerRoute(returnsValue: true),
+    );
+    if (!mounted || scanned == null) return;
+
+    setState(() {
+      _controller.text = scanned;
+      _valueError = null;
     });
     _focusNode.requestFocus();
   }
@@ -188,16 +205,22 @@ class _FieldEditViewState extends State<FieldEditView> {
                                 style: inputStyle,
                                 focusNode: _focusNode,
                                 autofocus: true,
-                                obscureText: _viewModel.isPassword && _obscurePassword,
+                                obscureText:
+                                    _viewModel.isPassword && _obscurePassword,
                                 autocorrect: !_viewModel.isPassword,
                                 enableSuggestions: !_viewModel.isPassword,
                                 onChanged: (_) {
-                                  if (_viewModel.isPassword || _valueError != null) {
+                                  if (_viewModel.isPassword ||
+                                      _valueError != null) {
                                     setState(() => _valueError = null);
                                   }
                                 },
-                                keyboardType: _viewModel.canTestUrl ? TextInputType.url : TextInputType.text,
-                                textInputAction: _viewModel.isPassword ? TextInputAction.next : TextInputAction.done,
+                                keyboardType: _viewModel.canTestUrl
+                                    ? TextInputType.url
+                                    : TextInputType.text,
+                                textInputAction: _viewModel.isPassword
+                                    ? TextInputAction.next
+                                    : TextInputAction.done,
                                 onSubmitted: (_) {
                                   if (_viewModel.isPassword) {
                                     _confirmFocusNode.requestFocus();
@@ -211,13 +234,25 @@ class _FieldEditViewState extends State<FieldEditView> {
                                   errorText: _valueError,
                                   labelStyle: labelStyle,
                                   floatingLabelStyle: labelStyle,
-                                  suffixIcon: _viewModel.canTestUrl
-                                      ? TextButton(
-                                          onPressed: _testUrl,
-                                          child: const Text('Test'),
-                                        )
-                                      : _viewModel.isPassword
-                                          ? _passwordVisibilityButton()
+                                  suffixIcon: _viewModel.isPassword
+                                      ? _passwordVisibilityButton()
+                                      : _viewModel.canScan
+                                          ? Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (_viewModel.canTestUrl)
+                                                  TextButton(
+                                                    onPressed: _testUrl,
+                                                    child: const Text('Test'),
+                                                  ),
+                                                IconButton(
+                                                  tooltip: 'Scan QR code',
+                                                  icon: const Icon(
+                                                      Icons.qr_code_scanner),
+                                                  onPressed: _scanValue,
+                                                ),
+                                              ],
+                                            )
                                           : null,
                                 ),
                               )
@@ -242,7 +277,9 @@ class _FieldEditViewState extends State<FieldEditView> {
                               labelText: 'Confirm password',
                               labelStyle: labelStyle,
                               floatingLabelStyle: labelStyle,
-                              errorText: _passwordMismatch ? 'values do not match' : null,
+                              errorText: _passwordMismatch
+                                  ? 'values do not match'
+                                  : null,
                               suffixIcon: _passwordVisibilityButton(),
                             ),
                           ),
@@ -268,7 +305,10 @@ class _FieldEditViewState extends State<FieldEditView> {
                             ),
                             const SizedBox(width: 12),
                             FilledButton(
-                              onPressed: _viewModel.isSupported && !_passwordMismatch ? _save : null,
+                              onPressed:
+                                  _viewModel.isSupported && !_passwordMismatch
+                                      ? _save
+                                      : null,
                               child: const Text('Save'),
                             ),
                           ],

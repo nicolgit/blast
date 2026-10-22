@@ -11,14 +11,15 @@ class FieldEditViewModel extends ChangeNotifier {
   bool get isSupported =>
       attribute.type == BlastAttributeType.typeHeader || canEditName;
 
-  bool get canEditName =>
-      attribute.type != BlastAttributeType.typeHeader;
+  bool get canEditName => attribute.type != BlastAttributeType.typeHeader;
 
   bool get isCardName =>
       attribute.type == BlastAttributeType.typeHeader &&
       attribute.value == 'CardName';
 
   bool get isPassword => attribute.type == BlastAttributeType.typePassword;
+
+  bool get canScan => canEditName && !isPassword;
 
   bool get canTestUrl => attribute.type == BlastAttributeType.typeURL;
 
@@ -29,7 +30,9 @@ class FieldEditViewModel extends ChangeNotifier {
     }
     final lowerInput = input.toLowerCase();
     final url = Uri.tryParse(
-      lowerInput.startsWith('http://') || lowerInput.startsWith('https://') || lowerInput.startsWith('mailto:')
+      lowerInput.startsWith('http://') ||
+              lowerInput.startsWith('https://') ||
+              lowerInput.startsWith('mailto:')
           ? input
           : 'https://$input',
     );

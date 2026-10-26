@@ -261,7 +261,7 @@ class _CardViewState extends State<CardView> {
           children: [
             OutlinedButton.icon(
               onPressed: () async {
-                final attr = BlastAttribute.withParams('+Field', '', BlastAttributeType.typeString);
+                final attr = BlastAttribute.withParams('attribute', '', BlastAttributeType.typeString);
                 final saved = await context.router.push<bool>(
                   FieldEditRoute(attribute: attr),
                 );
@@ -279,7 +279,7 @@ class _CardViewState extends State<CardView> {
             ),
             OutlinedButton.icon(
               onPressed: () async {
-                final attr = BlastAttribute.withParams('+Password', '', BlastAttributeType.typePassword);
+                final attr = BlastAttribute.withParams('password', '', BlastAttributeType.typePassword);
                 final saved = await context.router.push<bool>(
                   FieldEditRoute(attribute: attr),
                 );
@@ -297,7 +297,7 @@ class _CardViewState extends State<CardView> {
             ),
             OutlinedButton.icon(
               onPressed: () async {
-                final attr = BlastAttribute.withParams('+Title', '', BlastAttributeType.typeHeader);
+                final attr = BlastAttribute.withParams('title', 'title', BlastAttributeType.typeHeader);
                 final saved = await context.router.push<bool>(
                   FieldEditRoute(attribute: attr),
                 );
@@ -315,7 +315,7 @@ class _CardViewState extends State<CardView> {
             ),
             OutlinedButton.icon(
               onPressed: () async {
-                final attr = BlastAttribute.withParams('+URL', '', BlastAttributeType.typeURL);
+                final attr = BlastAttribute.withParams('URL', '', BlastAttributeType.typeURL);
                 final saved = await context.router.push<bool>(
                   FieldEditRoute(attribute: attr),
                 );

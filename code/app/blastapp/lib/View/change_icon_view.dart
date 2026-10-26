@@ -18,9 +18,17 @@ class ChangeIconView extends StatefulWidget {
 
 class _ChangeIconViewState extends State<ChangeIconView> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<BrandInfo> _allBrands = [];
   List<BrandInfo> _filteredBrands = [];
   bool _isLoading = true;
+  bool _shouldScrollToCurrentIcon = true;
+
+  String? get _currentIconSlug {
+    const prefix = 'simpleicons:';
+    final icon = widget.currentIcon;
+    return icon != null && icon.startsWith(prefix) ? icon.substring(prefix.length) : icon;
+  }
 
   @override
   void initState() {
@@ -33,11 +41,13 @@ class _ChangeIconViewState extends State<ChangeIconView> {
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   Future<void> _loadBrands() async {
     final brands = await IconLookupHelper().brands;
+    if (!mounted) return;
     setState(() {
       _allBrands = brands;
       _filteredBrands = brands;
@@ -170,7 +180,32 @@ class _ChangeIconViewState extends State<ChangeIconView> {
                             : LayoutBuilder(
                                 builder: (context, constraints) {
                                   final crossAxisCount = (constraints.maxWidth / 180).floor().clamp(2, 10);
+                                  if (_shouldScrollToCurrentIcon) {
+                                    _shouldScrollToCurrentIcon = false;
+                                    final index = _filteredBrands.indexWhere(
+                                      (brand) => brand.brandSlug == _currentIconSlug,
+                                    );
+                                    if (index >= 0) {
+                                      final itemWidth =
+                                          (constraints.maxWidth - 32 - (crossAxisCount - 1) * 16) / crossAxisCount;
+                                      final itemHeight = itemWidth / 0.8;
+                                      final offset = 16 +
+                                          (index ~/ crossAxisCount) * (itemHeight + 16) +
+                                          itemHeight / 2 -
+                                          constraints.maxHeight / 2;
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        if (!mounted || !_scrollController.hasClients) {
+                                          return;
+                                        }
+                                        final position = _scrollController.position;
+                                        _scrollController.jumpTo(
+                                          offset.clamp(position.minScrollExtent, position.maxScrollExtent),
+                                        );
+                                      });
+                                    }
+                                  }
                                   return GridView.builder(
+                                    controller: _scrollController,
                                     padding: const EdgeInsets.all(16.0),
                                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: crossAxisCount,
@@ -200,57 +235,76 @@ class _ChangeIconViewState extends State<ChangeIconView> {
   }
 
   Widget _buildIconCard(BrandInfo brand, ChangeIconViewModel vm) {
-    final iconUrl = _theme.brightness == Brightness.dark ? brand.urlDark : brand.url;
+    final isSelected = brand.brandSlug == _currentIconSlug;
 
-    return InkWell(
-      onTap: () => vm.selectIcon(brand.brandSlug),
-      child: Card(
-        elevation: 2,
-        color: _theme.colorScheme.primary,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 128,
-                height: 128,
-                child: FutureBuilder<String?>(
-                  future: _fetchSvgData(iconUrl),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+    return FutureBuilder<Color?>(
+      future: IconLookupHelper.getBrandColor(brand.brandSlug),
+      builder: (context, colorSnapshot) {
+        final backgroundColor = colorSnapshot.data ?? _theme.colorScheme.primary;
+        final useLightForeground = ThemeData.estimateBrightnessForColor(backgroundColor) == Brightness.dark;
+        final foregroundColor = useLightForeground ? Colors.white : Colors.black;
+        final iconUrl = useLightForeground ? brand.url : brand.urlDark;
 
-                    if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
-                      return Icon(
-                        Icons.image_not_supported,
-                        size: 64,
-                        color: _theme.colorScheme.onSurface.withValues(alpha: 0.3),
-                      );
-                    }
+        return Semantics(
+          selected: isSelected,
+          child: InkWell(
+            onTap: () => vm.selectIcon(brand.brandSlug),
+            child: Card(
+              elevation: isSelected ? 6 : 2,
+              color: backgroundColor,
+              shape: isSelected
+                  ? RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Colors.amber, width: 3),
+                    )
+                  : null,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 128,
+                      height: 128,
+                      child: FutureBuilder<String?>(
+                        future: _fetchSvgData(iconUrl),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator(color: foregroundColor));
+                          }
 
-                    return SvgPicture.string(
-                      snapshot.data!,
-                      fit: BoxFit.contain,
-                    );
-                  },
+                          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+                            return Icon(
+                              Icons.image_not_supported,
+                              size: 64,
+                              color: foregroundColor.withValues(alpha: 0.3),
+                            );
+                          }
+
+                          return SvgPicture.string(
+                            snapshot.data!,
+                            fit: BoxFit.contain,
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      brand.brandName,
+                      style: _theme.textTheme.bodySmall?.copyWith(
+                        color: foregroundColor,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                brand.brandName,
-                style: _theme.textTheme.bodySmall?.copyWith(
-                  color: _theme.colorScheme.onPrimary,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

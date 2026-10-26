@@ -54,6 +54,9 @@ void main() {
           canScan ? findsOneWidget : findsNothing);
       expect(find.text('Test'),
           type == BlastAttributeType.typeURL ? findsOneWidget : findsNothing);
+      expect(find.text('Confirm value'),
+          type == BlastAttributeType.typePassword ? findsOneWidget : findsNothing);
+      expect(find.text('Confirm password'), findsNothing);
       await tester.pumpWidget(const SizedBox.shrink());
     });
   }

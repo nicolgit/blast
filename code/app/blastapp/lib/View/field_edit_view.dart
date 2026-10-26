@@ -275,7 +275,7 @@ class _FieldEditViewState extends State<FieldEditView> {
                             onSubmitted: (_) => _save(),
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              labelText: 'Confirm password',
+                              labelText: 'Confirm value',
                               labelStyle: labelStyle,
                               floatingLabelStyle: labelStyle,
                               errorText: _passwordMismatch
@@ -293,7 +293,7 @@ class _FieldEditViewState extends State<FieldEditView> {
                           OutlinedButton.icon(
                             onPressed: _generatePassword,
                             icon: const Icon(Icons.auto_awesome),
-                            label: const Text('Generate password'),
+                            label: const Text('Generate'),
                           ),
                           const SizedBox(height: 12),
                         ],

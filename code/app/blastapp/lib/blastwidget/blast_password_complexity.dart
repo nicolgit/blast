@@ -24,7 +24,7 @@ class BlastPasswordComplexity extends StatelessWidget {
         indicator,
         const SizedBox(height: 8),
         Text(
-          complexity <= 3 ? 'Weak password' : complexity <= 6 ? 'Medium password' : 'Strong password',
+          currentPassword.isEmpty ? 'Empty' : complexity <= 3 ? 'Weak' : complexity <= 6 ? 'Medium' : 'Strong',
           style: TextStyle(color: _getColor(complexity)),
         ),
       ],

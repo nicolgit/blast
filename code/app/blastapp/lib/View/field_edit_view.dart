@@ -246,7 +246,8 @@ class _FieldEditViewState extends State<FieldEditView> {
                                                     child: const Text('Test'),
                                                   ),
                                                 IconButton(
-                                                  tooltip: 'Scan QR code',
+                                                  tooltip:
+                                                      'Scan barcode or QR code',
                                                   icon: const Icon(
                                                       Icons.qr_code_scanner),
                                                   onPressed: _scanValue,

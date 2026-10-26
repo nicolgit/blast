@@ -18,8 +18,7 @@ class _ScannerViewState extends State<ScannerView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) =>
-          ScannerViewModel(context, qrOnly: widget.returnsValue),
+      create: (context) => ScannerViewModel(context),
       child: Consumer<ScannerViewModel>(
         builder: (context, viewmodel, child) =>
             _buildScaffold(context, viewmodel),
@@ -40,9 +39,7 @@ class _ScannerViewState extends State<ScannerView> {
           body: Column(
             children: [
               AppBar(
-                title: Text(widget.returnsValue
-                    ? 'Scan QR code'
-                    : 'Scan Barcode/QRCode'),
+                title: const Text('Scan Barcode/QRCode'),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.close),
@@ -87,9 +84,7 @@ class _ScannerViewState extends State<ScannerView> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                widget.returnsValue
-                                    ? 'Point the camera at a QR code'
-                                    : 'Point the camera at a barcode or QR code',
+                                'Point the camera at a barcode or QR code',
                                 style: _theme.textTheme.bodyMedium?.copyWith(
                                   color: _theme.colorScheme.onSurface
                                       .withValues(alpha: 0.6),

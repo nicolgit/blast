@@ -16,11 +16,10 @@ class ScannerViewModel extends ChangeNotifier {
 
   late final MobileScannerController scannerController;
 
-  ScannerViewModel(this.context, {bool qrOnly = false}) {
+  ScannerViewModel(this.context) {
     scannerController = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
       facing: CameraFacing.back,
-      formats: qrOnly ? [BarcodeFormat.qrCode] : [],
     );
   }
 

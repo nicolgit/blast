@@ -50,7 +50,7 @@ void main() {
 
       final canScan = type == BlastAttributeType.typeString ||
           type == BlastAttributeType.typeURL;
-      expect(find.byTooltip('Scan QR code'),
+      expect(find.byTooltip('Scan barcode or QR code'),
           canScan ? findsOneWidget : findsNothing);
       expect(find.text('Test'),
           type == BlastAttributeType.typeURL ? findsOneWidget : findsNothing);
@@ -76,7 +76,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Scan QR code'));
+      await tester.tap(find.byTooltip('Scan barcode or QR code'));
       await tester.pumpAndSettle();
       expect(find.text('returnsValue: true'), findsOneWidget);
       await tester.tap(find.text(cancel ? 'Cancel scan' : 'Return scan'));
@@ -99,25 +99,29 @@ void main() {
     });
   }
 
-  testWidgets('Value scanner restricts detection to QR codes', (tester) async {
+  testWidgets(
+      'Scanner accepts QR codes and barcodes without format restrictions',
+      (tester) async {
     late ScannerViewModel scanner;
-    late ScannerViewModel cardScanner;
     await tester.pumpWidget(MaterialApp(
       home: Builder(builder: (context) {
-        scanner = ScannerViewModel(context, qrOnly: true);
-        cardScanner = ScannerViewModel(context);
+        scanner = ScannerViewModel(context);
         return const SizedBox.shrink();
       }),
     ));
 
-    expect(scanner.scannerController.formats, [BarcodeFormat.qrCode]);
-    expect(cardScanner.scannerController.formats, isEmpty);
+    expect(scanner.scannerController.formats, isEmpty);
     scanner.onBarcodeDetected(BarcodeCapture(barcodes: [
       Barcode(rawValue: 'QR content', format: BarcodeFormat.qrCode),
     ]));
     expect(scanner.scannedValue, 'QR content');
+    expect(scanner.scannedFormat, BarcodeFormat.qrCode.name);
+    scanner.onBarcodeDetected(BarcodeCapture(barcodes: [
+      Barcode(rawValue: '1234567890128', format: BarcodeFormat.ean13),
+    ]));
+    expect(scanner.scannedValue, '1234567890128');
+    expect(scanner.scannedFormat, BarcodeFormat.ean13.name);
     scanner.dispose();
-    cardScanner.dispose();
     await tester.pumpWidget(const SizedBox.shrink());
   });
 }

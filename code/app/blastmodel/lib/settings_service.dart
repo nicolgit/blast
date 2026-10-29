@@ -29,6 +29,7 @@ class SettingService {
   SettingService._internal() {
     // init cloud storages list
     cloudStorages.add(DropboxCloud());
+    cloudStorages.add(DropboxFolderCloud());
     cloudStorages.add(OneDriveFolderCloud());
     cloudStorages.add(OneDriveCloud());
 

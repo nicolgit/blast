@@ -85,7 +85,7 @@ You can store your vault wherever you want:
 
 - Local file system
 - OneDrive
-- Dropbox
+- Dropbox app folder (restricted to the app's folder) or Dropbox full access
 - (more providers coming)
 
 👉 You can switch anytime — just move the file.
@@ -131,6 +131,7 @@ flutter run
 
 If you want to test cloud backends (OneDrive/Dropbox), you may need to register your own OAuth apps and set client IDs.
 
+- Dropbox app folder requires a separate Scoped access / App folder registration and public App Key (`dropboxFolderApplicationId`); keep the existing Full Dropbox registration unchanged. No files are migrated automatically.
 - Setup notes: [docs/clouds-setup.md](docs/clouds-setup.md)
 - Secrets template: [code/app/blastmodel/lib/secretsToFill.dart](code/app/blastmodel/lib/secretsToFill.dart)
 

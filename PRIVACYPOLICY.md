@@ -21,7 +21,7 @@ When using cloud storage services, authentication tokens are stored locally on y
 Blast offers optional integration with various cloud storage services to store your encrypted password file. Currently supported services include:
 
 - **OneDrive**: Microsoft personal cloud storage
-- **Dropbox**: Cloud storage and synchronization service
+- **Dropbox**: Choose Dropbox app folder or Dropbox full access
 - **Local File System**: Data stored locally on your device
 - **Lorem Cloud**: Testing environment only
 
@@ -35,12 +35,17 @@ If you choose to use OneDrive, the app will request access to your Microsoft acc
 This access is used solely for storing and managing your password file. We do not access any other files or data in your OneDrive account.
 
 ## Dropbox Integration
-If you choose to use Dropbox, the app will request access to your Dropbox account with the following permissions:
+If you choose to use Dropbox, you can select one of two access boundaries:
+
+- **Dropbox app folder**: Uses a separate Dropbox App folder registration. Dropbox enforces access only to that app's folder and its subfolders; this authorization cannot access files elsewhere in your Dropbox.
+- **Dropbox full access**: Retains the existing Full Dropbox registration and can access files throughout your Dropbox account. Blast uses this access to browse, select, and manage your vault files.
+
+Both use these file permissions:
 - `files.content.read`: To retrieve your encrypted password file
 - `files.content.write`: To save and update your encrypted password file
 - `files.metadata.read`: To check file information and manage your password file
 
-This access is used solely for storing and managing your password file. We do not access any other files or data in your Dropbox account.
+This access is used for browsing, storing, and managing your encrypted vault files, not for collecting their contents. The full-access permission is broader than app-folder access; it is not restricted to an app folder. Choosing the app-folder provider does not migrate existing files or change an existing full-access authorization. You can revoke either authorization through Dropbox's account settings.
 
 ## Local Storage
 When using local file system storage, your encrypted password file is stored in your device's application documents directory and is only accessible by the Blast application.

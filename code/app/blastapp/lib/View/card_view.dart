@@ -169,7 +169,7 @@ class _CardViewState extends State<CardView> {
                   padding: const EdgeInsets.all(6),
                   child: ValueListenableBuilder<int>(
                     valueListenable: vm.timeTextNotifier,
-                    builder: (context, _, __) => Text(
+                    builder: (context, _, _) => Text(
                       "updated on ${DateFormat.yMMMEd().format(vm.currentCard.lastUpdateDateTime)}, used ${vm.currentCard.usedCounter} times, last time ${vm.currentCard.lastUpdateDateTime.difference(DateTime.now()).toApproximateTime()}",
                       style: _widgetFactory.textTheme.labelSmall,
                     ),

@@ -122,11 +122,14 @@ Blast does **not** protect against:
 
 ## 🛠 Build from source
 
+Requires Flutter 3.47.0 or newer (Dart 3.13.0 or newer). CI uses Flutter 3.47.7.
+
 ```bash
 cd code/app/blastapp
 flutter pub get
 flutter run
 ```
+
 ## Cloud provider setup (optional)
 
 If you want to test cloud backends (OneDrive/Dropbox), you may need to register your own OAuth apps and set client IDs.

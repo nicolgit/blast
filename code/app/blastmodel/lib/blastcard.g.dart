@@ -15,16 +15,18 @@ BlastCard _$BlastCardFromJson(Map<String, dynamic> json) => BlastCard()
   ..lastUpdateDateTime = DateTime.parse(json['LastUpdateDateTime'] as String)
   ..usedCounter = (json['UsedCounter'] as num).toInt()
   ..tags = (json['Tags'] as List<dynamic>).map((e) => e as String).toList()
-  ..rows = (json['Rows'] as List<dynamic>).map((e) => BlastAttribute.fromJson(e as Map<String, dynamic>)).toList();
+  ..rows = (json['Rows'] as List<dynamic>)
+      .map((e) => BlastAttribute.fromJson(e as Map<String, dynamic>))
+      .toList();
 
 Map<String, dynamic> _$BlastCardToJson(BlastCard instance) => <String, dynamic>{
-      'Id': instance.id,
-      'Title': instance.title,
-      'Notes': instance.notes,
-      if (instance.icon != null) 'Icon': instance.icon,
-      'IsFavorite': instance.isFavorite,
-      'LastUpdateDateTime': instance.lastUpdateDateTime.toIso8601String(),
-      'UsedCounter': instance.usedCounter,
-      'Tags': instance.tags,
-      'Rows': instance.rows.map((e) => e.toJson()).toList(),
-    };
+  'Id': instance.id,
+  'Title': instance.title,
+  'Notes': instance.notes,
+  'Icon': ?instance.icon,
+  'IsFavorite': instance.isFavorite,
+  'LastUpdateDateTime': instance.lastUpdateDateTime.toIso8601String(),
+  'UsedCounter': instance.usedCounter,
+  'Tags': instance.tags,
+  'Rows': instance.rows.map((e) => e.toJson()).toList(),
+};

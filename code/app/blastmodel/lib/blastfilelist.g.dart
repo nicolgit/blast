@@ -13,6 +13,4 @@ BlastFileList _$BlastFileListFromJson(Map<String, dynamic> json) =>
           .toList();
 
 Map<String, dynamic> _$BlastFileListToJson(BlastFileList instance) =>
-    <String, dynamic>{
-      'List': instance.list.map((e) => e.toJson()).toList(),
-    };
+    <String, dynamic>{'List': instance.list.map((e) => e.toJson()).toList()};

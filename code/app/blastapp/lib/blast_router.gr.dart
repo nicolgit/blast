@@ -14,7 +14,7 @@ part of 'blast_router.dart';
 /// [CardFileInfoView]
 class CardFileInfoRoute extends PageRouteInfo<void> {
   const CardFileInfoRoute({List<PageRouteInfo>? children})
-      : super(CardFileInfoRoute.name, initialChildren: children);
+    : super(CardFileInfoRoute.name, initialChildren: children);
 
   static const String name = 'CardFileInfoRoute';
 
@@ -35,14 +35,14 @@ class CardRoute extends PageRouteInfo<CardRouteArgs> {
     bool openInEditMode = false,
     List<PageRouteInfo>? children,
   }) : super(
-          CardRoute.name,
-          args: CardRouteArgs(
-            key: key,
-            card: card,
-            openInEditMode: openInEditMode,
-          ),
-          initialChildren: children,
-        );
+         CardRoute.name,
+         args: CardRouteArgs(
+           key: key,
+           card: card,
+           openInEditMode: openInEditMode,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'CardRoute';
 
@@ -94,7 +94,7 @@ class CardRouteArgs {
 /// [CardsBrowserView]
 class CardsBrowserRoute extends PageRouteInfo<void> {
   const CardsBrowserRoute({List<PageRouteInfo>? children})
-      : super(CardsBrowserRoute.name, initialChildren: children);
+    : super(CardsBrowserRoute.name, initialChildren: children);
 
   static const String name = 'CardsBrowserRoute';
 
@@ -114,10 +114,10 @@ class ChangeIconRoute extends PageRouteInfo<ChangeIconRouteArgs> {
     String? currentIcon,
     List<PageRouteInfo>? children,
   }) : super(
-          ChangeIconRoute.name,
-          args: ChangeIconRouteArgs(key: key, currentIcon: currentIcon),
-          initialChildren: children,
-        );
+         ChangeIconRoute.name,
+         args: ChangeIconRouteArgs(key: key, currentIcon: currentIcon),
+         initialChildren: children,
+       );
 
   static const String name = 'ChangeIconRoute';
 
@@ -159,7 +159,7 @@ class ChangeIconRouteArgs {
 /// [ChangePasswordView]
 class ChangePasswordRoute extends PageRouteInfo<void> {
   const ChangePasswordRoute({List<PageRouteInfo>? children})
-      : super(ChangePasswordRoute.name, initialChildren: children);
+    : super(ChangePasswordRoute.name, initialChildren: children);
 
   static const String name = 'ChangePasswordRoute';
 
@@ -175,7 +175,7 @@ class ChangePasswordRoute extends PageRouteInfo<void> {
 /// [ChooseFileView]
 class ChooseFileRoute extends PageRouteInfo<void> {
   const ChooseFileRoute({List<PageRouteInfo>? children})
-      : super(ChooseFileRoute.name, initialChildren: children);
+    : super(ChooseFileRoute.name, initialChildren: children);
 
   static const String name = 'ChooseFileRoute';
 
@@ -191,7 +191,7 @@ class ChooseFileRoute extends PageRouteInfo<void> {
 /// [ChooseStorageView]
 class ChooseStorageRoute extends PageRouteInfo<void> {
   const ChooseStorageRoute({List<PageRouteInfo>? children})
-      : super(ChooseStorageRoute.name, initialChildren: children);
+    : super(ChooseStorageRoute.name, initialChildren: children);
 
   static const String name = 'ChooseStorageRoute';
 
@@ -211,10 +211,10 @@ class CreatePasswordRoute extends PageRouteInfo<CreatePasswordRouteArgs> {
     required String path,
     List<PageRouteInfo>? children,
   }) : super(
-          CreatePasswordRoute.name,
-          args: CreatePasswordRouteArgs(key: key, path: path),
-          initialChildren: children,
-        );
+         CreatePasswordRoute.name,
+         args: CreatePasswordRouteArgs(key: key, path: path),
+         initialChildren: children,
+       );
 
   static const String name = 'CreatePasswordRoute';
 
@@ -254,7 +254,7 @@ class CreatePasswordRouteArgs {
 /// [EulaView]
 class EulaRoute extends PageRouteInfo<void> {
   const EulaRoute({List<PageRouteInfo>? children})
-      : super(EulaRoute.name, initialChildren: children);
+    : super(EulaRoute.name, initialChildren: children);
 
   static const String name = 'EulaRoute';
 
@@ -274,10 +274,10 @@ class FieldEditRoute extends PageRouteInfo<FieldEditRouteArgs> {
     required BlastAttribute attribute,
     List<PageRouteInfo>? children,
   }) : super(
-          FieldEditRoute.name,
-          args: FieldEditRouteArgs(key: key, attribute: attribute),
-          initialChildren: children,
-        );
+         FieldEditRoute.name,
+         args: FieldEditRouteArgs(key: key, attribute: attribute),
+         initialChildren: children,
+       );
 
   static const String name = 'FieldEditRoute';
 
@@ -317,11 +317,11 @@ class FieldEditRouteArgs {
 /// [FieldView]
 class FieldRoute extends PageRouteInfo<FieldRouteArgs> {
   FieldRoute({Key? key, required String value, List<PageRouteInfo>? children})
-      : super(
-          FieldRoute.name,
-          args: FieldRouteArgs(key: key, value: value),
-          initialChildren: children,
-        );
+    : super(
+        FieldRoute.name,
+        args: FieldRouteArgs(key: key, value: value),
+        initialChildren: children,
+      );
 
   static const String name = 'FieldRoute';
 
@@ -361,7 +361,7 @@ class FieldRouteArgs {
 /// [ImporterView]
 class ImporterRoute extends PageRouteInfo<void> {
   const ImporterRoute({List<PageRouteInfo>? children})
-      : super(ImporterRoute.name, initialChildren: children);
+    : super(ImporterRoute.name, initialChildren: children);
 
   static const String name = 'ImporterRoute';
 
@@ -382,14 +382,14 @@ class PasswordGeneratorRoute extends PageRouteInfo<PasswordGeneratorRouteArgs> {
     required bool returnsValue,
     List<PageRouteInfo>? children,
   }) : super(
-          PasswordGeneratorRoute.name,
-          args: PasswordGeneratorRouteArgs(
-            key: key,
-            allowCopyToClipboard: allowCopyToClipboard,
-            returnsValue: returnsValue,
-          ),
-          initialChildren: children,
-        );
+         PasswordGeneratorRoute.name,
+         args: PasswordGeneratorRouteArgs(
+           key: key,
+           allowCopyToClipboard: allowCopyToClipboard,
+           returnsValue: returnsValue,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'PasswordGeneratorRoute';
 
@@ -446,10 +446,10 @@ class ScannerRoute extends PageRouteInfo<ScannerRouteArgs> {
     bool returnsValue = false,
     List<PageRouteInfo>? children,
   }) : super(
-          ScannerRoute.name,
-          args: ScannerRouteArgs(key: key, returnsValue: returnsValue),
-          initialChildren: children,
-        );
+         ScannerRoute.name,
+         args: ScannerRouteArgs(key: key, returnsValue: returnsValue),
+         initialChildren: children,
+       );
 
   static const String name = 'ScannerRoute';
 
@@ -491,7 +491,7 @@ class ScannerRouteArgs {
 /// [SettingsView]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
-      : super(SettingsRoute.name, initialChildren: children);
+    : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
@@ -507,7 +507,7 @@ class SettingsRoute extends PageRouteInfo<void> {
 /// [SplashView]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})
-      : super(SplashRoute.name, initialChildren: children);
+    : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
@@ -527,13 +527,13 @@ class TypePasswordRoute extends PageRouteInfo<TypePasswordRouteArgs> {
     bool forceSkipBiometricQuestion = false,
     List<PageRouteInfo>? children,
   }) : super(
-          TypePasswordRoute.name,
-          args: TypePasswordRouteArgs(
-            key: key,
-            forceSkipBiometricQuestion: forceSkipBiometricQuestion,
-          ),
-          initialChildren: children,
-        );
+         TypePasswordRoute.name,
+         args: TypePasswordRouteArgs(
+           key: key,
+           forceSkipBiometricQuestion: forceSkipBiometricQuestion,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'TypePasswordRoute';
 

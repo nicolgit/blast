@@ -2,27 +2,21 @@ PODS:
   - biometric_storage (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - printing (1.0.0):
-    - FlutterMacOS
 
 DEPENDENCIES:
   - biometric_storage (from `Flutter/ephemeral/.symlinks/plugins/biometric_storage/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
-  - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
 
 EXTERNAL SOURCES:
   biometric_storage:
     :path: Flutter/ephemeral/.symlinks/plugins/biometric_storage/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
-  printing:
-    :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
 
 SPEC CHECKSUMS:
   biometric_storage: 9de0cb4e591e52329ca0da7df42e964db6c526cf
   FlutterMacOS: c232990155153907050900a2e175c7773903ba4e
-  printing: c4cf83c78fd684f9bc318e6aadc18972aa48f617
 
 PODFILE CHECKSUM: f0c21717cb7ee9112f915044c74bfceb5b12e02a
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.17.0

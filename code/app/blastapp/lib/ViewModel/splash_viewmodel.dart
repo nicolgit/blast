@@ -97,7 +97,7 @@ class SplashViewModel extends ChangeNotifier {
     final myContext = context!;
 
     try {
-      BlastBiometricStorageData? biometricData = await BiometricHelper.readData();
+      BlastBiometricStorageData? biometricData = await BiometricHelper.readData(file.cloudId);
 
       await CurrentFileHelper.load(file, biometricData?.cloudCredentials);
       if (biometricData != null) {

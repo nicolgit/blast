@@ -26,6 +26,7 @@ jobs:
           sed -i 's/ONEDRIVE_APPLICATION_ID/${{ secrets.ONEDRIVE_APPLICATION_ID }}/g' secrets.dart
           sed -i 's/ONEDRIVE_FOLDER_APPLICATION_ID/${{ secrets.ONEDRIVE_FOLDER_APPLICATION_ID }}/g' secrets.dart
           sed -i 's/DROPBOX_APPLICATION_ID/${{ secrets.DROPBOX_APPLICATION_ID }}/g' secrets.dart
+          sed -i 's/DROPBOX_FOLDER_APPLICATION_ID/${{ secrets.DROPBOX_FOLDER_APPLICATION_ID }}/g' secrets.dart
           sed -i "s/BUILD_NUMBER/$build/g" secrets.dart
           cat secrets.dart
 

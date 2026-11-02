@@ -21,7 +21,7 @@ class BiometricHelper {
     return PromptInfo(iosPromptInfo: pApple, androidPromptInfo: pAndroid, macOsPromptInfo: pApple);
   }
 
-  static Future<BlastBiometricStorageData?> readData() async {
+  static Future<BlastBiometricStorageData?> readData(String cloudId) async {
     try {
       if (kIsWeb) return null;
       if (await SettingService().askForBiometricAuth == false) return null;
@@ -31,7 +31,11 @@ class BiometricHelper {
       final jsonData = await storageFile.read();
 
       if (jsonData != null) {
-        BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(jsonDecode(jsonData));
+        final json = jsonDecode(jsonData) as Map<String, dynamic>;
+        if (cloudId.isEmpty || json['CloudId'] != cloudId) {
+          return null;
+        }
+        BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(json);
         return data;
       }
     } catch (e) {
@@ -50,7 +54,9 @@ class BiometricHelper {
         cloudCredentials: CurrentFileService().cloud!.cachedCredentials ?? '',
       );
 
-      await storageFile.write(jsonEncode(biometricData));
+      final json = biometricData.toJson();
+      json['CloudId'] = CurrentFileService().cloud!.id;
+      await storageFile.write(jsonEncode(json));
 
       SettingService().setBiometricAuthEnabled(true);
     } catch (e) {

@@ -3,6 +3,7 @@ import 'package:blastmodel/Cloud/cloud.dart';
 import 'package:blastmodel/Cloud/cloud_object.dart';
 import 'package:blastmodel/secrets.dart';
 import 'package:flutter/foundation.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'package:blastmodel/specific/blastoauth/blastoauth.dart';
 import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart'
@@ -12,7 +13,7 @@ import 'package:blastmodel/specific/blastoauth/blastoauth_stub.dart'
 class DropboxCloud extends Cloud {
   late BlastOAuth _oauth;
 
-  DropboxCloud() {
+  DropboxCloud({BlastOAuth? oauth}) {
     var redirectUri = Uri();
 
     if (kIsWeb) {
@@ -28,8 +29,8 @@ class DropboxCloud extends Cloud {
       redirectUri = Uri.parse('blastapp://auth');
     }
 
-    _oauth = getBlastAuth().initialize(
-        applicationId: Secrets.dropboxApplicationId,
+    _oauth = (oauth ?? getBlastAuth()).initialize(
+        applicationId: clientId,
         authorizationEndpoint: Uri.parse('https://www.dropbox.com/oauth2/authorize'),
         tokenEndpoint: Uri.parse('https://api.dropboxapi.com/oauth2/token'),
         redirectUri: redirectUri,
@@ -39,8 +40,10 @@ class DropboxCloud extends Cloud {
   @override
   String get id => "DROPBOX";
 
+  String get clientId => Secrets.dropboxApplicationId;
+
   @override
-  String get name => "Dropbox";
+  String get name => "Dropbox full access";
 
   @override
   String get description => "Dropbox cloud storage, data stored in cloud, requires a Dropbox account";
@@ -61,6 +64,16 @@ class DropboxCloud extends Cloud {
     _oauth.cachedCredentials = value;
   }
 
+  Future<oauth2.Client> _createClient() {
+    if (clientId.trim().isEmpty ||
+        clientId == 'DROPBOX_APPLICATION_ID' ||
+        clientId == 'DROPBOX_FOLDER_APPLICATION_ID' ||
+        !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(clientId)) {
+      throw StateError('Missing or invalid OAuth App Key configuration for $id');
+    }
+    return _oauth.createClient();
+  }
+
   @override
   Future<List<CloudObject>> getFiles(String path) async {
     List<CloudObject> files = List.empty(growable: true);
@@ -68,7 +81,7 @@ class DropboxCloud extends Cloud {
     // Dropbox API v2 endpoint for listing folder contents
     // https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder
 
-    final client = await _oauth.createClient();
+    final client = await _createClient();
 
     final response = await client.post(
       Uri.parse('https://api.dropboxapi.com/2/files/list_folder'),
@@ -124,7 +137,7 @@ class DropboxCloud extends Cloud {
       path = '/$path';
     }
 
-    final client = await _oauth.createClient();
+    final client = await _createClient();
 
     final response = await client.post(
       Uri.parse('https://content.dropboxapi.com/2/files/upload'),
@@ -143,7 +156,7 @@ class DropboxCloud extends Cloud {
     if (response.statusCode == 200) {
       final dropboxData = jsonDecode(response.body);
 
-      final fileId = path;
+      final fileId = dropboxData['path_lower'] as String;
       final lastModified =
           dropboxData['client_modified'] != null ? DateTime.parse(dropboxData['client_modified']) : DateTime.now();
 
@@ -164,7 +177,7 @@ class DropboxCloud extends Cloud {
 
   @override
   Future<CloudFile> getFile(String id) async {
-    final client = await _oauth.createClient();
+    final client = await _createClient();
 
     // First get file metadata to retrieve modification date
     // https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
@@ -187,6 +200,8 @@ class DropboxCloud extends Cloud {
       if (metadataData['client_modified'] != null) {
         lastModified = DateTime.parse(metadataData['client_modified']);
       }
+    } else {
+      throw Exception('Failed to get file metadata from Dropbox: ${metadataResponse.statusCode}');
     }
 
     // Download file content
@@ -219,7 +234,7 @@ class DropboxCloud extends Cloud {
 
   @override
   Future<CloudFileInfo> getFileInfo(String id) async {
-    final client = await _oauth.createClient();
+    final client = await _createClient();
 
     // Get file metadata using Dropbox API
     // https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
@@ -261,7 +276,7 @@ class DropboxCloud extends Cloud {
     // Dropbox API v2 endpoint for uploading/updating files
     // https://www.dropbox.com/developers/documentation/http/documentation#files-upload
 
-    final client = await _oauth.createClient();
+    final client = await _createClient();
 
     // Use 'overwrite' mode to update existing file
     final response = await client.post(
@@ -342,4 +357,21 @@ class DropboxCloud extends Cloud {
     _oauth.cancelAuthorization();
     return Future.value();
   }
+}
+
+class DropboxFolderCloud extends DropboxCloud {
+  DropboxFolderCloud({super.oauth});
+
+  @override
+  String get id => "DROPBOXFOLDER";
+
+  @override
+  String get name => "Dropbox app folder";
+
+  @override
+  String get description =>
+      "Dropbox cloud storage, access limited to the app's own folder, requires a Dropbox account";
+
+  @override
+  String get clientId => Secrets.dropboxFolderApplicationId;
 }

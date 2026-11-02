@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:blastapp/View/choose_storage_view.dart';
@@ -26,6 +27,7 @@ void main() {
   SharedPreferences.setMockInitialValues({});
   final settings = SettingService();
   const channel = MethodChannel('biometric_storage');
+  const providerIds = ['DROPBOX', 'DROPBOXFOLDER', 'MSONEDRIVE', 'MSONEDRIVEFOLDER', 'LOCAL', 'LOREM'];
   String? biometricPayload;
 
   setUp(() async {
@@ -72,9 +74,9 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
-  test('biometric credentials are bound to their Dropbox provider in both directions', () async {
-    for (final id in ['DROPBOX', 'DROPBOXFOLDER']) {
-      final cloud = await settings.getCloudStorageById(id);
+  test('biometric data is bound to the exact provider for every registered storage', () async {
+    for (final cloud in await settings.getCloudStoragelist()) {
+      final id = cloud.id;
       CurrentFileService().setCloud(cloud);
       cloud.cachedCredentials = '$id-mock-cache';
       await BiometricHelper.saveData('mock-vault-password');
@@ -82,15 +84,54 @@ void main() {
       final matching = await BiometricHelper.readData(id);
       expect(matching!.cloudCredentials, '$id-mock-cache');
       expect(matching.password, 'mock-vault-password');
-      expect(await BiometricHelper.readData(id == 'DROPBOX' ? 'DROPBOXFOLDER' : 'DROPBOX'), isNull);
+      for (final otherId in providerIds.where((otherId) => otherId != id)) {
+        expect(await BiometricHelper.readData(otherId), isNull, reason: '$id must not authorize $otherId');
+      }
+      expect(await settings.biometricAuthEnabled, isTrue);
       cloud.cachedCredentials = null;
     }
   });
 
-  test('legacy biometric payloads remain compatible but cannot authorize the new provider', () async {
+  test('unbound biometric payloads are rejected for every provider', () async {
     biometricPayload = jsonEncode({'Password': 'legacy-password', 'CloudCredentials': 'legacy-mock-cache'});
-    expect((await BiometricHelper.readData('DROPBOX'))!.cloudCredentials, 'legacy-mock-cache');
-    expect(await BiometricHelper.readData('DROPBOXFOLDER'), isNull);
+    for (final id in providerIds) {
+      expect(await BiometricHelper.readData(id), isNull);
+    }
+  });
+
+  test('invalid provider bindings are rejected without disabling normal unlock', () async {
+    for (final invalidId in [null, '', ' ', 42, true, <String>[], <String, String>{}, 'UNKNOWN']) {
+      biometricPayload = jsonEncode({
+        'Password': 'mock-vault-password',
+        'CloudCredentials': 'mock-cache',
+        'CloudId': invalidId,
+      });
+      for (final id in providerIds) {
+        expect(await BiometricHelper.readData(id), isNull);
+      }
+      expect(await settings.biometricAuthEnabled, isTrue);
+    }
+    biometricPayload = jsonEncode({'Password': 'mock-vault-password', 'CloudId': ''});
+    expect(await BiometricHelper.readData(''), isNull);
+  });
+
+  test('local recent files load without OAuth when biometric data is unavailable', () async {
+    final directory = await Directory.systemTemp.createTemp('blast-biometric-test-');
+    addTearDown(() => directory.delete(recursive: true));
+    final localFile = File('${directory.path}/vault.blast');
+    final bytes = Uint8List.fromList([1, 2, 3]);
+    await localFile.writeAsBytes(bytes);
+    final cloud = await settings.getCloudStorageById('LOCAL');
+    expect(cloud.hasCachedCredentials, isFalse);
+    biometricPayload = jsonEncode({'Password': 'old-password', 'CloudCredentials': 'unbound-mock-cache'});
+    final biometricData = await BiometricHelper.readData(cloud.id);
+    expect(biometricData, isNull);
+    final file = BlastFile(cloudId: cloud.id, fileName: 'vault.blast', fileUrl: localFile.path);
+    await CurrentFileHelper.load(file, biometricData?.cloudCredentials);
+    expect(CurrentFileService().cloud, same(cloud));
+    expect(CurrentFileService().currentFileInfo, same(file));
+    expect(CurrentFileService().currentFileEncrypted, bytes);
+    expect(cloud.cachedCredentials, isNot('unbound-mock-cache'));
   });
 
   test('recent-file loading uses the folder provider and only its biometric cache for identical paths', () async {

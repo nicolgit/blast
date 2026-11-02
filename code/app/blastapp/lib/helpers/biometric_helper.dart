@@ -32,8 +32,7 @@ class BiometricHelper {
 
       if (jsonData != null) {
         final json = jsonDecode(jsonData) as Map<String, dynamic>;
-        // Legacy biometric entries are unbound and must never authorize the new app-folder provider.
-        if (json['CloudId'] != cloudId && (json['CloudId'] != null || cloudId == 'DROPBOXFOLDER')) {
+        if (cloudId.isEmpty || json['CloudId'] != cloudId) {
           return null;
         }
         BlastBiometricStorageData data = BlastBiometricStorageData.fromJson(json);

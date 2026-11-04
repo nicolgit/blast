@@ -42,7 +42,7 @@ class BlastCardMinimal extends BlastCardBase {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          margin: const EdgeInsets.all(24),
+                          margin: const EdgeInsets.fromLTRB(6),
                           decoration: card.isFavorite
                               ? BoxDecoration(
                                   border: Border.all(color: Colors.amber, width: 2),
@@ -51,7 +51,7 @@ class BlastCardMinimal extends BlastCardBase {
                               : null,
                           child: BlastCardIcon(
                             card: card,
-                            size: 144,
+                            size: 134,
                             transparentBackground: true,
                             initialsColor: isSelected ? colorScheme.primary : colorScheme.onPrimary,
                           ),
@@ -62,9 +62,7 @@ class BlastCardMinimal extends BlastCardBase {
                           child: buildHighlightedText(
                             context,
                             card.title ?? '',
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: colorScheme.surface,
-                                ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(color: colorScheme.surface),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -79,10 +77,7 @@ class BlastCardMinimal extends BlastCardBase {
                 child: IconButton(
                   onPressed: () => onFavoritePressed(card),
                   tooltip: card.isFavorite ? 'remove from favorites' : 'add to favorites',
-                  icon: Icon(
-                    card.isFavorite ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                  ),
+                  icon: Icon(card.isFavorite ? Icons.star : Icons.star_border, color: Colors.amber),
                 ),
               ),
               Positioned(
@@ -91,10 +86,7 @@ class BlastCardMinimal extends BlastCardBase {
                 child: IconButton(
                   onPressed: () => onDeletePressed(card),
                   tooltip: 'delete',
-                  icon: Icon(
-                    Icons.delete,
-                    color: colorScheme.secondary,
-                  ),
+                  icon: Icon(Icons.delete, color: colorScheme.secondary),
                 ),
               ),
             ],

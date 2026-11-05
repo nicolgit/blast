@@ -37,12 +37,12 @@ class BlastCardMinimal extends BlastCardBase {
                 child: InkWell(
                   onTap: () => onTap(card),
                   child: Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          margin: const EdgeInsets.fromLTRB(6),
+                          margin: const EdgeInsets.all(6),
                           decoration: card.isFavorite
                               ? BoxDecoration(
                                   border: Border.all(color: Colors.amber, width: 2),
@@ -51,7 +51,7 @@ class BlastCardMinimal extends BlastCardBase {
                               : null,
                           child: BlastCardIcon(
                             card: card,
-                            size: 134,
+                            size: 124,
                             transparentBackground: true,
                             initialsColor: isSelected ? colorScheme.primary : colorScheme.onPrimary,
                           ),

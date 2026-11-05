@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:blastapp/ViewModel/field_edit_viewmodel.dart';
 import 'package:blastapp/blast_router.dart';
+import 'package:blastapp/blastwidget/blast_card_icon.dart';
 import 'package:blastapp/blastwidget/blast_widgetfactory.dart';
 import 'package:blastapp/blastwidget/blast_password_complexity.dart';
 import 'package:blastmodel/blastattribute.dart';
+import 'package:blastmodel/blastattributetype.dart';
+import 'package:blastmodel/blastcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -30,10 +33,10 @@ class _FieldEditViewState extends State<FieldEditView> {
   String? _valueError;
 
   Widget _passwordVisibilityButton() => IconButton(
-        tooltip: _obscurePassword ? 'Show password' : 'Hide password',
-        icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-      );
+    tooltip: _obscurePassword ? 'Show password' : 'Hide password',
+    icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+  );
 
   @override
   void initState() {
@@ -147,9 +150,8 @@ class _FieldEditViewState extends State<FieldEditView> {
       error = 'Could not open the URL: ${exception.message ?? exception.code}';
     }
     if (mounted && error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
     }
   }
 
@@ -183,6 +185,26 @@ class _FieldEditViewState extends State<FieldEditView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        if (_viewModel.canTestUrl) ...[
+                          ValueListenableBuilder<TextEditingValue>(
+                            valueListenable: _controller,
+                            builder: (context, value, child) => BlastCardIcon(
+                              key: ValueKey(value.text),
+                              card: BlastCard()
+                                ..title = 'URL'
+                                ..rows = [
+                                  if (value.text.trim().isNotEmpty)
+                                    BlastAttribute.withParams(
+                                      'URL',
+                                      value.text,
+                                      BlastAttributeType.typeURL,
+                                    ),
+                                ],
+                              size: 48,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
                         if (_viewModel.canEditName) ...[
                           TextField(
                             controller: _nameController,
@@ -237,24 +259,25 @@ class _FieldEditViewState extends State<FieldEditView> {
                                   suffixIcon: _viewModel.isPassword
                                       ? _passwordVisibilityButton()
                                       : _viewModel.canScan
-                                          ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                if (_viewModel.canTestUrl)
-                                                  TextButton(
-                                                    onPressed: _testUrl,
-                                                    child: const Text('Test'),
-                                                  ),
-                                                IconButton(
-                                                  tooltip:
-                                                      'Scan barcode or QR code',
-                                                  icon: const Icon(
-                                                      Icons.qr_code_scanner),
-                                                  onPressed: _scanValue,
-                                                ),
-                                              ],
-                                            )
-                                          : null,
+                                      ? Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (_viewModel.canTestUrl)
+                                              TextButton(
+                                                onPressed: _testUrl,
+                                                child: const Text('Test'),
+                                              ),
+                                            IconButton(
+                                              tooltip:
+                                                  'Scan barcode or QR code',
+                                              icon: const Icon(
+                                                Icons.qr_code_scanner,
+                                              ),
+                                              onPressed: _scanValue,
+                                            ),
+                                          ],
+                                        )
+                                      : null,
                                 ),
                               )
                             : Text(
@@ -308,8 +331,8 @@ class _FieldEditViewState extends State<FieldEditView> {
                             FilledButton(
                               onPressed:
                                   _viewModel.isSupported && !_passwordMismatch
-                                      ? _save
-                                      : null,
+                                  ? _save
+                                  : null,
                               child: const Text('Save'),
                             ),
                           ],

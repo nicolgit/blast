@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:blastapp/blast_theme.dart';
 import 'package:blastapp/helpers/biometric_helper.dart';
 import 'package:blastapp/helpers/currentfile_helper.dart';
 import 'package:blastmodel/currentfile_service.dart';
@@ -8,10 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:biometric_storage/biometric_storage.dart';
 
-enum PasswordType {
-  password,
-  recoveryKey,
-}
+enum PasswordType { password, recoveryKey }
 
 class TypePasswordViewModel extends ChangeNotifier {
   late BuildContext context;
@@ -25,17 +23,21 @@ class TypePasswordViewModel extends ChangeNotifier {
       await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(message),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
+          return Theme(
+            data: BlastTheme.light,
+            child: AlertDialog(
+              title: const Text('Error'),
+              content: Text(message),
+              actions: <Widget>[
+                TextButton(
+                  autofocus: true,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           );
         },
       );
@@ -43,7 +45,8 @@ class TypePasswordViewModel extends ChangeNotifier {
   }
 
   String get fileName => CurrentFileService().currentFileInfo!.fileName;
-  String get cloudIcon => 'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
+  String get cloudIcon =>
+      'assets/storage/${CurrentFileService().currentFileInfo!.cloudId}.png';
   PasswordType passwordType = PasswordType.password;
   String password = '';
   String recoveryKey = '';
@@ -85,7 +88,11 @@ class TypePasswordViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await CurrentFileHelper.decrypt(passwordType: passwordType, password: password, recoveryKey: recoveryKey);
+      await CurrentFileHelper.decrypt(
+        passwordType: passwordType,
+        password: password,
+        recoveryKey: recoveryKey,
+      );
       errorMessage = '';
       isOk = true;
     } on BlastWrongPasswordException {
@@ -101,7 +108,8 @@ class TypePasswordViewModel extends ChangeNotifier {
       await _showErrorMessage(errorMessage);
       isOk = false;
     } catch (e) {
-      errorMessage = 'unexpeceted error - unable to open your file - ${e.toString()}';
+      errorMessage =
+          'unexpeceted error - unable to open your file - ${e.toString()}';
       await _showErrorMessage(errorMessage);
       isOk = false;
     }
@@ -122,16 +130,23 @@ class TypePasswordViewModel extends ChangeNotifier {
           if (!context.mounted) return false;
 
           var theme = Theme.of(context);
-          var textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
+          var textTheme = theme.textTheme.apply(
+            bodyColor: theme.colorScheme.onSurface,
+          );
 
           // show alert dialog
           await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Biometric authentication', style: textTheme.titleLarge),
-                content:
-                    Text('Do you want to enable biometric authentication for this file?', style: textTheme.labelMedium),
+                title: Text(
+                  'Biometric authentication',
+                  style: textTheme.titleLarge,
+                ),
+                content: Text(
+                  'Do you want to enable biometric authentication for this file?',
+                  style: textTheme.labelMedium,
+                ),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () async {
@@ -159,10 +174,13 @@ class TypePasswordViewModel extends ChangeNotifier {
                         await BiometricHelper.saveData(password);
                       } catch (e) {
                         // Don't show error message if user canceled the biometric authentication
-                        if (e is AuthException && e.code == AuthExceptionCode.userCanceled) {
+                        if (e is AuthException &&
+                            e.code == AuthExceptionCode.userCanceled) {
                           // User canceled, silently continue
                         } else {
-                          await _showErrorMessage('Failed to enable biometric authentication: ${e.toString()}');
+                          await _showErrorMessage(
+                            'Failed to enable biometric authentication: ${e.toString()}',
+                          );
                         }
                       }
 

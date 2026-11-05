@@ -35,11 +35,7 @@ class BlastAttributeRow extends StatelessWidget {
     final textTheme = theme.textTheme.apply(bodyColor: theme.colorScheme.onSurface);
 
     Widget buildDragHint({double iconSize = 20}) {
-      return Icon(
-        Icons.drag_indicator,
-        size: iconSize,
-        color: theme.colorScheme.onSurfaceVariant,
-      );
+      return Icon(Icons.drag_indicator, size: iconSize, color: theme.colorScheme.onSurfaceVariant);
     }
 
     Widget buildDeleteButton({double iconSize = 20}) {
@@ -62,221 +58,248 @@ class BlastAttributeRow extends StatelessWidget {
     final value = attribute.value;
     final type = attribute.type;
 
-    switch (type) {
-      case BlastAttributeType.typeHeader:
-        return Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Center(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final showCopyButton = !editMode && constraints.maxWidth >= 600;
+        switch (type) {
+          case BlastAttributeType.typeHeader:
+            return Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Center(
                 child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: GestureDetector(
-                      onTap: () async {
-                        if (editMode) {
-                          await editField(attribute);
-                        } else {
-                          showFieldView(name);
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: textTheme.titleLarge!.copyWith(
-                                      color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (editMode) {
+                        await editField(attribute);
+                      } else {
+                        showFieldView(name);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              name,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: textTheme.titleLarge!.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            if (editMode)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 12),
-                                child: BlastEditButton(
-                                  onPressed: () async {
-                                    await editField(attribute);
+                          ),
+                          if (editMode)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: BlastEditButton(
+                                onPressed: () async {
+                                  await editField(attribute);
+                                },
+                                tooltip: 'edit field',
+                                iconSize: 20,
+                              ),
+                            ),
+                          if (editMode && deleteField != null)
+                            Padding(padding: const EdgeInsets.only(left: 3), child: buildDeleteButton(iconSize: 20)),
+                          if (editMode)
+                            Padding(padding: const EdgeInsets.only(left: 8), child: buildDragHint(iconSize: 20)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          case BlastAttributeType.typePassword:
+            return Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Card(
+                    child: GestureDetector(
+                      onDoubleTap: () {
+                        copyToClipboard(value);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text("$name copied to clipboard!")));
+                      },
+                      child: ListTile(
+                        leading: const Icon(Icons.lock),
+                        title: Text(
+                          isPasswordRowVisible(index) ? value : "***********",
+                          style: textTheme.titleMedium!.copyWith(color: theme.colorScheme.error),
+                        ),
+                        subtitle: Text(name, style: textTheme.labelSmall),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (!editMode)
+                              Visibility(
+                                visible: !isPasswordRowVisible(index),
+                                child: IconButton(
+                                  onPressed: () {
+                                    toggleShowPassword(index);
                                   },
-                                  tooltip: 'edit field',
-                                  iconSize: 20,
+                                  icon: const Icon(Icons.visibility_off),
+                                  tooltip: 'hide',
                                 ),
                               ),
-                            if (editMode && deleteField != null)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: buildDeleteButton(iconSize: 20),
+                            if (!editMode)
+                              Visibility(
+                                visible: isPasswordRowVisible(index),
+                                child: IconButton(
+                                  onPressed: () {
+                                    toggleShowPassword(index);
+                                  },
+                                  icon: const Icon(Icons.visibility),
+                                  tooltip: 'show',
+                                ),
+                              ),
+                            if (showCopyButton)
+                              IconButton(
+                                onPressed: () {
+                                  copyToClipboard(value);
+                                },
+                                icon: const Icon(Icons.copy),
+                                tooltip: 'copy to clipboard',
                               ),
                             if (editMode)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: buildDragHint(iconSize: 20),
+                              BlastEditButton(
+                                onPressed: () async {
+                                  await editField(attribute);
+                                },
+                                tooltip: 'edit field',
                               ),
+                            if (editMode && deleteField != null) const SizedBox(width: 3),
+                            if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
+                            if (editMode) const SizedBox(width: 4),
+                            if (editMode) buildDragHint(iconSize: 20),
                           ],
                         ),
+                        onTap: () async {
+                          showFieldView(value);
+                        },
                       ),
-                    ))));
-      case BlastAttributeType.typePassword:
-        return Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Center(
+                    ),
+                  ),
+                ),
+              ),
+            );
+          case BlastAttributeType.typeURL:
+            return Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Center(
                 child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      copyToClipboard(value);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$name copied to clipboard!")));
+                    },
                     child: Card(
-                        child: GestureDetector(
-                            onDoubleTap: () {
-                              copyToClipboard(value);
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("$name copied to clipboard!"),
-                              ));
-                            },
-                            child: ListTile(
-                              leading: const Icon(Icons.lock),
-                              title: Text(isPasswordRowVisible(index) ? value : "***********",
-                                  style: textTheme.titleMedium!.copyWith(color: theme.colorScheme.error)),
-                              subtitle: Text(
-                                name,
-                                style: textTheme.labelSmall,
+                      child: ListTile(
+                        leading: const Icon(Icons.link),
+                        title: InkWell(
+                          onTap: () {
+                            openUrl(value);
+                          },
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: Colors.blue,
+                              decorationColor: Colors.blue,
+                            ),
+                          ),
+                        ),
+                        subtitle: Text(name, style: textTheme.labelSmall),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (showCopyButton)
+                              IconButton(
+                                onPressed: () {
+                                  copyToClipboard(value);
+                                },
+                                icon: const Icon(Icons.copy),
+                                tooltip: 'copy to clipboard',
                               ),
-                              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                                if (!editMode)
-                                  Visibility(
-                                    visible: !isPasswordRowVisible(index),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        toggleShowPassword(index);
-                                      },
-                                      icon: const Icon(Icons.visibility_off),
-                                      tooltip: 'hide',
-                                    ),
-                                  ),
-                                if (!editMode)
-                                  Visibility(
-                                    visible: isPasswordRowVisible(index),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        toggleShowPassword(index);
-                                      },
-                                      icon: const Icon(Icons.visibility),
-                                      tooltip: 'show',
-                                    ),
-                                  ),
-                                if (!editMode)
-                                  IconButton(
-                                      onPressed: () {
-                                        copyToClipboard(value);
-                                      },
-                                      icon: const Icon(Icons.copy),
-                                      tooltip: 'copy to clipboard'),
-                                if (editMode)
-                                  BlastEditButton(
-                                      onPressed: () async {
-                                        await editField(attribute);
-                                      },
-                                      tooltip: 'edit field'),
-                                if (editMode && deleteField != null) const SizedBox(width: 3),
-                                if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
-                                if (editMode) const SizedBox(width: 4),
-                                if (editMode) buildDragHint(iconSize: 20),
-                              ]),
-                              onTap: () async {
-                                showFieldView(value);
-                              },
-                            ))))));
-      case BlastAttributeType.typeURL:
-        return Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Center(
-                child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: GestureDetector(
-                        onDoubleTap: () {
-                          copyToClipboard(value);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("$name copied to clipboard!"),
-                          ));
-                        },
-                        child: Card(
-                            child: ListTile(
-                          leading: const Icon(Icons.link),
-                          title: InkWell(
-                            onTap: () {
-                              openUrl(value);
-                            },
-                            child: Text(value,
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Colors.blue,
-                                    decorationColor: Colors.blue)),
-                          ),
-                          subtitle: Text(
-                            name,
-                            style: textTheme.labelSmall,
-                          ),
-                          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            if (!editMode)
-                              IconButton(
-                                  onPressed: () {
-                                    copyToClipboard(value);
-                                  },
-                                  icon: const Icon(Icons.copy),
-                                  tooltip: 'copy to clipboard'),
                             if (editMode)
                               BlastEditButton(
-                                  onPressed: () async {
-                                    await editField(attribute);
-                                  },
-                                  tooltip: 'edit field'),
+                                onPressed: () async {
+                                  await editField(attribute);
+                                },
+                                tooltip: 'edit field',
+                              ),
                             if (editMode && deleteField != null) const SizedBox(width: 3),
                             if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
                             if (editMode) const SizedBox(width: 4),
                             if (editMode) buildDragHint(iconSize: 20),
-                          ]),
-                          onTap: () async {
-                            showFieldView(value);
-                          },
-                        ))))));
-      case BlastAttributeType.typeString:
-        return Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Center(
-                child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: GestureDetector(
-                        onDoubleTap: () {
-                          copyToClipboard(value);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("$name copied to clipboard!"),
-                          ));
+                          ],
+                        ),
+                        onTap: () async {
+                          showFieldView(value);
                         },
-                        child: Card(
-                            child: ListTile(
-                          leading: const Icon(Icons.description),
-                          title: Text(value, style: textTheme.titleMedium),
-                          subtitle: Text(
-                            name,
-                            style: textTheme.labelSmall,
-                          ),
-                          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            if (!editMode)
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          case BlastAttributeType.typeString:
+            return Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      copyToClipboard(value);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$name copied to clipboard!")));
+                    },
+                    child: Card(
+                      child: ListTile(
+                        leading: const Icon(Icons.description),
+                        title: Text(value, style: textTheme.titleMedium),
+                        subtitle: Text(name, style: textTheme.labelSmall),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (showCopyButton)
                               IconButton(
-                                  onPressed: () {
-                                    copyToClipboard(value);
-                                  },
-                                  icon: const Icon(Icons.copy),
-                                  tooltip: 'copy to clipboard'),
+                                onPressed: () {
+                                  copyToClipboard(value);
+                                },
+                                icon: const Icon(Icons.copy),
+                                tooltip: 'copy to clipboard',
+                              ),
                             if (editMode)
                               BlastEditButton(
-                                  onPressed: () async {
-                                    await editField(attribute);
-                                  },
-                                  tooltip: 'edit field'),
+                                onPressed: () async {
+                                  await editField(attribute);
+                                },
+                                tooltip: 'edit field',
+                              ),
                             if (editMode && deleteField != null) const SizedBox(width: 3),
                             if (editMode && deleteField != null) buildDeleteButton(iconSize: 18),
                             if (editMode) const SizedBox(width: 4),
                             if (editMode) buildDragHint(iconSize: 20),
-                          ]),
-                          onTap: () async {
-                            showFieldView(value);
-                          },
-                        ))))));
-    }
+                          ],
+                        ),
+                        onTap: () async {
+                          showFieldView(value);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+        }
+      },
+    );
   }
 }
